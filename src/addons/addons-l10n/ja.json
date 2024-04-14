@@ -165,7 +165,7 @@
     "block-switching/control_forever": "ずっと",
     "block-switching/control_if": "もし",
     "block-switching/control_if_else": "もし... でなければ",
-    "block-switching/control_repeat_until": "...回繰り返す",
+    "block-switching/control_repeat_until": "...まで繰り返す",
     "block-switching/control_wait_until": "...まで待つ",
     "block-switching/data_changevariableby": "変数を...ずつ変える",
     "block-switching/data_deletealloflist": "項目をすべて削除",

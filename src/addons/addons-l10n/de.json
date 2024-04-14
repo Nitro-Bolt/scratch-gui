@@ -36,7 +36,7 @@
     "hide-flyout/unlock": "Palette loslösen",
     "mediarecorder/cancel": "Abbrechen",
     "mediarecorder/click-flag": "Warte...",
-    "mediarecorder/click-flag-description": "Klicke die Grüne Flagge, um die Aufnahme zu starten. Klicke auf diesen Button, um sie zu beenden.",
+    "mediarecorder/click-flag-description": "Klicke auf die Grüne Flagge, um die Aufnahme zu starten. Klicke auf diese Schaltfläche, um sie zu beenden.",
     "mediarecorder/option-title": "Aufnahmeoptionen",
     "mediarecorder/record": "Aufnehmen",
     "mediarecorder/record-after-flag": "Aufnahme erst starten, wenn die Grüne Flagge angeklickt wird",

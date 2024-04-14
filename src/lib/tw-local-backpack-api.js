@@ -2,6 +2,7 @@ import storage from './storage';
 import md5 from 'js-md5';
 import {soundThumbnail} from './backpack/sound-payload';
 import {arrayBufferToBase64, base64ToArrayBuffer} from './tw-base64-utils';
+import {requestPersistentStorage} from './tw-persistent-storage';
 
 // Special constants -- do not change without care.
 const DATABASE_NAME = 'TW_Backpack';
@@ -125,6 +126,9 @@ const saveBackpackObject = async ({
     body,
     thumbnail
 }) => {
+    // User interaction -- fine to show a permission dialog
+    requestPersistentStorage();
+
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(STORE_NAME, 'readwrite');

@@ -3220,6 +3220,28 @@
         "blocks": {}
     },
     {
+        "name": "Dango Cat",
+        "tags": [
+            "food",
+            "animals"
+        ],
+        "isStage": false,
+        "variables": {},
+        "costumes": [
+            {
+                "assetId": "927d672925e7b99f7813735c484c6922",
+                "name": "dango cat",
+                "bitmapResolution": 1,
+                "md5ext": "927d672925e7b99f7813735c484c6922.svg",
+                "dataFormat": "svg",
+                "rotationCenterX": 44,
+                "rotationCenterY": 44
+            }
+        ],
+        "sounds": [],
+        "blocks": {}
+    },
+    {
         "name": "Dani",
         "tags": [
             "people"

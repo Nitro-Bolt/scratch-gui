@@ -43,6 +43,7 @@ import {
 import AddonHooks from '../addons/hooks.js';
 import LoadScratchBlocksHOC from '../lib/tw-load-scratch-blocks-hoc.jsx';
 import {findTopBlock} from '../lib/backpack/code-payload.js';
+import {gentlyRequestPersistentStorage} from '../lib/tw-persistent-storage.js';
 
 // TW: Strings we add to scratch-blocks are localized here
 const messages = defineMessages({
@@ -226,6 +227,8 @@ class Blocks extends React.Component {
         for (const category of this.props.vm.runtime._blockInfo) {
             this.handleExtensionAdded(category);
         }
+
+        gentlyRequestPersistentStorage();
     }
     shouldComponentUpdate (nextProps, nextState) {
         return (

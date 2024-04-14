@@ -235,6 +235,7 @@
     "editor-extra-keys/enter-key": "ввод",
     "move-to-top-bottom/bottom": "переместить вниз",
     "move-to-top-bottom/top": "переместить наверх",
+    "move-to-top-layer/move-to-front-layer": "выдвинуть на верхний слой",
     "rename-broadcasts/RENAME_BROADCAST": "Переименовать сообщение",
     "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Переименовать Сообщение",
     "rename-broadcasts/RENAME_BROADCAST_TITLE": "переименовать \"{name}\" сообщений в:",

@@ -7,6 +7,8 @@ const STATUS_YIELD = 2;
 const STATUS_YIELD_TICK = 3;
 const STATUS_DONE = 4;
 
+const REACT_INTERNAL_PREFIX = "__reactInternalInstance$";
+
 let vm;
 
 let paused = false;
@@ -363,12 +365,12 @@ export const singleStep = () => {
   eventTarget.dispatchEvent(new CustomEvent("step"));
 };
 
-export const setup = (_vm) => {
+export const setup = (addon) => {
   if (vm) {
     return;
   }
 
-  vm = _vm;
+  vm = addon.tab.traps.vm;
 
   const originalStepThreads = vm.runtime.sequencer.stepThreads;
   vm.runtime.sequencer.stepThreads = function () {

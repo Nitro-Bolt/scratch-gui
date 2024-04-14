@@ -28,8 +28,6 @@ const ASSET_STORE = 'assets';
 const THUMBNAIL_STORE = 'thumbnails';
 const ALL_STORES = [METADATA_STORE, PROJECT_STORE, ASSET_STORE, THUMBNAIL_STORE];
 
-const MAX_AUTOMATIC_RESTORE_POINTS = 5;
-
 /** @type {IDBDatabase|null} */
 let _cachedDB = null;
 
@@ -82,7 +80,7 @@ const parseMetadata = obj => {
 
     obj.title = typeof obj.title === 'string' ? obj.title : '?';
     obj.created = typeof obj.created === 'number' ? obj.created : 0;
-    obj.type = [TYPE_AUTOMATIC, TYPE_MANUAL].includes(obj.type) ? obj.type : 1;
+    obj.type = [TYPE_AUTOMATIC, TYPE_MANUAL].includes(obj.type) ? obj.type : TYPE_MANUAL;
 
     obj.thumbnailSize = typeof obj.thumbnailSize === 'number' ? obj.thumbnailSize : 0;
     obj.projectSize = typeof obj.projectSize === 'number' ? obj.projectSize : 0;
@@ -149,6 +147,7 @@ const removeExtraneousData = transaction => new Promise(resolve => {
             }
             cursor.continue();
         } else {
+            // errors will bubble to transaction onerror
             deleteUnknownKeys(projectStore, requiredProjects)
                 .then(() => deleteUnknownKeys(assetStore, requiredAssetIDs))
                 .then(() => deleteUnknownKeys(thumbnailStore, requiredProjects))
@@ -166,22 +165,100 @@ const removeExtraneousRestorePoints = () => openDB().then(db => new Promise((res
         rejectTransaction(new Error(`Transaction error: ${transaction.error}`));
     };
 
-    let automaticCount = 0;
+    // Figuring out which restore points to keep and which to remove is non-trivial.
+    // We want to keep the most recent restore points for obvious reasons, but we also want to keep some old ones
+    // around too in case the project got really screwed up recently, but the user didn't notice.
+    // Additionally, if the user switches from editing one project to editing another for a while, we don't want
+    // to delete all of the restore points for the old project.
+
+    // Our approach is to put each restore point into a group based on project title, and then further divide into
+    // subgroups based on when the restore point was created.
+
+    /**
+     * @typedef GroupMetadata
+     * @property {number} total Number of non-deleted restore point from this group
+     * @property {Map<number, SubgroupMetadata>} subgroups Restore points per subgroup
+     */
+
+    /**
+     * @typedef SubgroupMetadata
+     * @property {number} total Number of non-deleted restore point from this subgroup
+     * @property {number} index Number of subgroups for this project that are newer than this one
+     */
+
+    /** @type {Map<string, GroupMetadata>} */
+    const groups = new Map();
+    let total = 0;
+
+    const SUBGROUP_PERIOD_SECONDS = 60 * 60;
+    const timeToSubgroup = unixSeconds => Math.floor(unixSeconds / SUBGROUP_PERIOD_SECONDS);
+
+    // Each successive subgroup's limit is 1 less than the previous, but always at least 1
+    const MAX_FOR_FIRST_SUBGROUP = 4;
+    // n + (n - 1) + (n - 2) + ... + 1 = (n + 1) * n / 2
+    // Add a bit more on top to help old restore points stay around
+    const MAX_PER_GROUP = ((MAX_FOR_FIRST_SUBGROUP + 1) * MAX_FOR_FIRST_SUBGROUP / 2) + 2;
+    const MAX_TOTAL = MAX_PER_GROUP * 2;
+
+    /**
+     * @param {Metadata} metadata Restore point metadata
+     * @returns {boolean} True if the restore point should be deleted
+     */
+    const shouldDelete = metadata => {
+        // Manual restore points are never automatically deleted and do not count against any limits
+        if (metadata.type !== TYPE_AUTOMATIC) {
+            return false;
+        }
+
+        if (total >= MAX_TOTAL) {
+            return true;
+        }
+
+        if (!groups.has(metadata.title)) {
+            groups.set(metadata.title, {
+                total: 0,
+                subgroups: new Map()
+            });
+        }
+        const groupMetadata = groups.get(metadata.title);
+
+        if (groupMetadata.total >= MAX_PER_GROUP) {
+            return true;
+        }
+
+        const subgroup = timeToSubgroup(metadata.created);
+        if (!groupMetadata.subgroups.has(subgroup)) {
+            groupMetadata.subgroups.set(subgroup, {
+                total: 0,
+                index: groupMetadata.subgroups.size
+            });
+        }
+        const subgroupMetadata = groupMetadata.subgroups.get(subgroup);
+
+        const subgroupMax = Math.max(1, MAX_FOR_FIRST_SUBGROUP - subgroupMetadata.index);
+        if (subgroupMetadata.total >= subgroupMax) {
+            return true;
+        }
+
+        // If we get here, we're keeping the restore point.
+        total++;
+        groupMetadata.total++;
+        subgroupMetadata.total++;
+        return false;
+    };
 
     const metadataStore = transaction.objectStore(METADATA_STORE);
     const getRequest = metadataStore.openCursor(null, 'prev');
     getRequest.onsuccess = () => {
         const cursor = getRequest.result;
         if (cursor) {
-            const manifest = parseMetadata(cursor.value);
-            if (manifest.type === TYPE_AUTOMATIC) {
-                automaticCount++;
-                if (automaticCount > MAX_AUTOMATIC_RESTORE_POINTS) {
-                    cursor.delete();
-                }
+            const metadata = parseMetadata(cursor.value);
+            if (shouldDelete(metadata)) {
+                cursor.delete();
             }
             cursor.continue();
         } else {
+            // errors will bubble to transaction onerror
             removeExtraneousData(transaction)
                 .then(() => resolveTransaction());
         }

@@ -22,7 +22,7 @@
     "test": "npm run test:lint && npm run test:unit && npm run build && npm run test:integration",
     "test:integration": "jest --maxWorkers=4 test[\\\\/]integration",
     "test:lint": "eslint . --ext .js,.jsx",
-    "test:unit": "jest test[\\\\/]unit",
+    "test:unit": "jest test[\\\\/]unit[\\\\/]addons",
     "test:smoke": "jest --runInBand test[\\\\/]smoke",
     "watch": "webpack --colors --watch"
   },
@@ -35,7 +35,7 @@
     "@microbit/microbit-universal-hex": "0.2.2",
     "@turbowarp/nanolog": "^0.2.0",
     "@turbowarp/scratch-l10n": "^3.1001.0-202401241456-994097a5",
-    "@turbowarp/scratch-storage": "^0.0.0-development-202312242258-43d7b47",
+    "@turbowarp/scratch-storage": "^0.0.202403251715",
     "@turbowarp/scratch-svg-renderer": "^1.0.0-202312242305-12c360b",
     "@turbowarp/startaudiocontext": "^1.0.0",
     "arraybuffer-loader": "^1.0.6",

@@ -11,13 +11,25 @@ export default async function ({ addon, console }) {
   updateStageSize();
   vm.on('STAGE_SIZE_CHANGED', updateStageSize);
 
+  // In Electron, after running requestFullscreen() a resize event can be fired before
+  // document.fullscreenElement is updated. We want to ignore that event.
+  let isEnteringFullscreen = false;
+
   // "Browser fullscreen" is defined as the mode that hides the browser UI.
   function updateBrowserFullscreen() {
     if (addon.settings.get("browserFullscreen") && !addon.self.disabled) {
       // If Scratch fullscreen is enabled, then browser fullscreen should also
       // be enabled, and vice versa for disabling.
       if (addon.tab.redux.state.scratchGui.mode.isFullScreen && document.fullscreenElement === null) {
-        document.documentElement.requestFullscreen();
+        isEnteringFullscreen = true;
+        document.documentElement.requestFullscreen()
+          .then(() => {
+            isEnteringFullscreen = false;
+          })
+          .catch((err) => {
+            console.error(err);
+            isEnteringFullscreen = false;
+          });
       } else if (!addon.tab.redux.state.scratchGui.mode.isFullScreen && document.fullscreenElement !== null) {
         document.exitFullscreen();
       }
@@ -45,8 +57,7 @@ export default async function ({ addon, console }) {
     if (
       !addon.self.disabled &&
       addon.tab.redux.state.scratchGui.mode.isFullScreen &&
-      addon.settings.get("hideToolbar") &&
-      addon.settings.get("hoverToolbar")
+      addon.settings.get("toolbar") === "hover"
     ) {
       const canvas = await addon.tab.waitForElement('[class*="stage_full-screen"] canvas');
       const header = await addon.tab.waitForElement('[class^="stage-header_stage-header-wrapper"]');
@@ -146,7 +157,9 @@ export default async function ({ addon, console }) {
   });
   // Changing to or from browser fullscreen is signified by a window resize.
   window.addEventListener("resize", () => {
-    updateScratchFullscreen();
+    if (!isEnteringFullscreen) {
+      updateScratchFullscreen();
+    }
   });
   // Handles the case of F11 full screen AND document full screen being enabled
   // at the same time.

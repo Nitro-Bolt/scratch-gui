@@ -1,4 +1,5 @@
 @import "../../css/colors.css";
+@import "../../css/filters.css";
 
 .modal-content {
     max-width: 550px;
@@ -111,6 +112,7 @@
     display: block;
     width: 75%;
     height: 75%;
+    filter: $filter-icon-gray;
 }
 .delete-button:hover {
     background-color: $ui-black-transparent;
