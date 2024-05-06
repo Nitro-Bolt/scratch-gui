@@ -103,6 +103,119 @@ const CustomProcedures = props => (
                     </div>
                 </div>
             </div>
+            <br></br>
+            <div className={styles.sectionTitle}>
+                <FormattedMessage
+                    defaultMessage="Select a color"
+                    description="Label for row of color options"
+                    id="gui.customProcedures.selectAColorText"
+                />
+            </div>
+            <Box className={styles.colorRow}>
+                <span
+                    style={{ backgroundColor: "#FF6680" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#FF6680"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <span
+                    style={{ backgroundColor: "#4C97FF" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#4C97FF"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <span
+                    style={{ backgroundColor: "#9966FF" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#9966FF"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <span
+                    style={{ backgroundColor: "#CF63CF" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#CF63CF"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <span
+                    style={{ backgroundColor: "#FFBF00" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#FFBF00"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <span
+                    style={{ backgroundColor: "#FFAB19" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#FFAB19"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <span
+                    style={{ backgroundColor: "#5CB1D6" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#5CB1D6"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <span
+                    style={{ backgroundColor: "#59C059" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#59C059"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <span
+                    style={{ backgroundColor: "#FF8C1A" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#FF8C1A"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <span
+                    style={{ backgroundColor: "#FF661A" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#FF661A"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <span
+                    style={{ backgroundColor: "#5755D4" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#5755D4"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <span
+                    style={{ backgroundColor: "#E4DB8C" }}
+                    className={styles.colorOption}
+                    role="button"
+                    color="#E4DB8C"
+                    draggable={false}
+                    onClick={props.setColor}
+                />
+                <input
+                    style={{ backgroundColor: props.colour }}
+                    type="color"
+                    value={props.colour}
+                    className={styles.colorPicker}
+                    onChange={props.setColor}
+                />
+            </Box>
             <div className={styles.checkboxRow}>
                 <label>
                     <input

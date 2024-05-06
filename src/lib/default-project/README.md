@@ -1,3 +1,3 @@
-`dango.svg` is from Twitter's Twemoji (CC BY 4.0 https://creativecommons.org/licenses/by/4.0/)
+`nitro-canister.svg` was created by https://scratch.mit.edu/users/eyeofthecosmos/ and https://scratch.mit.edu/users/jei_scratch/
 
 If `default-project.sb3` is replaced with a non-empty file, it will be used instead of the costumes.

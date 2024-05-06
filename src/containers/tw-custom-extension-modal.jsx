@@ -7,11 +7,23 @@ import CustomExtensionModalComponent from '../components/tw-custom-extension-mod
 import {closeCustomExtensionModal} from '../reducers/modals';
 import {manuallyTrustExtension, isTrustedExtension} from './tw-security-manager.jsx';
 
+/**
+ * @param {Blob} blob Blob
+ * @returns {Promise<string>} data: uri
+ */
+const readAsDataURL = blob => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error(`Could not read extension as data URL: ${reader.error}`));
+    reader.readAsDataURL(blob);
+});
+
 class CustomExtensionModal extends React.Component {
     constructor (props) {
         super(props);
+
         bindAll(this, [
-            'handleChangeFile',
+            'handleChangeFiles',
             'handleChangeURL',
             'handleClose',
             'handleKeyDown',
@@ -25,32 +37,40 @@ class CustomExtensionModal extends React.Component {
             'handleDrop',
             'handleChangeUnsandboxed'
         ]);
+
         this.state = {
-            files: null,
             type: 'url',
             url: '',
-            file: null,
+            files: null,
             text: '',
             unsandboxed: false
         };
     }
-    getExtensionURL () {
+
+    /**
+     * @returns {Promise<string[]>} List of extension URLs to load.
+     */
+    getExtensionURLs () {
         if (this.state.type === 'url') {
-            return this.state.url;
+            return Promise.resolve([
+                this.state.url
+            ]);
         }
+
         if (this.state.type === 'file') {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = () => reject(new Error(`Could not read extension as data URL: ${reader.error}`));
-                reader.readAsDataURL(this.state.file);
-            });
+            const files = Array.from(this.state.files);
+            return Promise.all(files.map(readAsDataURL));
         }
+
         if (this.state.type === 'text') {
-            return `data:application/javascript,${encodeURIComponent(this.state.text)}`;
+            return Promise.resolve([
+                `data:application/javascript,${encodeURIComponent(this.state.text)}`
+            ]);
         }
+
         return Promise.reject(new Error('Unknown type'));
     }
+
     hasValidInput () {
         if (this.state.type === 'url') {
             try {
@@ -64,100 +84,123 @@ class CustomExtensionModal extends React.Component {
                 return false;
             }
         }
+
         if (this.state.type === 'file') {
-            return !!this.state.file;
+            return !!this.state.files;
         }
+
         if (this.state.type === 'text') {
             return !!this.state.text;
         }
+
         return false;
     }
-    handleChangeFile (file) {
+
+    handleChangeFiles (files) {
         this.setState({
-            file
+            files
         });
     }
+
     handleChangeURL (e) {
         this.setState({
             url: e.target.value
         });
     }
+
     handleClose () {
         this.props.onClose();
     }
+
     handleKeyDown (e) {
         if (e.key === 'Enter' && this.hasValidInput()) {
             e.preventDefault();
             this.handleLoadExtension();
         }
     }
+
     async handleLoadExtension () {
         this.handleClose();
         try {
-            const url = await this.getExtensionURL();
-            if (this.state.type !== 'url' && this.state.unsandboxed) {
-                manuallyTrustExtension(url);
+            const urls = await this.getExtensionURLs();
+            for (const url of urls) {
+                if (this.state.type !== 'url' && this.state.unsandboxed) {
+                    manuallyTrustExtension(url);
+                }
             }
-            await this.props.vm.extensionManager.loadExtensionURL(url);
+            for (const url of urls) {
+                await this.props.vm.extensionManager.loadExtensionURL(url);
+            }
         } catch (err) {
             log.error(err);
             // eslint-disable-next-line no-alert
             alert(err);
         }
     }
+
     handleSwitchToFile () {
         this.setState({
             type: 'file'
         });
     }
+
     handleSwitchToURL () {
         this.setState({
             type: 'url'
         });
     }
+
     handleSwitchToText () {
         this.setState({
             type: 'text'
         });
     }
+
     handleChangeText (e) {
         this.setState({
             text: e.target.value
         });
     }
+
     handleDragOver (e) {
         if (e.dataTransfer.types.includes('Files')) {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'copy';
         }
     }
+
     handleDragLeave () {
 
     }
+
     handleDrop (e) {
-        const file = e.dataTransfer.files[0];
-        if (file) {
+        const files = e.dataTransfer.files;
+        if (files.length) {
             e.preventDefault();
             this.setState({
                 type: 'file',
-                file
+                files
             });
         }
     }
+
     isUnsandboxed () {
         if (this.state.type === 'url') {
             return isTrustedExtension(this.state.url);
         }
         return this.state.unsandboxed;
     }
+
     canChangeUnsandboxed () {
         return this.state.type !== 'url';
     }
+
     handleChangeUnsandboxed (e) {
         this.setState({
             unsandboxed: e.target.checked
         });
     }
+
     render () {
         return (
             <CustomExtensionModalComponent
@@ -166,8 +209,8 @@ class CustomExtensionModal extends React.Component {
                 onSwitchToFile={this.handleSwitchToFile}
                 onSwitchToURL={this.handleSwitchToURL}
                 onSwitchToText={this.handleSwitchToText}
-                file={this.state.file}
-                onChangeFile={this.handleChangeFile}
+                files={this.state.files}
+                onChangeFiles={this.handleChangeFiles}
                 onDragOver={this.handleDragOver}
                 onDragLeave={this.handleDragLeave}
                 onDrop={this.handleDrop}

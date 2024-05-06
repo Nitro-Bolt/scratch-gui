@@ -9429,6 +9429,28 @@
         "blocks": {}
     },
     {
+        "name": "Nitro Canister",
+        "tags": [
+            "power",
+            "energy"
+        ],
+        "isStage": false,
+        "variables": {},
+        "costumes": [
+            {
+                "assetId": "5c4e7a086a712d6f4b4c575bc0704e5e",
+                "name": "nitro canister",
+                "bitmapResolution": 1,
+                "md5ext": "5c4e7a086a712d6f4b4c575bc0704e5e.svg",
+                "dataFormat": "svg",
+                "rotationCenterX": 22.654550552368164,
+                "rotationCenterY": 57.45331954956055
+            }
+        ],
+        "sounds": [],
+        "blocks": {}
+    },
+    {
         "name": "Noor",
         "tags": [
             "people",

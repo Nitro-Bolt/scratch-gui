@@ -22,6 +22,7 @@ import {
     setHasCloudVariables
 } from '../reducers/tw';
 import {setCustomStageSize} from '../reducers/custom-stage-size';
+import implementGuiAPI from './tw-extension-gui-api';
 
 let compileErrorCounter = 0;
 
@@ -71,6 +72,7 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.on('COMPILE_ERROR', this.handleCompileError);
             this.props.vm.on('RUNTIME_STARTED', this.props.onClearCompileErrors);
             this.props.vm.on('STAGE_SIZE_CHANGED', this.props.onStageSizeChanged);
+            this.props.vm.on('CREATE_UNSANDBOXED_EXTENSION_API', implementGuiAPI);
         }
         componentDidMount () {
             if (this.props.attachKeyboardEvents) {
@@ -91,11 +93,34 @@ const vmListenerHOC = function (WrappedComponent) {
             }
         }
         componentWillUnmount () {
-            this.props.vm.removeListener('PERIPHERAL_CONNECTION_LOST_ERROR', this.props.onShowExtensionAlert);
             if (this.props.attachKeyboardEvents) {
                 document.removeEventListener('keydown', this.handleKeyDown);
                 document.removeEventListener('keyup', this.handleKeyUp);
             }
+
+            this.props.vm.off('targetsUpdate', this.handleTargetsUpdate);
+            this.props.vm.off('MONITORS_UPDATE', this.props.onMonitorsUpdate);
+            this.props.vm.off('BLOCK_DRAG_UPDATE', this.props.onBlockDragUpdate);
+            this.props.vm.off('TURBO_MODE_ON', this.props.onTurboModeOn);
+            this.props.vm.off('TURBO_MODE_OFF', this.props.onTurboModeOff);
+            this.props.vm.off('PROJECT_RUN_START', this.props.onProjectRunStart);
+            this.props.vm.off('PROJECT_RUN_STOP', this.props.onProjectRunStop);
+            this.props.vm.off('PROJECT_CHANGED', this.handleProjectChanged);
+            this.props.vm.off('RUNTIME_STARTED', this.props.onRuntimeStarted);
+            this.props.vm.off('RUNTIME_STOPPED', this.props.onRuntimeStopped);
+            this.props.vm.off('PROJECT_START', this.props.onGreenFlag);
+            this.props.vm.off('PERIPHERAL_CONNECTION_LOST_ERROR', this.props.onShowExtensionAlert);
+            this.props.vm.off('MIC_LISTENING', this.props.onMicListeningUpdate);
+            this.props.vm.off('MIC_LISTENING', this.props.onMicListeningUpdate);
+            this.props.vm.off('HAS_CLOUD_DATA_UPDATE', this.handleCloudDataUpdate);
+            this.props.vm.off('COMPILER_OPTIONS_CHANGED', this.props.onCompilerOptionsChanged);
+            this.props.vm.off('RUNTIME_OPTIONS_CHANGED', this.props.onRuntimeOptionsChanged);
+            this.props.vm.off('FRAMERATE_CHANGED', this.props.onFramerateChanged);
+            this.props.vm.off('INTERPOLATION_CHANGED', this.props.onInterpolationChanged);
+            this.props.vm.off('COMPILE_ERROR', this.handleCompileError);
+            this.props.vm.off('RUNTIME_STARTED', this.props.onClearCompileErrors);
+            this.props.vm.off('STAGE_SIZE_CHANGED', this.props.onStageSizeChanged);
+            this.props.vm.off('CREATE_UNSANDBOXED_EXTENSION_API', implementGuiAPI);
         }
         handleCloudDataUpdate (hasCloudVariables) {
             if (this.props.hasCloudVariables !== hasCloudVariables) {

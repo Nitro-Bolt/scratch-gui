@@ -21,6 +21,7 @@
     "jump-to-def/@name": "カスタムブロック定義に移動",
     "reorder-custom-inputs/@description": "「ブロックを作る」画面で定義ブロックの入力を並び替えられるようにする。",
     "reorder-custom-inputs/@name": "並べ替え可能な定義ブロック",
+    "reorder-custom-inputs/@settings-name-InsertInputsAfter": "選択中の入力の右隣に新しい入力を追加する",
     "editor-searchable-dropdowns/@description": "ブロックのドロップダウンの選択肢を検索する。",
     "editor-searchable-dropdowns/@name": "ブロックドロップダウン検索",
     "data-category-tweaks-v2/@description": "変数ブロックの表示を改良する。",

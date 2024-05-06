@@ -13,6 +13,7 @@ class CustomProcedures extends React.Component {
             'handleAddLabel',
             'handleAddBoolean',
             'handleAddTextNumber',
+            'handleAddColor',
             'handleToggleWarp',
             'handleCancel',
             'handleOk',
@@ -20,7 +21,8 @@ class CustomProcedures extends React.Component {
         ]);
         this.state = {
             rtlOffset: 0,
-            warp: false
+            warp: false,
+            colour: "#000000"
         };
     }
     componentWillUnmount () {
@@ -104,7 +106,7 @@ class CustomProcedures extends React.Component {
         this.mutationRoot.domToMutation(this.props.mutator);
         this.mutationRoot.initSvg();
         this.mutationRoot.render();
-        this.setState({warp: this.mutationRoot.getWarp()});
+        this.setState({warp: this.mutationRoot.getWarp(), colour: this.mutationRoot.colour_});
         // Allow the initial events to run to position this block, then focus.
         setTimeout(() => {
             this.mutationRoot.focusLastEditor_();
@@ -132,6 +134,12 @@ class CustomProcedures extends React.Component {
             this.mutationRoot.addStringNumberExternal();
         }
     }
+    handleAddColor (element) {
+        if (this.mutationRoot) {
+            this.mutationRoot.setColour(element.target.value ?? element.target.getAttribute("color"));
+            this.setState({colour: element.target.value ?? element.target.getAttribute("color")});
+        }
+    }
     handleToggleWarp () {
         if (this.mutationRoot) {
             const newWarp = !this.mutationRoot.getWarp();
@@ -144,9 +152,11 @@ class CustomProcedures extends React.Component {
             <CustomProceduresComponent
                 componentRef={this.setBlocks}
                 warp={this.state.warp}
+                colour={this.state.colour}
                 onAddBoolean={this.handleAddBoolean}
                 onAddLabel={this.handleAddLabel}
                 onAddTextNumber={this.handleAddTextNumber}
+                setColor={this.handleAddColor}
                 onCancel={this.handleCancel}
                 onOk={this.handleOk}
                 onToggleWarp={this.handleToggleWarp}

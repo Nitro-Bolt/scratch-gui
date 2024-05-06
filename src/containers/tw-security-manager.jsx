@@ -57,12 +57,17 @@ const isAlwaysTrustedForFetching = parsed => (
     parsed.origin.endsWith('.turbowarp.org') ||
     parsed.origin.endsWith('.turbowarp.xyz') ||
 
-    // GitHub
+    // GitHub API
+    // GitHub Pages allows redirects, so not included here.
     parsed.origin === 'https://raw.githubusercontent.com' ||
     parsed.origin === 'https://api.github.com' ||
 
-    // GitLab
+    // GitLab API
+    // GitLab Pages allows redirects, so not included here.
     parsed.origin === 'https://gitlab.com' ||
+
+    // Sourcehut Pages
+    parsed.origin.endsWith('.srht.site') ||
 
     // Itch
     parsed.origin.endsWith('.itch.io') ||
@@ -239,7 +244,7 @@ class TWSecurityManagerComponent extends React.Component {
                 unsandboxed: this.state.persistedUnsandboxed,
                 onChangeUnsandboxed: this.handleChangeUnsandboxed.bind(this)
             });
-            if (this.state.data.unsandboxed) {
+            if (allowed && this.state.data.unsandboxed) {
                 manuallyTrustExtension(url);
             }
             this.setState({

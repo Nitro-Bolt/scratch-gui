@@ -6,6 +6,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import nodeCrypto from 'crypto';
 
 import crossFetch from 'cross-fetch';
 import yauzl from 'yauzl';
@@ -77,10 +78,15 @@ const extractFirstMatchingFile = (filter, relativeDestDir, zipBuffer) => new Pro
 });
 
 const downloadMicrobitHex = async () => {
-    const url = 'https://downloads.scratch.mit.edu/microbit/scratch-microbit.hex.zip';
+    const url = 'https://packagerdata.turbowarp.org/scratch-microbit-1.2.0.hex.zip';
+    const expectedSHA256 = 'dfd574b709307fe76c44dbb6b0ac8942e7908f4d5c18359fae25fbda3c9f4399';
     console.info(`Downloading ${url}`);
     const response = await crossFetch(url);
     const zipBuffer = Buffer.from(await response.arrayBuffer());
+    const sha256 = nodeCrypto.createHash('sha-256').update(zipBuffer).digest('hex');
+    if (sha256 !== expectedSHA256) {
+        throw new Error(`microbit hex has SHA-256 ${sha256} but expected ${expectedSHA256}`);
+    }
     const relativeHexDir = path.join('static', 'microbit');
     const hexFileName = await extractFirstMatchingFile(
         entry => /\.hex$/.test(entry.fileName),

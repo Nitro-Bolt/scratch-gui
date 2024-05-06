@@ -7514,6 +7514,19 @@
         "rotationCenterY": 78
     },
     {
+        "name": "Nitro Canister",
+        "tags": [
+            "power",
+            "energy"
+        ],
+        "assetId": "5c4e7a086a712d6f4b4c575bc0704e5e",
+        "bitmapResolution": 1,
+        "dataFormat": "svg",
+        "md5ext": "5c4e7a086a712d6f4b4c575bc0704e5e.svg",
+        "rotationCenterX": 22.654550552368164,
+        "rotationCenterY": 57.45331954956055
+    },
+    {
         "name": "Noor-a",
         "tags": [
             "people",

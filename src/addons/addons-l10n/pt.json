@@ -120,7 +120,7 @@
     "gamepad/settings": "Configurações do Controle",
     "folders/add-to-folder": "adicionar à pasta: {folder}",
     "folders/closed-folder": "Pasta",
-    "folders/confirm-backpack-folder": "Salvar pasta inteira na mochila?",
+    "folders/confirm-backpack-folder": "Salvar a pasta inteira na mochila?",
     "folders/create-folder": "criar pasta",
     "folders/name-not-allowed": "Nome de pasta inválido",
     "folders/name-prompt": "Nome da pasta:",
