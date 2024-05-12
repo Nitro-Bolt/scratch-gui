@@ -1,4 +1,5 @@
 import LazyScratchBlocks from './tw-lazy-scratch-blocks';
+import AddonHooks from '../addons/hooks';
 
 /**
  * Implements Scratch.gui API for unsandboxed extensions.
@@ -10,13 +11,19 @@ const implementGuiAPI = Scratch => {
          * Lazily get the internal ScratchBlocks object when it becomes available. It may never be
          * available if, for example, the user never enters the editor.
          *
-         * ScratchBlocks becoming available does not necessarily mean the user is in the editor due
-         * to getBlocklyEagerly() also existing. It also does not necessarily mean a workspace
-         * has been created yet.
+         * You should not assume that ScratchBlocks becoming available means the user is actually
+         * in the editor or that a workspace has been created already.
          *
          * @returns {Promise<any>} Promise that may eventually resolve to ScratchBlocks
          */
-        getBlockly: () => new Promise(resolve => LazyScratchBlocks.onLoaded(resolve)),
+        getBlockly: () => {
+            if (AddonHooks.blockly) {
+                return Promise.resolve(AddonHooks.blockly);
+            }
+            return new Promise(resolve => {
+                AddonHooks.blocklyCallbacks.push(() => resolve(AddonHooks.blockly));
+            });
+        },
 
         /**
          * Get the internal ScratchBlocks object as soon as possible. This lets you access it even

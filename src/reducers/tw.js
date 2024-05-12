@@ -15,6 +15,7 @@ const SET_FILE_HANDLE = 'tw/SET_FILE_HANDLE';
 const SET_USERNAME_INVALID = 'tw/SET_USERNAME_INVALID';
 const SET_HAS_CLOUD_VARIABLES = 'tw/SET_HAS_CLOUD_VARIABLES';
 const SET_CLOUD_HOST = 'tw/SET_CLOUD_HOST';
+const SET_PLATFORM_MISMATCH_DETAILS = 'tw/SET_PLATFORM_MISMATCH_DETAILS';
 
 export const initialState = {
     framerate: 30,
@@ -45,7 +46,11 @@ export const initialState = {
     fileHandle: null,
     usernameInvalid: false,
     hasCloudVariables: false,
-    cloudHost: ''
+    cloudHost: '',
+    platformMismatchDetails: {
+        platform: null,
+        callback: null
+    }
 };
 
 const reducer = function (state, action) {
@@ -121,6 +126,13 @@ const reducer = function (state, action) {
     case SET_CLOUD_HOST:
         return Object.assign({}, state, {
             cloudHost: action.cloudHost
+        });
+    case SET_PLATFORM_MISMATCH_DETAILS:
+        return Object.assign({}, state, {
+            platformMismatchDetails: {
+                platform: action.platform,
+                callback: action.callback
+            }
         });
     default:
         return state;
@@ -245,6 +257,14 @@ const setCloudHost = function (cloudHost) {
     };
 };
 
+const setPlatformMismatchDetails = function (platform, callback) {
+    return {
+        type: SET_PLATFORM_MISMATCH_DETAILS,
+        platform,
+        callback
+    };
+};
+
 export {
     reducer as default,
     initialState as twInitialState,
@@ -264,5 +284,6 @@ export {
     setFileHandle,
     setUsernameInvalid,
     setHasCloudVariables,
-    setCloudHost
+    setCloudHost,
+    setPlatformMismatchDetails
 };

@@ -42,6 +42,7 @@
     "mediarecorder/record-after-flag": "緑の旗を押して録画を開始する",
     "mediarecorder/record-audio": "プロジェクトを録音する",
     "mediarecorder/record-audio-description": "音声合成は含まれません。",
+    "mediarecorder/record-description": "ステージを{extension}ファイルとして録画します。録画後はコンピューター上に保存できます。変数やリストモニターは録画されません。",
     "mediarecorder/record-duration": "録画時間 (秒)",
     "mediarecorder/record-mic": "マイクの音を録音する",
     "mediarecorder/record-until-stop": "プロジェクトの停止後に録画も停止する",

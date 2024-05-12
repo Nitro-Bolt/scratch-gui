@@ -19,9 +19,11 @@ import {
     clearCompileErrors,
     setRuntimeOptionsState,
     setInterpolationState,
-    setHasCloudVariables
+    setHasCloudVariables,
+    setPlatformMismatchDetails
 } from '../reducers/tw';
 import {setCustomStageSize} from '../reducers/custom-stage-size';
+import {openUnknownPlatformModal} from '../reducers/modals';
 import implementGuiAPI from './tw-extension-gui-api';
 
 let compileErrorCounter = 0;
@@ -73,6 +75,7 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.on('RUNTIME_STARTED', this.props.onClearCompileErrors);
             this.props.vm.on('STAGE_SIZE_CHANGED', this.props.onStageSizeChanged);
             this.props.vm.on('CREATE_UNSANDBOXED_EXTENSION_API', implementGuiAPI);
+            this.props.vm.runtime.on('PLATFORM_MISMATCH', this.props.onPlatformMismatch);
         }
         componentDidMount () {
             if (this.props.attachKeyboardEvents) {
@@ -121,6 +124,7 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.off('RUNTIME_STARTED', this.props.onClearCompileErrors);
             this.props.vm.off('STAGE_SIZE_CHANGED', this.props.onStageSizeChanged);
             this.props.vm.off('CREATE_UNSANDBOXED_EXTENSION_API', implementGuiAPI);
+            this.props.vm.runtime.off('PLATFORM_MISMATCH', this.props.onPlatformMismatch);
         }
         handleCloudDataUpdate (hasCloudVariables) {
             if (this.props.hasCloudVariables !== hasCloudVariables) {
@@ -257,6 +261,7 @@ const vmListenerHOC = function (WrappedComponent) {
         onFramerateChanged: PropTypes.func.isRequired,
         onInterpolationChanged: PropTypes.func.isRequired,
         onCompilerOptionsChanged: PropTypes.func.isRequired,
+        onPlatformMismatch: PropTypes.func.isRequired,
         onRuntimeOptionsChanged: PropTypes.func.isRequired,
         onStageSizeChanged: PropTypes.func,
         onCompileError: PropTypes.func,
@@ -306,6 +311,10 @@ const vmListenerHOC = function (WrappedComponent) {
         onFramerateChanged: framerate => dispatch(setFramerateState(framerate)),
         onInterpolationChanged: interpolation => dispatch(setInterpolationState(interpolation)),
         onCompilerOptionsChanged: options => dispatch(setCompilerOptionsState(options)),
+        onPlatformMismatch: (platform, callback) => {
+            dispatch(setPlatformMismatchDetails(platform, callback));
+            dispatch(openUnknownPlatformModal());
+        },
         onRuntimeOptionsChanged: options => dispatch(setRuntimeOptionsState(options)),
         onStageSizeChanged: (width, height) => dispatch(setCustomStageSize(width, height)),
         onCompileError: errors => dispatch(addCompileError(errors)),

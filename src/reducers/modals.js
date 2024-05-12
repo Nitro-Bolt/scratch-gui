@@ -16,6 +16,7 @@ const MODAL_SETTINGS = 'settingsModal';
 const MODAL_CUSTOM_EXTENSION = 'customExtensionModal';
 const MODAL_RESTORE_POINTS = 'restorePointModal';
 const MODAL_FONTS = 'fontsModal';
+const MODAL_UNKNOWN_PLATFORM = 'unknownPlatformModal';
 
 const initialState = {
     [MODAL_BACKDROP_LIBRARY]: false,
@@ -32,7 +33,8 @@ const initialState = {
     [MODAL_SETTINGS]: false,
     [MODAL_CUSTOM_EXTENSION]: false,
     [MODAL_RESTORE_POINTS]: false,
-    [MODAL_FONTS]: false
+    [MODAL_FONTS]: false,
+    [MODAL_UNKNOWN_PLATFORM]: false
 };
 
 const reducer = function (state, action) {
@@ -107,6 +109,9 @@ const openRestorePointModal = function () {
 const openFontsModal = function () {
     return openModal(MODAL_FONTS);
 };
+const openUnknownPlatformModal = function () {
+    return openModal(MODAL_UNKNOWN_PLATFORM);
+};
 const closeBackdropLibrary = function () {
     return closeModal(MODAL_BACKDROP_LIBRARY);
 };
@@ -152,6 +157,9 @@ const closeRestorePointModal = function () {
 const closeFontsModal = function () {
     return closeModal(MODAL_FONTS);
 };
+const closeUnknownPlatformModal = function () {
+    return closeModal(MODAL_UNKNOWN_PLATFORM);
+};
 export {
     reducer as default,
     initialState as modalsInitialState,
@@ -170,6 +178,7 @@ export {
     openCustomExtensionModal,
     openRestorePointModal,
     openFontsModal,
+    openUnknownPlatformModal,
     closeBackdropLibrary,
     closeCostumeLibrary,
     closeExtensionLibrary,
@@ -184,5 +193,6 @@ export {
     closeSettingsModal,
     closeCustomExtensionModal,
     closeRestorePointModal,
-    closeFontsModal
+    closeFontsModal,
+    closeUnknownPlatformModal
 };

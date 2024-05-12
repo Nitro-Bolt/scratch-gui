@@ -82,7 +82,7 @@
     "debugger/tab-logs": "Lokimerkinnät",
     "debugger/tab-performance": "Suorituskyky",
     "debugger/tab-threads": "Säikeet",
-    "debugger/thread": "Viestiketju {id}",
+    "debugger/thread": "Säie {id}",
     "debugger/unknown-sprite": "(tuntematon hahmo)",
     "debugger/unpause": "Jatka",
     "pause/pause": "Keskeytä",

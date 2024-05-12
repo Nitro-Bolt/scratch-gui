@@ -175,6 +175,7 @@ const mapStateToProps = state => {
         settingsModalVisible: state.scratchGui.modals.settingsModal,
         customExtensionModalVisible: state.scratchGui.modals.customExtensionModal,
         fontsModalVisible: state.scratchGui.modals.fontsModal,
+        unknownPlatformModalVisible: state.scratchGui.modals.unknownPlatformModal,
         vm: state.scratchGui.vm
     };
 };
