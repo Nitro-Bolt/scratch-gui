@@ -17,6 +17,7 @@ const MODAL_CUSTOM_EXTENSION = 'customExtensionModal';
 const MODAL_RESTORE_POINTS = 'restorePointModal';
 const MODAL_FONTS = 'fontsModal';
 const MODAL_UNKNOWN_PLATFORM = 'unknownPlatformModal';
+const MODAL_INVALID_PROJECT = 'invalidProjectModal';
 
 const initialState = {
     [MODAL_BACKDROP_LIBRARY]: false,
@@ -34,7 +35,8 @@ const initialState = {
     [MODAL_CUSTOM_EXTENSION]: false,
     [MODAL_RESTORE_POINTS]: false,
     [MODAL_FONTS]: false,
-    [MODAL_UNKNOWN_PLATFORM]: false
+    [MODAL_UNKNOWN_PLATFORM]: false,
+    [MODAL_INVALID_PROJECT]: false
 };
 
 const reducer = function (state, action) {
@@ -112,6 +114,9 @@ const openFontsModal = function () {
 const openUnknownPlatformModal = function () {
     return openModal(MODAL_UNKNOWN_PLATFORM);
 };
+const openInvalidProjectModal = function () {
+    return openModal(MODAL_INVALID_PROJECT);
+};
 const closeBackdropLibrary = function () {
     return closeModal(MODAL_BACKDROP_LIBRARY);
 };
@@ -160,6 +165,9 @@ const closeFontsModal = function () {
 const closeUnknownPlatformModal = function () {
     return closeModal(MODAL_UNKNOWN_PLATFORM);
 };
+const closeInvalidProjectModal = function () {
+    return closeModal(MODAL_INVALID_PROJECT);
+};
 export {
     reducer as default,
     initialState as modalsInitialState,
@@ -179,6 +187,7 @@ export {
     openRestorePointModal,
     openFontsModal,
     openUnknownPlatformModal,
+    openInvalidProjectModal,
     closeBackdropLibrary,
     closeCostumeLibrary,
     closeExtensionLibrary,
@@ -194,5 +203,6 @@ export {
     closeCustomExtensionModal,
     closeRestorePointModal,
     closeFontsModal,
-    closeUnknownPlatformModal
+    closeUnknownPlatformModal,
+    closeInvalidProjectModal
 };

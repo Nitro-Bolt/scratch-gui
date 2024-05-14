@@ -16,6 +16,7 @@ const SET_USERNAME_INVALID = 'tw/SET_USERNAME_INVALID';
 const SET_HAS_CLOUD_VARIABLES = 'tw/SET_HAS_CLOUD_VARIABLES';
 const SET_CLOUD_HOST = 'tw/SET_CLOUD_HOST';
 const SET_PLATFORM_MISMATCH_DETAILS = 'tw/SET_PLATFORM_MISMATCH_DETAILS';
+const SET_PROJECT_ERROR = 'tw/SET_PROJECT_ERROR';
 
 export const initialState = {
     framerate: 30,
@@ -50,7 +51,8 @@ export const initialState = {
     platformMismatchDetails: {
         platform: null,
         callback: null
-    }
+    },
+    projectError: null
 };
 
 const reducer = function (state, action) {
@@ -133,6 +135,10 @@ const reducer = function (state, action) {
                 platform: action.platform,
                 callback: action.callback
             }
+        });
+    case SET_PROJECT_ERROR:
+        return Object.assign({}, state, {
+            projectError: action.projectError
         });
     default:
         return state;
@@ -265,6 +271,13 @@ const setPlatformMismatchDetails = function (platform, callback) {
     };
 };
 
+const setProjectError = function (projectError) {
+    return {
+        type: SET_PROJECT_ERROR,
+        projectError
+    };
+};
+
 export {
     reducer as default,
     initialState as twInitialState,
@@ -285,5 +298,6 @@ export {
     setUsernameInvalid,
     setHasCloudVariables,
     setCloudHost,
-    setPlatformMismatchDetails
+    setPlatformMismatchDetails,
+    setProjectError
 };

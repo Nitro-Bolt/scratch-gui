@@ -6,6 +6,7 @@ import log from '../lib/log';
 import CustomExtensionModalComponent from '../components/tw-custom-extension-modal/custom-extension-modal.jsx';
 import {closeCustomExtensionModal} from '../reducers/modals';
 import {manuallyTrustExtension, isTrustedExtension} from './tw-security-manager.jsx';
+import {getPersistedUnsandboxed, setPersistedUnsandboxed} from '../lib/tw-persisted-unsandboxed.js';
 
 /**
  * @param {Blob} blob Blob
@@ -43,7 +44,7 @@ class CustomExtensionModal extends React.Component {
             url: '',
             files: null,
             text: '',
-            unsandboxed: false
+            unsandboxed: getPersistedUnsandboxed()
         };
     }
 
@@ -123,11 +124,16 @@ class CustomExtensionModal extends React.Component {
         this.handleClose();
         try {
             const urls = await this.getExtensionURLs();
-            for (const url of urls) {
-                if (this.state.type !== 'url' && this.state.unsandboxed) {
-                    manuallyTrustExtension(url);
+
+            if (this.state.type !== 'url') {
+                setPersistedUnsandboxed(this.state.unsandboxed);
+                if (this.state.unsandboxed) {
+                    for (const url of urls) {
+                        manuallyTrustExtension(url);
+                    }
                 }
             }
+
             for (const url of urls) {
                 await this.props.vm.extensionManager.loadExtensionURL(url);
             }

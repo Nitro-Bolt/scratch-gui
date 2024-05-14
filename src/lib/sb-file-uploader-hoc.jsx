@@ -1,12 +1,12 @@
 import bindAll from 'lodash.bindall';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {defineMessages, intlShape, injectIntl} from 'react-intl';
+import {intlShape, injectIntl} from 'react-intl';
 import {connect} from 'react-redux';
 import log from '../lib/log';
 import sharedMessages from './shared-messages';
 import FileSystemAPI from './tw-filesystem-api';
-import {setFileHandle} from '../reducers/tw';
+import {setFileHandle, setProjectError} from '../reducers/tw';
 
 import {
     LoadingStates,
@@ -19,19 +19,12 @@ import {
 import {setProjectTitle} from '../reducers/project-title';
 import {
     openLoadingProject,
-    closeLoadingProject
+    closeLoadingProject,
+    openInvalidProjectModal
 } from '../reducers/modals';
 import {
     closeFileMenu
 } from '../reducers/menus';
-
-const messages = defineMessages({
-    loadError: {
-        id: 'tw.loadError',
-        defaultMessage: 'Could not load project: {error}',
-        description: 'An error that displays when a local project file fails to load.'
-    }
-});
 
 /**
  * Higher Order Component to provide behavior for loading local project files into editor.
@@ -201,11 +194,8 @@ const SBFileUploaderHOC = function (WrappedComponent) {
                         loadingSuccess = true;
                     })
                     .catch(error => {
-                        log.warn(error);
-                        // eslint-disable-next-line no-alert
-                        alert(this.props.intl.formatMessage(messages.loadError, {
-                            error: `${error}`
-                        }));
+                        log.error(error);
+                        this.props.onLoadingFailed(error);
                     })
                     .then(() => {
                         this.props.onLoadingFinished(this.props.loadingState, loadingSuccess);
@@ -234,6 +224,7 @@ const SBFileUploaderHOC = function (WrappedComponent) {
                 isLoadingUpload,
                 isShowingWithoutId,
                 loadingState,
+                onLoadingFailed,
                 onLoadingFinished,
                 onLoadingStarted,
                 onSetFileHandle,
@@ -264,6 +255,7 @@ const SBFileUploaderHOC = function (WrappedComponent) {
         isShowingProject: PropTypes.bool,
         isShowingWithoutId: PropTypes.bool,
         loadingState: PropTypes.oneOf(LoadingStates),
+        onLoadingFailed: PropTypes.func,
         onLoadingFinished: PropTypes.func,
         onLoadingStarted: PropTypes.func,
         onSetProjectTitle: PropTypes.func,
@@ -296,6 +288,10 @@ const SBFileUploaderHOC = function (WrappedComponent) {
     const mapDispatchToProps = (dispatch, ownProps) => ({
         cancelFileUpload: loadingState => dispatch(onLoadedProject(loadingState, false, false)),
         closeFileMenu: () => dispatch(closeFileMenu()),
+        onLoadingFailed: error => {
+            dispatch(setProjectError(error));
+            dispatch(openInvalidProjectModal());
+        },
         // transition project state from loading to regular, and close
         // loading screen and file menu
         onLoadingFinished: (loadingState, success) => {

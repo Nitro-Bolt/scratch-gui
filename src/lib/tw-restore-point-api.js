@@ -1,4 +1,3 @@
-import JSZip from 'jszip';
 import {base64ToArrayBuffer} from './tw-base64-utils';
 
 const TYPE_AUTOMATIC = 0;
@@ -441,71 +440,66 @@ const deleteAllRestorePoints = () => openDB().then(db => new Promise((resolveTra
  * @param {number} id the restore point's ID
  * @returns {Promise<ArrayBuffer>} Resolves with sb3 file
  */
-const loadRestorePoint = (vm, id) => openDB().then(db => new Promise((resolveTransaction, rejectTransaction) => {
-    const transaction = db.transaction([METADATA_STORE, PROJECT_STORE, ASSET_STORE], 'readonly');
-    transaction.onerror = () => {
-        rejectTransaction(new Error(`Transaction error: ${transaction.error}`));
+const loadRestorePoint = (vm, id) => openDB().then(db => new Promise((resolveProject, rejectProject) => {
+    const storage = vm.runtime.storage;
+
+    // In-memory helper is 100, web helper is -100, we want to be in the middle somewhere
+    const PRIORITY = 50;
+    const storageHelper = {
+        load: (assetType, assetId, dataFormat) => new Promise((resolveFetch, rejectFetch) => {
+            const transaction = db.transaction([ASSET_STORE], 'readonly');
+            transaction.onerror = () => {
+                rejectFetch(new Error(`Transaction error: ${transaction.error}`));
+            };
+
+            const md5ext = `${assetId}.${dataFormat}`;
+            const assetStore = transaction.objectStore(ASSET_STORE);
+            const request = assetStore.get(md5ext);
+            request.onsuccess = () => {
+                if (request.result) {
+                    const asset = storage.createAsset(assetType, dataFormat, request.result, assetId, false);
+                    resolveFetch(asset);
+                } else {
+                    rejectFetch(new Error(`Restore point asset ${md5ext} does not exist`));
+                }
+            };
+        })
     };
+    storage.addHelper(storageHelper, PRIORITY);
 
-    const zip = new JSZip();
-    /** @type {Metadata} */
-    let metadata;
-
-    // TODO: we should be able to use a custom scratch-storage helper to avoid putting the
-    // zip in memory.
-
-    const loadVM = () => {
-        resolveTransaction(
-            zip.generateAsync({
-                // Don't bother compressing it since it will be immediately decompressed
-                type: 'arraybuffer'
-            })
-                .then(sb3 => vm.loadProject(sb3))
-                .then(() => {
-                    setTimeout(() => {
-                        vm.renderer.draw();
-                    });
-                })
-        );
-    };
-
-    const loadAssets = async () => {
-        const assetStore = transaction.objectStore(ASSET_STORE);
-        for (const assetId of Object.keys(metadata.assets)) {
-            await new Promise(resolve => {
-                const request = assetStore.get(assetId);
-                request.onsuccess = () => {
-                    const data = request.result;
-                    zip.file(assetId, data);
-                    resolve();
-                };
-            });
-        }
-
-        loadVM();
+    const cleanup = () => {
+        // No clean API for removing storage helpers yet
+        storage._helpers = storage._helpers.filter(i => i.helper !== storageHelper);
     };
 
     const loadProjectJSON = () => {
+        const transaction = db.transaction([PROJECT_STORE], 'readonly');
+        transaction.onerror = () => {
+            rejectProject(new Error(`Transaction error: ${transaction.error}`));
+        };
+    
         const projectStore = transaction.objectStore(PROJECT_STORE);
         const request = projectStore.get(id);
         request.onsuccess = () => {
-            zip.file('project.json', request.result);
-            loadAssets();
-        };
-    };
-
-    const loadMetadata = () => {
-        const metadataStore = transaction.objectStore(METADATA_STORE);
-        const request = metadataStore.get(id);
-        request.onsuccess = () => {
-            metadata = parseMetadata(request.result);
-            loadProjectJSON();
+            if (request.result) {
+                vm.loadProject(request.result)
+                    .then(() => {
+                        cleanup();
+                        resolveProject();
+                    })
+                    .catch(error => {
+                        cleanup();
+                        rejectProject(error);
+                    });
+            } else {
+                cleanup();
+                rejectProject(new Error(`Restore point project ${id} does not exist`));
+            }
         };
     };
 
     vm.quit();
-
-    loadMetadata();
+    loadProjectJSON();
 }));
 
 // eslint-disable-next-line valid-jsdoc

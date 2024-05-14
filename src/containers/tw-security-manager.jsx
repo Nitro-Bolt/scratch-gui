@@ -5,6 +5,7 @@ import log from '../lib/log';
 import bindAll from 'lodash.bindall';
 import SecurityManagerModal from '../components/tw-security-manager-modal/security-manager-modal.jsx';
 import SecurityModals from '../lib/tw-security-manager-constants';
+import {getPersistedUnsandboxed, setPersistedUnsandboxed} from '../lib/tw-persisted-unsandboxed.js';
 
 /* eslint-disable require-atomic-updates */
 
@@ -134,7 +135,6 @@ class TWSecurityManagerComponent extends React.Component {
             type: null,
             data: null,
             callback: null,
-            persistedUnsandboxed: false,
             modalCount: 0
         };
     }
@@ -241,15 +241,15 @@ class TWSecurityManagerComponent extends React.Component {
         if (url.startsWith('data:')) {
             const allowed = await showModal(SecurityModals.LoadExtension, {
                 url,
-                unsandboxed: this.state.persistedUnsandboxed,
+                unsandboxed: getPersistedUnsandboxed(),
                 onChangeUnsandboxed: this.handleChangeUnsandboxed.bind(this)
             });
+            if (allowed) {
+                setPersistedUnsandboxed(this.state.data.unsandboxed);
+            }
             if (allowed && this.state.data.unsandboxed) {
                 manuallyTrustExtension(url);
             }
-            this.setState({
-                persistedUnsandboxed: this.state.data.unsandboxed
-            });
             return allowed;
         }
         return showModal(SecurityModals.LoadExtension, {
