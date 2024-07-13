@@ -6,6 +6,7 @@ import * as accentRed from './accent/red';
 import * as accentOrange from './accent/orange';
 import * as accentRainbow from './accent/rainbow';
 import * as accentTrans from './accent/trans';
+import * as accentGay from './accent/gay';
 
 import * as guiLight from './gui/light';
 import * as guiDark from './gui/dark';
@@ -20,13 +21,15 @@ const ACCENT_RED = 'red';
 const ACCENT_ORANGE = 'orange';
 const ACCENT_RAINBOW = 'rainbow';
 const ACCENT_TRANS = 'trans';
+const ACCENT_GAY = 'gay';
 const ACCENT_MAP = {
     [ACCENT_PURPLE]: accentPurple,
     [ACCENT_BLUE]: accentBlue,
     [ACCENT_RED]: accentRed,
     [ACCENT_ORANGE]: accentOrange,
     [ACCENT_RAINBOW]: accentRainbow,
-    [ACCENT_TRANS]: accentTrans
+    [ACCENT_TRANS]: accentTrans,
+    [ACCENT_GAY]: accentGay
 };
 const ACCENT_DEFAULT = ACCENT_ORANGE;
 
@@ -158,6 +161,7 @@ export {
     ACCENT_BLUE,
     ACCENT_RAINBOW,
     ACCENT_TRANS,
+    ACCENT_GAY,
     ACCENT_MAP,
 
     GUI_LIGHT,
