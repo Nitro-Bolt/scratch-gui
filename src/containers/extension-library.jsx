@@ -91,34 +91,17 @@ const fetchMistiumLibrary = async () => {
         throw new Error(`HTTP status ${res.status}`);
     }
     const data = await res.json();
-    item.name = item.name.split(".")[0]
     return data.map(item => ({
-        name: item.name,
+        name: item.name.split(".")[0],
         nameTranslations: {},
         description: '',
         descriptionTranslations: {},
         extensionId: item.name,
         extensionURL: item.download_url,
-        iconURL: `https://raw.githubusercontent.com/Mistium/extensions.mistium/main/images/${item.name}.png`,
+        iconURL: `https://raw.githubusercontent.com/Mistium/extensions.mistium/main/images/${item.name.split(".")[0]}.png`,
         tags: ['mistium'],
-        credits: [
-            { name: "Mistium", link: "https://mistium.com" },
-        ].map(credit => {
-            if (credit.link) {
-                return (
-                    <a
-                        href={credit.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        key={credit.name}
-                    >
-                        {credit.name}
-                    </a>
-                );
-            }
-            return credit.name;
-        }),
-        docsURI: item.docs ? `https://extensions.mistium.com/${item.name}` : null,
+        credits: ['<a href="https://mistium.com" target="_blank" rel="noreferrer" key="Mistium">Mistium</a>'],
+        docsURI: item.docs ? `https://extensions.mistium.com/docs/${item.name}` : null,
         samples: item.samples ? item.samples.map(sample => ({
             href: `${process.env.ROOT}editor?project_url=https://extensions.mistium.com/samples/${encodeURIComponent(sample)}.sb3`,
             text: sample
