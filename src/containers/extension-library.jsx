@@ -100,7 +100,23 @@ const fetchMistiumLibrary = async () => {
         extensionURL: item.download_url,
         iconURL: `https://raw.githubusercontent.com/Mistium/extensions.mistium/main/images/${item.name.split(".")[0]}.png`,
         tags: ['mistium'],
-        credits: ['<a href="https://mistium.com" target="_blank" rel="noreferrer" key="Mistium">Mistium</a>'],
+        credits: [
+            { name: "Mistium", link: "https://mistium.com" }
+        ].map(credit => {
+            if (credit.link) {
+                return (
+                    <a
+                    href={credit.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    key={credit.name}
+                    >
+                    {credit.name}
+                    </a>
+                );
+            }
+            return credit.name;
+        }),
         docsURI: item.docs ? `https://extensions.mistium.com/docs/${item.name}` : null,
         samples: item.samples ? item.samples.map(sample => ({
             href: `${process.env.ROOT}editor?project_url=https://extensions.mistium.com/samples/${encodeURIComponent(sample)}.sb3`,
