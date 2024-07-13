@@ -40,6 +40,7 @@ const translateGalleryItem = (extension, locale) => ({
 });
 
 let cachedGallery = null;
+let cachedMistiumGallery = null;
 
 const fetchLibrary = async () => {
     const res = await fetch('https://extensions.turbowarp.org/generated-metadata/extensions-v0.json');
@@ -84,6 +85,30 @@ const fetchLibrary = async () => {
     }));
 };
 
+const fetchMistiumLibrary = async () => {
+    const res = await fetch('https://api.github.com/repos/Mistium/extensions.mistium/contents/featured');
+    if (!res.ok) {
+        throw new Error(`HTTP status ${res.status}`);
+    }
+    const data = await res.json();
+    return data.map(item => ({
+        name: item.name,
+        description: '',
+        extensionId: item.name,
+        extensionURL: item.download_url,
+        iconURL: `https://raw.githubusercontent.com/Mistium/extensions.mistium/main/images/${item.name.split(".")[0]}.png`,
+        tags: ['mistium'],
+        credits: item.credits || [],
+        docsURI: item.docs ? `https://extensions.mistium.com/${item.name}` : null,
+        samples: item.samples ? item.samples.map(sample => ({
+            href: `${process.env.ROOT}editor?project_url=https://extensions.mistium.com/samples/${encodeURIComponent(sample)}.sb3`,
+            text: sample
+        })) : null,
+        incompatibleWithScratch: true,
+        featured: true
+    }));
+};
+
 class ExtensionLibrary extends React.PureComponent {
     constructor (props) {
         super(props);
@@ -92,6 +117,7 @@ class ExtensionLibrary extends React.PureComponent {
         ]);
         this.state = {
             gallery: cachedGallery,
+            mistiumGallery: cachedMistiumGallery,
             galleryError: null,
             galleryTimedOut: false
         };
@@ -118,6 +144,21 @@ class ExtensionLibrary extends React.PureComponent {
                         galleryError: error
                     });
                     clearTimeout(timeout);
+                });
+        }
+        if (!this.state.mistiumGallery) {
+            fetchMistiumLibrary()
+                .then(mistiumGallery => {
+                    cachedMistiumGallery = mistiumGallery;
+                    this.setState({
+                        mistiumGallery
+                    });
+                })
+                .catch(error => {
+                    log.error(error);
+                    this.setState({
+                        galleryError: error
+                    });
                 });
         }
     }
@@ -158,7 +199,7 @@ class ExtensionLibrary extends React.PureComponent {
     }
     render () {
         let library = null;
-        if (this.state.gallery || this.state.galleryError || this.state.galleryTimedOut) {
+        if (this.state.gallery || this.state.galleryError || this.state.galleryTimedOut || this.state.mistiumGallery) {
             library = extensionLibraryContent.map(toLibraryItem);
             library.push('---');
             if (this.state.gallery) {
@@ -173,6 +214,14 @@ class ExtensionLibrary extends React.PureComponent {
                 library.push(toLibraryItem(galleryError));
             } else {
                 library.push(toLibraryItem(galleryLoading));
+            }
+            if (this.state.mistiumGallery) {
+                const locale = this.props.intl.locale;
+                library.push(
+                    ...this.state.mistiumGallery
+                        .map(i => translateGalleryItem(i, locale))
+                        .map(toLibraryItem)
+                );
             }
         }
 
