@@ -93,7 +93,9 @@ const fetchMistiumLibrary = async () => {
     const data = await res.json();
     return data.map(item => ({
         name: item.name,
+        nameTranslations: {},
         description: '',
+        descriptionTranslations: {},
         extensionId: item.name,
         extensionURL: item.download_url,
         iconURL: `https://raw.githubusercontent.com/Mistium/extensions.mistium/main/images/${item.name.split(".")[0]}.png`,
