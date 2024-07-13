@@ -7,11 +7,12 @@ import {connect} from 'react-redux';
 import check from './check.svg';
 import dropdownCaret from './dropdown-caret.svg';
 import {MenuItem, Submenu} from '../menu/menu.jsx';
-import {ACCENT_ORANGE, ACCENT_BLUE, ACCENT_MAP, ACCENT_PURPLE, ACCENT_RED, ACCENT_RAINBOW, Theme} from '../../lib/themes/index.js';
+import {ACCENT_ORANGE, ACCENT_BLUE, ACCENT_MAP, ACCENT_PURPLE, ACCENT_RED, ACCENT_RAINBOW, ACCENT_TRANS, Theme} from '../../lib/themes/index.js';
 import {openAccentMenu, accentMenuOpen, closeSettingsMenu} from '../../reducers/menus.js';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
 import rainbowIcon from './tw-accent-rainbow.svg';
+import transIcon from './tw-accent-trans.svg';
 import styles from './settings-menu.css';
 
 const options = defineMessages({
@@ -39,11 +40,17 @@ const options = defineMessages({
         defaultMessage: 'Rainbow',
         description: 'Name of color scheme that uses a rainbow.',
         id: 'tw.accent.rainbow'
+    },
+    [ACCENT_TRANS]: {
+        defaultMessage: 'Trans',
+        description: 'Name of color scheme that uses the trans colours :sunglasses:.',
+        id: 'tw.accent.trans'
     }
 });
 
 const icons = {
-    [ACCENT_RAINBOW]: rainbowIcon
+    [ACCENT_RAINBOW]: rainbowIcon,
+    [ACCENT_TRANS]: transIcon
 };
 
 const ColorIcon = props => icons[props.id] ? (
