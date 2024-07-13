@@ -13,7 +13,7 @@ import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
 import rainbowIcon from './tw-accent-rainbow.svg';
 import transIcon from './tw-accent-trans.svg';
-import gayIcon from './tw-accent-trans.svg';
+import gayIcon from './tw-accent-gay.svg';
 import styles from './settings-menu.css';
 
 const options = defineMessages({
