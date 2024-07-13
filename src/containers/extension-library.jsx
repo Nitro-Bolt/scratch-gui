@@ -91,6 +91,7 @@ const fetchMistiumLibrary = async () => {
         throw new Error(`HTTP status ${res.status}`);
     }
     const data = await res.json();
+    item.name = item.name.split(".")[0]
     return data.map(item => ({
         name: item.name,
         nameTranslations: {},
@@ -98,11 +99,10 @@ const fetchMistiumLibrary = async () => {
         descriptionTranslations: {},
         extensionId: item.name,
         extensionURL: item.download_url,
-        iconURL: `https://raw.githubusercontent.com/Mistium/extensions.mistium/main/images/${item.name.split(".")[0]}.png`,
+        iconURL: `https://raw.githubusercontent.com/Mistium/extensions.mistium/main/images/${item.name}.png`,
         tags: ['mistium'],
         credits: [
-            ...("Mistium"),
-            ...([])
+            { name: "Mistium", link: "https://mistium.com" },
         ].map(credit => {
             if (credit.link) {
                 return (
