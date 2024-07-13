@@ -7,6 +7,7 @@
     <meta name="description" content="<%= htmlWebpackPlugin.options.APP_NAME %> is a TurboWarp mod with many changes that builds upon and enhances TurboWarp with many useful features." />
     <title><%= htmlWebpackPlugin.options.title %></title>
     <link rel="apple-touch-icon" href="<%= htmlWebpackPlugin.options.root %>images/apple-touch-icon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <% if (htmlWebpackPlugin.options.root === "/" || htmlWebpackPlugin.options.root === "") { %>
       <link rel="manifest" href="<%= htmlWebpackPlugin.options.root %>manifest.webmanifest">
     <% } %>
@@ -23,7 +24,7 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif;
       }
       .splash-screen[hidden] {
         display: none;
