@@ -97,13 +97,18 @@ class CloudProvider {
     }
 
     onClose (e) {
-        // tw: code 4002 is "Username Error" -- do not try to reconnect
+        // Code 4002 is "Username Error" -- do not try to reconnect
         if (e && e.code === 4002) {
             log.info('Cloud username is invalid. Not reconnecting.');
             this.onInvalidUsername();
             return;
         }
-        // tw: code 4004 is "Project Unavailable" -- do not try to reconnect
+        // Code 4003 is "Overloaded" -- do not try to reconnect
+        if (e && e.code === 4003) {
+            log.info('The server is full. Not reconnecting.');
+            return;
+        }
+        // Code 4004 is "Project Unavailable" -- do not try to reconnect
         if (e && e.code === 4004) {
             log.info('Cloud variables are disabled for this project. Not reconnecting.');
             return;

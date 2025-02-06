@@ -162,6 +162,7 @@ class AddCustomFont extends React.Component {
                             name={this.state.name}
                             onChange={this.handleChangeName}
                             fontManager={this.props.fontManager}
+                            isCustom
                         />
 
                         <LoadTemporaryFont url={this.state.url}>{family => (

@@ -57,8 +57,8 @@ const fetchLibrary = async () => {
         iconURL: `https://extensions.turbowarp.org/${extension.image || 'images/unknown.svg'}`,
         tags: ['tw'],
         credits: [
-            ...(extension.by || []),
-            ...(extension.original || [])
+            ...(extension.original || []),
+            ...(extension.by || [])
         ].map(credit => {
             if (credit.link) {
                 return (
@@ -79,7 +79,7 @@ const fetchLibrary = async () => {
             href: `${process.env.ROOT}editor?project_url=https://extensions.turbowarp.org/samples/${encodeURIComponent(sample)}.sb3`,
             text: sample
         })) : null,
-        incompatibleWithScratch: true,
+        incompatibleWithScratch: !extension.scratchCompatible,
         featured: true
     }));
 };

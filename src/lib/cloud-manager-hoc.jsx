@@ -81,7 +81,8 @@ const cloudManagerHOC = function (WrappedComponent) {
                 props.username &&
                 props.vm &&
                 props.projectId &&
-                props.hasCloudPermission
+                props.hasCloudPermission &&
+                !props.cloudVariablesDisabledByUser
             );
         }
         shouldConnect (props) {
@@ -147,6 +148,7 @@ const cloudManagerHOC = function (WrappedComponent) {
                 canModifyCloudData,
                 cloudHost,
                 reduxCloudHost,
+                cloudVariablesDisabledByUser,
                 onSetReduxCloudHost,
                 projectId,
                 username,
@@ -172,6 +174,7 @@ const cloudManagerHOC = function (WrappedComponent) {
         canModifyCloudData: PropTypes.bool.isRequired,
         cloudHost: PropTypes.string,
         reduxCloudHost: PropTypes.string,
+        cloudVariablesDisabledByUser: PropTypes.bool.isRequired,
         onSetReduxCloudHost: PropTypes.func,
         hasCloudPermission: PropTypes.bool,
         isShowingWithId: PropTypes.bool.isRequired,
@@ -192,6 +195,7 @@ const cloudManagerHOC = function (WrappedComponent) {
         const loadingState = state.scratchGui.projectState.loadingState;
         return {
             reduxCloudHost: state.scratchGui.tw.cloudHost,
+            cloudVariablesDisabledByUser: !state.scratchGui.tw.cloud,
             isShowingWithId: getIsShowingWithId(loadingState),
             projectId: state.scratchGui.projectState.projectId,
             // if you're editing someone else's project, you can't modify cloud data

@@ -46,23 +46,25 @@ const icons = {
     [ACCENT_RAINBOW]: rainbowIcon
 };
 
-const ColorIcon = props => icons[props.id] ? (
-    <img
-        className={styles.accentIconOuter}
-        src={icons[props.id]}
-        draggable={false}
-        // Image is decorative
-        alt=""
-    />
-) : (
-    <div
-        className={styles.accentIconOuter}
-        style={{
-            // menu-bar-background is var(...), don't want to evaluate with the current values
-            backgroundColor: ACCENT_MAP[props.id].guiColors['looks-secondary'],
-            backgroundImage: ACCENT_MAP[props.id].guiColors['menu-bar-background-image'],
-        }}
-    />
+const ColorIcon = props => (
+    icons[props.id] ? (
+        <img
+            className={styles.accentIconOuter}
+            src={icons[props.id]}
+            draggable={false}
+            // Image is decorative
+            alt=""
+        />
+    ) : (
+        <div
+            className={styles.accentIconOuter}
+            style={{
+                // menu-bar-background is var(...), don't want to evaluate with the current values
+                backgroundColor: ACCENT_MAP[props.id].guiColors['looks-secondary'],
+                backgroundImage: ACCENT_MAP[props.id].guiColors['menu-bar-background-image']
+            }}
+        />
+    )
 );
 
 ColorIcon.propTypes = {

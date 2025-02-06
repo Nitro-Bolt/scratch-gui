@@ -26,7 +26,7 @@ const htmlWebpackPluginCommon = {
 };
 
 // When this changes, the path for all JS files will change, bypassing any HTTP caches
-const CACHE_EPOCH = 'gleba';
+const CACHE_EPOCH = 'pentapod';
 
 const base = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
@@ -50,8 +50,12 @@ const base = {
     },
     output: {
         library: 'GUI',
-        filename: process.env.NODE_ENV === 'production' ? `js/${CACHE_EPOCH}/[name].[contenthash].js` : 'js/[name].js',
-        chunkFilename: process.env.NODE_ENV === 'production' ? `js/${CACHE_EPOCH}/[name].[contenthash].js` : 'js/[name].js',
+        filename: (
+            process.env.NODE_ENV === 'production' ? `js/${CACHE_EPOCH}/[name].[contenthash].js` : 'js/[name].js'
+        ),
+        chunkFilename: (
+            process.env.NODE_ENV === 'production' ? `js/${CACHE_EPOCH}/[name].[contenthash].js` : 'js/[name].js'
+        ),
         publicPath: root
     },
     resolve: {
@@ -107,15 +111,6 @@ const base = {
                     }
                 }
             }]
-        },
-        {
-            test: /\.hex$/,
-            use: [{
-                loader: 'url-loader',
-                options: {
-                    limit: 16 * 1024
-                }
-            }]
         }]
     },
     plugins: [
@@ -160,7 +155,7 @@ module.exports = [
         module: {
             rules: base.module.rules.concat([
                 {
-                    test: /\.(svg|png|wav|mp3|gif|jpg|woff2)$/,
+                    test: /\.(svg|png|wav|mp3|gif|jpg|woff2|hex)$/,
                     loader: 'url-loader',
                     options: {
                         limit: 2048,
@@ -270,7 +265,7 @@ module.exports = [
             module: {
                 rules: base.module.rules.concat([
                     {
-                        test: /\.(svg|png|wav|mp3|gif|jpg|woff2)$/,
+                        test: /\.(svg|png|wav|mp3|gif|jpg|woff2|hex)$/,
                         loader: 'url-loader',
                         options: {
                             limit: 2048,

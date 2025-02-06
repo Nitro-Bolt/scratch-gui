@@ -37,9 +37,9 @@ const UnknownPlatformModal = props => (
         <div className={styles.body}>
             <p>
                 <FormattedMessage
-                    defaultMessage="The project was made using a different platform:"
+                    defaultMessage="The project was made for a different platform:"
                     // eslint-disable-next-line max-len
-                    description="Text in modal that appears when loading a project made with another mod. Followed by some information about the other mod."
+                    description="Text in modal that appears when loading a project made for another mod. Followed by some information about the other mod."
                     id="tw.unknownPlatform.1"
                 />
             </p>
@@ -53,7 +53,7 @@ const UnknownPlatformModal = props => (
                     // eslint-disable-next-line max-len
                     defaultMessage="Compatibility with {APP_NAME} is not guaranteed. You can continue at your own risk, but we may not be able to help if you encounter any problems."
                     // eslint-disable-next-line max-len
-                    description="Text in modal that appears when loading a project made with another mod."
+                    description="Text in modal that appears when loading a project made for another mod."
                     id="tw.unknownPlatform.2"
                     values={{
                         APP_NAME
@@ -69,7 +69,7 @@ const UnknownPlatformModal = props => (
                 <FormattedMessage
                     defaultMessage="I understand"
                     // eslint-disable-next-line max-len
-                    description="Button in modal that appears when loading a project made with another mod. Allows ignoring the warning."
+                    description="Button in modal that appears when loading a project made for another mod. Allows ignoring the warning."
                     id="tw.unknownPlatform.continue"
                 />
             </button>

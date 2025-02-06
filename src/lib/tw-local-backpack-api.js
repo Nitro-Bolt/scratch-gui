@@ -68,21 +68,21 @@ const openDB = () => new Promise((resolve, reject) => {
 
     const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
 
-    request.onupgradeneeded = e => {
-        const db = e.target.result;
+    request.onupgradeneeded = event => {
+        const db = event.target.result;
         db.createObjectStore(STORE_NAME, {
             keyPath: 'id',
             autoIncrement: true
         });
     };
 
-    request.onsuccess = e => {
-        _db = e.target.result;
+    request.onsuccess = event => {
+        _db = event.target.result;
         resolve(_db);
     };
 
-    request.onerror = () => {
-        reject(new Error(`DB error: ${request.error}`));
+    request.onerror = event => {
+        reject(new Error(`DB error: ${event.target.error}`));
     };
 });
 
@@ -93,8 +93,8 @@ const getBackpackContents = async ({
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(STORE_NAME, 'readonly');
-        transaction.onerror = () => {
-            reject(new Error(`Transaction error: ${transaction.error}`));
+        transaction.onerror = event => {
+            reject(new Error(`Getting contents: ${event.target.error}`));
         };
         const store = transaction.objectStore(STORE_NAME);
         const items = [];
@@ -132,8 +132,8 @@ const saveBackpackObject = async ({
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(STORE_NAME, 'readwrite');
-        transaction.onerror = () => {
-            reject(new Error(`Transaction error: ${transaction.error}`));
+        transaction.onerror = event => {
+            reject(new Error(`Sving object: ${event.target.error}`));
         };
         const store = transaction.objectStore(STORE_NAME);
         const bodyData = base64ToArrayBuffer(body);
@@ -161,8 +161,8 @@ const deleteBackpackObject = async ({
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(STORE_NAME, 'readwrite');
-        transaction.onerror = () => {
-            reject(new Error(`Transaction error: ${transaction.error}`));
+        transaction.onerror = event => {
+            reject(new Error(`Deleting object: ${event.target.error}`));
         };
         const store = transaction.objectStore(STORE_NAME);
         // Convert string IDs to number IDs
@@ -181,8 +181,8 @@ const updateBackpackObject = async ({
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(STORE_NAME, 'readwrite');
-        transaction.onerror = () => {
-            reject(new Error(`Transaction error: ${transaction.error}`));
+        transaction.onerror = event => {
+            reject(new Error(`Updating object: ${event.target.error}`));
         };
         const store = transaction.objectStore(STORE_NAME);
         const getRequest = store.get(id);

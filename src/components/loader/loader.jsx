@@ -84,7 +84,7 @@ class LoaderComponent extends React.Component {
             this.messageEl.textContent = this.props.intl.formatMessage(messages.projectData);
         } else {
             this.barInnerEl.style.width = `${finished / total * 100}%`;
-            const message = this.props.isRemote ? messages.downloadingAssets : messages.loadingAssets
+            const message = this.props.isRemote ? messages.downloadingAssets : messages.loadingAssets;
             this.messageEl.textContent = this.props.intl.formatMessage(message, {
                 complete: finished,
                 total

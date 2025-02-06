@@ -441,7 +441,6 @@ class SoundEditor extends React.Component {
                 isStereo={this.props.isStereo}
                 duration={this.props.duration}
                 size={this.props.size}
-                sampleRate={this.props.sampleRate}
                 canPaste={this.state.copyBuffer !== null}
                 canRedo={this.redoStack.length > 0}
                 canUndo={this.undoStack.length > 0}

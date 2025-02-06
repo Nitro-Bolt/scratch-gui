@@ -15,6 +15,15 @@ import {
 } from '../reducers/project-state';
 import log from './log';
 
+/**
+ * List of fonts that could be used by security prompts.
+ */
+const SECURITY_CRITICAL_FONTS = [
+    'Helvetica Neue',
+    'Helvetica',
+    'Arial'
+];
+
 /*
  * Higher Order Component to manage events emitted by the VM
  * @param {React.Component} WrappedComponent component to manage VM events for
@@ -36,6 +45,9 @@ const vmManagerHOC = function (WrappedComponent) {
                     this.props.vm.attachAudioEngine(this.audioEngine);
                 } catch (e) {
                     log.error('could not create scratch-audio', e);
+                }
+                for (const font of SECURITY_CRITICAL_FONTS) {
+                    this.props.vm.runtime.fontManager.restrictFont(font);
                 }
                 this.props.vm.initialized = true;
                 this.props.vm.setLocale(this.props.locale, this.props.messages);

@@ -101,6 +101,13 @@ export const setPaused = (_paused) => {
   if (didChange) {
     paused = _paused;
     eventTarget.dispatchEvent(new CustomEvent("change"));
+
+    // TW: events for extensions
+    if (paused) {
+      vm.runtime.emit("RUNTIME_PAUSED");
+    } else {
+      vm.runtime.emit("RUNTIME_UNPAUSED");
+    }
   }
 
   // Don't check didChange as new threads could've started that we need to pause.

@@ -6,6 +6,7 @@ import styles from './restore-point-modal.css';
 import {formatBytes} from '../../lib/tw-bytes-utils';
 import RestorePointAPI from '../../lib/tw-restore-point-api';
 import log from '../../lib/log';
+import exportIcon from './export.svg';
 import deleteIcon from './delete.svg';
 
 // Browser support is not perfect yet
@@ -16,6 +17,7 @@ class RestorePoint extends React.Component {
         super(props);
         bindAll(this, [
             'handleClickDelete',
+            'handleClickExport',
             'handleClickLoad'
         ]);
         this.state = {
@@ -67,6 +69,11 @@ class RestorePoint extends React.Component {
     handleClickDelete (e) {
         e.stopPropagation();
         this.props.onClickDelete(this.props.id);
+    }
+
+    handleClickExport (e) {
+        e.stopPropagation();
+        this.props.onClickExport(this.props.id);
     }
 
     handleClickLoad () {
@@ -129,16 +136,31 @@ class RestorePoint extends React.Component {
                     </div>
                 </div>
 
-                <button
-                    className={styles.deleteButton}
-                    onClick={this.handleClickDelete}
-                >
-                    <img
-                        src={deleteIcon}
-                        alt="Delete"
-                        draggable={false}
-                    />
-                </button>
+                <div className={styles.restorePointButtons}>
+                    <button
+                        className={styles.restorePointButton}
+                        onClick={this.handleClickExport}
+                        disabled={this.props.isExporting}
+                    >
+                        <img
+                            src={exportIcon}
+                            alt="Export"
+                            draggable={false}
+                        />
+                    </button>
+
+                    <button
+                        className={styles.restorePointButton}
+                        onClick={this.handleClickDelete}
+                        disabled={this.props.isExporting}
+                    >
+                        <img
+                            src={deleteIcon}
+                            alt="Delete"
+                            draggable={false}
+                        />
+                    </button>
+                </div>
             </div>
         );
     }
@@ -151,7 +173,9 @@ RestorePoint.propTypes = {
     projectSize: PropTypes.number.isRequired,
     thumbnailSize: PropTypes.number.isRequired,
     assets: PropTypes.shape({}).isRequired, // Record<string, number>
+    isExporting: PropTypes.bool.isRequired,
     onClickDelete: PropTypes.func.isRequired,
+    onClickExport: PropTypes.func.isRequired,
     onClickLoad: PropTypes.func.isRequired
 };
 
