@@ -1277,25 +1277,7 @@ const menuItems = [
         internetConnectionRequired: false,
         twDeveloper: 'GarboMuffin'
     },
-    {
-        name: 'Numberblocks Extension',
-        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/numberblocks.js',
-        iconURL: 'https://gabsthecuriouskid.github.io/FirstExtension/images/numberblocks.png',
-        tags: ['dinosaurmod', 'forbidden'],
-        description: 'what is this extension doing here?.',
-        credits: 'Numberblocks',
-        featured: true
-    },
-    {
-        name: 'the doo doo extension',
-        extensionId: 'jgDooDoo',
-        iconURL: defaultExtensionIcon,
-        tags: ['penguinmod', 'forbidden'],
-        insetIconURL: PenguinmodThumb,
-        customInsetColor: '#00c3ff',
-        description: 'a joke extension.',
-        featured: true
-    },
+        },
     {
         name: 'Scratch Authentication',
         extensionId: 'jgScratchAuthenticate',
@@ -1664,6 +1646,25 @@ if (IsLocal || IsLiveTests) {
             description: 'this joke is not funny anymore',
             featured: true
         },
+        {
+            name: 'Numberblocks Extension',
+            extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/numberblocks.js',
+            iconURL: 'https://gabsthecuriouskid.github.io/FirstExtension/images/numberblocks.png',
+            tags: ['dinosaurmod'],
+            description: 'a numberblocks extension.',
+            credits: 'Numberblocks',
+            featured: true
+        },
+        {
+            name: 'the doo doo extension',
+            extensionId: 'jgDooDoo',
+            iconURL: defaultExtensionIcon,
+            tags: ['penguinmod'],
+            insetIconURL: PenguinmodThumb,
+            customInsetColor: '#00c3ff',
+            description: 'a joke extension.',
+            featured: true
+        }
         {
             name: 'Fetch+',
             extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/fetchplus.js',

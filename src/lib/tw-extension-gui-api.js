@@ -26,7 +26,10 @@ const implementGuiAPI = Scratch => {
          *
          * @returns {Promise<any>} Promise that will resolve to ScratchBlocks.
          */
-        getBlocklyEagerly: () => LazyScratchBlocks.load()
+        getBlocklyEagerly: () => {
+            LazyScratchBlocks.load()
+            LazyScratchBlocks.load2()
+        }
     };
 };
 

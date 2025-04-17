@@ -150,12 +150,12 @@ export default defineMessages({
         defaultMessage: 'PenguinMod',
         description: 'Tag for filtering a library by PenguinMod',
         id: 'gui.libraryTags.penguinmod'
-    },
+    },/*
     forbidden: {
         defaultMessage: 'Forbidden Extensions',
         description: 'Tag for filtering a library by forbidden extensions',
         id: 'gui.libraryTags.forbidden'
-    },
+    },*/
     scratch: {
         defaultMessage: 'Scratch',
         description: 'Tag for filtering a library by Scratch',

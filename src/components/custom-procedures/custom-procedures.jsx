@@ -8,6 +8,8 @@ import plusIcon from './icon--plus.svg';
 
 import booleanInputIcon from './icon--boolean-input.svg';
 import textInputIcon from './icon--text-input.svg';
+import numberInputIcon from './icon--number-input.svg';
+import colorInputIcon from './icon--color-input.svg';
 import labelIcon from './icon--label.svg';
 
 import stackBlockIcon from './icon--stack-block.svg';
@@ -207,7 +209,7 @@ const CustomProcedures = props => (
                 >
                     <img
                         className={styles.optionIcon}
-                        src={textInputIcon}
+                        src={numberInputIcon}
                     />
                     <div className={styles.optionTitle}>
                         <FormattedMessage
@@ -221,6 +223,31 @@ const CustomProcedures = props => (
                             defaultMessage="number"
                             description="Description of the number input type"
                             id="gui.customProcedures.numberType"
+                        />
+                    </div>
+                </div>
+                <div
+                    className={styles.optionCard}
+                    role="button"
+                    tabIndex="0"
+                    onClick={props.onAddColor}
+                >
+                    <img
+                        className={styles.optionIcon}
+                        src={colorInputIcon}
+                    />
+                    <div className={styles.optionTitle}>
+                        <FormattedMessage
+                            defaultMessage="Add a color input"
+                            description="Label for button to add a color input"
+                            id="gui.customProcedures.addAnInputNumber"
+                        />
+                    </div>
+                    <div className={styles.optionDescription}>
+                        <FormattedMessage
+                            defaultMessage="color"
+                            description="Description of the color input type"
+                            id="gui.customProcedures.colorType"
                         />
                     </div>
                 </div>
@@ -424,6 +451,7 @@ CustomProcedures.propTypes = {
     onAddLabel: PropTypes.func.isRequired,
     onAddTextNumber: PropTypes.func.isRequired,
     onAddNumber: PropTypes.func.isRequired,
+    onAddColor: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     onToggleWarp: PropTypes.func.isRequired,
