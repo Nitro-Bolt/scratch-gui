@@ -240,7 +240,7 @@ const CustomProcedures = props => (
                         <FormattedMessage
                             defaultMessage="Add a color input"
                             description="Label for button to add a color input"
-                            id="gui.customProcedures.addAnInputNumber"
+                            id="gui.customProcedures.addAColor"
                         />
                     </div>
                     <div className={styles.optionDescription}>
