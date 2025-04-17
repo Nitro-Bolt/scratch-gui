@@ -149,6 +149,7 @@ import pmOperatorsExpansionExtensionIcon from './penguinmod/extensions/operators
 
 // dinosaurmod icons
 import dmDinoBuilderIcon from './dinosaurmod/dinobuilder.png';
+import dmPythonIcon from './dinosaurmod/python.png';
 
 // other stuff (not official by penguinmod)
 import PenguinmodThumb from './penguinmod/unofficial-icons/penguinmod-icon.svg';
@@ -614,6 +615,15 @@ const menuItems = [
         description: "Blocks related to cats.",
         featured: true,
         extDeveloper: 'G1nX',
+    },
+    {
+        name: 'Dogs',
+        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/DOGS.js',
+        iconURL: defaultExtensionIcon,
+        tags: ['dinosaurmod'],
+        description: 'Blocks related to dogs.',
+        featured: true,
+        inspiredExt: 'G1nX\'s Cats Extension',
     },
     {
         name: 'My Blocks+',
@@ -1296,6 +1306,14 @@ const menuItems = [
         customInsetColor: '#00c3ff',
         tags: ['penguinmod','turbowarp'],
         description: "Extremely easy way to save data.",
+        featured: true
+    },
+    {
+        name: 'Python',
+        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/python.js',
+        iconURL: dmPythonIcon,
+        tags: ['dinosaurmod', 'programminglanguage'],
+        description: 'Run your own custom code written in Python!',
         featured: true
     },
     {
