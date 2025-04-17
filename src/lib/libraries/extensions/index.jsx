@@ -1277,7 +1277,6 @@ const menuItems = [
         internetConnectionRequired: false,
         twDeveloper: 'GarboMuffin'
     },
-        },
     {
         name: 'Scratch Authentication',
         extensionId: 'jgScratchAuthenticate',
@@ -1664,7 +1663,7 @@ if (IsLocal || IsLiveTests) {
             customInsetColor: '#00c3ff',
             description: 'a joke extension.',
             featured: true
-        }
+        },
         {
             name: 'Fetch+',
             extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/fetchplus.js',
