@@ -25,7 +25,7 @@ const isTrustedExtension = url => (
     url.startsWith('https://extensions.turbowarp.org/') ||
     url.startsWith('https://extensions.penguinmod.com/') ||
     url.startsWith('https://penguinmod-extensions-gallery.vercel.app/') ||
-    url.startsWith('https://gabsthecuriouskid.github.io/FirstExtension/') ||
+    url.startsWith('https://gabsthecuriouskid.github.io/DinosaurModExtensions/') ||
     url.startsWith('https://sharkpools-extensions.vercel.app/') ||
     url.startsWith('https://streamilator.github.io/') ||
     url.startsWith('https://dinosaurmod.github.io/') ||
@@ -98,7 +98,10 @@ const isAlwaysTrustedForFetching = parsed => (
     parsed.origin === 'https://youtube.com' ||
 
     // Beepbox
-    parsed.origin === 'https://beepbox.co'
+    parsed.origin === 'https://beepbox.co' ||
+
+    // Dinobox
+    parsed.origin === 'https://dinobox.vercel.app'
 );
 
 /**
