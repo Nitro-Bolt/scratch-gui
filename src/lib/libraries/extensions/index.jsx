@@ -528,7 +528,7 @@ const menuItems = [
     },
     {
         name: 'Motion Expansion',
-        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/motion-expansion.js',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/motion-expansion.js',
         iconURL: pmMotionExpansionExtensionIcon,
         tags: ['dinosaurmod', 'categoryexpansion'],
         description: "More motion-related blocks.",
@@ -538,8 +538,8 @@ const menuItems = [
     },
     {
         name: 'Looks Expansion',
-        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/penguinmod-version/looks-expansion.js',
-        iconURL: 'https://gabsthecuriouskid.github.io/FirstExtension/images/looks-expansion.png',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/penguinmod-version/looks-expansion.js',
+        iconURL: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/images/looks-expansion.png',
         tags: ['dinosaurmod', 'categoryexpansion'],
         description: "More blocks for changing layers, get size, # of costumes in different sprites, snapshotting the stage.",
         featured: true,
@@ -547,8 +547,8 @@ const menuItems = [
     },
     {
         name: 'Sound Expansion',
-        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/sound-expansion.js',
-        iconURL: 'https://gabsthecuriouskid.github.io/FirstExtension/images/sound-expansion.png',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/sound-expansion.js',
+        iconURL: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/images/sound-expansion.png',
         tags: ['dinosaurmod', 'categoryexpansion'],
         description: "Play sounds from other URLs, change project volume, get effect values from other sprites and more!",
         featured: true,
@@ -578,7 +578,7 @@ const menuItems = [
     },
     {
         name: 'Wait block Expansion',
-        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/waitblockexpansion.js',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/waitblockexpansion.js',
         iconURL: pmControlsExpansionExtensionIcon,
         tags: ['dinosaurmod', 'categoryexpansion'],
         description: "More wait blocks, i guess..",
@@ -618,7 +618,7 @@ const menuItems = [
     },
     {
         name: 'Dogs',
-        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/DOGS.js',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/DOGS.js',
         iconURL: defaultExtensionIcon,
         tags: ['dinosaurmod'],
         description: 'Blocks related to dogs.',
@@ -664,8 +664,8 @@ const menuItems = [
     },
     {
         name: 'Hacked Blocks',
-        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/penguinmod-version/hackedblocks.js',
-        iconURL: 'https://gabsthecuriouskid.github.io/FirstExtension/images/hackedblocks.png',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/penguinmod-version/hackedblocks.js',
+        iconURL: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/images/hackedblocks.png',
         tags: ['dinosaurmod'],
         description: 'Hacked Blocks that exist in Penguinmod but are not shown on the main toolbox.',
         credits: 'Some blocks from pumpkinhasapatch, LilyMakesThings, MrIncredibleMakerZE',
@@ -888,9 +888,9 @@ const menuItems = [
     },
     {
         name: 'Site Runtime',
-        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/webextension.js',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/webextension.js',
         tags: ['dinosaurmod'],
-        iconURL: 'https://gabsthecuriouskid.github.io/FirstExtension/images/site-runtime.png',
+        iconURL: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/images/site-runtime.png',
         description: 'A Combined version of 2 Extensions: Packager Applications & AdaBrowser',
         featured: true,
         extDeveloper: 'MrIncredibleMaker',
@@ -1092,8 +1092,8 @@ const menuItems = [
     },
     {
         name: 'GitHub API',
-        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/github-api.js',
-        iconURL: 'https://gabsthecuriouskid.github.io/FirstExtension/images/githubapi.png',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/github-api.js',
+        iconURL: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/images/githubapi.png',
         tags: ['dinosaurmod'],
         description: 'Fetch IDs, Description, etc. from Repositories, Users and Organizations.',
         internetConnectionRequired: true,
@@ -1310,7 +1310,7 @@ const menuItems = [
     },
     {
         name: 'Python',
-        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/python.js',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/python.js',
         iconURL: dmPythonIcon,
         tags: ['dinosaurmod', 'programminglanguage'],
         description: 'Run your own custom code written in Python!',
@@ -1334,8 +1334,8 @@ const menuItems = [
     },
     {
         name: 'DinosaurMod Blocks',
-        extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/dinosaurmodextras.js',
-        iconURL: 'https://gabsthecuriouskid.github.io/FirstExtension/images/dinosaurmodextras.png',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/dinosaurmodextras.js',
+        iconURL: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/images/dinosaurmodextras.png',
         tags: ['dinosaurmod'],
         description: 'Extra Blocks',
         inspiredExt: 'TurboWarp Blocks',
@@ -1665,8 +1665,8 @@ if (IsLocal || IsLiveTests) {
         },
         {
             name: 'Numberblocks Extension',
-            extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/numberblocks.js',
-            iconURL: 'https://gabsthecuriouskid.github.io/FirstExtension/images/numberblocks.png',
+            extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/numberblocks.js',
+            iconURL: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/images/numberblocks.png',
             tags: ['dinosaurmod'],
             description: 'a numberblocks extension.',
             credits: 'Numberblocks',
@@ -1684,7 +1684,7 @@ if (IsLocal || IsLiveTests) {
         },
         {
             name: 'Fetch+',
-            extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/fetchplus.js',
+            extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/fetchplus.js',
             tags: ['dinosaurmod'],
             iconURL: 'https://extensions.turbowarp.org/images/fetch.svg',
             description: "get and post stuff, i guess.",
@@ -1721,9 +1721,9 @@ if (IsLocal || IsLiveTests) {
         },
         {
             name: 'Extra Inputs',
-            extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/extensions/extrainputs.js',
+            extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/extrainputs.js',
             tags: ['dinosaurmod'],
-            iconURL: 'https://gabsthecuriouskid.github.io/FirstExtension/images/ExtraInputsThumbnail.png',
+            iconURL: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/images/ExtraInputsThumbnail.png',
             description: "This Extension has been merged into the main toolbox. Extra Inputs that you can use.",
             featured: true,
             extDeveloper: 'MrIncredibleMakerZe'
@@ -1747,7 +1747,7 @@ if (IsLocal || IsLiveTests) {
         },
         {
             name: 'TurboBuilder Extension',
-            extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/legacy-extensions/turbobuilder.js',
+            extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/legacy-extensions/turbobuilder.js',
             iconURL: turboBuilderIcon,
             description: 'Not alot of options yet. Create your own amazing extensions!',
             tags: ['dinosaurmod'],
@@ -1888,7 +1888,7 @@ if (IsSecret && IsLiveTests) {
         },
         {
             name: 'Fleef',
-            extensionId: 'https://gabsthecuriouskid.github.io/FirstExtension/legacy-extensions/fleef.js',
+            extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/legacy-extensions/fleef.js',
             iconURL: defaultExtensionIcon,
             description: 'this extension refuses to be committed.',
             extDeveloper: 'MrIncredibleMaker',
