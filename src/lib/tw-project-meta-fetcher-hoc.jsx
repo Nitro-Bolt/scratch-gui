@@ -95,7 +95,7 @@ const TWProjectMetaFetcherHOC = function (WrappedComponent) {
                         this.props.onSetProjectTitle(title);
                     }
                     const authorName = data.author.username;
-                    const authorThumbnail = `https://trampoline.turbowarp.org/avatars/by-username/${data.author.username}`;
+                    const authorThumbnail = `https://projects.penguinmod.com/api/v1/users/getpfp?username=${data.author.username}`;
                     this.props.onSetAuthor(authorName, authorThumbnail);
                     const instructions = data.desc || '';
                     const credits = data.notes || '';
@@ -113,7 +113,9 @@ const TWProjectMetaFetcherHOC = function (WrappedComponent) {
                             String(rawData.remix) !== '0',
                             String(rawData.remix),
                             rawData.tooLarge === true,
-                            authorName
+                            authorName,
+                            new Date(rawData.date),
+                            rawData.updating === true
                         );
                     }
                     if (rawData.remix > 0) {

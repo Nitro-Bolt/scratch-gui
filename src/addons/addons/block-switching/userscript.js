@@ -23,15 +23,14 @@ export default async function ({ addon, console, msg }) {
         {
           opcode: "motion_turnleft",
         },
-      ];
-      blockSwitches["motion_turnleft"] = [
-        {
-          opcode: "motion_turnright",
-        },
         {
           opcode: "motion_turnleftaroundxy",
           createInputs: {
-            NUM: {
+            X: {
+              shadowType: "math_number",
+              value: "0",
+            },
+            Y: {
               shadowType: "math_number",
               value: "0",
             },
@@ -40,7 +39,42 @@ export default async function ({ addon, console, msg }) {
         {
           opcode: "motion_turnrightaroundxy",
           createInputs: {
-            NUM: {
+            X: {
+              shadowType: "math_number",
+              value: "0",
+            },
+            Y: {
+              shadowType: "math_number",
+              value: "0",
+            },
+          },
+        },
+      ];
+      blockSwitches["motion_turnleft"] = [
+        {
+          opcode: "motion_turnright",
+        },
+        {
+          opcode: "motion_turnleftaroundxy",
+          createInputs: {
+            X: {
+              shadowType: "math_number",
+              value: "0",
+            },
+            Y: {
+              shadowType: "math_number",
+              value: "0",
+            },
+          },
+        },
+        {
+          opcode: "motion_turnrightaroundxy",
+          createInputs: {
+            X: {
+              shadowType: "math_number",
+              value: "0",
+            },
+            Y: {
               shadowType: "math_number",
               value: "0",
             },
@@ -412,12 +446,44 @@ export default async function ({ addon, console, msg }) {
         {
           opcode: "event_whenkeyhit",
         },
+        {
+          opcode: "sensing_keypressed",
+          createInputs: {
+            KEY_OPTION: {
+              shadowType: "sensing_keyoptions",
+            },
+          },
+        },
+        {
+          opcode: "sensing_keyhit",
+          createInputs: {
+            KEY_OPTION: {
+              shadowType: "sensing_keyoptions",
+            },
+          },
+        },
         noopSwitch,
       ];
       blockSwitches["event_whenkeyhit"] = [
         noopSwitch,
         {
           opcode: "event_whenkeypressed",
+        },
+        {
+          opcode: "sensing_keypressed",
+          createInputs: {
+            KEY_OPTION: {
+              shadowType: "sensing_keyoptions",
+            },
+          },
+        },
+        {
+          opcode: "sensing_keyhit",
+          createInputs: {
+            KEY_OPTION: {
+              shadowType: "sensing_keyoptions",
+            },
+          },
         },
       ];
       blockSwitches["event_whentouchingobject"] = [
@@ -688,6 +754,33 @@ export default async function ({ addon, console, msg }) {
         },
         noopSwitch,
       ];
+      blockSwitches["operator_trueBoolean"] = [
+        {
+          opcode: "operator_falseBoolean",
+        },
+        {
+          opcode: "operator_randomBoolean",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["operator_falseBoolean"] = [
+        {
+          opcode: "operator_trueBoolean",
+        },
+        {
+          opcode: "operator_randomBoolean",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["operator_randomBoolean"] = [
+        {
+          opcode: "operator_trueBoolean",
+        },
+        {
+          opcode: "operator_falseBoolean",
+        },
+        noopSwitch,
+      ];
     }
 
     if (addon.settings.get("sensing")) {
@@ -749,6 +842,30 @@ export default async function ({ addon, console, msg }) {
       blockSwitches["sensing_directionTo"] = [
         {
           opcode: "sensing_distanceTo",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["sensing_keypressed"] = [
+        noopSwitch,
+        {
+          opcode: "sensing_keyhit",
+        },
+        {
+          opcode: "event_whenkeyhit",
+        },
+        {
+          opcode: "event_whenkeypressed",
+        },
+      ];
+      blockSwitches["sensing_keyhit"] = [
+        {
+          opcode: "sensing_keypressed",
+        },
+        {
+          opcode: "event_whenkeyhit",
+        },
+        {
+          opcode: "event_whenkeypressed",
         },
         noopSwitch,
       ];

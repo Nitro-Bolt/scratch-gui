@@ -437,14 +437,11 @@ class Interface extends React.Component {
                                     />
                                 </div>
                             ) : null}
-                            <VoteFrame id={projectId} darkmode={this.props.isDark}></VoteFrame>
                             {extraProjectInfo.author && (
-                                <a
-                                    target="_blank"
-                                    href={`https://penguinmod.com/profile?user=${extraProjectInfo.author}`}
-                                >
-                                    View other projects by {extraProjectInfo.author}
-                                </a>
+                                <VoteFrame
+                                    id={projectId}
+                                    darkmode={this.props.isDark}
+                                />
                             )}
                             {projectId !== '0' && extraProjectInfo.author && (
                                 <div>
