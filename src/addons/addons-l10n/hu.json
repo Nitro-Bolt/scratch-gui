@@ -234,5 +234,8 @@
     "swap-local-global/edit-variable-option": "Változó átnevezése vagy szerkesztése",
     "swap-local-global/to-global": "Konvertálás \"Minden szereplőé\"-vé",
     "swap-local-global/to-local": "Konvertálás \"A kiválasztott szereplőé\"-vé",
-    "hide-stage/hide-stage": "Színpad elrejtése"
+    "hide-stage/hide-stage": "Színpad elrejtése",
+    "rename-broadcasts/RENAME_BROADCAST": "Üzenet átnevezése",
+    "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Üzenet Átnevezése",
+    "rename-broadcasts/RENAME_BROADCAST_TITLE": "Az összes „{name}” üzenet átnevezése erre:"
 }

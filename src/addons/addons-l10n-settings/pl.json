@@ -297,6 +297,7 @@
     "number-pad/@description": "Pokazuje klawiaturę numeryczną Scratcha podczas edycji pól liczbowych na wszystkich urządzeniach, a nie tylko na urządzeniach z ekranem dotykowym.",
     "number-pad/@info-explanation": "Podczas edycji liczb w niektórych blokach, takich jak \"ustaw x na\", pojawi się klawiatura numeryczna.",
     "number-pad/@name": "Zawsze pokazuj klawiaturę numeryczną",
+    "expanded-backpack/@settings-name-rows": "Liczba pokazanych wierszy",
     "script-snap/@description": "Po przesunięciu kodu, zostanie on \"przyczepiony\" do kropek tła w edytorze.",
     "script-snap/@name": "Przyczep fragmenty kodu do wirtualnej siatki",
     "script-snap/@preset-name-default": "Domyślny",

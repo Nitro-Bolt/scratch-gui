@@ -162,6 +162,7 @@ const urlParams = new URLSearchParams(location.search);
 
 const IsLocal = String(window.location.href).startsWith(`http://localhost:`);
 const IsLiveTests = urlParams.has('livetests');
+const IsJoke = urlParams.has('joke');
 const IsSecret = urlParams.has('verysecretplsnolook');
 
 const menuItems = [
@@ -604,26 +605,6 @@ const menuItems = [
         tags: ['penguinmod', 'categoryexpansion'],
         description: 'More operators like nand, nor, character code to character, reading multiple lined text line by line, etc.',
         featured: true
-    },
-    {
-        name: 'Cats',
-        extensionId: 'https://extensions.penguinmod.com/extensions/Gen1x/CATS.js',
-        tags: ['penguinmod'],
-        insetIconURL: PenguinmodThumb,
-        customInsetColor: '#00c3ff',
-        iconURL: 'https://extensions.penguinmod.com/images/Gen1x/cats.png',
-        description: "Blocks related to cats.",
-        featured: true,
-        extDeveloper: 'G1nX',
-    },
-    {
-        name: 'Dogs',
-        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/DOGS.js',
-        iconURL: defaultExtensionIcon,
-        tags: ['dinosaurmod'],
-        description: 'Blocks related to dogs.',
-        featured: true,
-        inspiredExt: 'G1nX\'s Cats Extension',
     },
     {
         name: 'My Blocks+',
@@ -1188,16 +1169,6 @@ const menuItems = [
         featured: true
     },
     {
-        name: 'McUtils',
-        extensionId: 'https://extensions.turbowarp.org/Lily/McUtils.js', // update reference once file names are updated
-        tags: ['turbowarp'],
-        iconURL: 'https://extensions.turbowarp.org/images/Lily/McUtils.png',
-        insetIconURL: turbowarpIcon,
-        description: 'Basic utilities for any fast food employee',
-        featured: true,
-        twDeveloper: 'LilyMakesThings'
-    },
-    {
         name: (
             <FormattedMessage
                 defaultMessage="HTML Canvas"
@@ -1628,61 +1599,6 @@ if (IsLocal || IsLiveTests) {
             featured: true
         },
         {
-            name: 'an amazing extension',
-            extensionId: 'jgBestExtension',
-            iconURL: 'https://extensions.penguinmod.com/images/JeremyGamer13/epic.png',
-            internetConnectionRequired: true,
-            tags: ['penguinmod', 'joke'],
-            description: 'this is SUCH A GOOD EXTENSION USE IT NOW',
-            featured: true
-        },
-        {
-            name: 'Epic utilities',
-            extensionId: 'https://extensions.penguinmod.com/extensions/SharkPool/AprilFools.js',
-            iconURL: 'https://extensions.penguinmod.com/images/JeremyGamer13/epicutils.png',
-            tags: ['penguinmod', 'joke'],
-            description: 'the super good utilities brought to you by todays sponsor sharkpool (the epic utilities)',
-            featured: true
-        },
-        {
-            name: 'image blocks',
-            extensionId: 'https://extensions.penguinmod.com/extensions/Ashime/funneimageblocks.js',
-            iconURL: 'https://extensions.penguinmod.com/images/JeremyGamer13/screenshot1.png',
-            tags: ['penguinmod', 'joke'],
-            internetConnectionRequired: true,
-            description: 'who needs cat blocks when you have penguin block',
-            extDeveloper: 'Ashimee, 0znzw, CST1229',
-            featured: true
-        },
-        {
-            name: 'fire in the hole',
-            extensionId: 'https://extensions.penguinmod.com/extensions/JeremyGamer13/FireInTheHole.js',
-            iconURL: 'https://library.penguinmod.com/files/emojis/cluelesssmile.png',
-            tags: ['penguinmod', 'joke', 'forbidden'],
-            internetConnectionRequired: true,
-            description: 'this joke is not funny anymore',
-            featured: true
-        },
-        {
-            name: 'Numberblocks Extension',
-            extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/numberblocks.js',
-            iconURL: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/images/numberblocks.png',
-            tags: ['dinosaurmod'],
-            description: 'a numberblocks extension.',
-            credits: 'Numberblocks',
-            featured: true
-        },
-        {
-            name: 'the doo doo extension',
-            extensionId: 'jgDooDoo',
-            iconURL: defaultExtensionIcon,
-            tags: ['penguinmod'],
-            insetIconURL: PenguinmodThumb,
-            customInsetColor: '#00c3ff',
-            description: 'a joke extension.',
-            featured: true
-        },
-        {
             name: 'Fetch+',
             extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/fetchplus.js',
             tags: ['dinosaurmod'],
@@ -1868,7 +1784,7 @@ if (IsLocal || IsLiveTests) {
     });
 };
 
-if (IsSecret && IsLiveTests) {
+if (IsSecret && IsJoke) {
     const secret = [
         {
             name: 'MR BEAST UTILITIES',
@@ -1898,6 +1814,99 @@ if (IsSecret && IsLiveTests) {
     secret.forEach(ext => {
         menuItems.push(ext);
     });
+}
+
+if (IsJoke) {
+    const JokeExtensions = [
+        {
+            name: 'Cats',
+            extensionId: 'https://extensions.penguinmod.com/extensions/Gen1x/CATS.js',
+            tags: ['penguinmod'],
+            insetIconURL: PenguinmodThumb,
+            customInsetColor: '#00c3ff',
+            iconURL: 'https://extensions.penguinmod.com/images/Gen1x/cats.png',
+            description: "Blocks related to cats.",
+            featured: true,
+            extDeveloper: 'G1nX',
+        },
+        {
+            name: 'Dogs',
+            extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/DOGS.js',
+            iconURL: defaultExtensionIcon,
+            tags: ['dinosaurmod'],
+            description: 'Blocks related to dogs.',
+            featured: true,
+            inspiredExt: 'G1nX\'s Cats Extension',
+        },
+        {
+            name: 'McUtils',
+            extensionId: 'https://extensions.turbowarp.org/Lily/McUtils.js', // update reference once file names are updated
+            tags: ['turbowarp'],
+            iconURL: 'https://extensions.turbowarp.org/images/Lily/McUtils.png',
+            insetIconURL: turbowarpIcon,
+            description: 'Basic utilities for any fast food employee',
+            featured: true,
+            twDeveloper: 'LilyMakesThings'
+        },
+        {
+            name: 'an amazing extension',
+            extensionId: 'jgBestExtension',
+            iconURL: 'https://extensions.penguinmod.com/images/JeremyGamer13/epic.png',
+            internetConnectionRequired: true,
+            tags: ['penguinmod', 'joke'],
+            description: 'this is SUCH A GOOD EXTENSION USE IT NOW',
+            featured: true
+        },
+        {
+            name: 'Epic utilities',
+            extensionId: 'https://extensions.penguinmod.com/extensions/SharkPool/AprilFools.js',
+            iconURL: 'https://extensions.penguinmod.com/images/JeremyGamer13/epicutils.png',
+            tags: ['penguinmod', 'joke'],
+            description: 'the super good utilities brought to you by todays sponsor sharkpool (the epic utilities)',
+            featured: true
+        },
+        {
+            name: 'image blocks',
+            extensionId: 'https://extensions.penguinmod.com/extensions/Ashime/funneimageblocks.js',
+            iconURL: 'https://extensions.penguinmod.com/images/JeremyGamer13/screenshot1.png',
+            tags: ['penguinmod', 'joke'],
+            internetConnectionRequired: true,
+            description: 'who needs cat blocks when you have penguin block',
+            extDeveloper: 'Ashimee, 0znzw, CST1229',
+            featured: true
+        },
+        {
+            name: 'fire in the hole',
+            extensionId: 'https://extensions.penguinmod.com/extensions/JeremyGamer13/FireInTheHole.js',
+            iconURL: 'https://library.penguinmod.com/files/emojis/cluelesssmile.png',
+            tags: ['penguinmod', 'joke', 'forbidden'],
+            internetConnectionRequired: true,
+            description: 'this joke is not funny anymore',
+            featured: true
+        },
+        {
+            name: 'Numberblocks Extension',
+            extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/numberblocks.js',
+            iconURL: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/images/numberblocks.png',
+            tags: ['dinosaurmod'],
+            description: 'a numberblocks extension.',
+            credits: 'Numberblocks',
+            featured: true
+        },
+        {
+            name: 'the doo doo extension',
+            extensionId: 'jgDooDoo',
+            iconURL: defaultExtensionIcon,
+            tags: ['penguinmod'],
+            insetIconURL: PenguinmodThumb,
+            customInsetColor: '#00c3ff',
+            description: 'a joke extension.',
+            featured: true
+        },
+    ];
+    JokeExtensions.forEach(ext => {
+        menuItems.push(ext)
+    })
 }
 
 export default menuItems;

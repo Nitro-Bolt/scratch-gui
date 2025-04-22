@@ -231,5 +231,8 @@
     "swap-local-global/edit-variable-option": "Rinomina o modifica una variabile",
     "swap-local-global/to-global": "Converti in \"Per tutti gli sprite\"",
     "swap-local-global/to-local": "Converti in \"Solo per questo sprite\"",
-    "hide-stage/hide-stage": "Nascondi stage"
+    "hide-stage/hide-stage": "Nascondi stage",
+    "rename-broadcasts/RENAME_BROADCAST": "Rinomina messaggio",
+    "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Rinomina Messaggio",
+    "rename-broadcasts/RENAME_BROADCAST_TITLE": "Rinomina tutti i messaggi \"{name}\" come:"
 }

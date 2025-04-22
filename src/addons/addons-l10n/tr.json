@@ -234,5 +234,8 @@
     "swap-local-global/edit-variable-option": "Değişkeni yeniden adlandır veya düzenle",
     "swap-local-global/to-global": "\"Tüm kuklalar için\" ayarına dönüştür",
     "swap-local-global/to-local": "\"Yalnızca bu kukla için” ayarına dönüştür",
-    "hide-stage/hide-stage": "Sahneyi gizle"
+    "hide-stage/hide-stage": "Sahneyi gizle",
+    "rename-broadcasts/RENAME_BROADCAST": "Mesajı yeniden adlandır",
+    "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Mesajı Yeniden Adlandır",
+    "rename-broadcasts/RENAME_BROADCAST_TITLE": "Tüm \"{name}\" mesajlarını şu şekilde yeniden adlandır:"
 }

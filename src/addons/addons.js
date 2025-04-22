@@ -72,6 +72,7 @@ const addons = [
 ];
 
 const newAddons = [
+    'expanded-backpack',
     'editor-create-music',
     'vol-slider',
     'number-pad',

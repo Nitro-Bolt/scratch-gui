@@ -203,5 +203,8 @@
     "swap-local-global/edit-variable-option": "Renomear ou editar variável",
     "swap-local-global/to-global": "Converter para \"Para todos os atores\"",
     "swap-local-global/to-local": "Converter para \"Apenas para este ator\"",
-    "hide-stage/hide-stage": "Esconder palco"
+    "hide-stage/hide-stage": "Esconder palco",
+    "rename-broadcasts/RENAME_BROADCAST": "Renomear mensagem",
+    "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Renomear Mensagem",
+    "rename-broadcasts/RENAME_BROADCAST_TITLE": "Renomear todas as mensagens com o nome \"{name}\" para:"
 }

@@ -826,6 +826,10 @@ class AddonRunner {
         case 'settingValue': {
             return this.publicAPI.addon.settings.get(variable.settingId);
         }
+        case 'ternary': {
+            const condition = this.evaluateCustomCssVariable(variable.source);
+            return this.evaluateCustomCssVariable(condition ? variable.true : variable.false);
+        }
         case 'textColor': {
             const hex = this.evaluateCustomCssVariable(variable.source);
             const black = this.evaluateCustomCssVariable(variable.black);

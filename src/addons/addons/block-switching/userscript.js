@@ -28,6 +28,48 @@ export default async function ({ addon, console, msg }) {
         {
           opcode: "motion_turnright",
         },
+        {
+          opcode: "motion_turnleftaroundxy",
+          createInputs: {
+            NUM: {
+              shadowType: "math_number",
+              value: "0",
+            },
+          },
+        },
+        {
+          opcode: "motion_turnrightaroundxy",
+          createInputs: {
+            NUM: {
+              shadowType: "math_number",
+              value: "0",
+            },
+          },
+        },
+        noopSwitch,
+      ];
+      blockSwitches["motion_turnrightaroundxy"] = [
+        noopSwitch,
+        {
+          opcode: "motion_turnleftaroundxy",
+        },
+        {
+          opcode: "motion_turnright",
+        },
+        {
+          opcode: "motion_turnleft",
+        },
+      ];
+      blockSwitches["motion_turnleftaroundxy"] = [
+        {
+          opcode: "motion_turnrightaroundxy",
+        },
+        {
+          opcode: "motion_turnright",
+        },
+        {
+          opcode: "motion_turnleft",
+        },
         noopSwitch,
       ];
       blockSwitches["motion_setx"] = [
@@ -459,6 +501,15 @@ export default async function ({ addon, console, msg }) {
         {
           opcode: "operator_lt",
         },
+        {
+          opcode: "operator_notequal",
+        },
+        {
+          opcode: "operator_ltorequal",
+        },
+        {
+          opcode: "operator_gtorequal",
+        },
       ];
       blockSwitches["operator_gt"] = [
         noopSwitch,
@@ -466,7 +517,16 @@ export default async function ({ addon, console, msg }) {
           opcode: "operator_equals",
         },
         {
+          opcode: "operator_notequal",
+        },
+        {
           opcode: "operator_lt",
+        },
+        {
+          opcode: "operator_ltorequal",
+        },
+        {
+          opcode: "operator_gtorequal",
         },
       ];
       blockSwitches["operator_lt"] = [
@@ -476,7 +536,70 @@ export default async function ({ addon, console, msg }) {
         {
           opcode: "operator_equals",
         },
+        {
+          opcode: "operator_notequal",
+        },
+        {
+          opcode: "operator_ltorequal",
+        },
+        {
+          opcode: "operator_gtorequal",
+        },
         noopSwitch,
+      ];
+      blockSwitches["operator_gtorequal"] = [
+        noopSwitch,
+        {
+          opcode: "operator_equals",
+        },
+        {
+          opcode: "operator_notequal",
+        },
+        {
+          opcode: "operator_lt",
+        },
+        {
+          opcode: "operator_ltorequal",
+        },
+        {
+          opcode: "operator_gt",
+        },
+      ];
+      blockSwitches["operator_ltorequal"] = [
+        {
+          opcode: "operator_gt",
+        },
+        {
+          opcode: "operator_equals",
+        },
+        {
+          opcode: "operator_notequal",
+        },
+        {
+          opcode: "operator_lt",
+        },
+        {
+          opcode: "operator_gtorequal",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["operator_notequal"] = [
+        {
+          opcode: "operator_gt",
+        },
+        noopSwitch,
+        {
+          opcode: "operator_lt",
+        },
+        {
+          opcode: "operator_equals",
+        },
+        {
+          opcode: "operator_ltorequal",
+        },
+        {
+          opcode: "operator_gtorequal",
+        },
       ];
       blockSwitches["operator_add"] = [
         noopSwitch,
@@ -580,6 +703,18 @@ export default async function ({ addon, console, msg }) {
         },
         noopSwitch,
       ];
+      blockSwitches["sensing_mousedown"] = [
+        noopSwitch,
+        {
+          opcode: "sensing_mouseclicked",
+        },
+      ];
+      blockSwitches["sensing_mouseclicked"] = [
+        {
+          opcode: "sensing_mousedown",
+        },
+        noopSwitch,
+      ];
       blockSwitches["sensing_touchingobject"] = [
         {
           opcode: "event_whentouchingobject",
@@ -602,6 +737,18 @@ export default async function ({ addon, console, msg }) {
         {
           opcode: "sensing_touchingcolor",
           splitInputs: ["COLOR2"],
+        },
+        noopSwitch,
+      ];
+      blockSwitches["sensing_distanceTo"] = [
+        noopSwitch,
+        {
+          opcode: "sensing_directionTo",
+        },
+      ];
+      blockSwitches["sensing_directionTo"] = [
+        {
+          opcode: "sensing_distanceTo",
         },
         noopSwitch,
       ];

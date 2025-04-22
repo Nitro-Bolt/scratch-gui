@@ -69,6 +69,7 @@ import _tw_remove_backpack from "../addons/tw-remove-backpack/_manifest_entry.js
 import _tw_remove_feedback from "../addons/tw-remove-feedback/_manifest_entry.js";
 import _tw_disable_cloud_variables from "../addons/tw-disable-cloud-variables/_manifest_entry.js";
 import _editor_stepping from "../addons/editor-stepping/_manifest_entry.js";
+import _expanded_backpack from "../addons/expanded-backpack/_manifest_entry.js";
 
 export default {
   "cat-blocks": _cat_blocks,
@@ -142,4 +143,5 @@ export default {
   "tw-disable-cloud-variables": _tw_disable_cloud_variables,
   "editor-stepping": _editor_stepping,
   "vol-slider": _vol_slider,
+  "expanded-backpack": _expanded_backpack,
 };

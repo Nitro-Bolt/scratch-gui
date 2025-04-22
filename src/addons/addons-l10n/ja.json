@@ -234,5 +234,8 @@
     "swap-local-global/edit-variable-option": "変数を改名・編集",
     "swap-local-global/to-global": "「すべてのスプライト用」にする",
     "swap-local-global/to-local": "「このスプライトのみ」にする",
-    "hide-stage/hide-stage": "ステージを隠す"
+    "hide-stage/hide-stage": "ステージを隠す",
+    "rename-broadcasts/RENAME_BROADCAST": "メッセージ名を変更",
+    "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "メッセージ名を変更",
+    "rename-broadcasts/RENAME_BROADCAST_TITLE": "メッセージ \"{name}\" をすべて以下の名前に変える:"
 }
