@@ -1155,7 +1155,7 @@ AddonSettingsComponent.propTypes = {
 };
 
 ReactDOM.render(
-    <Provider store={store}>
+    <Provider store={ReduxStore}>
       <AddonSettingsComponent />
     </Provider>,
     document.getElementById('root')
