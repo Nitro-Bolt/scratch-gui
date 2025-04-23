@@ -1026,6 +1026,7 @@ class AddonSettingsComponent extends React.Component {
             e.preventDefault();
         }
     }
+    <IntlProvider locale="en" messages={{}}>
     render() {
         const addonState = Object.entries(supportedAddons).map(([id, manifest]) => ({
             id,
@@ -1073,20 +1074,18 @@ class AddonSettingsComponent extends React.Component {
                         />
                     )}
                 </div>
-                <IntlProvider>
-                    <LibraryComponent
-                        data={addonState}
-                        filterable={true}
-                        tags={addonTags}
-                        id="addonSettingsComponent"
-                        actor="AddonSettingsComponent"
-                        header={"Addons"}
-                        title={`${settingsTranslations.title} - DinosaurMod`}
-                        visible={this.props.visible}
-                        onItemSelected={this.handleItemSelect}
-                        onRequestClose={this.props.onRequestClose}
-                    />
-                </IntlProvider>
+                <LibraryComponent
+                    data={addonState}
+                    filterable={true}
+                    tags={addonTags}
+                    id="addonSettingsComponent"
+                    actor="AddonSettingsComponent"
+                    header={"Addons"}
+                    title={`${settingsTranslations.title} - DinosaurMod`}
+                    visible={this.props.visible}
+                    onItemSelected={this.handleItemSelect}
+                    onRequestClose={this.props.onRequestClose}
+                />
                 <div className={styles.addons}>
                     {!this.state.loading && (
                         <div className={styles.section}>
@@ -1138,6 +1137,7 @@ class AddonSettingsComponent extends React.Component {
             </div>
         );
     }
+    </IntlProvider>
 }
 AddonSettingsComponent.propTypes = {
     onRequestClose: PropTypes.func,
