@@ -1079,7 +1079,7 @@ class AddonSettingsComponent extends React.Component {
                     )}
                 </div>
                 <LibraryComponent
-                    data={addonState}
+                    data={}
                     filterable={true}
                     tags={addonTags}
                     id="addonSettingsComponent"
