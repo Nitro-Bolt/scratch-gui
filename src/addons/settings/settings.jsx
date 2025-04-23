@@ -37,7 +37,7 @@ import styles from './settings.css';
 import '../polyfill';
 import '../../lib/normalize.css';
 
-import LibraryComponent from '../../../components/library/library.jsx';
+import LibraryComponent from '../../components/library/library.jsx';
 import addonTags from './addon-tags.js';
 
 /* eslint-disable no-alert */
@@ -1035,7 +1035,7 @@ class AddonSettingsComponent extends React.Component {
             id,
             manifest
         }));
-        return (//gg
+        return (//this is a search marker
             <div className={styles.container}>
                 <div className={styles.header}>
                     <div className={styles.section}>
