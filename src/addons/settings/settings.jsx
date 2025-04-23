@@ -1026,6 +1026,9 @@ class AddonSettingsComponent extends React.Component {
             e.preventDefault();
         }
     }
+    handleItemSelect() {
+        // doesn't do anything right now
+    }
     
     render() {
         const addonState = Object.entries(supportedAddons).map(([id, manifest]) => ({
