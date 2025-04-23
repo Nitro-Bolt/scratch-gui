@@ -1,4 +1,4 @@
-@import "../../css/colors.css";
+/*@import "../../css/colors.css";*/
 
 .stop-all {
     width: 2rem;
@@ -10,7 +10,7 @@
 }
 
 .stop-all:hover {
-    background-color: $motion-light-transparent;
+    background-color: hsla(7, 82%, 58%, 0.15);
 }
 
 .stop-all {

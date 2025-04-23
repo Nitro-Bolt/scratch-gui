@@ -1,4 +1,4 @@
-@import "../../css/colors.css";
+/*@import "../../css/colors.css";*/
 
 .pause-btn {
     width: 2rem;
@@ -11,5 +11,5 @@
 }
 
 .pause-btn:hover {
-    background-color: $motion-light-transparent;
+    background-color: hsla(49, 100%, 50%, 0.15);
 }
