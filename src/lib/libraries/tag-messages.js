@@ -221,4 +221,19 @@ export default defineMessages({
         description: 'Tag for filtering a library by monster sounds.',
         id: 'gui.libraryTags.monster'
     },
+    theme: {
+        defaultMessage: 'Theme',
+        description: 'Tag for filtering a library by theme.',
+        id: 'gui.libraryTags.theme'
+    },
+    recommended: {
+        defaultMessage: 'Recommended',
+        description: 'Tag for filtering a library by recommended.',
+        id: 'gui.libraryTags.recommended'
+    },
+    beta: {
+        defaultMessage: 'Beta',
+        description: 'Tag for filtering a library by beta.',
+        id: 'gui.libraryTags.beta'
+    },
 });

@@ -37,6 +37,9 @@ import styles from './settings.css';
 import '../polyfill';
 import '../../lib/normalize.css';
 
+import LibraryComponent from '../../../components/library/library.jsx';
+import addonTags from './addon-tags.js';
+
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
 /* eslint-disable react/no-multi-comp */
@@ -1032,7 +1035,7 @@ class AddonSettingsComponent extends React.Component {
             id,
             manifest
         }));
-        return (
+        return (//gg
             <div className={styles.container}>
                 <div className={styles.header}>
                     <div className={styles.section}>
@@ -1069,6 +1072,18 @@ class AddonSettingsComponent extends React.Component {
                         />
                     )}
                 </div>
+                <LibraryComponent
+                    data={addonState}
+                    filterable={true}
+                    tags={addonTags}
+                    id="addonSettingsComponent"
+                    actor="AddonSettingsComponent"
+                    header={"Addons"}
+                    title={`${settingsTranslations.title} - DinosaurMod`}
+                    visible={this.props.visible}
+                    onItemSelected={this.handleItemSelect}
+                    onRequestClose={this.props.onRequestClose}
+                />
                 <div className={styles.addons}>
                     {!this.state.loading && (
                         <div className={styles.section}>
@@ -1122,6 +1137,8 @@ class AddonSettingsComponent extends React.Component {
     }
 }
 AddonSettingsComponent.propTypes = {
+    onRequestClose: PropTypes.func,
+    visible: PropTypes.bool,
     onExportSettings: PropTypes.func
 };
 

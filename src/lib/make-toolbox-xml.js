@@ -1523,7 +1523,7 @@ const operators = function (isInitialSetup) {
 
 const selectors = function () {
     return `
-    <category name="Menus" id="selectors" colour="#C6D226" secondaryColour="#A2AB1F">
+    <category name="%{BKY_CATEGORY_MENUS}" id="selectors" colour="#C6D226" secondaryColour="#A2AB1F">
         <label text="Motion Menus"></label>
         <block type="motion_goto_menu"/>
         <block type="motion_pointtowards_menu"/>
