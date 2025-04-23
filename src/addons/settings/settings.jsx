@@ -1154,11 +1154,13 @@ AddonSettingsComponent.propTypes = {
     onExportSettings: PropTypes.func
 };
 
-ReactDOM.render(
+const container = document.getElementById('app');
+const root = ReactDOM.createRoot(container);
+
+root.render(
     <Provider store={ReduxStore}>
       <AddonSettingsComponent />
-    </Provider>,
-    document.getElementById('root')
+    </Provider>
 );
 
 export default AddonSettingsComponent;
