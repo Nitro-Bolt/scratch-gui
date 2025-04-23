@@ -38,8 +38,8 @@ import styles from './settings.css';
 import '../polyfill';
 import '../../lib/normalize.css';
 
-import LibraryComponent from '../../components/library/library.jsx';
-import addonTags from './addon-tags.js';
+//import LibraryComponent from '../../components/library/library.jsx';
+//import addonTags from './addon-tags.js';
 
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
@@ -1078,8 +1078,8 @@ class AddonSettingsComponent extends React.Component {
                         />
                     )}
                 </div>
-                <LibraryComponent
-                    data={}
+                {/*<LibraryComponent
+                    data={addonState}
                     filterable={true}
                     tags={addonTags}
                     id="addonSettingsComponent"
@@ -1089,7 +1089,7 @@ class AddonSettingsComponent extends React.Component {
                     visible={this.props.visible}
                     onItemSelected={this.handleItemSelect}
                     onRequestClose={this.props.onRequestClose}
-                />
+                />*/}
                 <div className={styles.addons}>
                     {!this.state.loading && (
                         <div className={styles.section}>
