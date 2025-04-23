@@ -59,7 +59,7 @@ const base = {
         alias: {
             'text-encoding$': path.resolve(__dirname, 'src/lib/tw-text-encoder'),
             'scratch-render-fonts$': path.resolve(__dirname, 'src/lib/tw-scratch-render-fonts'),
-            '@turbowarp/scratch-storage': require.resolve('scratch-storage')
+            '@turbowarp/scratch-storage': path.resolve(__dirname, 'node_modules/scratch-storage')
         }
     },
     node: {
