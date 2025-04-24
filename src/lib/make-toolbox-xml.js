@@ -1060,6 +1060,7 @@ const sensing = function (isInitialSetup, isStage, targetId) {
 const operators = function (isInitialSetup) {
     const apple = translate('OPERATORS_JOIN_APPLE', 'apple');
     const banana = translate('OPERATORS_JOIN_BANANA', 'banana');
+    const pear = translate('OPERATORS_JOIN_PEAR', 'pear');
     const letter = translate('OPERATORS_LETTEROF_APPLE', 'a');
     return `
     <category name="%{BKY_CATEGORY_OPERATORS}" id="operators" colour="#40BF4A" secondaryColour="#389438">
@@ -1286,7 +1287,7 @@ const operators = function (isInitialSetup) {
                 </value>
                 <value name="STRING3">
                     <shadow type="text">
-                        <field name="TEXT">pear</field>
+                        <field name="TEXT">${pear}</field>
                     </shadow>
                 </value>
             </block>
