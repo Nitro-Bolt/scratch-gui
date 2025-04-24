@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+//import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -42,8 +42,8 @@ import '../../lib/normalize.css';
 
 import ReduxStore from '../settings-store-redux-store';
 
-import LibraryComponent from '../../components/library/library.jsx';
-import addonTags from './addon-tags.js';
+//import LibraryComponent from '../../components/library/library.jsx';
+//import addonTags from './addon-tags.js';
 
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
@@ -1082,7 +1082,7 @@ class AddonSettingsComponent extends React.Component {
                         />
                     )}
                 </div>
-                <LibraryComponent
+                {/*<LibraryComponent
                     data={addonState}
                     filterable={true}
                     tags={addonTags}
@@ -1093,7 +1093,7 @@ class AddonSettingsComponent extends React.Component {
                     visible={this.props.visible}
                     onItemSelected={this.handleItemSelect}
                     onRequestClose={this.props.onRequestClose}
-                />
+                />*/}
                 <div className={styles.addons}>
                     {!this.state.loading && (
                         <div className={styles.section}>
@@ -1154,6 +1154,7 @@ AddonSettingsComponent.propTypes = {
     onExportSettings: PropTypes.func
 };
 
+/*
 const container = document.getElementById('app');
 
 ReactDOM.render(
@@ -1162,5 +1163,6 @@ ReactDOM.render(
     </Provider>,
     container
 );
+*/
 
 export default AddonSettingsComponent;
