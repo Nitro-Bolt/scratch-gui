@@ -34,13 +34,7 @@ const isLoaded = () => !!_ScratchBlocks && (isNameUrMom() === wasNameYourmom());
 const isLoaded2 = () => !!_ScratchBlocks && (isNameJurassicPark() === wasNameJurassicPark());
 
 const get = () => {
-    if (!isLoaded()) {
-        throw new Error('scratch-blocks is not loaded yet');
-    }
-    return _ScratchBlocks;
-};
-const get2 = () => {
-    if (!isLoaded2()) {
+    if (!isLoaded() && !isLoaded2()) {
         throw new Error('scratch-blocks is not loaded yet');
     }
     return _ScratchBlocks;
@@ -155,8 +149,6 @@ const load = () => {
 
             return _ScratchBlocks;
         });
-};
-const load2 = () => {
     if (_ScratchBlocks && (isNameJurassicPark() === wasNameJurassicPark())) {
         return Promise.resolve();
     }
@@ -244,7 +236,6 @@ const load2 = () => {
 
 export default {
     get,
-    get2,
     isLoaded,
     isLoaded2,
     isNameUrMom,
@@ -252,5 +243,4 @@ export default {
     wasNameYourmom,
     wasNameJurassicPark,
     load,
-    load2,
 };

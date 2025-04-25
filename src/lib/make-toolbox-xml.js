@@ -819,6 +819,7 @@ const control = function (isInitialSetup, isStage) {
                 </value>
             </block>
             <block type="control_delete_this_clone"/>
+            <block type="control_is_clone"/>
         `}
             ${blockSeparator}
             <block type="control_get_counter"/>
