@@ -7,6 +7,7 @@ export default async function ({ addon, global, console }) {
         document.querySelectorAll(".customFont").forEach(function (el) {
             el.remove();
         });
+        console.log("Font is disabled")
     }
     
     async function changeFont() {
@@ -29,6 +30,11 @@ export default async function ({ addon, global, console }) {
                     .replaceAll("}", "")}', sans-serif;
             }
         `;
-        document.body.appendChild(style);
+        try {
+            document.body.appendChild(style);
+            console.log("Appended" + style + "to body")
+        } catch (err) {
+            console.error(err)
+        }
     }
 }
