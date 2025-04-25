@@ -17,7 +17,8 @@ const manifest = {
       }
     ],
     "tags": [
-      "new"
+      "new",
+      "theme"
     ],
     "enabledByDefault": false,
     "settings": [

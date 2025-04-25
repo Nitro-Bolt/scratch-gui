@@ -291,6 +291,10 @@ class SettingsStore extends EventTargetShim {
                 if (!settingObject.potentialValues.some(potentialValue => potentialValue.id === value)) {
                     throw new Error('Setting value is invalid.');
                 }
+            } else if (settingObject.type === 'string') {
+                if (typeof value !== 'string') {
+                    throw new Error('Setting value is invalid.');
+                }
             } else {
                 throw new Error('Setting object is of unknown type');
             }
