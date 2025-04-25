@@ -167,7 +167,7 @@ const load2 = () => {
                     if (
                         !fieldList[0] ||
                         !fieldList[0].getValue ||
-                        fieldList[0].getValue() !== 'JURASSIC PARK'
+                        fieldList[0].getValue() !== 'jurassic Park'
                     ) {
                         for (const field of fieldList) {
                             for (const propName in field) {
@@ -213,7 +213,7 @@ const load2 = () => {
                         if (oldLoad) oldLoad.call(this, dom);
                         if (this.inputList.length < 1 || this.inputList[0].name !== 'jurassicPark') {
                             this.appendDummyInput('jurassicPark')
-                                .appendField('JURASSIC PARK')
+                                .appendField('jurassic Park')
                                 .appendField(new _ScratchBlocks.FieldImage(
                                     'https://cdn.freebiesupply.com/logos/large/2x/jurassic-park-2-logo-png-transparent.png',
                                     15,
@@ -225,7 +225,7 @@ const load2 = () => {
                         if (this.inputList.length > 1) {
                             this.moveInputBefore('jurassicPark', this.inputList[0].name);
                         }
-                        this.setColour('#000000');
+                        this.setColour('#00FF00');
                         this.setTooltip('jurassic Park :dino:');
                         this.setHelpUrl('https://i.giphy.com/media/TFxYl2lYJEu9kY1lEb/giphy.webp');
                     };
