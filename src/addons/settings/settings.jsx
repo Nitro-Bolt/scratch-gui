@@ -435,6 +435,17 @@ const Setting = ({
                     />
                 </React.Fragment>
             )}
+            {setting.type === 'string' && (
+                <React.Fragment>
+                    {label}
+                    <TextInput
+                        id={uniqueId}
+                        type="string"
+                        value={value}
+                        onChange={newValue => SettingsStore.setAddonSetting(addonId, settingId, newValue)}
+                    />
+                </React.Fragment>
+            )}
         </div>
     );
 };

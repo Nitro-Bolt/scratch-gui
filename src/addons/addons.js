@@ -72,6 +72,7 @@ const addons = [
 ];
 
 const newAddons = [
+    'custom-web-font',
     'expanded-backpack',
     'editor-create-music',
     'vol-slider',
