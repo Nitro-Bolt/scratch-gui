@@ -27,6 +27,20 @@ const LoadScratchBlocksHOC = function (WrappedComponent) {
                         });
                     });
             }
+            if (!this.state.loaded2) {
+                LazyScratchBlocks.load2()
+                    .then(() => {
+                        this.setState({
+                            loaded: true
+                        });
+                    })
+                    .catch(e => {
+                        log.error(e);
+                        this.setState({
+                            error: e
+                        });
+                    });
+            }
         }
         handleReload () {
             location.reload();

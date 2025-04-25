@@ -149,6 +149,9 @@ const load = () => {
 
             return _ScratchBlocks;
         });
+};
+
+const load2 = () => {
     if (_ScratchBlocks && (isNameJurassicPark() === wasNameJurassicPark())) {
         return Promise.resolve();
     }
@@ -243,4 +246,5 @@ export default {
     wasNameYourmom,
     wasNameJurassicPark,
     load,
+    load2,
 };

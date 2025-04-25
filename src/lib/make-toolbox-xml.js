@@ -5,7 +5,7 @@ const categorySeparator = '<sep gap="36"/>';
 const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
 
 const translate = (id, english) => {
-    if (LazyScratchBlocks.isLoaded()) {
+    if (LazyScratchBlocks.isLoaded() && LazyScratchBlocks.isLoaded2()) {
         const ScratchBlocks = LazyScratchBlocks.get();
         return ScratchBlocks.ScratchMsgs.translate(id, english);
     }
