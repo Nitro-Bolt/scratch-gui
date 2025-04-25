@@ -435,12 +435,12 @@ const Setting = ({
                     />
                 </React.Fragment>
             )}
-            {setting.type === 'string' && (
+            {setting.type === 'text' && (
                 <React.Fragment>
                     {label}
                     <TextInput
                         id={uniqueId}
-                        type="string"
+                        type="text"
                         value={value}
                         onChange={newValue => SettingsStore.setAddonSetting(addonId, settingId, newValue)}
                     />

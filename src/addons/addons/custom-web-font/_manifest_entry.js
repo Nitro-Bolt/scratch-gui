@@ -17,8 +17,8 @@ const manifest = {
       }
     ],
     "tags": [
-      "new",
-      "theme"
+      "theme",
+      "new"
     ],
     "enabledByDefault": false,
     "settings": [
@@ -26,7 +26,7 @@ const manifest = {
         "dynamic": true,
         "name": "Font Name",
         "id": "webFont",
-        "type": "string",
+        "type": "text",
         "default": ""
       }
     ],
