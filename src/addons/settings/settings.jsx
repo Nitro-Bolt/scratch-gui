@@ -1045,7 +1045,7 @@ class AddonSettingsComponent extends React.Component {
             manifest
         }));
         return (
-          <IntlProvider locale="en" messages={{}}>
+          {/*<IntlProvider locale="en" messages={{}}>*/}
             <div className={styles.container}>
                 <div className={styles.header}>
                     <div className={styles.section}>
@@ -1143,7 +1143,7 @@ class AddonSettingsComponent extends React.Component {
                     )}
                 </div>
             </div>
-          </IntlProvider>
+          {/*</IntlProvider>*/}
         );
     }
 
