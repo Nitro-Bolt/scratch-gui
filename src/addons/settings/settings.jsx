@@ -17,7 +17,7 @@
 import React from 'react';
 //import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { IntlProvider } from 'react-intl';
+//import { IntlProvider } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
