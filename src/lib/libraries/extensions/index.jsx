@@ -857,6 +857,14 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'Typable Tab Key',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/typable-tab-character.js',
+        iconURL: defaultExtensionIcon,
+        tags: ['dinosaurmod'],
+        description: 'Gives the ability of typing the tab character.',
+        featured: true
+    },
+    {
         name: 'Runtime Modifications',
         extensionId: 'jgRuntime',
         tags: ['penguinmod'],
