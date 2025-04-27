@@ -1296,6 +1296,43 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'Arrays',
+        extensionId: 'jwArray',
+        iconURL: 'https://studio.penguinmod.com/static/assets/21a46a49b55befa73d6b8352e2795d6f.svg',
+        tags: ['penguinmod', 'datamgmt'],
+        description: 'Store data efficiently in multi-purpose arrays.',
+        extDeveloper: 'jwklong',
+        featured: true
+    },
+    {
+        name: 'Targets',
+        extensionId: 'jwTargets',
+        iconURL: 'https://studio.penguinmod.com/static/assets/174cbb7cc72418e5f095e0b734ceed1d.svg',
+        tags: ['penguinmod'],
+        description: 'Direct access to sprites and their clones.',
+        extDeveloper: 'jwklong',
+        featured: true
+    },
+    {
+        name: 'Infinity',
+        extensionId: 'jwNum',
+        iconURL: 'https://studio.penguinmod.com/static/assets/03562df738acb5b29670d58970eb432f.svg',
+        tags: ['penguinmod'],
+        description: 'Advanced number type capable of really big numbers.',
+        extDeveloper: 'jwklong',
+        credits: 'Naruyoko for ExpantaNum.js',
+        featured: true
+    },
+    {
+        name: 'Color',
+        extensionId: 'jwColor',
+        iconURL: 'https://studio.penguinmod.com/static/assets/88ab038784badd192df6bd931d7c2e40.svg',
+        tags: ['penguinmod', 'graphics'],
+        description: 'Utilities for anything involving colors.',
+        extDeveloper: 'jwklong',
+        featured: true
+    },
+    {
         name: (
             <FormattedMessage
                 defaultMessage="TurboWarp Blocks"
