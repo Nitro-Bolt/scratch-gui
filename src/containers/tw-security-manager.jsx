@@ -61,6 +61,7 @@ const isAlwaysTrustedForFetching = parsed => (
     // GitHub API
     // GitHub Pages allows redirects, so not included here.
     parsed.origin === 'https://raw.githubusercontent.com' ||
+    parsed.origin === 'https://gist.githubusercontent.com' ||
     parsed.origin === 'https://api.github.com' ||
 
     // GitLab API

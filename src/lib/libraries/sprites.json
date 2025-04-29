@@ -2028,6 +2028,41 @@
         "blocks": {}
     },
     {
+        "name": "Cat 2",
+        "tags": [
+            "cat",
+            "kitty",
+            "kitten",
+            "animals",
+            "mammal"
+        ],
+        "isStage": false,
+        "variables": {},
+        "costumes": [
+            {
+                "assetId": "7499cf6ec438d0c7af6f896bc6adc294",
+                "name": "cat 2",
+                "bitmapResolution": 1,
+                "md5ext": "7499cf6ec438d0c7af6f896bc6adc294.svg",
+                "dataFormat": "svg",
+                "rotationCenterX": 87,
+                "rotationCenterY": 39
+            }
+        ],
+        "sounds": [
+            {
+                "assetId": "cf51a0c4088942d95bcc20af13202710",
+                "name": "meow2",
+                "dataFormat": "wav",
+                "format": "",
+                "rate": 44100,
+                "sampleCount": 26048,
+                "md5ext": "cf51a0c4088942d95bcc20af13202710.wav"
+            }
+        ],
+        "blocks": {}
+    },
+    {
         "name": "Catcher",
         "tags": [
             "baseball",

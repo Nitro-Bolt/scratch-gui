@@ -102,7 +102,7 @@ class SB3Downloader extends React.Component {
                     {
                         description: 'Scratch 3 Project',
                         accept: {
-                            'application/x.scratch.sb3': '.sb3'
+                            'application/octet-stream': '.sb3'
                         }
                     }
                 ],

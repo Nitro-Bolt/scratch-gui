@@ -82,7 +82,9 @@ const SBFileUploaderHOC = function (WrappedComponent) {
                                 {
                                     description: 'Scratch Project',
                                     accept: {
-                                        'application/x.scratch.sb3': ['.sb', '.sb2', '.sb3']
+                                        // Using application/x.scratch.sb3 as done in scratch-vm causes file pickers
+                                        // to disallow picking any items in Chrome 133 on Android.
+                                        'application/octet-stream': ['.sb', '.sb2', '.sb3']
                                     }
                                 }
                             ]

@@ -1072,7 +1072,7 @@ class QueryInfo {
     /** @type {WorkspaceQuerier} */
     this.querier = querier;
     /** @type {string} The query */
-    this.str = query.replaceAll(String.fromCharCode(160), " ");
+    this.str = query.replace(/\u00a0/g, " ");
     /** @type {string} A lowercase version of the query. Used for case insensitive comparisons. */
     this.lowercase = this.str.toLowerCase();
     /** @type {number} A unique identifier for this query */

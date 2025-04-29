@@ -37,7 +37,7 @@ export function modifiedCreateAllInputs(connectionMap) {
   }
 
   // remove all traces of %l at the earliest possible time
-  this.procCode_ = this.procCode_.replaceAll("%l ", "");
+  this.procCode_ = this.procCode_.replace(/%l /g, "");
 }
 
 //https://github.com/scratchfoundation/scratch-blocks/blob/f210e042988b91bcdc2abeca7a2d85e178edadb2/blocks_vertical/procedures.js#L565
