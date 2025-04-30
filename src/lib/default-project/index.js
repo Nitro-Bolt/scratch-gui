@@ -37,7 +37,7 @@ const defaultProject = translator => {
         dataFormat: 'SVG',
         data: encoder.encode(backdrop)
     }, {
-        id: '5c4e7a086a712d6f4b4c575bc0704e5e',
+        id: '4d45a484633a5369e85831f9cb9c7a4e',
         assetType: 'ImageVector',
         dataFormat: 'SVG',
         data: encoder.encode(costume1)
