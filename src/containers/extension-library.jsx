@@ -133,12 +133,6 @@ class ExtensionLibrary extends React.PureComponent {
             return;
         }
 
-        if (extensionId === 'procedures_enable_return') {
-            this.props.onEnableProcedureReturns();
-            this.props.onCategorySelected('myBlocks');
-            return;
-        }
-
         const url = item.extensionURL ? item.extensionURL : extensionId;
         if (!item.disabled) {
             if (this.props.vm.extensionManager.isExtensionLoaded(extensionId)) {
@@ -195,7 +189,6 @@ class ExtensionLibrary extends React.PureComponent {
 ExtensionLibrary.propTypes = {
     intl: intlShape.isRequired,
     onCategorySelected: PropTypes.func,
-    onEnableProcedureReturns: PropTypes.func,
     onOpenCustomExtensionModal: PropTypes.func,
     onRequestClose: PropTypes.func,
     visible: PropTypes.bool,
