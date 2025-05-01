@@ -339,7 +339,7 @@ export default [
         name: (
             <FormattedMessage
                 defaultMessage="{APP_NAME} Blocks"
-                description="Name of the strange 'TurboWarp Blocks' extension"
+                description="Name of the strange 'NitroBolt Blocks' extension"
                 id="tw.twExtension.name"
                 values={{
                     APP_NAME
@@ -351,12 +351,12 @@ export default [
         description: (
             <FormattedMessage
                 defaultMessage="Weird new blocks."
-                description="Description of the strange 'TurboWarp Blocks' extension"
+                description="Description of the strange 'NitroBolt Blocks' extension"
                 id="tw.twExtension.description"
             />
         ),
         incompatibleWithScratch: true,
-        tags: ['tw'],
+        tags: ['nb'],
         featured: true
     },
     {
@@ -376,7 +376,7 @@ export default [
                 id="tw.customExtension.description"
             />
         ),
-        tags: ['tw'],
+        tags: ['nb', 'tw'],
         featured: true
         // Not marked as incompatible with Scratch so that clicking on it doesn't show a prompt
     }
