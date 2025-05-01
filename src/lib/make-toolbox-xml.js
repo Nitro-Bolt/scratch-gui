@@ -949,7 +949,7 @@ const comments = function (colors) {
 };
 
 // eslint-disable-next-line max-len
-const nbBlocksColours = `colourmutprimary="#ff5726" colourmutsecondary="#e64f23" colourmuttertiary="#e63e0d" colourmutquaternary="#e63e0d"`;
+const nbBlocksColours = `colourmutprimary="#ff5726" colourmutsecondary="#f34b1a" colourmuttertiary="#e63e0d" colourmutquaternary="#e63e0d"`;
 // eslint-disable-next-line max-len
 const extraNitroBoltBlocks = `
 <block type="argument_reporter_boolean"><field name="VALUE">is compiled?</field><mutation ${nbBlocksColours}></mutation></block>
