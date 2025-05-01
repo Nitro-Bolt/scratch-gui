@@ -1056,7 +1056,8 @@ makeToolboxXML.exports = {
   blockSeparator,
   xmlOpen,
   xmlClose,
-  extraTurboWarpBlocks,
+  nbBlocksColours,
+  extraNitroBoltBlocks,
 
   motion,
   looks,
