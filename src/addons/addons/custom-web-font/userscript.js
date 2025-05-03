@@ -8,41 +8,27 @@ export default async function ({ addon, global, console }) {
             el.remove();
         });
     }
-
+    
     async function changeFont() {
         disableFont()
 
         const font = addon.settings.get("webFont")
-        const fontSource = addon.settings.get("fontsource")
-        var style = document.createElement("style")
+        var style = document.createElement("style");
         style.className = "customFont";
-
-        if (fontSource === 'penguinmod') {
-            style.innerHTML = `
-                :not(code) {
-                    font-family: '${font
-                        .replaceAll("\\", "")
-                        .replaceAll("'", "")
-                        .replaceAll("}", "")
-                        .toUpperCase()}', sans-serif;
-                }
-            `;
-        } else if (fontSource === 'google') {
-            const safeFont = font
+        style.innerHTML = `
+            @import url('https://fonts.googleapis.com/css2?family=${font
                 .replaceAll(")", "")
                 .replaceAll("'", "")
                 .replaceAll("}", "")
-                .replaceAll(" ", "+");
+                .replaceAll(" ", "+")}:wght@200;300;400;500;600;700&display=swap');
 
-            style.innerHTML = `
-                @import url('https://fonts.googleapis.com/css2?family=${safeFont}:wght@200;300;400;500;600;700&display=swap');
-
-                :not(code) {
-                    font-family: '${font}', sans-serif;
-                }
-            `;
-        }
-        
+            :not(code) {
+                font-family: '${font
+                    .replaceAll("\\", "")
+                    .replaceAll("'", "")
+                    .replaceAll("}", "")}', sans-serif;
+            }
+        `;
         document.body.appendChild(style);
     }
 
