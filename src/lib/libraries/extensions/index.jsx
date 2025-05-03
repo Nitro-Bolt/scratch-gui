@@ -1611,6 +1611,15 @@ const menuItems = [
         disabled: false
     },
     {
+        name: 'ExtForge',
+        href: 'https://jwklong.github.io/extforge/',
+        extensionId: 'special_extforge',
+        iconURL: 'https://studio.penguinmod.com/static/assets/49a8736bf7fbb79e2469272f127e06d3.svg',
+        description: 'Create extensions with a block-based UI.',
+        extDeveloper: 'jwklong',
+        featured: true,
+    },
+    {
         // not really an extension, but it's easiest to present it as one
         name: (
             <FormattedMessage
