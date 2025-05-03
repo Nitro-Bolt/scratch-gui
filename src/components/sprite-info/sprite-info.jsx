@@ -175,11 +175,7 @@ class SpriteInfo extends React.Component {
                         {xPosition}
                         {yPosition}
                     </div>
-                    <div className={classNames(styles.row, styles.rowTertiary)}>
-                        <div className={styles.group}>
-                            
-                        </div>
-                    </div>
+                    <div className={classNames(styles.row, styles.rowTertiary)}></div>
                 </Box>
             );
         }
