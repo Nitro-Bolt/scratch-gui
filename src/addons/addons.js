@@ -75,11 +75,7 @@ const newAddons = [
     'custom-web-font',
     'expanded-backpack',
     'editor-create-music',
-    'vol-slider',
-    'number-pad',
     'rename-broadcasts',
-    'sprite-properties',
-    'paint-snap',
     'editor-block-chomping'
 ];
 
