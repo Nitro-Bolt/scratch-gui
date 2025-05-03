@@ -1288,6 +1288,16 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'JavaScript',
+        extensionId: 'jgJavascript',
+        iconURL: jgJavascriptExtensionIcon,
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
+        tags: ['penguinmod', 'programminglanguage'],
+        description: 'Run your own custom code written in JavaScript!',
+        featured: true
+    },
+    {
         name: 'Python',
         extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/python.js',
         iconURL: dmPythonIcon,
@@ -1659,16 +1669,6 @@ if (IsLocal || IsLiveTests) {
             iconURL: 'https://extensions.turbowarp.org/images/fetch.svg',
             description: "get and post stuff, i guess.",
             featured: true,
-        },
-        {
-            name: 'JavaScript',
-            extensionId: 'jgJavascript',
-            iconURL: jgJavascriptExtensionIcon,
-            insetIconURL: PenguinmodThumb,
-            customInsetColor: '#00c3ff',
-            tags: ['penguinmod', 'programminglanguage'],
-            description: 'This Extension has been merged into the main toolbox. Run your own custom code written in JavaScript!',
-            featured: true
         },
         {
             name: 'Easy Save',

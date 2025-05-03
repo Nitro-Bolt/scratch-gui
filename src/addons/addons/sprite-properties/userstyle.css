@@ -24,9 +24,11 @@
      + 2rem + 2px (.icon-wrappers in the first row)
      + 0.5rem (margin between rows)
      + 2rem + 2px (.icon-wrappers in the second row)
+     + 0.5rem (margin between rows)
+     + 2rem + 2px (.icon-wrappers in the third row)
      + 1.25rem (close button)
      + 1px (bottom border) */
-  height: calc(6.5rem + 5px);
+  height: calc(8.5rem + 7px);
   padding: 0.75rem;
   padding-bottom: 0;
 }
@@ -34,7 +36,7 @@
   /* In wide languages, add in addition to the previous:
      + 2 * 0.625rem * 1.2 (each row's text label now uses vertical space)
      + 2 * 0.25rem (each row has extra padding) */
-  height: calc(6.5rem + 5px + 2rem);
+  height: calc(8.5rem + 7px + 2rem);
 }
 [class^="label_input-group-column_"] {
   /* Default line-height: normal is inconsistent across browsers, but above style needs constant line-height. */
@@ -43,10 +45,10 @@
 
 /* see heights in above selectors */
 .sa-show-sprite-properties [class^="sprite-selector_scroll-wrapper_"] {
-  height: calc(100% - 6.5rem - 5px);
+  height: calc(100% - 8.5rem - 7px);
 }
 .sa-sprite-properties-wide-locale.sa-show-sprite-properties [class^="sprite-selector_scroll-wrapper_"] {
-  height: calc(100% - 6.5rem - 5px - 2rem);
+  height: calc(100% - 8.5rem - 7px - 2rem);
 }
 
 .sa-sprite-properties-info-btn {

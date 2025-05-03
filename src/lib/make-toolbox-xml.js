@@ -656,14 +656,6 @@ const events = function (isInitialSetup, isStage) {
             </value>
         </block>
         ${blockSeparator}
-        <block type="event_whenjavascript">
-            <value name="JS">
-                <shadow type="text">
-                    <field name="TEXT">false</field>
-                </shadow>
-            </value>
-        </block>
-        ${blockSeparator}
         <block type="event_whenbroadcastreceived">
         </block>
         <block type="event_broadcast">
@@ -784,14 +776,6 @@ const control = function (isInitialSetup, isStage) {
         <block type="control_run_as_sprite">
             <value name="RUN_AS_OPTION">
                 <shadow type="control_run_as_sprite_menu"/>
-            </value>
-        </block>
-        ${blockSeparator}
-        <block type="control_javascript_command">
-            <value name="JS">
-                <shadow type="text">
-                    <field name="TEXT">alert('hello!')</field>
-                </shadow>
             </value>
         </block>
         ${blockSeparator}
@@ -1469,21 +1453,6 @@ const operators = function (isInitialSetup) {
             </value>
         </block>
         ${blockSeparator}
-        <block type="operator_javascript_output">
-            <value name="JS">
-                <shadow type="text">
-                    <field name="TEXT">Math.random()</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="operator_javascript_boolean">
-            <value name="JS">
-                <shadow type="text">
-                    <field name="TEXT">Math.round(Math.random()) === 1</field>
-                </shadow>
-            </value>
-        </block>
-        ${blockSeparator}
         <label text="Inputs"></label>
         <block type="operator_stringify">
             <value name="ONE">
@@ -1567,7 +1536,7 @@ const variables = function () {
 const lists = function () {
     return `
     <category
-        name="Lists"
+        name="%{BKY_CATEGORY_LISTS}"
         id="lists"
         colour="#FF661A"
         secondaryColour="#FF5500"
