@@ -18,12 +18,15 @@ import VM from 'scratch-vm';
 
 const availableModes = opcode => (
     monitorModes.filter(t => {
-        if (opcode === 'data_variable') {
-            return t !== 'list';
-        } else if (opcode === 'data_listcontents') {
-            return t === 'list';
+        switch (opcode) {
+            case 'data_variable':
+                return t !== 'list' && t !== 'table';
+            case 'data_listcontents':
+                return t === 'list';
+            case 'data_tablecontents':
+                return t === 'table';
         }
-        return t !== 'slider' && t !== 'list';
+        return t !== 'slider' && t !== 'list' && t !== 'table';
     })
 );
 
@@ -205,6 +208,7 @@ class Monitor extends React.Component {
         const monitorProps = monitorAdapter(this.props);
         const showSliderOption = availableModes(this.props.opcode).indexOf('slider') !== -1;
         const isList = this.props.mode === 'list';
+        const isTable = this.props.mode === 'table';
         return (
             <React.Fragment>
                 {this.state.sliderPrompt && <SliderPrompt
@@ -228,12 +232,12 @@ class Monitor extends React.Component {
                     theme={this.props.theme}
                     width={this.props.width}
                     onDragEnd={this.handleDragEnd}
-                    onExport={isList ? this.handleExport : null}
-                    onImport={isList ? this.handleImport : null}
+                    onExport={(isList || isTable) ? this.handleExport : null}
+                    onImport={(isList || isTable) ? this.handleImport : null}
                     onHide={this.handleHide}
                     onNextMode={this.handleNextMode}
-                    onSetModeToDefault={isList ? null : this.handleSetModeToDefault}
-                    onSetModeToLarge={isList ? null : this.handleSetModeToLarge}
+                    onSetModeToDefault={(isList || isTable) ? null : this.handleSetModeToDefault}
+                    onSetModeToLarge={(isList || isTable) ? null : this.handleSetModeToLarge}
                     onSetModeToSlider={showSliderOption ? this.handleSetModeToSlider : null}
                     onSliderPromptOpen={this.handleSliderPromptOpen}
                 />
@@ -251,7 +255,7 @@ Monitor.propTypes = {
     isDiscrete: PropTypes.bool,
     max: PropTypes.number,
     min: PropTypes.number,
-    mode: PropTypes.oneOf(['default', 'slider', 'large', 'list']),
+    mode: PropTypes.oneOf(['default', 'slider', 'large', 'list', 'table']),
     monitorLayout: PropTypes.shape({
         monitors: PropTypes.object, // eslint-disable-line react/forbid-prop-types
         savedMonitorPositions: PropTypes.object // eslint-disable-line react/forbid-prop-types
@@ -271,7 +275,13 @@ Monitor.propTypes = {
         PropTypes.arrayOf(PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.number
-        ]))
+        ])),
+        PropTypes.arrayOf(
+            PropTypes.arrayOf(
+                PropTypes.oneOfType([
+                    PropTypes.number,
+                    PropTypes.string
+        ])))
     ]), // eslint-disable-line react/no-unused-prop-types
     vm: PropTypes.instanceOf(VM),
     width: PropTypes.number,

@@ -7,13 +7,16 @@ const sanitize = (input) => {
 }
 
 const sanitizeVariableType = (input, type) => {
-  if (type === "list") {
+  switch (type) {
+    case "table":
+      return [[1,3,5],[2,4,6],[0,0,0]]; // Test
+    case "list":
       const sanitizedList = [];
       for (const item of input) {
         sanitizedList.push(sanitize(item));
       }
       return sanitizedList;
-  } else {
+    default:
       return sanitize(input);
   }
 }

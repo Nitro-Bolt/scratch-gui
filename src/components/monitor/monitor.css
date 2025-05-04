@@ -186,3 +186,37 @@
 .footer-length {
     text-align: center;
 }
+
+.table-column-tag {
+    font-weight: bold;
+    color: $text-primary-default;
+    margin: 0 3px;
+    height: 15px;
+    min-width: 40px;
+}
+
+.table-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2px;
+    flex-shrink: 0;
+    transform: translateZ(0); /* Keep sharp when scaled */
+}
+
+.table-value {
+    min-width: 80px;
+    text-align: left;
+    margin: 0 3px;
+    border-radius: calc($space / 2);
+    border: 1px solid $ui-black-transparent-default;
+    height: 22px;
+}
+
+.footer-hidden {
+    visibility: hidden;
+}
+
+.overflowx {
+    overflow-x: auto;
+}
