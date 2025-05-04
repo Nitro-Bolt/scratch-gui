@@ -211,6 +211,15 @@ const soundUpload = function (fileData, fileType, storage, handleSound, handleEr
         soundFormat = storage.DataFormat.WAV;
         break;
     }
+    case 'audio/ogg': {
+        soundFormat = storage.DataFormat.OGG;
+        break;
+    }
+    case 'audio/x-flac':
+    case 'audio/flac': {
+        soundFormat = storage.DataFormat.FLAC;
+        break;
+    }
     default:
         convertAudioToWav(fileData)
             .then(fixed => {

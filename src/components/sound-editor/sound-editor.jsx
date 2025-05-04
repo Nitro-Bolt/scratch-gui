@@ -394,6 +394,7 @@ const SoundEditor = props => (
             <div className={styles.advancedInfo}>
                 {props.sampleRate}
                 {'Hz '}
+                {`${String(props.dataFormat).toUpperCase()} `}
                 {props.isStereo ? (
                     <FormattedMessage
                         defaultMessage="Stereo"
@@ -414,11 +415,29 @@ const SoundEditor = props => (
         {props.size >= SOUND_BYTE_LIMIT && (
             <div className={classNames(styles.alert, styles.tooLarge)}>
                 <FormattedMessage
-                    defaultMessage="This sound may be too large to upload to Scratch."
-                    description="Message that appears when a sound exceeds the Scratch sound size limit."
+                    defaultMessage="This sound may be too large to upload to Penguinmod or Scratch."
+                    description="Message that appears when a sound exceeds the PM/SCR sound size limit."
                     id="tw.tooLarge"
                 />
             </div>
+        )}
+        {(props.dataFormat === "mp3" || props.dataFormat === "ogg" || props.dataFormat === "flac") && (
+             <div className={classNames(styles.alert, styles.stereo)}>
+                 <FormattedMessage
+                     defaultMessage="Editing this sound will irreversibly convert it to a much larger, WAV format sound."
+                     description="Message that appears when editing an mp3, ogg or flac sound."
+                     id="pm.formatAlert"
+                 />
+             </div>
+        )}
+        {(props.dataFormat === "ogg") && (
+             <div className={classNames(styles.alert, styles.tooLarge)}>
+                 <FormattedMessage
+                     defaultMessage="Users on iOS and MacOS will need to update their browser or device to hear any OGG sounds."
+                     description="Message that appears when editing an ogg sound."
+                     id="pm.oggSafariAlert"
+                 />
+             </div>
         )}
         {props.isStereo && (
             <div className={classNames(styles.alert, styles.stereo)}>
@@ -435,6 +454,7 @@ const SoundEditor = props => (
 SoundEditor.propTypes = {
     isStereo: PropTypes.bool.isRequired,
     duration: PropTypes.number.isRequired,
+    dataFormat: PropTypes.number.isRequired,
     size: PropTypes.bool.isRequired,
     sampleRate: PropTypes.number.isRequired,
     canPaste: PropTypes.bool.isRequired,

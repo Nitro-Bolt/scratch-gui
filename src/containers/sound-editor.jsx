@@ -638,6 +638,7 @@ class SoundEditor extends React.Component {
                 duration={this.props.duration}
                 size={this.props.size}
                 sampleRate={this.props.sampleRate}
+                dataFormat={this.props.dataFormat}
                 canPaste={this.state.copyBuffer !== null}
                 canRedo={this.redoStack.length > 0}
                 canUndo={this.undoStack.length > 0}
@@ -681,6 +682,7 @@ class SoundEditor extends React.Component {
 SoundEditor.propTypes = {
     isStereo: PropTypes.bool,
     duration: PropTypes.number,
+    dataFormat: PropTypes.number,
     size: PropTypes.number,
     isFullScreen: PropTypes.bool,
     name: PropTypes.string.isRequired,
@@ -702,6 +704,7 @@ const mapStateToProps = (state, { soundIndex }) => {
         duration: sound.sampleCount / sound.rate,
         size: sound.asset ? sound.asset.data.byteLength : 0,
         soundId: sound.soundId,
+        dataFormat: sound.dataFormat,
         sampleRate: audioBuffer.sampleRate,
         samples: audioBuffer.getChannelData(0),
         isFullScreen: state.scratchGui.mode.isFullScreen,

@@ -25,6 +25,14 @@ const soundPayload = sound => {
         // line will have to change.
         payload.body = assetDataUrl.replace('data:audio/x-wav;base64,', '');
         break;
+    case 'ogg':
+        payload.mime = 'audio/ogg';
+        payload.body = assetDataUrl.replace('data:audio/x-wav;base64,', '');
+        break;
+    case 'flac':
+        payload.mime = 'audio/flac';
+        payload.body = assetDataUrl.replace('data:audio/x-wav;base64,', '');
+        break;
     default:
         alert(`Cannot serialize for format: ${assetDataFormat}`); // eslint-disable-line
     }
