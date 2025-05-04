@@ -124,7 +124,6 @@
     border-radius: 50%;
     width: 35px;
     height: 35px;
-    transition: all 0.2s;
 }
 
 .color-picker::-moz-color-swatch {
