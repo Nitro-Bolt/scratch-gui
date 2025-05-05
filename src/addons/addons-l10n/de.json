@@ -213,7 +213,7 @@
     "block-switching/sensing_touchingobject": "wird berührt",
     "block-switching/sensing_touchingcolor": "wird Farbe berührt",
     "block-switching/sensing_distanceTo": "Entfernung vom x1, y1 zur x2, y2",
-    "block-switching/sensing_directionTo": "Ricthing zu x1, y1 von x2, y2",
+    "block-switching/sensing_directionTo": "Richtung zu x1, y1 von x2, y2",
     "block-switching/sound_changeeffectby": "ändere Effekt um",
     "block-switching/sound_changevolumeby": "ändere Lautstärke um",
     "block-switching/sound_play": "Start",

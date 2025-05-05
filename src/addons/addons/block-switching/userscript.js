@@ -106,6 +106,20 @@ export default async function ({ addon, console, msg }) {
         },
         noopSwitch,
       ];
+      blockSwitches["motion_gotoxy"] = [
+        noopSwitch,
+        {
+          opcode: "motion_changebyxy",
+          remapInputName: { X: "DX", Y: "DY" },
+        }
+      ];
+      blockSwitches["motion_changebyxy"] = [
+        {
+          opcode: "motion_gotoxy",
+          remapInputName: { DX: "X", DY: "Y" },
+        },
+        noopSwitch,
+      ];
       blockSwitches["motion_setx"] = [
         noopSwitch,
         {
@@ -181,6 +195,18 @@ export default async function ({ addon, console, msg }) {
     }
 
     if (addon.settings.get("looks")) {
+      blockSwitches["looks_sayWidth"] = [
+        noopSwitch,
+        {
+          opcode: "looks_sayHeight",
+        },
+      ];
+      blockSwitches["looks_sayHeight"] = [
+        {
+          opcode: "looks_sayWidth",
+        },
+        noopSwitch,
+      ];
       blockSwitches["looks_seteffectto"] = [
         noopSwitch,
         {
@@ -553,6 +579,18 @@ export default async function ({ addon, console, msg }) {
       blockSwitches["control_wait_until"] = [
         {
           opcode: "control_repeat_until",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["control_incr_counter"] = [
+        {
+          opcode: "control_decr_counter",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["control_decr_counter"] = [
+        {
+          opcode: "control_incr_counter",
         },
         noopSwitch,
       ];
