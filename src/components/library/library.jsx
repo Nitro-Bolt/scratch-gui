@@ -29,6 +29,8 @@ const messages = defineMessages({
     }
 });
 
+const PM_LIBRARY_API = "https://library.penguinmod.com/";
+
 const ALL_TAG = {tag: 'all', intlLabel: messages.allTag};
 const tagListPrefix = [];
 
@@ -449,7 +451,7 @@ class LibraryComponent extends React.Component {
                                 hidden={dataItem.hidden}
                                 href={dataItem.href}
                                 iconMd5={dataItem.costumes ? dataItem.costumes[0].md5ext : dataItem.md5ext}
-                                iconRawURL={dataItem.rawURL}
+                                iconRawURL={this.props.actor === "CostumeLibrary" ? `${PM_LIBRARY_API}files/${dataItem.libraryFilePage}` : dataItem.rawURL}
                                 icons={dataItem.costumes}
                                 id={index}
                                 _id={dataItem._id}
