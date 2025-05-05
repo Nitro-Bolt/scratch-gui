@@ -1007,6 +1007,15 @@ const menuItems = [
         extDeveloper: 'G1nX',
         featured: true
     },
+    {
+        name: 'Project Page',
+        extensionId: 'https://extensions.penguinmod.com/extensions/jwklong/projectpage.js',
+        iconURL: 'https://extensions.penguinmod.com/images/jwklong/projectpage.png',
+        tags: ['penguinmod'],
+        description: 'Modify and affect the studio project page from the code. How annoying can an extension possibly be?',
+        featured: true,
+        extDeveloper: 'jwklong'
+    },
     /*
     {
         name: 'ChatGPT',
