@@ -68,13 +68,29 @@ const LoadExtensionModal = props => (
                 />
             </div>
         )}
+
+
+        <label className={styles.unsandboxedContainer}>
+            <FancyCheckbox
+                className={styles.unsandboxedCheckbox}
+                checked={props.remember}
+                onChange={props.onChangeRemember}
+            />
+            <FormattedMessage
+                defaultMessage="Do this for every extension in the project"
+                description="Message that appears in custom extension prompt"
+                id="pm.customExtensionModal.rememberChoice"
+            />
+        </label>
     </div>
 );
 
 LoadExtensionModal.propTypes = {
     url: PropTypes.string.isRequired,
     unsandboxed: PropTypes.bool.isRequired,
-    onChangeUnsandboxed: PropTypes.func
+    onChangeUnsandboxed: PropTypes.func,
+    remember: PropTypes.bool.isRequired,
+    onChangeRemember: PropTypes.func
 };
 
 export default LoadExtensionModal;
