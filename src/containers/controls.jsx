@@ -38,10 +38,13 @@ class Controls extends React.Component {
     }
     handlePauseButtonClick (e) {
         e.preventDefault();
+        const root = document.documentElement;
         if (!this.props.paused) {
             this.props.vm.pause();
+            root.style.setProperty("--pause-btn-color", "hsla(87, 100%, 50%, 0.15)");
             return;
         }
+        root.style.setProperty("--pause-btn-color", "hsla(49, 100%, 50%, 0.15)");
         this.props.vm.play();
     }
     handleStopAllClick (e) {

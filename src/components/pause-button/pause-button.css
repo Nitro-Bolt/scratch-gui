@@ -11,5 +11,5 @@
 }
 
 .pause-btn:hover {
-    background-color: hsla(49, 100%, 50%, 0.15);
+    background-color: var(--pause-btn-color, hsla(49, 100%, 50%, 0.15));
 }
