@@ -33,14 +33,14 @@ const motion = function (isInitialSetup, isStage, targetId, colors) {
         </block>
         <block type="motion_turnright">
             <value name="DEGREES">
-                <shadow type="math_number">
+                <shadow type="math_angle">
                     <field name="NUM">15</field>
                 </shadow>
             </value>
         </block>
         <block type="motion_turnleft">
             <value name="DEGREES">
-                <shadow type="math_number">
+                <shadow type="math_angle">
                     <field name="NUM">15</field>
                 </shadow>
             </value>
