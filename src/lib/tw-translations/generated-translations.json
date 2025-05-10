@@ -300,6 +300,8 @@
         "tw.webglModal.description": "Bohužel to vypadá, že váš prohlížeč nebo počítač {webGlLink}. Tato technologie je potřebná pro tuto stránku. Zkuste aktualizovat váš prohlížeč a grafické ovladače, nebo restartujte počítač."
     },
     "de": {
+        "pm.extraLibraryExtensions.description": "Sehen Sie sich einige von Benutzern eingereichte Erweiterungen an. Öffnet ein neuen Tab.",
+        "pm.extraLibraryExtensions.name": "PenguinMod's andere Erweiterungen",
         "tw.alerts.creatingRestorePoint": "Wiederherstellungspunkt wird erstellt...",
         "tw.alerts.lostPeripheralConnection": "Verbindung zu {extensionName} verloren.",
         "tw.alerts.restorePointError": "Der Wiederherstellpunkt konnte nicht erstellt werden",
@@ -517,6 +519,8 @@
         "tw.webglModal.description": "Leider sieht es aus, als würde dein Computer oder Browser {webGlLink}. Diese Technologie ist erforderlich, damit diese Seite funktioniert. Versuche, deinen Browser und deine Grafiktreiber zu aktualisieren, oder deinen Computer neu zu starten."
     },
     "es": {
+        "pm.extraLibraryExtensions.description": "Ver algunas extensiones enviadas por los usuarios. Abre una nueva pestaña.",
+        "pm.extraLibraryExtensions.name": "Penguinmod Extensiones Extra",
         "tw.alerts.creatingRestorePoint": "Creando punto de restauración...",
         "tw.alerts.lostPeripheralConnection": "Se perdió la conexión con {extensionName}.",
         "tw.alerts.restorePointError": "No se pudo crear el punto de restauración",
@@ -718,6 +722,8 @@
         "tw.webglModal.description": "Desafortunadamente parece que tu navegador o computadora {webGlLink}. Esta tecnología se necesita para que funcione este sitio. Intente actualizar su navegador y drivers gráficos o reinicie su computadora."
     },
     "fr": {
+        "pm.extraLibraryExtensions.description": "Voir quelques extensions soumises par utilisateurs. S'ouvre un nouvel onglet.",
+        "pm.extraLibraryExtensions.name": "PenguinMod Autres extensions",
         "tw.alerts.creatingRestorePoint": "Création d'un point de restauration…",
         "tw.alerts.lostPeripheralConnection": "Le périphérique {extensionName} vient d’être déconnecté.",
         "tw.alerts.savedToDisk": "Enregistré sur votre ordinateur.",
@@ -975,6 +981,8 @@
         "tw.webglModal.description": "Sajnos úgy tűnik, hogy a böngészője vagy számítógépe {webGlLink}. Ez a technológia szükséges ezenaz oldal lefutásához."
     },
     "it": {
+        "pm.extraLibraryExtensions.description": "Vedere alcune estensioni presentate dagli utenti. Apre una nuova scheda.",
+        "pm.extraLibraryExtensions.name": "Penguinmod altre estensioni",
         "tw.alerts.creatingRestorePoint": "Creazione di un punto di ripristino...",
         "tw.alerts.lostPeripheralConnection": "Persa la connessione a {extensionName}.",
         "tw.alerts.restorePointError": "Impossibile creare il punto di ripristino",
@@ -2075,6 +2083,8 @@
         "tw.webglModal.description": "Het ziet er helaas uit dat je browser of computer {webGlLink}. Deze technologie is vereist voor deze site om goed te werken. Probeer je browser en grafische stuurprogramma's te updaten of start je computer opnieuw op."
     },
     "pl": {
+        "pm.extraLibraryExtensions.description": "Vedere alcune estensioni presentate dagli utenti. Apre una nuova scheda.",
+        "pm.extraLibraryExtensions.name": "Penguinmod altre estensioni",
         "tw.alerts.creatingRestorePoint": "Tworzenie punktu przywracania…",
         "tw.alerts.lostPeripheralConnection": "Utracono połączenie do {extensionName}.",
         "tw.alerts.savedToDisk": "Zapisano na twoim komputerze.",
@@ -2188,6 +2198,7 @@
         "tw.viewOnScratch": "Zobacz projekt w Scratchu"
     },
     "pt": {
+        "pm.extraLibraryExtensions.name": "Penguinmod outro extensões",
         "tw.alerts.creatingRestorePoint": "Criando ponto de restauração...",
         "tw.alerts.savedToDisk": "Salvo no seu computador.",
         "tw.backpack.rename": "Novo nome:",
