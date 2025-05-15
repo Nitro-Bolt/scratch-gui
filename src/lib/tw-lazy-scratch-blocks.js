@@ -237,6 +237,14 @@ const load2 = () => {
         });
 };
 
+const onLoaded = callback => {
+    if (_ScratchBlocks) {
+        callback(_ScratchBlocks);
+    } else {
+        callbacks.push(callback);
+    }
+};
+
 export default {
     get,
     isLoaded,
@@ -247,4 +255,5 @@ export default {
     wasNameJurassicPark,
     load,
     load2,
+    onLoaded
 };

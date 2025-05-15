@@ -59,7 +59,8 @@ const TWProjectMetaFetcherHOC = function (WrappedComponent) {
         }
         componentDidUpdate() {
             // project title resetting is handled in titled-hoc.jsx
-            this.props.vm.runtime.renderer.setPrivateSkinAccess(true);
+            if (this.props.vm.runtime.renderer.setPrivateSkinAccess)
+                this.props.vm.runtime.renderer.setPrivateSkinAccess(true);
             this.props.onSetAuthor('', '');
             this.props.onSetDescription('', '');
             this.props.onSetRemixedProjectInfo(false, '', '');
@@ -103,50 +104,44 @@ const TWProjectMetaFetcherHOC = function (WrappedComponent) {
                         this.props.onSetDescription(instructions, credits);
                     }
                     if (
-                        typeof rawData.accepted === 'boolean'
-                        || String(rawData.remix) !== '0' // checks isRemix and remixId existing at the same time
-                        || typeof rawData.tooLarge === 'boolean'
-                        || authorName
+                        rawData.public === true
                     ) {
                         this.props.onSetExtraProjectInfo(
-                            rawData.accepted === true,
+                            !rawData.softRejected,
                             String(rawData.remix) !== '0',
                             String(rawData.remix),
-                            rawData.tooLarge === true,
+                            false,
                             authorName,
-                            new Date(rawData.date),
-                            rawData.updating === true
+                            new Date(rawData.lastUpdate),
+                            rawData.lastUpdate !== rawData.date
                         );
-                    }
-                    if (rawData.remix > 0) {
-                        // this is a remix, find the original project
-                        fetchProjectMeta(rawData.remix)
-                            .then(remixProject => {
-                                // If project ID changed, ignore the results.
-                                if (this.props.projectId !== projectId) {
-                                    return;
-                                }
-                                // If this project is hidden or not approved, ignore the results.
-                                if (
-                                    typeof remixProject.name === 'string'
-                                    || typeof remixProject.owner === 'string'
-                                ) {
+
+                        if (String(rawData.remix) !== '0') {
+                            // this is a remix, find the original project
+                            fetchProjectMeta(rawData.remix)
+                                .then(remixProject => {
+                                    // If project ID changed, ignore the results.
+                                    if (this.props.projectId !== projectId) {
+                                        return;
+                                    }
+
                                     this.props.onSetRemixedProjectInfo(
                                         true, // loaded
-                                        remixProject.name,
-                                        remixProject.owner
+                                        remixProject.title,
+                                        remixProject.author.username
                                     );
-                                }
-                            })
-                            .catch(err => {
-                                // this isnt fatal, just log
-                                log.warn('cannot fetch remixed project meta for this project;', err);
-                            });
+                                })
+                                .catch(err => {
+                                    // this isnt fatal, just log
+                                    log.warn('cannot fetch remixed project meta for this project;', err);
+                                });
+                        }
                     }
                     setIndexable(true);
                 })
                 .catch(err => {
-                    this.props.vm.runtime.renderer.setPrivateSkinAccess(false);
+                    if (this.props.vm.runtime.renderer.setPrivateSkinAccess)
+                        this.props.vm.runtime.renderer.setPrivateSkinAccess(false);
                     setIndexable(false);
                     if (`${err}`.includes('unshared')) {
                         this.props.onSetDescription('unshared', 'unshared');
