@@ -616,6 +616,15 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'Dropdown Maker',
+        extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/Dropdown-Maker.js',
+        iconURL: 'https://sharkpools-extensions.vercel.app/extension-thumbs/Dropdown-Maker.svg',
+        tags: ['penguinmod'],
+        description: 'Create Custom Dropdowns! Best paired with My Blocks+',
+        extDeveloper: 'SharkPool, CST1229, 0znzw',
+        featured: true
+    },
+    {
         name: 'Better Comments',
         extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/Better-Comments.js',
         iconURL: 'https://raw.githubusercontent.com/SharkPool-SP/SharkPools-Extensions/refs/heads/main/extension-thumbs/Better-Comments.svg',
