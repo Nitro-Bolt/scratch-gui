@@ -36,6 +36,7 @@ import reverbIcon from './icon--reverb.svg';
 import deleteIcon from './icon--delete.svg';
 import copyIcon from './icon--copy.svg';
 import pasteIcon from './icon--paste.svg';
+import cutIcon from './icon--cut.svg';
 import copyToNewIcon from './icon--copy-to-new.svg';
 
 const BufferedInput = BufferedInputHOC(Input);
@@ -69,6 +70,11 @@ const messages = defineMessages({
         id: 'gui.soundEditor.paste',
         description: 'Title of the button to paste the sound',
         defaultMessage: 'Paste'
+    },
+    cut: {
+        id: 'gui.soundEditor.cut',
+        description: 'Title of the button to cut the sound',
+        defaultMessage: 'Cut'
     },
     copyToNew: {
         id: 'gui.soundEditor.copyToNew',
@@ -240,6 +246,12 @@ const SoundEditor = props => (
                     img={pasteIcon}
                     title={props.intl.formatMessage(messages.paste)}
                     onClick={props.onPaste}
+                />
+                <IconButton
+                    className={styles.toolButton}
+                    img={cutIcon}
+                    title={props.intl.formatMessage(messages.cut)}
+                    onClick={props.onCut}
                 />
                 <IconButton
                     className={classNames(styles.toolButton, styles.flipInRtl)}
@@ -467,6 +479,7 @@ SoundEditor.propTypes = {
     onContainerClick: PropTypes.func.isRequired,
     onCopy: PropTypes.func.isRequired,
     onCopyToNew: PropTypes.func.isRequired,
+    onCut: PropTypes.func.isRequired,
     onDelete: PropTypes.func,
     onEcho: PropTypes.func.isRequired,
     onLowPass: PropTypes.func.isRequired,

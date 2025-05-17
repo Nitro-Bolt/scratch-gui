@@ -42,6 +42,7 @@ class SoundEditor extends React.Component {
             'submitNewSamples',
             'handleCopy',
             'handlePaste',
+            'handleCut',
             'paste',
             'handleKeyPress',
             'handleContainerClick',
@@ -350,6 +351,10 @@ class SoundEditor extends React.Component {
                 this.state.copyBuffer.sampleRate, this.props.name);
         });
     }
+    handleCut() {
+        this.copy();
+        this.handleDelete();
+    }
     resampleBufferToRate(buffer, newRate) {
         return new Promise((resolve, reject) => {
             const sampleRateRatio = newRate / buffer.sampleRate;
@@ -653,6 +658,7 @@ class SoundEditor extends React.Component {
                 onContainerClick={this.handleContainerClick}
                 onCopy={this.handleCopy}
                 onCopyToNew={this.handleCopyToNew}
+                onCut={this.handleCut}
                 onDelete={this.handleDelete}
                 onEcho={this.effectFactory(effectTypes.ECHO)}
                 onFadeIn={this.effectFactory(effectTypes.FADEIN)}
