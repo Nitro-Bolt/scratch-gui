@@ -1614,8 +1614,9 @@ const menuItems = [
         href: 'https://ext-create.vercel.app/',
         extensionId: 'special_ExtCreate',
         iconURL: 'https://snail-ide.js.org/static/assets/2bcc1426567c2ca1179de43c02577d1a.svg',
-        description: 'Snail IDE version of TurboBuilder',
+        description: '[Temporarily disabled due to the link not working.] Snail IDE version of TurboBuilder',
         collaborator: 'Started by JeremyGamer13, continued by jwklong, modified by nmsderp',
+        disabled: true,
         featured: true
     },
     {
