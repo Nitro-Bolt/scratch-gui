@@ -49,6 +49,7 @@ class SoundEditor extends React.Component {
             'setRef',
             'resampleBufferToRate',
             'handleModifyMenu',
+            'handleBitCrushMenu',
             'getSelectionBuffer'
         ]);
         this.state = {
