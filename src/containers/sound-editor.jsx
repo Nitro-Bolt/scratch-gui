@@ -662,46 +662,47 @@ class SoundEditor extends React.Component {
 
         menu.textarea.style = "position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; height: calc(100% - (3.125em + 2.125em + 16px));";
 
-        function buildSlider(input, labelText, valueInput, options) {
-            input.type = "range";
-            input.min = options.min;
-            input.max = options.max;
-            input.step = options.step;
-            input.value = options.default;
-            input.style = "width: 180px;";
-
-            valueInput.type = "number";
-            valueInput.min = options.min;
-            valueInput.max = options.max;
-            valueInput.step = options.step;
-            valueInput.value = options.default;
-            valueInput.style = "width: 50px; margin-left: 12px;";
-
-            const container = document.createElement("div");
-            container.style = "display: flex; align-items: center;";
-
-            const label = document.createElement("label");
-            label.innerText = labelText;
-            label.style = "width: 70px; font-size: 14px;";
-
-            input.oninput = () => {
-                valueInput.value = input.value;
-            };
-            valueInput.oninput = () => {
-                input.value = valueInput.value;
-                input.dispatchEvent(new Event("input"));
-            };
-
-            container.appendChild(label);
-            container.appendChild(input);
-            container.appendChild(valueInput);
-            return container;
-        }
-
-        const bitCrushControl = buildSlider(bitcrush, "Bit Crush", document.createElement("input"), { min: 0, max: 1, step: 0.01, default: 0.5 });
-        const freqCrushControl = buildSlider(freqcrush, "Freq Crush", document.createElement("input"), { min: 0, max: 1, step: 0.01, default: 0.5 });
-
-        menu.textarea.append(bitCrushControl, freqCrushControl);
+        bitcrush.type = "range";
+        bitcrush.classList.add(confirmStyles.verticalSlider);
+        bitcrush.style = "position: absolute;left: -40px;top: 80px;";
+        bitcrush.value = 0.5;
+        bitcrush.min = 0;
+        bitcrush.max = 1;
+        bitcrush.step = 0.01;
+        
+        freqcrush.type = "range";
+        freqcrush.classList.add(confirmStyles.verticalSlider);
+        freqcrush.style = "position: absolute;left: 0px;top: 80px;";
+        freqcrush.value = 0.5;
+        freqcrush.min = 0;
+        freqcrush.max = 1;
+        freqcrush.step = 0.01;
+        menu.textarea.append(bitcrush);
+        menu.textarea.append(freqcrush);
+        const labelBitCrush = document.createElement("p");
+        const labelFreqCrush = document.createElement("p");
+        labelBitCrush.style = "text-align: center;width: 35px;font-size: 12px;position: absolute;left: 7.5px;top: 3.5px;";
+        labelFreqCrush.style = "text-align: center;width: 35px;font-size: 12px;position: absolute;left: 47.5px;top: 3.5px;";
+        labelBitCrush.innerHTML = "Bit Crush";
+        labelFreqCrush.innerHTML = "Freq Crush";
+        menu.textarea.append(labelBitCrush);
+        menu.textarea.append(labelFreqCrush);
+        const valueBitCrush = document.createElement("input");
+        const valueFreqCrush = document.createElement("input");
+        valueBitCrush.style = "text-align: center;width: 35px;font-size: 12px;position: absolute;left: 4px;top: 152.5px;";
+        valueFreqCrush.style = "text-align: center;width: 35px;font-size: 12px;position: absolute;left: 44px;top: 152.5px;";
+        valueBitCrush.value = 50;
+        valueFreqCrush.value = 50;
+        valueBitCrush.min = 0;
+        valueBitCrush.max = 100;
+        valueBitCrush.step = 1;
+        valueFreqCrush.min = 0;
+        valueFreqCrush.max = 100;
+        valueFreqCrush.step = 1;
+        valueBitCrush.type = "number";
+        valueFreqCrush.type = "number";
+        menu.textarea.append(valueBitCrush);
+        menu.textarea.append(valueFreqCrush);
 
         const previewButton = document.createElement("button");
         previewButton.style = "font-weight: bold; color: white; border-radius: 1000px; width: 60px; height: 36px; border: none; background: #76fa02; margin-top: 12px;";
@@ -713,11 +714,64 @@ class SoundEditor extends React.Component {
 
         let bufferSource;
         let audioPlaying = false;
+        let bitCrushEffectNode;
+
+        function createBitCrushEffect(audioContext, bitCrush = 0.5, freqCrush = 0.5) {
+            const input = audioContext.createGain();
+            const output = audioContext.createGain();
+
+            const bufferSize = 4096;
+            const processor = audioContext.createScriptProcessor(bufferSize, 1, 1);
+
+            bitCrush = Math.max(0, Math.min(1, bitCrush));
+            freqCrush = Math.max(0, Math.min(1, freqCrush));
+
+            const bitCrushStrength = Math.abs(bitCrush - 0.5) * 2;
+            const freqCrushStrength = Math.abs(freqCrush - 0.5) * 2;
+
+            const maxBitDepth = 16;
+            const minBitDepth = 1;
+            const bitDepth = bitCrushStrength === 0
+                ? 16
+                : Math.max(minBitDepth, 16 - Math.floor(bitCrushStrength * (maxBitDepth - minBitDepth)));
+
+            const maxHold = 100;
+            const sampleHold = freqCrushStrength === 0
+                ? 1
+                : Math.floor(1 + freqCrushStrength * maxHold);
+
+            const step = 1 / Math.pow(2, bitDepth);
+            let holdCounter = 0;
+            let lastSample = 0;
+
+            processor.onaudioprocess = function (event) {
+                const inputBuffer = event.inputBuffer.getChannelData(0);
+                const outputBuffer = event.outputBuffer.getChannelData(0);
+
+                for (let i = 0; i < inputBuffer.length; i++) {
+                    if (holdCounter <= 0) {
+                        holdCounter = sampleHold;
+                        lastSample = step * Math.floor(inputBuffer[i] / step + 0.5);
+                    } else {
+                        holdCounter--;
+                    }
+                    outputBuffer[i] = lastSample;
+                }
+            };
+
+            input.connect(processor);
+            processor.connect(output);
+
+            return { input, output };
+        }
+
+        bitCrushEffectNode = createBitCrushEffect(audio, Number(bitcrush.value), Number(freqcrush.value));
 
         function play() {
             bufferSource = audio.createBufferSource();
             bufferSource.buffer = properBuffer;
-            bufferSource.connect(gainNode);
+            bufferSource.connect(bitCrushEffectNode.input);
+            bitCrushEffectNode.output.connect(gainNode);
             bufferSource.start();
             previewButton.innerText = "Stop";
             audioPlaying = true;
@@ -737,6 +791,31 @@ class SoundEditor extends React.Component {
             if (audioPlaying) stop();
             else play();
         };
+
+        // updates
+        bitcrush.onchange = (updateValue) => {
+            if (updateValue !== false) {
+                valueBitCrush.value = Number(bitcrush.value) * 100;
+            };
+            if (!bufferSource) return;
+        }
+        bitcrush.oninput = bitcrush.onchange;
+        freqcrush.onchange = (updateValue) => {
+            if (updateValue === false) return;
+            valueFreqCrush.value = Number(freqcrush.value) * 100;
+        }
+        freqcrush.oninput = freqcrush.onchange;
+        // value changes
+        valueBitCrush.onchange = () => {
+            bitcrush.value = valueBitCrush.value / 100;
+            bitcrush.onchange(false);
+        };
+        valueBitCrush.oninput = valueBitCrush.onchange;
+        valueFreqCrush.onchange = () => {
+            freqcrush.value = valueFreqCrush.value / 100;
+            freqcrush.onchange(false);
+        };
+        valueFreqCrush.oninput = valueFreqCrush.onchange;
     }
     render() {
         const { effectTypes } = AudioEffects;
