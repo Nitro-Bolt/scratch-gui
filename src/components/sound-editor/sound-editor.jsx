@@ -32,6 +32,7 @@ import fadeOutIcon from './icon--fade-out.svg';
 import fadeInIcon from './icon--fade-in.svg';
 import muteIcon from './icon--mute.svg';
 import reverbIcon from './icon--reverb.svg';
+import bitcrushIcon from './icon--bit-crush.png';
 
 import deleteIcon from './icon--delete.svg';
 import copyIcon from './icon--copy.svg';
@@ -249,6 +250,7 @@ const SoundEditor = props => (
                 />
                 <IconButton
                     className={styles.toolButton}
+                    disabled={props.trimStart === null}
                     img={cutIcon}
                     title={props.intl.formatMessage(messages.cut)}
                     onClick={props.onCut}
@@ -397,6 +399,12 @@ const SoundEditor = props => (
                     title={"Reverb"}
                     onClick={props.onReverb}
                 />
+                <IconButton
+                    className={styles.effectButton}
+                    img={bitcrushIcon}
+                    title={"Bit-Crush"}
+                    onClick={props.onBitCrush}
+                />
             </div>
         </div>
         <div className={styles.infoRow}>
@@ -487,6 +495,7 @@ SoundEditor.propTypes = {
     onFadeIn: PropTypes.func.isRequired,
     onFadeOut: PropTypes.func.isRequired,
     onReverb: PropTypes.func.isRequired,
+    onBitCrush: PropTypes.func.isRequired,
     onFaster: PropTypes.func.isRequired,
     onModifySound: PropTypes.func.isRequired,
     onLouder: PropTypes.func.isRequired,

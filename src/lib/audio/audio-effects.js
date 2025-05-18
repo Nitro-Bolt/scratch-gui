@@ -6,6 +6,7 @@ import MuteEffect from './effects/mute-effect.js';
 import LowPassEffect from './effects/lowpass-effect.js';
 import HighPassEffect from './effects/highpass-effect.js';
 import ReverbEffect from './effects/reverb-effect.js';
+import BitCrushEffect from './effects/bit-crush-effect.js';
 
 const effectTypes = {
     ROBOT: 'robot',
@@ -180,6 +181,15 @@ class AudioEffects {
                 if (options.volume !== null) {
                     ({input, output} = new VolumeEffect(this.audioContext, options.volume,
                         this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+                }
+                if (options.bitcrush !== null || options.freqcrush !== null) {
+                    ({ input, output } = new BitCrushEffect(
+                        this.audioContext,
+                        this.adjustedTrimStartSeconds,
+                        this.adjustedTrimEndSeconds,
+                        options.bitcrush,
+                        options.freqcrush
+                    ));
                 }
                 break;
         }

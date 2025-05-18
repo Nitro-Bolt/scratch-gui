@@ -635,6 +635,108 @@ class SoundEditor extends React.Component {
             ok: accept
         }
     }
+    handleBitCrushMenu() {
+        const bufferSelection = this.getSelectionBuffer();
+        const audio = new AudioContext();
+        const gainNode = audio.createGain();
+        gainNode.gain.value = 1;
+        gainNode.connect(audio.destination);
+
+        const bitcrush = document.createElement("input");
+        const freqcrush = document.createElement("input");
+
+        const menu = this.displayPopup("Bit-Crush", 240, 280, "Apply", "Cancel", () => {
+            audio.close();
+            const trueBitCrush = isNaN(Number(bitcrush.value)) ? 0.5 : Number(bitcrush.value);
+            const trueFreqCrush = isNaN(Number(freqcrush.value)) ? 0.5 : Number(freqcrush.value);
+
+            this.handleEffect({
+                special: true,
+                    bitcrush: trueBitCrush,
+                    freqcrush: trueFreqCrush
+                });
+            }, () => {
+                audio.close();
+        });
+
+        menu.textarea.style = "position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; height: calc(100% - (3.125em + 2.125em + 16px));";
+
+        function buildSlider(input, labelText, valueInput, options) {
+            input.type = "range";
+            input.min = options.min;
+            input.max = options.max;
+            input.step = options.step;
+            input.value = options.default;
+            input.style = "width: 180px;";
+
+            valueInput.type = "number";
+            valueInput.min = options.min;
+            valueInput.max = options.max;
+            valueInput.step = options.step;
+            valueInput.value = options.default;
+            valueInput.style = "width: 50px; margin-left: 12px;";
+
+            const container = document.createElement("div");
+            container.style = "display: flex; align-items: center;";
+
+            const label = document.createElement("label");
+            label.innerText = labelText;
+            label.style = "width: 70px; font-size: 14px;";
+
+            input.oninput = () => {
+                valueInput.value = input.value;
+            };
+            valueInput.oninput = () => {
+                input.value = valueInput.value;
+                input.dispatchEvent(new Event("input"));
+            };
+
+            container.appendChild(label);
+            container.appendChild(input);
+            container.appendChild(valueInput);
+            return container;
+        }
+
+        const bitCrushControl = buildSlider(bitcrush, "Bit Crush", document.createElement("input"), { min: 0, max: 1, step: 0.01, default: 0.5 });
+        const freqCrushControl = buildSlider(freqcrush, "Freq Crush", document.createElement("input"), { min: 0, max: 1, step: 0.01, default: 0.5 });
+
+        menu.textarea.append(bitCrushControl, freqCrushControl);
+
+        const previewButton = document.createElement("button");
+        previewButton.style = "font-weight: bold; color: white; border-radius: 1000px; width: 60px; height: 36px; border: none; background: #76fa02; margin-top: 12px;";
+        previewButton.innerText = "Play";
+        menu.textarea.appendChild(previewButton);
+
+        const properBuffer = audio.createBuffer(1, bufferSelection.samples.length, bufferSelection.sampleRate);
+        properBuffer.getChannelData(0).set(bufferSelection.samples);
+
+        let bufferSource;
+        let audioPlaying = false;
+
+        function play() {
+            bufferSource = audio.createBufferSource();
+            bufferSource.buffer = properBuffer;
+            bufferSource.connect(gainNode);
+            bufferSource.start();
+            previewButton.innerText = "Stop";
+            audioPlaying = true;
+            bufferSource.onended = () => {
+                previewButton.innerText = "Play";
+                audioPlaying = false;
+            };
+        }
+
+        function stop() {
+            if (bufferSource) bufferSource.stop();
+            previewButton.innerText = "Play";
+            audioPlaying = false;
+        }
+
+        previewButton.onclick = () => {
+            if (audioPlaying) stop();
+            else play();
+        };
+    }
     render() {
         const { effectTypes } = AudioEffects;
         return (
@@ -675,6 +777,7 @@ class SoundEditor extends React.Component {
                 onLowPass={this.effectFactory(effectTypes.LOWPASS)}
                 onHighPass={this.effectFactory(effectTypes.HIGHPASS)}
                 onReverb={this.effectFactory(effectTypes.REVERB)}
+                onBitCrush={this.handleBitCrushMenu}
                 onSetTrim={this.handleUpdateTrim}
                 onSlower={this.effectFactory(effectTypes.SLOWER)}
                 onSofter={this.effectFactory(effectTypes.SOFTER)}
