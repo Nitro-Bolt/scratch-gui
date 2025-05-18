@@ -399,12 +399,12 @@ const SoundEditor = props => (
                     title={"Reverb"}
                     onClick={props.onReverb}
                 />
-                <IconButton
+                {/*<IconButton
                     className={styles.effectButton}
                     img={bitcrushIcon}
                     title={"Bit-Crush"}
                     onClick={props.onBitCrush}
-                />
+                />*/}
             </div>
         </div>
         <div className={styles.infoRow}>
