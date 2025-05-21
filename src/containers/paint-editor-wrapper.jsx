@@ -3,7 +3,7 @@ import React from 'react';
 import bindAll from 'lodash.bindall';
 import VM from 'scratch-vm';
 import PaintEditor from '../lib/tw-scratch-paint';
-import {inlineSvgFonts} from '@turbowarp/scratch-svg-renderer';
+import {inlineSvgFonts, sanitizeSvg} from '@turbowarp/scratch-svg-renderer';
 import ErrorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
 import {openFontsModal} from '../reducers/modals';
 
@@ -71,11 +71,11 @@ class PaintEditorWrapper extends React.Component {
             vm,
             ...componentProps
         } = this.props;
-
+        const costume = vm.getCostume(selectedCostumeIndex);
         return (
             <PaintEditor
                 {...componentProps}
-                image={vm.getCostume(selectedCostumeIndex)}
+                image={this.props.imageFormat === 'svg' ? sanitizeSvg.sanitizeSvgText(costume) : costume}
                 onUpdateImage={this.handleUpdateImage}
                 onUpdateName={this.handleUpdateName}
                 fontInlineFn={this.fontInlineFn}
