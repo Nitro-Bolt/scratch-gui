@@ -1,0 +1,212 @@
+import PropTypes from 'prop-types';
+import React from 'react';
+import Modal from '../../containers/modal.jsx';
+import Box from '../box/box.jsx';
+import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
+import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
+
+import styles from './live-collaboration-modal.css';
+import classNames from 'classnames';
+
+const messages = defineMessages({
+    title: {
+        defaultMessage: 'Live Collaboration',
+        description: 'Title of modal that appears when loading the Live Collaboration Panel',
+        id: 'nb.liveCollaboration.title'
+    }
+});
+
+const Header = props => (
+    <div className={styles.header}>
+        {props.children}
+        <div className={styles.divider} />
+    </div>
+);
+Header.propTypes = {
+    children: PropTypes.node
+};
+
+const LiveCollaborationModal = props => {
+    return (
+        <Modal
+            className={styles.modalContent}
+            onRequestClose={props.onClose}
+            contentLabel={props.intl.formatMessage(messages.title)}
+            id='liveCollaborationModal'
+        >
+            <Box className={styles.body}>
+                {!props.connected ? (
+                    <>
+                        <Header>
+                            <FormattedMessage
+                                defaultMessage='Join a room'
+                                description='Title for the join a room section'
+                                id='nb.liveCollaboration.joinARoom'
+                            />
+                        </Header>
+                        <Box className={styles.row}>
+                            <input
+                                className={styles.input}
+                                onChange={props.onInput}
+                                placeholder='Enter Room ID...'
+                                type='string'
+                                id='roomID'
+                            />
+                            <button
+                                className={styles.button}
+                                onClick={props.onJoinRoom}
+                                disabled={props.input === ''}
+                                id='joinRoom'
+                            >
+                                Connect to Room
+                            </button>
+                        </Box>
+                        <Header>
+                            <FormattedMessage
+                                defaultMessage='Create a room'
+                                description='Title for the create a room section'
+                                id='nb.liveCollaboration.createARoom'
+                            />
+                        </Header>
+                        <Box className={styles.row}>
+                            <button
+                                className={classNames(styles.button, styles.buttonFlex)}
+                                onClick={props.onCreateRoom}
+                                id='createRoom'
+                            >
+                                Create a Room
+                            </button>
+                        </Box>
+                    </>
+                )
+                :
+                (
+                    <>
+                        <Header>
+                            <FormattedMessage
+                                defaultMessage='Room details'
+                                description='Title for the room details section'
+                                id='nb.liveCollaboration.roomDetails'
+                            />
+                        </Header>
+                        {!props.isHost ? (
+                            <Box className={styles.row}>
+                                <button
+                                    className={classNames(styles.button, styles.buttonFlex)}
+                                    onClick={props.onLeaveRoom}
+                                    id='leaveRoom'
+                                >
+                                    Leave Room
+                                </button>
+                            </Box>
+                        )
+                        :
+                        (
+                            <Box className={styles.roomDetails}>
+                                <button
+                                    className={classNames(styles.button, styles.fullWidthButton)}
+                                    onClick={props.onCloseRoom}
+                                    id='closeRoom'
+                                >
+                                    Close Room
+                                </button>
+                                <div className={styles.halfButtonRow}>
+                                    <button
+                                        className={classNames(styles.buttonAlternate, styles.buttonFlex)}
+                                        onClick={props.onCopyURL}
+                                        id='copyURL'
+                                    >
+                                        Copy share URL
+                                    </button>
+                                    <button
+                                        className={classNames(styles.buttonAlternate, styles.buttonFlex)}
+                                        onClick={props.onCopyID}
+                                        id='closeID'
+                                    >
+                                        Copy share ID
+                                    </button>
+                                </div>
+                            </Box>
+                        )}
+                        {props.users.map(userEntry => (
+                                <Box
+                                    className={styles.userCard}
+                                    key={userEntry[Object.keys(userEntry)[0]]}
+                                >
+                                    <p>{Object.keys(userEntry)[0]}</p>
+                                    {props.isHost && (
+                                        !props.multiSelect ? (
+                                            <button
+                                                className={styles.kickOption}
+                                                onClick={() => props.kickUser(userEntry[Object.keys(userEntry)[0]])}
+                                            />
+                                        ) : (
+                                            <FancyCheckbox
+                                                className={styles.checkboxOption}
+                                                onChange={props.updateUserList}
+                                                value={userEntry[Object.keys(userEntry)[0]]}
+                                            />
+                                        )
+                                    )}
+                                </Box>
+                            )
+                        )}
+                        {props.isHost && (
+                            (!(props.users.length < 2) && !props.multiSelect) && (
+                                <Box className={styles.multiSelectRow}>
+                                    <button
+                                        className={styles.multiSelectNormal}
+                                        onClick={props.changeMultiSelectState}
+                                    >
+                                        Select Multiple
+                                    </button>
+                                </Box>
+                            ) || (
+                                props.multiSelect && (
+                                    <Box className={styles.multiSelectRow}>
+                                        <button
+                                            className={styles.multiSelectNormal}
+                                            onClick={props.changeMultiSelectState}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            className={styles.multiSelectKick}
+                                            onClick={() => props.kickUsers(props.selectedUsers)}
+                                        >
+                                            Kick selected
+                                        </button>
+                                    </Box>
+                                )
+                            )
+                        )}
+                    </>
+                )}
+            </Box>
+        </Modal>
+    );
+};
+
+LiveCollaborationModal.propTypes = {
+    intl: intlShape,
+    onClose: PropTypes.func.isRequired,
+    isHost: PropTypes.bool,
+    users: PropTypes.array,
+    multiSelect: PropTypes.bool,
+    input: PropTypes.string,
+    changeMultiSelectState: PropTypes.func,
+    selectedUsers: PropTypes.array,
+    connected: PropTypes.bool,
+    onInput: PropTypes.func,
+    onJoinRoom: PropTypes.func,
+    onCreateRoom: PropTypes.func,
+    onCopyURL: PropTypes.func,
+    onCopyID: PropTypes.func,
+    onLeaveRoom: PropTypes.func,
+    onCloseRoom: PropTypes.func,
+    kickUser: PropTypes.func,
+    updateUserList: PropTypes.func,
+    kickUsers: PropTypes.func
+};
+
+export default injectIntl(LiveCollaborationModal);

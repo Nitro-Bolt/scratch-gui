@@ -67,7 +67,7 @@ const ExtensionManagerModal = props => {
                         }
                     </div>
                 ))}
-                {(!(loadedExtensions.length == 0) && !props.multiSelect) && (
+                {(!(loadedExtensions.length < 2) && !props.multiSelect) && (
                     <Box className={styles.multiSelectRow}>
                         <button
                             className={styles.multiSelectNormal}

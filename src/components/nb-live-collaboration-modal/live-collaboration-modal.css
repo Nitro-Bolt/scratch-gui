@@ -1,0 +1,204 @@
+@import "../../css/colors.css";
+@import "../../css/units.css";
+
+.modal-content {
+    max-width: 480px;
+    margin-top: 50px;
+}
+
+.body {
+    background: $ui-modal-background;
+    padding: 1.5rem 2.25rem;
+    max-height: calc(100vh - 150px);
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0.5rem 0 0 0;
+    font-weight: bold;
+}
+.divider {
+    flex-grow: 1;
+    margin-left: 1rem;
+    border-top: 1px dashed $ui-tertiary;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    border: 2px solid $ui-black-transparent;
+    border-radius: $space;
+    padding: calc($space * 1);
+    flex-grow: 1;
+    background: $ui-white;
+}
+
+.row button[disabled] {
+    opacity: 0.5;
+}
+
+.input {
+    padding: 0.5rem 1rem;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: $text-primary;
+    background-color: $input-background;
+    border-width: 1px;
+    border-style: solid;
+    border-color: $ui-black-transparent;
+    border-radius: 4px;
+    outline: none;
+    cursor: text;
+    transition: 0.25s ease-out;
+    box-shadow: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+.input:hover {
+    border-color: $looks-secondary;
+}
+.input:focus {
+    border-color: $looks-secondary;
+    box-shadow: 0 0 0 0.25rem $looks-transparent;
+}
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.button {
+    font-family: inherit;
+    font-size: 14px;
+    background-color: $looks-secondary;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+}
+.button:active, .button:focus-within {
+    box-shadow: 0 0 0 3px $looks-transparent;
+}
+
+.button-alternate {
+    font-family: inherit;
+    font-size: 14px;
+    background: white;
+    color: black;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+}
+.button-alternate:active, .button-alternate:focus-within {
+    box-shadow: 0 0 0 3px $ui-black-transparent;
+}
+
+.button-flex {
+    flex-grow: 1;
+}
+
+.room-details {
+    text-align: center;
+    border: 2px solid $ui-black-transparent;
+    border-radius: $space;
+    padding: calc($space * 1);
+    flex-grow: 1;
+    background: $ui-white;
+
+    display: flex;
+    flex-direction: column;
+    gap: $space;
+}
+
+.room-details .full-width-button {
+    width: 100%;
+}
+
+.room-details .half-button-row {
+    display: flex;
+    gap: $space;
+}
+
+.room-details .half-button-row button {
+    flex: 1;
+}
+
+.user-card {
+    background: $ui-white;
+    border: 2px solid $ui-black-transparent;
+    border-radius: $space;
+    padding: calc($space * 1.5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.kick-option {
+    background-image: url("../../lib/assets/icon--leave.svg");
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: $looks-secondary;
+    background-size: 100%;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 4px;
+    outline: none;
+    transition: all 0.2s;
+}
+.kick-option:hover {
+    border: 1px solid $looks-secondary;
+    box-shadow: 0px 0px 0px 4px $looks-transparent;
+}
+
+.multi-select-row {
+    margin-top: 1rem;
+    font-weight: bolder;
+    text-align: right;
+}
+
+.multi-select-normal {
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    background: white;
+    color: black;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.multi-select-kick {
+    border: $looks-secondary;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    background: $looks-secondary;
+    color: white;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+[dir="ltr"] .multi-select-normal + .multi-select-kick {
+    margin-left: 0.5rem;
+}
+
+[dir="rtl"] .multi-select-normal + .multi-select-kick {
+    margin-right: 0.5rem;
+}

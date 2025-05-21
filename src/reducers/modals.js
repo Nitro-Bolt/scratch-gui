@@ -11,6 +11,7 @@ const MODAL_SPRITE_LIBRARY = 'spriteLibrary';
 const MODAL_SOUND_RECORDER = 'soundRecorder';
 const MODAL_CONNECTION = 'connectionModal';
 const MODAL_TIPS_LIBRARY = 'tipsLibrary';
+const MODAL_LIVE_COLLABORATION = 'liveCollaborationModal';
 const MODAL_USERNAME = 'usernameModal';
 const MODAL_SETTINGS = 'settingsModal';
 const MODAL_CUSTOM_EXTENSION = 'customExtensionModal';
@@ -31,6 +32,7 @@ const initialState = {
     [MODAL_SOUND_RECORDER]: false,
     [MODAL_CONNECTION]: false,
     [MODAL_TIPS_LIBRARY]: false,
+    [MODAL_LIVE_COLLABORATION]: false,
     [MODAL_USERNAME]: false,
     [MODAL_SETTINGS]: false,
     [MODAL_CUSTOM_EXTENSION]: false,
@@ -98,6 +100,9 @@ const openConnectionModal = function () {
 const openTipsLibrary = function () {
     return openModal(MODAL_TIPS_LIBRARY);
 };
+const openLiveCollaborationModal = function () {
+    return openModal(MODAL_LIVE_COLLABORATION);
+}
 const openUsernameModal = function () {
     return openModal(MODAL_USERNAME);
 };
@@ -152,6 +157,9 @@ const closeTipsLibrary = function () {
 const closeConnectionModal = function () {
     return closeModal(MODAL_CONNECTION);
 };
+const closeLiveCollaborationModal = function () {
+    return closeModal(MODAL_LIVE_COLLABORATION);
+}
 const closeUsernameModal = function () {
     return closeModal(MODAL_USERNAME);
 };
@@ -189,6 +197,7 @@ export {
     openTelemetryModal,
     openTipsLibrary,
     openConnectionModal,
+    openLiveCollaborationModal,
     openUsernameModal,
     openSettingsModal,
     openCustomExtensionModal,
@@ -207,6 +216,7 @@ export {
     closeTelemetryModal,
     closeTipsLibrary,
     closeConnectionModal,
+    closeLiveCollaborationModal,
     closeUsernameModal,
     closeSettingsModal,
     closeCustomExtensionModal,

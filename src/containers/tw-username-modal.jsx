@@ -7,6 +7,7 @@ import UsernameModalComponent from '../components/tw-username-modal/username-mod
 import {closeUsernameModal} from '../reducers/modals';
 import {generateRandomUsername} from '../lib/tw-username';
 import isScratchDesktop from '../lib/isScratchDesktop';
+import connectionManager from '../lib/nb-connection-manager.js';
 
 class UsernameModal extends React.Component {
     constructor (props) {
@@ -34,6 +35,7 @@ class UsernameModal extends React.Component {
     }
     handleOk () {
         this.props.onSetUsername(this.state.value);
+        connectionManager.setUsername(this.state.value);
         this.props.onCloseUsernameModal();
     }
     handleCancel () {

@@ -33,7 +33,7 @@ import ChangeUsername from '../../containers/tw-change-username.jsx';
 import CloudVariablesToggler from '../../containers/tw-cloud-toggler.jsx';
 import TWSaveStatus from './tw-save-status.jsx';
 
-import {openTipsLibrary, openExtensionManagerModal, openSettingsModal, openRestorePointModal} from '../../reducers/modals';
+import {openTipsLibrary, openExtensionManagerModal, openLiveCollaborationModal, openSettingsModal, openRestorePointModal} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import {
     isTimeTravel220022BC,
@@ -92,6 +92,7 @@ import dropdownCaret from './dropdown-caret.svg';
 import aboutIcon from './icon--about.svg';
 import fileIcon from './icon--file.svg';
 import editIcon from './icon--edit.svg';
+import liveCollaborationIcon from './nb-live-collaboration.svg';
 import addonsIcon from './addons.svg';
 import errorIcon from './tw-error.svg';
 import advancedIcon from './tw-advanced.svg';
@@ -340,9 +341,9 @@ class MenuBar extends React.Component {
         if (modifier) {
             if (event.key.toLowerCase() === 's') {
                 this.props.handleSaveProject();
-                event.preventDefault();    
+                event.preventDefault();
             } else if (event.key.toLowerCase() === 'o') {
-                event.preventDefault();    
+                event.preventDefault();
                 this.props.onStartSelectingFileUpload();
             }
         }
@@ -847,6 +848,26 @@ class MenuBar extends React.Component {
                                 </MenuSection>
                             </MenuBarMenu>
                         </MenuLabel>
+                        {this.props.onClickLiveCollaborationModal && (
+                            <div
+                                className={classNames(styles.menuBarItem, styles.hoverable)}
+                                onClick={this.props.onClickLiveCollaborationModal}
+                            >
+                                <img
+                                    src={liveCollaborationIcon}
+                                    draggable={false}
+                                    width={20}
+                                    height={20}
+                                />
+                                <span className={styles.collapsibleLabel}>
+                                    <FormattedMessage
+                                        defaultMessage="Live Collaboration"
+                                        description="Button to open live collaboration menu"
+                                        id="nb.menuBar.liveCollaboration"
+                                    />
+                                </span>
+                            </div>
+                        )}
                         {this.props.isTotallyNormal && (
                             <MenuLabel
                                 open={this.props.modeMenuOpen}
@@ -1124,6 +1145,7 @@ MenuBar.propTypes = {
     onClickSave: PropTypes.func,
     onClickSaveAsCopy: PropTypes.func,
     onClickSettings: PropTypes.func,
+    onClickLiveCollaborationModal: PropTypes.func,
     onClickExtensionManagerModal: PropTypes.func,
     onClickSettingsModal: PropTypes.func,
     onLogOut: PropTypes.func,
@@ -1216,6 +1238,10 @@ const mapDispatchToProps = dispatch => ({
     onRequestCloseAbout: () => dispatch(closeAboutMenu()),
     onClickRestorePoints: () => dispatch(openRestorePointModal()),
     onClickSettings: () => dispatch(openSettingsMenu()),
+    onClickLiveCollaborationModal: () => {
+        dispatch(closeEditMenu());
+        dispatch(openLiveCollaborationModal());
+    },
     onClickExtensionManagerModal: () => {
         dispatch(closeEditMenu());
         dispatch(openExtensionManagerModal());

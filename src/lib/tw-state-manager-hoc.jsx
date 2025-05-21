@@ -20,6 +20,7 @@ import {
 import {generateRandomUsername} from './tw-username';
 import {setSearchParams} from './tw-navigation-utils';
 import {defaultStageSize} from '../reducers/custom-stage-size';
+import connectionManager from '../lib/nb-connection-manager';
 
 /* eslint-disable no-alert */
 
@@ -359,6 +360,12 @@ const TWStateManager = function (WrappedComponent) {
                 this.props.vm.setRuntimeOptions({
                     miscLimits: false
                 });
+            }
+
+            if (urlParams.has('room')) {
+                const roomID = +urlParams.get('room');
+                connectionManager.init(localStorage.getItem('tw:username'));
+                connectionManager.joinRoom(roomID);
             }
 
             for (const extension of urlParams.getAll('extension')) {
