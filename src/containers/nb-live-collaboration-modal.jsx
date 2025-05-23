@@ -13,6 +13,8 @@ class NBLiveCollaborationModal extends React.Component {
         bindAll(this, [
             'handleClose',
             'handleInput',
+            'handlePacketInput',
+            'handlePacketSend',
             'handleJoinRoom',
             'handleCreateRoom',
             'handleCopyURL',
@@ -30,12 +32,20 @@ class NBLiveCollaborationModal extends React.Component {
             isHost: connectionManager.isHost,
             users: connectionManager.users,
             selectedUsers: [],
-            multiSelect: false
+            multiSelect: false,
+            packetInput: ''
         };
     }
 
     componentDidMount () {
         connectionManager.init(localStorage.getItem('tw:username'));
+
+        connectionManager.on(connectionManager.Event.PEERSUPDATE, peers => this.setState({users: connectionManager.users}));
+        connectionManager.on(connectionManager.Event.ROOMCHANGE, room => this.setState({connected: connectionManager.connected}));
+
+        connectionManager.on(connectionManager.Event.PACKET, (data, peer) => {
+            console.log("Received data from peer", data, peer);
+        })
     }
 
     handleClose () {
@@ -44,6 +54,19 @@ class NBLiveCollaborationModal extends React.Component {
 
     handleInput (input) {
         this.setState({input: input.target.value});
+    }
+
+    handlePacketInput (input) {
+        this.setState({packetInput: input.target.value});
+    }
+
+    handlePacketSend () {
+        connectionManager.sendToAll({
+            type: "PACKET",
+            payload: this.state.packetInput
+        });
+
+        this.setState({packetInput: ""})
     }
 
     handleJoinRoom () {
@@ -112,7 +135,7 @@ class NBLiveCollaborationModal extends React.Component {
 
     render () {
         return (
-            <LiveCollaborationModalComponent // todo: these events can probably just be bound to the thing
+            <LiveCollaborationModalComponent
                 onClose={this.handleClose}
                 isHost={this.state.isHost}
                 users={this.state.users}
@@ -122,6 +145,9 @@ class NBLiveCollaborationModal extends React.Component {
                 selectedUsers={this.state.selectedUsers}
                 connected={this.state.connected}
                 onInput={this.handleInput}
+                onPacketInput={this.handlePacketInput}
+                packetInput={this.state.packetInput}
+                onPacketSend={this.handlePacketSend}
                 onJoinRoom={this.handleJoinRoom}
                 onCreateRoom={this.handleCreateRoom}
                 onCopyURL={this.handleCopyURL}

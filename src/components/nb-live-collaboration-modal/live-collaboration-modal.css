@@ -152,6 +152,20 @@
     align-items: center;
 }
 
+.test-button {
+    text-align: center;
+    border: 2px solid $ui-black-transparent;
+    border-radius: $space;
+    padding: calc($space * 1);
+    flex-grow: 1;
+    background: $ui-white;
+
+    display: flex;
+    flex-direction: column;
+    gap: $space;
+
+}
+
 .kick-option {
     background-image: url("../../lib/assets/icon--leave.svg");
     appearance: none;

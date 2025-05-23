@@ -50,15 +50,15 @@ class NBConnectionManager extends EventEmitter {
     this.Event = {
       /**
        * @description Fired when this client connects to the peerjs server
-       * @event CONNECTIONOPEN
+       * @event SERVERCONNECT
        * @param {string} id The id of this client
        */
-      CONNECTIONOPEN: 'CONNECTIONOPEN',
+      SERVERCONNECT: 'SERVERCONNECT',
       /**
        * @description Fired when this client disconnects from the peerjs server
-       * @event CONNECTIONCLOSE
+       * @event SERVERDISCONNECT
        */
-      CONNECTIONCLOSE: 'CONNECTIONCLOSE',
+      SERVERDISCONNECT: 'SERVERDISCONNECT',
       /** @description Fired when, as a peer, a new peer connects to this client
        * @event PEERCONNECT
        * @param {CollaborationPeer} peer The {@link CollaborationPeer} object of the connected peer
@@ -105,12 +105,18 @@ class NBConnectionManager extends EventEmitter {
        */
       ROOMLEAVE: 'ROOMLEAVE',
       /**
-       * @description Fired when the room this client is connected to is closed due to the host disconnecting
+       * @description Fired when the room this client is connected to is closed due to the host disconnecting or the host closing the room
        * @event ROOMCLOSE
        * @param {string} id The id of the room that was closed
        * @param {CollaborationPeer} host The {@link CollaborationPeer} object of the host of the room that disconnected
        */
       ROOMCLOSE: 'ROOMCLOSE',
+      /**
+       * @description Fired when the room this client is connected to(if any) changes
+       * @event ROOMCHANGE
+       * @param {string | null} room The id of the room this client is connected to, or null if none
+       */
+      ROOMCHANGE: "ROOMCHANGE",
       /**
        * @description Fired when a peer is kicked from a room
        * @event PEERKICK
@@ -155,20 +161,19 @@ class NBConnectionManager extends EventEmitter {
       host: 'localhost',
       port: 1296,
       path: '/peerjs',
-      // secure: true,
-      secure: false,
+      //secure: true,
       debug: 2
     });
 
     this.peer.on('open', id => {
       this.peerId = id;
-      this.emit(this.Event.CONNECTIONOPEN, id);
+      this.emit(this.Event.SERVERCONNECT, id);
       const room = this._getRoomFromUrl();
       if (room) this.joinRoom(room);
     });
 
     this.peer.on('connection', conn => this._handleIncomingConnection(conn));
-    this.peer.on('error', () => this.leaveRoom()); // todo: should this be handled more gracefully?
+    this.peer.on('error', () => this.leaveRoom(false)); // todo: should this be handled more gracefully?
     this.peer.on('close', () => this.destroy());
   }
 
@@ -182,6 +187,7 @@ class NBConnectionManager extends EventEmitter {
     this.connected = true;
     this.roomId = this.hostId = this.peerId;
     this.emit(this.Event.ROOMCREATE, this.roomId);
+    this.emit(this.Event.ROOMCHANGE, this.roomId);
     this._setRoomInUrl(this.roomId);
     return this.roomId;
   }
@@ -193,7 +199,7 @@ class NBConnectionManager extends EventEmitter {
   joinRoom (roomId) {
     if (!roomId || this.peer.disconnected) return;
     if (this.roomId) {
-      this.leaveRoom();
+      this.leaveRoom(false);
     }
     this.isHost = false;
     this.roomId = roomId;
@@ -207,6 +213,7 @@ class NBConnectionManager extends EventEmitter {
       this.connected = true;
       this._bindHost(conn);
       this.emit(this.Event.ROOMJOIN, this.roomId, conn);
+      this.emit(this.Event.ROOMCHANGE, this.roomId);
       conn.send({type: 'REQUESTJOIN', username: this.username});
     });
   }
@@ -238,9 +245,11 @@ class NBConnectionManager extends EventEmitter {
 
   /**
    * Leave the room this peer is currently connected to
+   * @param {boolean} silent If false a ROOMLEAVE event will be emitted
    */
-  leaveRoom () {
-    this.emit(this.Event.ROOMLEAVE, this.roomId, this.host);
+  leaveRoom (silent) {
+    if (!silent) this.emit(this.Event.ROOMLEAVE, this.roomId, this.host);
+    if (!silent) this.emit(this.Event.ROOMCHANGE, null);
     this.disconnectAll();
     this._clearRoomInUrl();
     this.roomId = null;
@@ -357,9 +366,9 @@ class NBConnectionManager extends EventEmitter {
     conn.on('data', data => this._handlePacket(conn, data));
     conn.on('close', () => {
       this.emit(this.Event.HOSTDISCONNECT, this.host);
-      this.connected = false;
-      this.host = null;
-      this.disconnectAll();
+      this.emit(this.Event.ROOMCLOSE, conn.peer, conn);
+      this.emit(this.Event.ROOMCHANGE, null);
+      this.leaveRoom(true);
     });
   }
 
@@ -395,7 +404,6 @@ class NBConnectionManager extends EventEmitter {
     if (!data?.type) return;
 
     const sendTo = (peerId, msg) => this.connections[peerId]?.send(msg);
-    this.emit(this.Event.PACKET, data, conn);
 
     switch (data.type) {
       case 'REQUESTJOIN': {
@@ -501,7 +509,12 @@ class NBConnectionManager extends EventEmitter {
       }
 
       case 'ROOMCLOSED': {
-        if (!this.isHost) this.leaveRoom();
+
+        if (!this.isHost && conn === this.host) {
+          this.emit(this.Event.ROOMCLOSE, this.roomId, this.host);
+          this.emit(this.Event.ROOMCHANGE, null);          
+          this.leaveRoom(true);
+        }
         break;
       }
     }

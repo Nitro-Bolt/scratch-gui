@@ -165,6 +165,23 @@ const LiveCollaborationModal = props =>
                                 </Box>
                             )}
                         )}
+                        <Box
+                            className={styles.testButton}
+                        >
+                            <input
+                                className={styles.input}
+                                placeholder='Enter some text...'
+                                onChange={props.onPacketInput}
+                                value={props.packetInput}
+                                type='string'
+                                id='testPacketContent'
+                            />
+                            <button
+                                className={classNames(styles.button, styles.fullWidthButton)}
+                                id="sendTestPacket"
+                                onClick={props.onPacketSend}
+                            >Send to all peers</button>
+                        </Box>
                         {props.isHost && (
                             (!(props.users.size < 2) && !props.multiSelect) && (
                                 <Box className={styles.multiSelectRow}>
@@ -204,13 +221,16 @@ LiveCollaborationModal.propTypes = {
     intl: intlShape,
     onClose: PropTypes.func.isRequired,
     isHost: PropTypes.bool,
-    users: PropTypes.array,
+    users: PropTypes.object,
     multiSelect: PropTypes.bool,
     input: PropTypes.string,
     changeMultiSelectState: PropTypes.func,
     selectedUsers: PropTypes.array,
     connected: PropTypes.bool,
     onInput: PropTypes.func,
+    onPacketInput: PropTypes.func,
+    onPacketSend: PropTypes.func,
+    packetInput: PropTypes.string,
     onJoinRoom: PropTypes.func,
     onCreateRoom: PropTypes.func,
     onCopyURL: PropTypes.func,
