@@ -40,7 +40,6 @@ class NBLiveCollaborationModal extends React.Component {
 
     handleClose () {
         this.props.onClose();
-        this.setState({connected: false, isHost: false});
     }
 
     handleInput (input) {
