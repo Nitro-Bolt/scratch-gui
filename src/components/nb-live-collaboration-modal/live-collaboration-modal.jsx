@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import PropTypes from 'prop-types';
 import React from 'react';
 import Modal from '../../containers/modal.jsx';
@@ -25,14 +26,24 @@ const Header = props => (
 Header.propTypes = {
     children: PropTypes.node
 };
-
-const LiveCollaborationModal = props => {
-    return (
+/**
+ * @param {{
+ * users: Map<string, string>,
+ * isHost: boolean,
+ * multiSelect: boolean,
+ * input: string,
+ * selectedUsers: Array<string>,
+ * connected: boolean
+ * }} props Props
+ * @returns {void}
+ */
+const LiveCollaborationModal = props =>
+    (
         <Modal
             className={styles.modalContent}
             onRequestClose={props.onClose}
             contentLabel={props.intl.formatMessage(messages.title)}
-            id='liveCollaborationModal'
+            id="liveCollaborationModal"
         >
             <Box className={styles.body}>
                 {!props.connected ? (
@@ -128,31 +139,34 @@ const LiveCollaborationModal = props => {
                                 </div>
                             </Box>
                         )}
-                        {props.users.map(userEntry => (
+                        {Array.from(props.users.entries()).map(userEntry => {
+                            const [peerId, username] = userEntry;
+                            return (
                                 <Box
                                     className={styles.userCard}
-                                    key={userEntry[Object.keys(userEntry)[0]]}
+                                    key={peerId}
                                 >
-                                    <p>{Object.keys(userEntry)[0]}</p>
+                                    <p>{username}</p>
                                     {props.isHost && (
+                                        // eslint-disable-next-line no-negated-condition
                                         !props.multiSelect ? (
                                             <button
                                                 className={styles.kickOption}
-                                                onClick={() => props.kickUser(userEntry[Object.keys(userEntry)[0]])}
+                                                onClick={() => props.kickUser(peerId)}
                                             />
                                         ) : (
                                             <FancyCheckbox
                                                 className={styles.checkboxOption}
                                                 onChange={props.updateUserList}
-                                                value={userEntry[Object.keys(userEntry)[0]]}
+                                                value={peerId}
                                             />
                                         )
                                     )}
                                 </Box>
-                            )
+                            )}
                         )}
                         {props.isHost && (
-                            (!(props.users.length < 2) && !props.multiSelect) && (
+                            (!(props.users.size < 2) && !props.multiSelect) && (
                                 <Box className={styles.multiSelectRow}>
                                     <button
                                         className={styles.multiSelectNormal}
@@ -185,7 +199,6 @@ const LiveCollaborationModal = props => {
             </Box>
         </Modal>
     );
-};
 
 LiveCollaborationModal.propTypes = {
     intl: intlShape,

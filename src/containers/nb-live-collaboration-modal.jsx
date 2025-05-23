@@ -40,6 +40,7 @@ class NBLiveCollaborationModal extends React.Component {
 
     handleClose () {
         this.props.onClose();
+        this.setState({connected: false, isHost: false});
     }
 
     handleInput (input) {
@@ -112,7 +113,7 @@ class NBLiveCollaborationModal extends React.Component {
 
     render () {
         return (
-            <LiveCollaborationModalComponent
+            <LiveCollaborationModalComponent // todo: these events can probably just be bound to the thing
                 onClose={this.handleClose}
                 isHost={this.state.isHost}
                 users={this.state.users}
