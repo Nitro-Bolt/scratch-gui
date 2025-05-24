@@ -1054,6 +1054,20 @@ export default async function ({ addon, console, msg }) {
         },
         noopSwitch,
       ];
+      blockSwitches["microbit_displaySymbol"] = [
+        noopSwitch,
+        {
+          opcode: "microbit_displayText",
+          remapShadowType: { VALUE: "text" },
+        },
+      ];
+      blockSwitches["microbit_displayText"] = [
+        {
+          opcode: "microbit_displaySymbol",
+          remapShadowType: { VALUE: "matrix" },
+        },
+        noopSwitch,
+      ];
 
       if (vm.extensionManager) {
         const switches = vm.extensionManager.getAddonBlockSwitches();
