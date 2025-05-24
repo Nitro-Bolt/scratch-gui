@@ -5,6 +5,7 @@ export default {
   "find-bar": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/find-bar/_runtime_entry.js"),
   "middle-click-popup": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/middle-click-popup/_runtime_entry.js"),
   "editor-block-chomping": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/editor-block-chomping/_runtime_entry.js"),
+  "paint-gradient-maker": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/paint-gradient-maker/_runtime_entry.js"),
   "jump-to-def": () => require("../addons/jump-to-def/_runtime_entry.js"),
   "editor-searchable-dropdowns": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/editor-searchable-dropdowns/_runtime_entry.js"),
   "block-palette-icons": () => import(/* webpackChunkName: "addon-entry-block-palette-icons" */ "../addons/block-palette-icons/_runtime_entry.js"),

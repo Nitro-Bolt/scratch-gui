@@ -421,6 +421,18 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                     </shadow>
                 </value>
             </block>
+            <block type="looks_changeStretch">
+                <value name="X">
+                    <shadow type="math_number">
+                        <field name="NUM">10</field>
+                    </shadow>
+                </value>
+                <value name="Y">
+                    <shadow type="math_number">
+                        <field name="NUM">10</field>
+                    </shadow>
+                </value>
+            </block>
             <block id="${targetId}_stretchGetX" type="looks_stretchGetX"></block>
             <block id="${targetId}_stretchGetY" type="looks_stretchGetY"></block>
         `}

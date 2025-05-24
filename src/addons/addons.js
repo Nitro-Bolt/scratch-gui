@@ -72,6 +72,7 @@ const addons = [
 ];
 
 const newAddons = [
+    'paint-gradient-maker',
     'custom-web-font',
     'expanded-backpack',
     'editor-create-music',

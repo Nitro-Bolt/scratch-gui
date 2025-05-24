@@ -115,12 +115,12 @@ export default function (vm) {
     };
 
     const costumesMenu = function () {
-        const next = ScratchBlocks.ScratchMsgs.translate('LOOKS_NEXTCOSTUME', 'next costume');
-        const previous = ScratchBlocks.ScratchMsgs.translate('LOOKS_PREVIOUSCOSTUME', 'previous costume');
-        const random = ScratchBlocks.ScratchMsgs.translate('LOOKS_RANDOMCOSTUME', 'random costume');
+        const next = ScratchBlocks.ScratchMsgs.translate('LOOKS_NEXTCOSTUME_MENU', 'next costume');
+        const previous = ScratchBlocks.ScratchMsgs.translate('LOOKS_PREVIOUSCOSTUME_MENU', 'previous costume');
+        const random = ScratchBlocks.ScratchMsgs.translate('LOOKS_RANDOMCOSTUME_MENU', 'random costume');
         if (vm.editingTarget && vm.editingTarget.getCostumes().length > 0) {
             return vm.editingTarget.getCostumes().map(costume => [costume.name, costume.name])
-                .concat([[next,'next costume'],
+                .concat([[next, 'next costume'],
                     [previous, 'previous costume'],
                     [random, 'random costume']]);
         }
@@ -522,7 +522,7 @@ export default function (vm) {
             enabled: true,
             callback: ext => vm.extensionManager.removeExtension(ext)
         }
-        // see src/components/blocks.jsx (just after `VMScratchBlocks(props.vm)`) for Edit Extension
+        // see src/containers/blocks.jsx (just after `VMScratchBlocks(props.vm)`) for Edit Extension
     ]);
 
     return ScratchBlocks;

@@ -1063,6 +1063,14 @@ export default async function ({ addon, console, msg }) {
           })
         })
       }
+      vm.runtime.on("EXTENSION_ADDED", () => {
+        const switches = vm.extensionManager.getAddonBlockSwitches();
+        Object.getOwnPropertyNames(switches).forEach(extID => {
+          Object.getOwnPropertyNames(switches[extID]).forEach(block => {
+            blockSwitches[`${extID}_${block}`] = switches[extID][block];
+          })
+        })
+      })
     }
 
     if (addon.settings.get("sa")) {
