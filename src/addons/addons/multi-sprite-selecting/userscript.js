@@ -1,4 +1,4 @@
-export default async () => {
+export default async function ({ addon, console, msg }) {
     let spritesContainer;
     let spriteSelectorContainer;
 
