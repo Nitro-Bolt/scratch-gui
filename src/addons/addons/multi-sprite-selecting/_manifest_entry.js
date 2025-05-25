@@ -15,6 +15,11 @@ const manifest = {
             "url": "userscript.js"
         }
     ],
+    "userstyles": [
+        {
+          "url": "multi-sprite-selecting.css"
+        }
+    ],
     "tags": ["beta", "new"],
     "enabledByDefault": false,
 };
