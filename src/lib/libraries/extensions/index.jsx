@@ -150,6 +150,7 @@ import pmOperatorsExpansionExtensionIcon from './penguinmod/extensions/operators
 // dinosaurmod icons
 import dmDinoBuilderIcon from './dinosaurmod/dinobuilder.png';
 import dmPythonIcon from './dinosaurmod/python.png';
+import dmLuaIcon from './dinosaurmod/lua.png';
 
 // other stuff (not official by penguinmod)
 import PenguinmodThumb from './penguinmod/unofficial-icons/penguinmod-icon.svg';
@@ -1320,7 +1321,17 @@ const menuItems = [
         extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/python.js',
         iconURL: dmPythonIcon,
         tags: ['dinosaurmod', 'programminglanguage'],
-        description: 'Run your own custom code written in Python!',
+        description: 'Run your own custom code written in Python using Pyodide!',
+        credits: 'Pyodide',
+        featured: true
+    },
+    {
+        name: 'Lua',
+        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/lua.js',
+        iconURL: dmLuaIcon,
+        tags: ['dinosaurmod', 'programminglanguage'],
+        description: 'Run your own custom code written in Lua using Fengari!',
+        credits: 'Fengari',
         featured: true
     },
     {

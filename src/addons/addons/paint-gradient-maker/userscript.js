@@ -278,7 +278,7 @@ export default async function () {
 
     /* GUI Utils */
     function getButtonURI(name, dontCompile) {
-        const themeHex = isPM ? "#00c3ff" : document.documentElement.style.getPropertyValue("--looks-secondary") || "#ff4c4c";
+        const themeHex = isPM ? "#80f41a" : document.documentElement.style.getPropertyValue("--looks-secondary") || "#ff4c4c";
         const guiSVG = guiIMGS[name].replace("red", themeHex);
         if (dontCompile) return guiSVG;
         else return "data:image/svg+xml;base64," + btoa(guiSVG);
@@ -491,7 +491,7 @@ export default async function () {
     }
 
     function genButtonTable(div) {
-        const themeHex = isPM ? "#00c3ff" : document.documentElement.style.getPropertyValue("--looks-secondary") || "#ff4c4c";
+        const themeHex = isPM ? "#80f41a" : document.documentElement.style.getPropertyValue("--looks-secondary") || "#ff4c4c";
         const btnStyle = `color: #fff; font-weight: 600; text-align: center; padding: 10px; margin: 10px 5px; border: solid 2px var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15)); border-radius: 5px; background: ${themeHex}; transition: transform 0.2s;`;
 
         const enterBtn = document.createElement("button");
