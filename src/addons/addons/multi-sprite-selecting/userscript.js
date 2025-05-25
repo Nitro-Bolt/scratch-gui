@@ -44,7 +44,7 @@ export default async function ({ addon, console, msg }) {
     function updateSelectedText() {
         const count = selectedSprites.size;
         if (count > 0) {
-            selectedCountText.textContent = `${count} sprite${count === 1 ? '' : 's'} selected`;
+            selectedCountText.textContent = `${count} Sprite${count === 1 ? '' : 's'} selected`;
             selectedCountText.style.display = "block";
         } else {
             selectedCountText.textContent = "";
@@ -63,7 +63,7 @@ export default async function ({ addon, console, msg }) {
         for (const targetId in sprites) {
             const sprite = sprites[targetId];
             if (!sprite.isStage) {
-                selectedSprites.add(sprite.name);
+                selectedSprites.add(sprite.id);
             }
         }
         updateSelectedText();
@@ -85,8 +85,8 @@ export default async function ({ addon, console, msg }) {
 
         for (const targetId in sprites) {
             const sprite = sprites[targetId];
-            if (selected.includes(sprite.name)) {
-                vm.deleteTarget(sprite.id);
+            if (selected.includes(sprite.id)) {
+                vm.deleteSpriteInternal(sprite.id);
                 console.log(`Deleted sprite: ${sprite.name}`);
             }
         }
