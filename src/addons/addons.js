@@ -72,6 +72,7 @@ const addons = [
 ];
 
 const newAddons = [
+    'multi-sprite-selecting',
     'paint-gradient-maker',
     'custom-web-font',
     'expanded-backpack',

@@ -74,4 +74,5 @@ export default {
   "vol-slider": () => import(/* webpackChunkName: "addon-entry-vol-slider" */ "../addons/vol-slider/_runtime_entry.js"),
   "expanded-backpack": () => import(/* webpackChunkName: "addon-entry-expanded-backpack" */ "../addons/expanded-backpack/_runtime_entry.js"),
   "custom-web-font": () => import(/* webpackChunkName: "addon-entry-custom-web-font" */ "../addons/custom-web-font/_runtime_entry.js"),
+  "multi-sprite-selecting": () => import(/* webpackChunkName: "addon-entry-multi-sprite-selecting" */ "../addons/multi-sprite-selecting/_runtime_entry.js"),
 };

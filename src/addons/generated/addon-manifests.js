@@ -72,6 +72,7 @@ import _tw_disable_cloud_variables from "../addons/tw-disable-cloud-variables/_m
 import _editor_stepping from "../addons/editor-stepping/_manifest_entry.js";
 import _expanded_backpack from "../addons/expanded-backpack/_manifest_entry.js";
 import _custom_web_font from "../addons/custom-web-font/_manifest_entry.js";
+import _multi_sprite_selecting from "../addons/multi-sprite-selecting/_manifest_entry.js";
 
 export default {
   "cat-blocks": _cat_blocks,
@@ -148,4 +149,5 @@ export default {
   "vol-slider": _vol_slider,
   "expanded-backpack": _expanded_backpack,
   "custom-web-font": _custom_web_font,
+  "multi-sprite-selecting": _multi_sprite_selecting,
 };
