@@ -1,6 +1,7 @@
 export default async function ({ addon, console, msg }) {
     let spritesContainer;
     let spriteSelectorContainer;
+    let spriteWrappers;
 
     const selectedSprites = new Set()
 
@@ -25,7 +26,7 @@ export default async function ({ addon, console, msg }) {
     
     const selectAllButton = createIconButton("Select All", icons["selectAll"], selectAll);
     const unselectAllButton = createIconButton("Unselect All", icons["unselectAll"], unselectAll);
-    const deleteButton = createIconButton("Delete", icons["deleteIcon"], deleteSelected);
+    const deleteButton = createIconButton("Delete All", icons["deleteIcon"], deleteSelected);
 
     const selectedCountText = document.createElement("div");
     selectedCountText.className = "sa-sprite-selected-count";
@@ -41,6 +42,21 @@ export default async function ({ addon, console, msg }) {
         display: "flex",
     });
 
+    function isJSONEmpty(json) {
+        return (!!JSON.stringify(json).length === 0)
+    }
+
+    function updateButtonsVisibility() {
+        const Gui = ReduxStore.getState().scratchGui;
+        const sprites = Gui.targets.sprites;
+
+        const empty = isJSONEmpty(sprites);
+
+        selectAllButton.style.display = empty ? "none" : "";
+        unselectAllButton.style.display = empty ? "none" : "";
+        deleteButton.style.display = empty ? "none" : "";
+    }
+
     function updateSelectedText() {
         const count = selectedSprites.size;
         if (count > 0) {
@@ -50,6 +66,8 @@ export default async function ({ addon, console, msg }) {
             selectedCountText.textContent = "";
             selectedCountText.style.display = "none";
         }
+
+        updateButtonsVisibility();
     }
 
     function selectAll() {
@@ -95,6 +113,32 @@ export default async function ({ addon, console, msg }) {
         updateSelectedText();
     }
 
+    function handleSpriteClick(e) {
+        const wrapper = e.currentTarget;
+        const order = parseInt(window.getComputedStyle(wrapper).order, 10);
+
+        const Gui = ReduxStore.getState().scratchGui;
+        const sprites = Gui.targets.sprites;
+
+        const orderedSpriteIds = Object.values(sprites)
+            .filter(sprite => !sprite.isStage)
+            .sort((a, b) => a.order - b.order)
+            .map(sprite => sprite.id);
+
+        const matchingSpriteId = orderedSpriteIds[order];
+        if (!matchingSpriteId) return;
+
+        if (selectedSprites.has(matchingSpriteId)) {
+            selectedSprites.delete(matchingSpriteId);
+            wrapper.style.outline = "";
+        } else {
+            selectedSprites.add(matchingSpriteId);
+            wrapper.style.outline = "2px solid blue";
+        }
+
+        updateSelectedText();
+    }
+
     while (true) {
         await addon.tab.waitForElement("div[class^='sprite-selector_items-wrapper']", {
           markAsSeen: true,
@@ -104,6 +148,11 @@ export default async function ({ addon, console, msg }) {
     
         spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
         spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
+        spriteWrappers = document.querySelectorAll('[class^="sprite-selector_sprite-wrapper"]');
         spriteSelectorContainer.insertBefore(container, spritesContainer);
+
+        spriteWrappers.forEach(wrapper => {
+            wrapper.addEventListener("click", handleSpriteClick)
+        });
     }
 }
