@@ -127,10 +127,6 @@ export default async function ({ addon, console, msg }) {
             spriteWrappers = document.querySelectorAll('[class^="sprite-selector_sprite-wrapper"]');
 
             spriteWrappers.forEach((wrapper, index) => {
-                const spriteArray = Object.values(sprites).filter(s => !s.isStage).sort((a, b) => a.order - b.order);
-                const sprite = spriteArray[index];
-                if (!sprite) return;
-
                 delete(wrapper.dataset.spriteId);
                 wrapper.removeEventListener("click", handleSpriteClick);
             });
@@ -243,7 +239,7 @@ export default async function ({ addon, console, msg }) {
 
         spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
         spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
-        SpriteDeleteButton = spriteInfoRowTertiary.querySelector('[class^="delete-button_delete-button"]');
+        SpriteDeleteButton = document.querySelector('[class^="delete-button_delete-button"]');
 
         if (!spriteSelectorContainer.contains(container)) {
             spriteSelectorContainer.insertBefore(container, spritesContainer);
