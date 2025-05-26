@@ -73,12 +73,7 @@ export default async function ({ addon, console, msg }) {
     isSelectingContainer.appendChild(isSelectingLabel);
     isSelectingContainer.appendChild(isSelectingInput);
 
-    const SpriteInfoGroupContainer = document.createElement("div");
-    SpriteInfoGroupContainer.className = "sprite-info_group";
-
-    SpriteInfoGroupContainer.appendChild(isSelectingContainer);
-
-    addon.tab.displayNoneWhileDisabled(SpriteInfoGroupContainer, {
+    addon.tab.displayNoneWhileDisabled(isSelectingContainer, {
         display: "flex",
     });
 
@@ -112,7 +107,8 @@ export default async function ({ addon, console, msg }) {
     }
 
     function highlightSelected() {
-        if (!isSelectingChecked) wrapper.style.outline = "";
+        if (!isSelectingChecked) { wrapper.style.outline = ""; selectedSprites.clear(); }
+        updateButtonsVisibility();
         spriteWrappers.forEach(wrapper => {
             const spriteId = wrapper.dataset.spriteId;
             if (selectedSprites.has(spriteId)) {
@@ -259,8 +255,8 @@ export default async function ({ addon, console, msg }) {
         spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
         spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
 
-        if (!spriteInfoRowTertiary.contains(SpriteInfoGroupContainer)) {
-            spriteInfoRowTertiary.insertBefore(SpriteInfoGroupContainer, spriteInfoGroup);
+        if (!spriteInfoGroup.contains(isSelectingContainer)) {
+            spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
         }
     }
 }
