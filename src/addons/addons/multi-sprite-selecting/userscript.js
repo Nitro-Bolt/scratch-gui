@@ -58,7 +58,7 @@ export default async function ({ addon, console, msg }) {
 
     isSelectingInput.addEventListener('change', async (event) => {
         isSelectingChecked = event.target.checked;
-        if (isSelectingChecked) {
+        if (!!isSelectingChecked) {
             await enableSelecting();
             console.log('Checkbox is checked!');
         } else {
@@ -73,7 +73,12 @@ export default async function ({ addon, console, msg }) {
     isSelectingContainer.appendChild(isSelectingLabel);
     isSelectingContainer.appendChild(isSelectingInput);
 
-    addon.tab.displayNoneWhileDisabled(isSelectingContainer, {
+    const SpriteInfoGroupContainer = document.createElement("div");
+    SpriteInfoGroupContainer.className = "sprite-info_group";
+
+    SpriteInfoGroupContainer.appendChild(isSelectingContainer);
+
+    addon.tab.displayNoneWhileDisabled(SpriteInfoGroupContainer, {
         display: "flex",
     });
 
@@ -81,13 +86,19 @@ export default async function ({ addon, console, msg }) {
         const Gui = ReduxStore.getState().scratchGui;
         const sprites = Gui.targets.sprites;
         const empty = Object.keys(sprites).length === 0;
-        const display = empty ? "none" : "";
+        let display;
+        if (!!empty) || (!isSelectingChecked) {
+            display = "none";
+        } else {
+            display = "";
+        };
         selectAllButton.style.display = display;
         unselectAllButton.style.display = display;
         deleteButton.style.display = display;
     }
 
     function updateSelectedText() {
+        if (!isSelectingChecked) { selectedCountText.textContent = ""; selectedCountText.style.display = "none"; };
         const count = selectedSprites.size;
         if (count > 0) {
             selectedCountText.textContent = `${count} Sprite${count === 1 ? '' : 's'} selected`;
@@ -101,6 +112,7 @@ export default async function ({ addon, console, msg }) {
     }
 
     function highlightSelected() {
+        if (!isSelectingChecked) wrapper.style.outline = "";
         spriteWrappers.forEach(wrapper => {
             const spriteId = wrapper.dataset.spriteId;
             if (selectedSprites.has(spriteId)) {
@@ -247,8 +259,8 @@ export default async function ({ addon, console, msg }) {
         spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
         spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
 
-        if (!spriteInfoGroup.contains(isSelectingContainer)) {
-            spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
+        if (!spriteInfoRowTertiary.contains(SpriteInfoGroupContainer)) {
+            spriteInfoRowTertiary.insertBefore(SpriteInfoGroupContainer, spriteInfoGroup);
         }
     }
 }
