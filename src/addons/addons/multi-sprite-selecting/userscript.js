@@ -236,9 +236,6 @@ export default async function ({ addon, console, msg }) {
         if (container.parentNode) {
             container.parentNode.removeChild(container);
         }
-        if (isSelectingContainer.parentNode) {
-            isSelectingContainer.parentNode.removeChild(isSelectingContainer);
-        }
     }
     while (true) {
         await addon.tab.waitForElement("div[class*='sprite-info_row-tertiary']", {
