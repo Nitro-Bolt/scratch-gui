@@ -174,7 +174,7 @@ export default async function ({ addon, console, msg }) {
 
     let previousStageSize = null;
 
-    const unsubscribe = ReduxStore.subscribe(() => {
+    const StageSizeUnsubscribe = ReduxStore.subscribe(() => {
         const state = ReduxStore.getState();
         const newStageSize = state.scratchGui.stageSize;
 
@@ -186,7 +186,7 @@ export default async function ({ addon, console, msg }) {
 
     let previousSpriteInfoDisabled = null;
 
-    const unsubscribe = ReduxStore.subscribe(() => {
+    const SpriteInfoUnsubscribe = ReduxStore.subscribe(() => {
         const state = ReduxStore.getState();
         const newSpriteInfoDisabled = state.scratchGui.spriteInfoDisabled;
 
