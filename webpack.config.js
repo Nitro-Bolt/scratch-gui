@@ -152,7 +152,7 @@ module.exports = [
                 chunks: 'all',
                 minChunks: 2,
                 minSize: 50000,
-                maxInitialRequests: 5
+                maxInitialRequests: 10
             }
         },
         plugins: base.plugins.concat([
@@ -242,11 +242,6 @@ module.exports = [
             }),
             new TWGenerateServiceWorkerPlugin()
         ]),
-        performance: {
-            maxAssetSize: 10 * 1024 * 1024,
-            maxEntrypointSize: 10 * 1024 * 1024,
-            hints: 'warning'
-        }
     })
 ].concat(
     process.env.NODE_ENV === 'production' || process.env.BUILD_MODE === 'dist' ? (
