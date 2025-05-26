@@ -223,12 +223,6 @@ export default async function ({ addon, console, msg }) {
             updateSelectedText();
             highlightSelected();
             updateButtonsVisibility();
-            if (spriteDeleteButton) {
-                spriteDeleteButton.style.display = "";
-            }
-            if (stageSelectorContainer) {
-                stageSelectorContainer.style.display = "";
-            }
             console.log('Checkbox is unchecked!');
         }
     }
@@ -285,9 +279,7 @@ export default async function ({ addon, console, msg }) {
         spriteDeleteButton = document.querySelector('[class^="delete-button_delete-button"]');
         stageSelectorContainer = document.querySelector('[class^="stage-selector_stage-selector"]');
 
-        if (!spriteSelectorContainer.contains(container)) {
-            spriteSelectorContainer.insertBefore(container, spritesContainer);
-        }
+        spriteSelectorContainer.insertBefore(container, spritesContainer);
 
         if (observer) observer.disconnect();
 
@@ -297,6 +289,13 @@ export default async function ({ addon, console, msg }) {
         });
 
         observer.observe(spritesContainer, { childList: true, subtree: true });
+
+        if (spriteDeleteButton) {
+            spriteDeleteButton.style.display = "none";
+        }
+        if (stageSelectorContainer) {
+            stageSelectorContainer.style.display = "none";
+        }
 
         bindClickHandlers();
         updateButtonsVisibility();
@@ -310,6 +309,13 @@ export default async function ({ addon, console, msg }) {
         if (observer) {
             observer.disconnect();
             observer = null;
+        }
+
+        if (spriteDeleteButton) {
+            spriteDeleteButton.style.display = "";
+        }
+        if (stageSelectorContainer) {
+            stageSelectorContainer.style.display = "";
         }
 
         if (spriteSelectorContainer.contains(container)) {
