@@ -241,7 +241,12 @@ module.exports = [
                 ]
             }),
             new TWGenerateServiceWorkerPlugin()
-        ])
+        ]),
+        performance: {
+            maxAssetSize: 10 * 1024 * 1024,
+            maxEntrypointSize: 10 * 1024 * 1024,
+            hints: 'warning'
+        }
     })
 ].concat(
     process.env.NODE_ENV === 'production' || process.env.BUILD_MODE === 'dist' ? (
