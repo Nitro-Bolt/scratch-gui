@@ -49,7 +49,7 @@ export default async function ({ addon, console, msg }) {
 
     const isSelectingLabel = document.createElement("label");
     isSelectingLabel.className = "sa-sprite-info-isselecting-label";
-    isSelectingLabel.innerHTML = "<span class=\"sa-label_input-label\"><span>Is Selecting?</span></span>";
+    isSelectingLabel.innerHTML = "<span class=\"sa-label_input-label\"><span style=\"font-size: 11px;\">Is Selecting?</span></span>";
 
     const isSelectingInput = document.createElement("input");
     isSelectingInput.type = "checkbox";
@@ -87,7 +87,7 @@ export default async function ({ addon, console, msg }) {
         const sprites = Gui.targets.sprites;
         const empty = Object.keys(sprites).length === 0;
         let display;
-        if (!!empty) || (!isSelectingChecked) {
+        if (!!empty || !isSelectingChecked) {
             display = "none";
         } else {
             display = "";
