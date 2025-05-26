@@ -116,6 +116,16 @@ export default async function ({ addon, console, msg }) {
         if (!isSelectingChecked) {
             wrapper.style.outline = "";
             selectedSprites.clear(); 
+            spriteWrappers = document.querySelectorAll('[class^="sprite-selector_sprite-wrapper"]');
+
+            spriteWrappers.forEach((wrapper, index) => {
+                const spriteArray = Object.values(sprites).filter(s => !s.isStage).sort((a, b) => a.order - b.order);
+                const sprite = spriteArray[index];
+                if (!sprite) return;
+
+                delete(wrapper.dataset.spriteId);
+                wrapper.removeEventListener("click", handleSpriteClick);
+            });
         }
         updateButtonsVisibility();
         spriteWrappers.forEach(wrapper => {
