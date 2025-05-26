@@ -77,8 +77,10 @@ export default async function ({ addon, console, msg }) {
         const Gui = ReduxStore.getState().scratchGui;
         const sprites = Gui.targets.sprites;
         const empty = Object.keys(sprites).length === 0;
+        const state = ReduxStore.getState();
+        const newSpriteInfoDisabled = state.scratchGui.spriteInfoDisabled;
         let display;
-        if (!!empty || !isSelectingChecked) {
+        if (!!empty || !isSelectingChecked || !!newSpriteInfoDisabled) {
             display = "none";
         } else {
             display = "";
@@ -89,7 +91,9 @@ export default async function ({ addon, console, msg }) {
     }
 
     function updateSelectedText() {
-        if (!isSelectingChecked) { 
+        const state = ReduxStore.getState();
+        const newSpriteInfoDisabled = state.scratchGui.spriteInfoDisabled;
+        if (!isSelectingChecked || !!newSpriteInfoDisabled) { 
             selectedCountText.textContent = ""; 
             selectedCountText.style.display = "none"; 
         } else {
@@ -142,6 +146,7 @@ export default async function ({ addon, console, msg }) {
         }
         updateSelectedText();
         highlightSelected();
+        runIsChecked();
     }
 
     function unselectAll() {
@@ -150,6 +155,7 @@ export default async function ({ addon, console, msg }) {
         selectedSprites.clear();
         updateSelectedText();
         highlightSelected();
+        runIsChecked();
     }
 
     function deleteSelected() {
@@ -170,6 +176,7 @@ export default async function ({ addon, console, msg }) {
         selectedSprites.clear();
         updateSelectedText();
         highlightSelected();
+        runIsChecked();
     }
 
     let previousStageSize = null;
@@ -264,6 +271,7 @@ export default async function ({ addon, console, msg }) {
         }
         updateSelectedText();
         highlightSelected();
+        runIsChecked();
     }
     async function enableSelecting() {
         await addon.tab.waitForElement("div[class^='sprite-selector_items-wrapper']", {
