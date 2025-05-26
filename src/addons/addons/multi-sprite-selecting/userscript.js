@@ -6,7 +6,6 @@ export default async function ({ addon, console, msg }) {
     let spriteInfoGroup;
 
     let isSelectingChecked = false;
-
     let observer;
 
     const selectedSprites = new Set()
