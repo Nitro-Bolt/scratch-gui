@@ -216,7 +216,7 @@ export default async function ({ addon, console, msg }) {
             if (stageSelectorContainer) {
                 stageSelectorContainer.style.display = "none";
             }
-            await enableSelecting();
+            enableSelecting();
             console.log('Checkbox is checked!');
         } else {
             disableSelecting();
@@ -312,8 +312,8 @@ export default async function ({ addon, console, msg }) {
             observer = null;
         }
 
-        if (container.parentNode) {
-            container.parentNode.removeChild(container);
+        if (spriteSelectorContainer.contains(container)) {
+            spriteSelectorContainer.removeChild(container);
         }
     }
     while (true) {
