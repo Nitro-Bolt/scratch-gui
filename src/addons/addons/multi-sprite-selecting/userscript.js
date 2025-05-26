@@ -4,6 +4,7 @@ export default async function ({ addon, console, msg }) {
     let spriteWrappers = [];
     let spriteInfoRowTertiary;
     let spriteInfoGroup;
+    let SpriteDeleteButton;
 
     let isSelectingChecked = false;
     let observer;
@@ -31,7 +32,7 @@ export default async function ({ addon, console, msg }) {
     
     const selectAllButton = createIconButton("Select All", icons["selectAll"], selectAll);
     const unselectAllButton = createIconButton("Unselect All", icons["unselectAll"], unselectAll);
-    const deleteButton = createIconButton("Delete All", icons["deleteIcon"], deleteSelected);
+    const deleteButton = createIconButton("Delete Selected Sprites", icons["deleteIcon"], deleteSelected);
 
     const selectedCountText = document.createElement("div");
     selectedCountText.className = "sa-sprite-selected-count";
@@ -62,6 +63,9 @@ export default async function ({ addon, console, msg }) {
             updateSelectedText();
             highlightSelected();
             updateButtonsVisibility();
+            if (SpriteDeleteButton) {
+                SpriteDeleteButton.style.display = "none";
+            }
             await enableSelecting();
             console.log('Checkbox is checked!');
         } else {
@@ -69,6 +73,9 @@ export default async function ({ addon, console, msg }) {
             updateSelectedText();
             highlightSelected();
             updateButtonsVisibility();
+            if (SpriteDeleteButton) {
+                SpriteDeleteButton.style.display = "";
+            }
             console.log('Checkbox is unchecked!');
         }
     });
@@ -99,23 +106,24 @@ export default async function ({ addon, console, msg }) {
     }
 
     function updateSelectedText() {
-        if (!isSelectingChecked) { selectedCountText.textContent = ""; selectedCountText.style.display = "none"; };
-        const count = selectedSprites.size;
-        if (count > 0) {
-            selectedCountText.textContent = `${count} Sprite${count === 1 ? '' : 's'} selected`;
-            selectedCountText.style.display = "block";
+        if (!isSelectingChecked) { 
+            selectedCountText.textContent = ""; 
+            selectedCountText.style.display = "none"; 
         } else {
-            selectedCountText.textContent = "";
-            selectedCountText.style.display = "none";
-        }
-
+            const count = selectedSprites.size;
+            if (count > 0) {
+                selectedCountText.textContent = `${count} Sprite${count === 1 ? '' : 's'} selected`;
+                selectedCountText.style.display = "block";
+            } else {
+                selectedCountText.textContent = "";
+                selectedCountText.style.display = "none";
+            }
+        };
         updateButtonsVisibility();
     }
 
     function highlightSelected() {
         if (!isSelectingChecked) {
-            wrapper.style.outline = "";
-            selectedSprites.clear(); 
             spriteWrappers = document.querySelectorAll('[class^="sprite-selector_sprite-wrapper"]');
 
             spriteWrappers.forEach((wrapper, index) => {
@@ -126,16 +134,19 @@ export default async function ({ addon, console, msg }) {
                 delete(wrapper.dataset.spriteId);
                 wrapper.removeEventListener("click", handleSpriteClick);
             });
+            wrapper.style.outline = "";
+            selectedSprites.clear(); 
+        } else {
+            spriteWrappers.forEach(wrapper => {
+                const spriteId = wrapper.dataset.spriteId;
+                if (selectedSprites.has(spriteId)) {
+                    wrapper.style.outline = "2px solid blue";
+                } else {
+                    wrapper.style.outline = "";
+                }
+            });
         }
         updateButtonsVisibility();
-        spriteWrappers.forEach(wrapper => {
-            const spriteId = wrapper.dataset.spriteId;
-            if (selectedSprites.has(spriteId)) {
-                wrapper.style.outline = "2px solid blue";
-            } else {
-                wrapper.style.outline = "";
-            }
-        });
     }
 
     function selectAll() {
@@ -232,6 +243,7 @@ export default async function ({ addon, console, msg }) {
 
         spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
         spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
+        SpriteDeleteButton = spriteInfoRowTertiary.querySelector('[class^="delete-button_delete-button"]');
 
         if (!spriteSelectorContainer.contains(container)) {
             spriteSelectorContainer.insertBefore(container, spritesContainer);
