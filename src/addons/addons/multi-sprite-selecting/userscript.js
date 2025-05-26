@@ -59,10 +59,16 @@ export default async function ({ addon, console, msg }) {
     isSelectingInput.addEventListener('change', async (event) => {
         isSelectingChecked = event.target.checked;
         if (!!isSelectingChecked) {
+            updateSelectedText();
+            highlightSelected();
+            updateButtonsVisibility();
             await enableSelecting();
             console.log('Checkbox is checked!');
         } else {
             disableSelecting();
+            updateSelectedText();
+            highlightSelected();
+            updateButtonsVisibility();
             console.log('Checkbox is unchecked!');
         }
     });
@@ -107,7 +113,10 @@ export default async function ({ addon, console, msg }) {
     }
 
     function highlightSelected() {
-        if (!isSelectingChecked) { wrapper.style.outline = ""; selectedSprites.clear(); }
+        if (!isSelectingChecked) {
+            wrapper.style.outline = "";
+            selectedSprites.clear(); 
+        }
         updateButtonsVisibility();
         spriteWrappers.forEach(wrapper => {
             const spriteId = wrapper.dataset.spriteId;
