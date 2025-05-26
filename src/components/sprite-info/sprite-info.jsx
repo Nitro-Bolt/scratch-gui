@@ -22,6 +22,8 @@ import hideIcon from './icon--hide.svg';
 import dragOnIcon from './icon--draggable-on.svg';
 import dragOffIcon from './icon--draggable-off.svg';
 
+import { setSpriteInfoDisabled } from '../../reducers/set-spriteinfo-disabled.js';
+
 const BufferedInput = BufferedInputHOC(Input);
 
 const messages = defineMessages({
@@ -48,6 +50,11 @@ class SpriteInfo extends React.Component {
             Math.round(this.props.x) !== Math.round(nextProps.x) ||
             Math.round(this.props.y) !== Math.round(nextProps.y)
         );
+    }
+    componentDidUpdate (prevProps) {
+        if (prevProps.disabled !== this.props.disabled) {
+            this.props.setSpriteInfoDisabled(this.props.disabled);
+        }
     }
     render () {
         const {
@@ -392,4 +399,9 @@ SpriteInfo.propTypes = {
     ])
 };
 
-export default injectIntl(SpriteInfo);
+const mapDispatchToProps = dispatch => ({
+    setSpriteInfoDisabled: (value) => 
+        dispatch(setSpriteInfoDisabled(value)),
+});
+
+export default connect(null, mapDispatchToProps)(injectIntl(SpriteInfo));

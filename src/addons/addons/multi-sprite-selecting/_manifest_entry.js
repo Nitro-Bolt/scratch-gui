@@ -6,7 +6,7 @@ const manifest = {
     "noTranslations": true,
     "info": [
         {
-          "text": "When the 'Is Selecting?' checkbox is checked, the delete button on each sprite is hidden until it's unchecked.",
+          "text": "When the 'Is Selecting?' checkbox is checked, the delete button of each sprites and the stage is hidden until it's unchecked.",
           "id": "checkbox-notice"
         }
     ],

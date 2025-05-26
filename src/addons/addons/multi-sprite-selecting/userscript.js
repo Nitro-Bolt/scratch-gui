@@ -4,7 +4,8 @@ export default async function ({ addon, console, msg }) {
     let spriteWrappers = [];
     let spriteInfoRowTertiary;
     let spriteInfoGroup;
-    let SpriteDeleteButton;
+    let spriteDeleteButton;
+    let stageSelectorContainer;
 
     let isSelectingChecked = false;
     let observer;
@@ -59,25 +60,7 @@ export default async function ({ addon, console, msg }) {
 
     isSelectingInput.addEventListener('change', async (event) => {
         isSelectingChecked = event.target.checked;
-        if (!!isSelectingChecked) {
-            updateSelectedText();
-            highlightSelected();
-            updateButtonsVisibility();
-            if (SpriteDeleteButton) {
-                SpriteDeleteButton.style.display = "none";
-            }
-            await enableSelecting();
-            console.log('Checkbox is checked!');
-        } else {
-            disableSelecting();
-            updateSelectedText();
-            highlightSelected();
-            updateButtonsVisibility();
-            if (SpriteDeleteButton) {
-                SpriteDeleteButton.style.display = "";
-            }
-            console.log('Checkbox is unchecked!');
-        }
+        runIsChecked();
     });
 
     const isSelectingContainer = document.createElement("div");
@@ -189,22 +172,112 @@ export default async function ({ addon, console, msg }) {
         highlightSelected();
     }
 
+    let previousStageSize = null;
+
+    const unsubscribe = ReduxStore.subscribe(() => {
+        const state = ReduxStore.getState();
+        const newStageSize = state.scratchGui.stageSize;
+
+        if (previousStageSize === 'small' && newStageSize === 'large') {
+            runIsChecked();
+        }
+        previousStageSize = newStageSize;
+    });
+
+    let previousSpriteInfoDisabled = null;
+
+    const unsubscribe = ReduxStore.subscribe(() => {
+        const state = ReduxStore.getState();
+        const newSpriteInfoDisabled = state.scratchGui.spriteInfoDisabled;
+
+        if (!!newSpriteInfoDisabled) {
+            isSelectingContainer.style.display = "none"
+        } else {
+            isSelectingContainer.style.display = ""
+        }
+        previousSpriteInfoDisabled = newSpriteInfoDisabled;
+    });
+
+    function runIsChecked() {
+        if (!!isSelectingChecked) {
+            updateSelectedText();
+            highlightSelected();
+            updateButtonsVisibility();
+            if (spriteDeleteButton) {
+                spriteDeleteButton.style.display = "none";
+            }
+            if (stageSelectorContainer) {
+                stageSelectorContainer.style.display = "none";
+            }
+            await enableSelecting();
+            console.log('Checkbox is checked!');
+        } else {
+            disableSelecting();
+            updateSelectedText();
+            highlightSelected();
+            updateButtonsVisibility();
+            if (spriteDeleteButton) {
+                spriteDeleteButton.style.display = "";
+            }
+            if (stageSelectorContainer) {
+                stageSelectorContainer.style.display = "";
+            }
+            console.log('Checkbox is unchecked!');
+        }
+    }
+
+    function bindClickHandlers() {
+        spriteWrappers = document.querySelectorAll('[class^="sprite-selector_sprite-wrapper"]');
+        const sprites = ReduxStore.getState().scratchGui.targets.sprites;
+
+        spriteWrappers.forEach((wrapper, index) => {
+            const spriteArray = Object.values(sprites).sort((a, b) => a.order - b.order);
+            const sprite = spriteArray[index];
+            if (!sprite) return;
+
+            wrapper.dataset.spriteId = sprite.id;
+            wrapper.removeEventListener("click", handleSpriteClick);
+            wrapper.addEventListener("click", handleSpriteClick);
+        });
+        highlightSelected();
+    }
+
+    function handleSpriteClick(e) {
+        const wrapper = e.currentTarget;
+        const order = parseInt(window.getComputedStyle(wrapper).order, 10);
+        if (isNaN(order)) return;
+
+        const Gui = ReduxStore.getState().scratchGui;
+        const sprites = Gui.targets.sprites;
+
+        for (const target in sprites) {
+            const sprite = sprites[target];
+            if (sprite.order === order) {
+                if (selectedSprites.has(sprite.id)) {
+                    selectedSprites.delete(sprite.id);
+                    console.log(`Unselected sprite: ${sprite.name}`);
+                } else {
+                    selectedSprites.add(sprite.id);
+                    console.log(`Selected sprite: ${sprite.name}`);
+                }
+            }
+        }
+        updateSelectedText();
+        highlightSelected();
+    }
     async function enableSelecting() {
         await addon.tab.waitForElement("div[class^='sprite-selector_items-wrapper']", {
             markAsSeen: true,
-            reduxEvents: [
-                "scratch-gui/mode/SET_PLAYER",
-                "fontsLoaded/SET_FONTS_LOADED",
-                "scratch-gui/locales/SELECT_LOCALE"
-            ],
+            reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
             reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
         });
 
         spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
         spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
-        SpriteDeleteButton = document.querySelector('[class^="delete-button_delete-button"]');
+        spriteDeleteButton = document.querySelector('[class^="delete-button_delete-button"]');
+        stageSelectorContainer = document.querySelector('[class^="stage-selector_stage-selector"]');
 
-        if (spriteSelectorContainer && container && !spriteSelectorContainer.contains(container)) {
+        if (!spriteSelectorContainer.contains(container)) {
             spriteSelectorContainer.insertBefore(container, spritesContainer);
         }
 
@@ -215,9 +288,7 @@ export default async function ({ addon, console, msg }) {
             bindClickHandlers();
         });
 
-        if (spritesContainer) {
-            observer.observe(spritesContainer, { childList: true, subtree: true });
-        }
+        observer.observe(spritesContainer, { childList: true, subtree: true });
 
         bindClickHandlers();
         updateButtonsVisibility();
@@ -237,66 +308,18 @@ export default async function ({ addon, console, msg }) {
             container.parentNode.removeChild(container);
         }
     }
-
-    function bindClickHandlers() {
-        spriteWrappers = document.querySelectorAll('[class^="sprite-selector_sprite-wrapper"]');
-        const sprites = ReduxStore.getState().scratchGui.targets.sprites;
-        const spriteArray = Object.values(sprites).sort((a, b) => a.order - b.order);
-
-        spriteWrappers.forEach((wrapper, index) => {
-            const sprite = spriteArray[index];
-            if (!sprite) return;
-
-            wrapper.dataset.spriteId = sprite.id;
-            wrapper.removeEventListener("click", handleSpriteClick);
-            wrapper.addEventListener("click", handleSpriteClick);
+    while (true) {
+        await addon.tab.waitForElement("div[class*='sprite-info_row-tertiary']", {
+            markAsSeen: true,
+            reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
+            reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
         });
 
-        highlightSelected();
-    }
+        spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
+        spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
 
-    function handleSpriteClick(e) {
-        const wrapper = e.currentTarget;
-        const order = parseInt(window.getComputedStyle(wrapper).order, 10);
-        if (isNaN(order)) return;
-
-        const sprites = ReduxStore.getState().scratchGui.targets.sprites;
-        const spriteArray = Object.values(sprites);
-
-        for (const sprite of spriteArray) {
-            if (sprite.order === order) {
-                if (selectedSprites.has(sprite.id)) {
-                    selectedSprites.delete(sprite.id);
-                    console.log(`Unselected: ${sprite.name}`);
-                } else {
-                    selectedSprites.add(sprite.id);
-                    console.log(`Selected: ${sprite.name}`);
-                }
-            }
+        if (!spriteInfoGroup.contains(isSelectingContainer)) {
+            spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
         }
-
-        updateSelectedText();
-        highlightSelected();
     }
-
-    (async () => {
-        while (true) {
-            await addon.tab.waitForElement("div[class*='sprite-info_row-tertiary']", {
-                markAsSeen: true,
-                reduxEvents: [
-                    "scratch-gui/mode/SET_PLAYER",
-                    "fontsLoaded/SET_FONTS_LOADED",
-                    "scratch-gui/locales/SELECT_LOCALE"
-                ],
-                reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
-            });
-
-            spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
-            spriteInfoGroup = spriteInfoRowTertiary?.querySelector('[class^="sprite-info_group"]');
-
-            if (spriteInfoGroup && isSelectingContainer && !spriteInfoGroup.contains(isSelectingContainer)) {
-                spriteInfoGroup.insertBefore(isSelectingContainer, spriteInfoGroup.firstChild);
-            }
-        }
-    })();
 }
