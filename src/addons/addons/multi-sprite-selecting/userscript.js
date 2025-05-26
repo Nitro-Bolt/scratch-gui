@@ -6,7 +6,6 @@ export default async function ({ addon, console, msg }) {
     let spriteInfoGroup;
 
     let isSelectingChecked = false;
-
     let observer;
 
     const selectedSprites = new Set()
@@ -211,19 +210,6 @@ export default async function ({ addon, console, msg }) {
             spriteSelectorContainer.insertBefore(container, spritesContainer);
         }
 
-        await addon.tab.waitForElement("div[class*='sprite-info_row-tertiary']", {
-            markAsSeen: true,
-            reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
-            reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
-        });
-
-        spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
-        spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
-
-        if (!spriteInfoGroup.contains(isSelectingContainer)) {
-            spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
-        }
-
         if (observer) observer.disconnect();
 
         observer = new MutationObserver(() => {
@@ -252,6 +238,20 @@ export default async function ({ addon, console, msg }) {
         }
         if (isSelectingContainer.parentNode) {
             isSelectingContainer.parentNode.removeChild(isSelectingContainer);
+        }
+    }
+    while (true) {
+        await addon.tab.waitForElement("div[class*='sprite-info_row-tertiary']", {
+            markAsSeen: true,
+            reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
+            reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
+        });
+
+        spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
+        spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
+
+        if (!spriteInfoGroup.contains(isSelectingContainer)) {
+            spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
         }
     }
 }
