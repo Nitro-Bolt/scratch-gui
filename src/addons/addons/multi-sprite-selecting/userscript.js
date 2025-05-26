@@ -1,7 +1,7 @@
 export default async function ({ addon, console, msg }) {
     let spritesContainer;
     let spriteSelectorContainer;
-    let spriteWrappers;
+    let spriteWrappers = [];
 
     const selectedSprites = new Set()
 
@@ -42,19 +42,14 @@ export default async function ({ addon, console, msg }) {
         display: "flex",
     });
 
-    function isJSONEmpty(json) {
-        return (!!JSON.stringify(json).length === 0)
-    }
-
     function updateButtonsVisibility() {
         const Gui = ReduxStore.getState().scratchGui;
         const sprites = Gui.targets.sprites;
-
-        const empty = isJSONEmpty(sprites);
-
-        selectAllButton.style.display = empty ? "none" : "";
-        unselectAllButton.style.display = empty ? "none" : "";
-        deleteButton.style.display = empty ? "none" : "";
+        const empty = Object.keys(sprites).length === 0;
+        const display = empty ? "none" : "";
+        selectAllButton.style.display = display;
+        unselectAllButton.style.display = display;
+        deleteButton.style.display = display;
     }
 
     function updateSelectedText() {
@@ -68,6 +63,17 @@ export default async function ({ addon, console, msg }) {
         }
 
         updateButtonsVisibility();
+    }
+
+    function highlightSelected() {
+        spriteWrappers.forEach(wrapper => {
+            const spriteId = wrapper.dataset.spriteId;
+            if (selectedSprites.has(spriteId)) {
+                wrapper.style.outline = "2px solid blue";
+            } else {
+                wrapper.style.outline = "";
+            }
+        });
     }
 
     function selectAll() {
@@ -85,6 +91,7 @@ export default async function ({ addon, console, msg }) {
             }
         }
         updateSelectedText();
+        highlightSelected();
     }
 
     function unselectAll() {
@@ -92,6 +99,7 @@ export default async function ({ addon, console, msg }) {
         console.log("Unselecting all sprites");
         selectedSprites.clear();
         updateSelectedText();
+        highlightSelected();
     }
 
     function deleteSelected() {
@@ -111,32 +119,47 @@ export default async function ({ addon, console, msg }) {
 
         selectedSprites.clear();
         updateSelectedText();
+        highlightSelected();
+    }
+
+    function bindClickHandlers() {
+        spriteWrappers = document.querySelectorAll('[class^="sprite-selector_sprite-wrapper"]');
+        const sprites = ReduxStore.getState().scratchGui.targets.sprites;
+
+        spriteWrappers.forEach((wrapper, index) => {
+            const spriteArray = Object.values(sprites).filter(s => !s.isStage).sort((a, b) => a.order - b.order);
+            const sprite = spriteArray[index];
+            if (!sprite) return;
+
+            wrapper.dataset.spriteId = sprite.id;
+            wrapper.removeEventListener("click", handleSpriteClick);
+            wrapper.addEventListener("click", handleSpriteClick);
+        });
+        highlightSelected();
     }
 
     function handleSpriteClick(e) {
         const wrapper = e.currentTarget;
         const order = parseInt(window.getComputedStyle(wrapper).order, 10);
+        if (!order) return;
 
         const Gui = ReduxStore.getState().scratchGui;
         const sprites = Gui.targets.sprites;
 
-        const orderedSpriteIds = Object.values(sprites)
-            .filter(sprite => !sprite.isStage)
-            .sort((a, b) => a.order - b.order)
-            .map(sprite => sprite.id);
-
-        const matchingSpriteId = orderedSpriteIds[order];
-        if (!matchingSpriteId) return;
-
-        if (selectedSprites.has(matchingSpriteId)) {
-            selectedSprites.delete(matchingSpriteId);
-            wrapper.style.outline = "";
-        } else {
-            selectedSprites.add(matchingSpriteId);
-            wrapper.style.outline = "2px solid blue";
+        for (const target in sprites) {
+            const sprite = sprites[target];
+            if (sprite.order === order) {
+                if (selectedSprites.has(order)) {
+                    selectedSprites.delete(order);
+                    console.log(`Unselected sprite: ${sprite.name}`);
+                } else {
+                    selectedSprites.add(order);
+                    console.log(`Selected sprite: ${sprite.name}`);
+                }
+            }
         }
-
         updateSelectedText();
+        highlightSelected();
     }
 
     while (true) {
@@ -148,11 +171,18 @@ export default async function ({ addon, console, msg }) {
     
         spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
         spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
-        spriteWrappers = document.querySelectorAll('[class^="sprite-selector_sprite-wrapper"]');
-        spriteSelectorContainer.insertBefore(container, spritesContainer);
+        if (!spriteSelectorContainer.contains(container)) {
+            spriteSelectorContainer.insertBefore(container, spritesContainer);
+        }
 
-        spriteWrappers.forEach(wrapper => {
-            wrapper.addEventListener("click", handleSpriteClick)
+        const observer = new MutationObserver(() => {
+            updateButtonsVisibility();
+            bindClickHandlers();
         });
+
+        observer.observe(spritesContainer, { childList: true, subtree: true });
+
+        bindClickHandlers();
+        updateButtonsVisibility();
     }
 }
