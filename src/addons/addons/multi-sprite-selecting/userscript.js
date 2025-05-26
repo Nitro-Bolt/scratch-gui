@@ -198,7 +198,7 @@ export default async function ({ addon, console, msg }) {
         previousSpriteInfoDisabled = newSpriteInfoDisabled;
     });
 
-    function runIsChecked() {
+    async function runIsChecked() {
         if (!!isSelectingChecked) {
             updateSelectedText();
             highlightSelected();
