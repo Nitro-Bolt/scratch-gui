@@ -133,11 +133,6 @@ module.exports = [
             'addon-settings': './src/playground/addon-settings.jsx',
             'credits': './src/playground/credits/credits.jsx'
         },
-        performance: {
-            hints: process.env.NODE_ENV === 'production' ? 'warning' : false,
-            maxAssetSize: 10 * 1024 * 1024,
-            maxEntrypointSize: 10 * 1024 * 1024
-        },
         output: {
             path: path.resolve(__dirname, 'build')
         },
@@ -157,7 +152,7 @@ module.exports = [
                 chunks: 'all',
                 minChunks: 2,
                 minSize: 50000,
-                maxInitialRequests: 10
+                maxInitialRequests: 5
             }
         },
         plugins: base.plugins.concat([
@@ -253,11 +248,6 @@ module.exports = [
         // export as library
         defaultsDeep({}, base, {
             target: 'web',
-            performance: {
-                hints: process.env.NODE_ENV === 'production' ? 'warning' : false,
-                maxAssetSize: 10 * 1024 * 1024,
-                maxEntrypointSize: 10 * 1024 * 1024
-            },
             entry: {
                 'scratch-gui': './src/index.js'
             },
