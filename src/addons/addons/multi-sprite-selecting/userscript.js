@@ -141,7 +141,7 @@ export default async function ({ addon, console, msg }) {
     function handleSpriteClick(e) {
         const wrapper = e.currentTarget;
         const order = parseInt(window.getComputedStyle(wrapper).order, 10);
-        if (!order) return;
+        if (isNaN(order)) return;
 
         const Gui = ReduxStore.getState().scratchGui;
         const sprites = Gui.targets.sprites;
@@ -149,11 +149,11 @@ export default async function ({ addon, console, msg }) {
         for (const target in sprites) {
             const sprite = sprites[target];
             if (sprite.order === order) {
-                if (selectedSprites.has(order)) {
-                    selectedSprites.delete(order);
+                if (selectedSprites.has(sprite.id)) {
+                    selectedSprites.delete(sprite.id);
                     console.log(`Unselected sprite: ${sprite.name}`);
                 } else {
-                    selectedSprites.add(order);
+                    selectedSprites.add(sprite.id);
                     console.log(`Selected sprite: ${sprite.name}`);
                 }
             }
