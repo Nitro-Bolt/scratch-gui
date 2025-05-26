@@ -126,11 +126,11 @@ export default async function ({ addon, console, msg }) {
         if (!isSelectingChecked) {
             spriteWrappers = document.querySelectorAll('[class^="sprite-selector_sprite-wrapper"]');
 
-            spriteWrappers.forEach((wrapper, index) => {
+            spriteWrappers.forEach(wrapper => {
+                wrapper.style.outline = "";
                 delete(wrapper.dataset.spriteId);
                 wrapper.removeEventListener("click", handleSpriteClick);
             });
-            wrapper.style.outline = "";
             selectedSprites.clear(); 
         } else {
             spriteWrappers.forEach(wrapper => {
