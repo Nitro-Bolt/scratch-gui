@@ -7,6 +7,8 @@ export default async function ({ addon, console, msg }) {
 
     let isSelectingChecked = false;
 
+    let observer;
+
     const selectedSprites = new Set()
 
     const vm = addon.tab.traps.vm;
@@ -56,11 +58,12 @@ export default async function ({ addon, console, msg }) {
     isSelectingInput.style.accentColor = "#80f41a";
 
     isSelectingInput.addEventListener('change', (event) => {
-        if (event.target.checked) {
-            isSelectingChecked = true;
+        isSelectingChecked = event.target.checked;
+        if (isSelectingChecked) {
+            await enableSelecting();
             console.log('Checkbox is checked!');
         } else {
-            isSelectingChecked = false;
+            disableSelecting();
             console.log('Checkbox is unchecked!');
         }
     });
@@ -194,41 +197,61 @@ export default async function ({ addon, console, msg }) {
         updateSelectedText();
         highlightSelected();
     }
-    while (true) {
-        while (!!isSelectingChecked) {
-            await addon.tab.waitForElement("div[class^='sprite-selector_items-wrapper']", {
-                markAsSeen: true,
-                reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
-                reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
-            });
-    
-            spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
-            spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
-            if (!spriteSelectorContainer.contains(container)) {
-                spriteSelectorContainer.insertBefore(container, spritesContainer);
-            }
+    async function enableSelecting() {
+        await addon.tab.waitForElement("div[class^='sprite-selector_items-wrapper']", {
+            markAsSeen: true,
+            reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
+            reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
+        });
 
-            await addon.tab.waitForElement("div[class*='sprite-info_row-tertiary']", {
-                markAsSeen: true,
-                reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
-                reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
-            });
+        spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
+        spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
 
-            spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
-            spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
-
-            if (!spriteInfoGroup.contains(isSelectingContainer)) {
-                spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
-            }
-
-            const observer = new MutationObserver(() => {
-                updateButtonsVisibility();
-                bindClickHandlers();
-            });
-
-            observer.observe(spritesContainer, { childList: true, subtree: true });
+        if (!spriteSelectorContainer.contains(container)) {
+            spriteSelectorContainer.insertBefore(container, spritesContainer);
         }
+
+        await addon.tab.waitForElement("div[class*='sprite-info_row-tertiary']", {
+            markAsSeen: true,
+            reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
+            reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
+        });
+
+        spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
+        spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
+
+        if (!spriteInfoGroup.contains(isSelectingContainer)) {
+            spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
+        }
+
+        if (observer) observer.disconnect();
+
+        observer = new MutationObserver(() => {
+            updateButtonsVisibility();
+            bindClickHandlers();
+        });
+
+        observer.observe(spritesContainer, { childList: true, subtree: true });
+
         bindClickHandlers();
         updateButtonsVisibility();
+    }
+
+    function disableSelecting() {
+        selectedSprites.clear();
+        updateSelectedText();
+        highlightSelected();
+
+        if (observer) {
+            observer.disconnect();
+            observer = null;
+        }
+
+        if (container.parentNode) {
+            container.parentNode.removeChild(container);
+        }
+        if (isSelectingContainer.parentNode) {
+            isSelectingContainer.parentNode.removeChild(isSelectingContainer);
+        }
     }
 }
