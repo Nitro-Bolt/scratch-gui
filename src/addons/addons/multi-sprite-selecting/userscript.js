@@ -268,7 +268,7 @@ export default async function ({ addon, console, msg }) {
         const state = ReduxStore.getState();
         const newStageSize = state.scratchGui.stageSize.stageSize;
 
-        if (previousStageSize === 'small' && newStageSize === 'large') {
+        if (previousStageSize === 'small' && newStageSize === 'large' || previousStageSize === 'empty' && newStageSize === 'large') {
             runIsChecked();
             const spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
             const spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');

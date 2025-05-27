@@ -189,9 +189,7 @@ class SpriteInfo extends React.Component {
         }
 
         if (stageSize === STAGE_DISPLAY_SIZES.none) {
-            return (
-                <Box className={styles.spriteInfo}></Box>
-            );
+            return;
         }
 
         return (

@@ -93,6 +93,13 @@
     border-bottom-left-radius: 0;
 }
 
+[dir="ltr"] .stage-button-middle {
+    border-left: none;
+    border-right: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 [dir="rtl"] .stage-button-first {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;

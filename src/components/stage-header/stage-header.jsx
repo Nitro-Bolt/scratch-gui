@@ -188,7 +188,7 @@ const StageHeaderComponent = function (props) {
                         <Button
                             className={classNames(
                                 styles.stageButton,
-                                styles.stageButtonFirst,
+                                styles.stageButtonMiddle,
                                 (stageSizeMode === STAGE_SIZE_MODES.small) ? null : styles.stageButtonToggledOff
                             )}
                             onClick={onSetStageSmall}
