@@ -38,7 +38,7 @@ export default async function ({ addon, console, msg }) {
     const unselectAllButton = createIconButton("Unselect All", icons["unselectAll"], unselectAll);
     const deleteButton = createIconButton("Delete Selected Sprites", icons["deleteIcon"], deleteSelected);
     const duplicateButton = createIconButton("Duplicate Selected Sprites", icons["duplicateIcon"], duplicateSelected);
-    const exportButton = createIconButton("Export Selected Sprites", icons["exportIcon"], exportSelected);
+    // const exportButton = createIconButton("Export Selected Sprites", icons["exportIcon"], exportSelected);
 
     const selectedCountText = document.createElement("div");
     selectedCountText.className = "sa-sprite-selected-count";
@@ -49,7 +49,7 @@ export default async function ({ addon, console, msg }) {
     container.appendChild(unselectAllButton);
     container.appendChild(deleteButton);
     container.appendChild(duplicateButton);
-    container.appendChild(exportButton);
+    // container.appendChild(exportButton);
     container.appendChild(selectedCountText);
 
     addon.tab.displayNoneWhileDisabled(container, {
@@ -58,7 +58,7 @@ export default async function ({ addon, console, msg }) {
 
     const isSelectingLabel = document.createElement("label");
     isSelectingLabel.className = "sa-sprite-info-isselecting-label";
-    isSelectingLabel.innerHTML = "<span class=\"sa-label_input-label\"><span style=\"font-size: 11px;\">Is Selecting?</span></span>";
+    isSelectingLabel.innerHTML = "<span class=\"sa-label_input-label\"><span style=\"font-size: 11px;\">   Is Selecting?</span></span>"; // The Characters that aren't basic ASCII characters serve as a gap between "draggability" and the "is selecting" label.
 
     const isSelectingInput = document.createElement("input");
     isSelectingInput.type = "checkbox";
@@ -186,7 +186,7 @@ export default async function ({ addon, console, msg }) {
         runIsChecked();
     }
 
-    function duplicateSelected() {
+    async function duplicateSelected() {
         if (!spritesContainer) return;
         console.log("Duplicating selected sprites");
         const Gui = ReduxStore.getState().scratchGui;
@@ -196,7 +196,7 @@ export default async function ({ addon, console, msg }) {
         const spritesToDuplicate = Object.values(sprites).filter(sprite => selected.includes(sprite.id));
 
         for (const sprite of spritesToDuplicate) {
-            vm.duplicateSprite(sprite.id);
+            await vm.duplicateSprite(sprite.id);
             console.log(`Duplicated sprite: ${sprite.name}`);
         }
 
