@@ -215,7 +215,7 @@ export default async function ({ addon, console, msg }) {
         const spritesToExport = Object.values(sprites).filter(sprite => selected.includes(sprite.id));
 
         // from "src/lib/download-blob.js"
-        downloadBlob(filename, blob) => {
+        downloadBlob((filename, blob) => {
             const downloadLink = document.createElement('a');
             document.body.appendChild(downloadLink);
 
@@ -256,7 +256,7 @@ export default async function ({ addon, console, msg }) {
                 .catch(err => {
                     console.error(`Failed to export ${sprite.name}:`, err);
                 });
-        }
+        })
         updateSelectedText();
         highlightSelected();
         runIsChecked();
