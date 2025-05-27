@@ -39,7 +39,7 @@ export default async function ({ addon, console, msg }) {
 
     let container;
 
-    function  {
+    function defineContainer() {
         selectAllButton = createIconButton("Select All", icons["selectAll"], selectAll);
         unselectAllButton = createIconButton("Unselect All", icons["unselectAll"], unselectAll);
         deleteButton = createIconButton("Delete Selected Sprites", icons["deleteIcon"], deleteSelected);
