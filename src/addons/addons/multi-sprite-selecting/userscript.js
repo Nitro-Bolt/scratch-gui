@@ -292,7 +292,7 @@ export default async function ({ addon, console, msg }) {
             console.log("isSelectingContainer:", isSelectingContainer);
 
             if (!spriteInfoGroup.contains(isSelectingContainer)) {
-                spriteInfoRowTertiary.insertBefore(isSelectingContainer, spriteInfoGroup);
+                spriteInfoGroup.insertBefore(isSelectingContainer, null);
             }
         }
         previousStageSize = newStageSize;
