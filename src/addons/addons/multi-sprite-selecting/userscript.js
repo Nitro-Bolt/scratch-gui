@@ -334,6 +334,17 @@ export default async function ({ addon, console, msg }) {
             spriteSelectorContainer.removeChild(container);
         }
     }
+
+    function bindIsSelectingCheckbox() {
+        isSelectingInput = isSelectingContainer.querySelector('input[type="checkbox"]');
+
+        if (!isSelectingInput) return;
+
+        isSelectingInput.onchange = async (event) => {
+            isSelectingChecked = event.target.checked;
+            runIsChecked();
+        };
+    }
     while (true) {
         await addon.tab.waitForElement("div[class*='sprite-info_row-tertiary']", {
             markAsSeen: true,
@@ -348,6 +359,7 @@ export default async function ({ addon, console, msg }) {
 
         if (!spriteInfoGroup.contains(isSelectingContainer)) {
             spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
+            bindIsSelectingCheckbox();
         }
     }
 }
