@@ -268,7 +268,7 @@ export default async function ({ addon, console, msg }) {
         const state = ReduxStore.getState();
         const newStageSize = state.scratchGui.stageSize.stageSize;
 
-        if (previousStageSize === 'small' && newStageSize === 'large' || previousStageSize === 'empty' && newStageSize === 'large') {
+        if (previousStageSize === 'small' && newStageSize === 'large' || previousStageSize === 'none' && newStageSize === 'large') {
             runIsChecked();
             const spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
             const spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
@@ -288,6 +288,8 @@ export default async function ({ addon, console, msg }) {
             const spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
             console.log("spriteInfoGroup:", spriteInfoGroup);
             if (!spriteInfoGroup) return;
+
+            console.log("isSelectingContainer:", isSelectingContainer);
 
             if (!spriteInfoGroup.contains(isSelectingContainer)) {
                 spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
