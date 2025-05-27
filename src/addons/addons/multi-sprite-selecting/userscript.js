@@ -187,6 +187,12 @@ export default async function ({ addon, console, msg }) {
 
         if (previousStageSize === 'small' && newStageSize === 'large') {
             runIsChecked();
+            spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
+            spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
+
+            if (!spriteInfoGroup.contains(isSelectingContainer)) {
+                spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
+            }
         }
         previousStageSize = newStageSize;
     });
