@@ -200,8 +200,6 @@ export default async function ({ addon, console, msg }) {
         const newStageSize = state.scratchGui.stageSize;
 
         if (previousStageSize === 'small' && newStageSize === 'large') {
-            spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
-
             runIsChecked();
         }
         previousStageSize = newStageSize;
@@ -288,11 +286,12 @@ export default async function ({ addon, console, msg }) {
         spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
         spriteDeleteButton = document.querySelector('[class^="delete-button_delete-button"]');
         stageSelectorContainer = document.querySelector('[class^="stage-selector_stage-selector"]');
-        
+
         container = null;
         container = defineContainer();
-
-        spriteSelectorContainer.insertBefore(container, spritesContainer);
+        if (String(window.getComputedStyle(container).display) == "none") {
+            container.style.display = "";
+        }
 
         if (observer) observer.disconnect();
 
@@ -332,8 +331,10 @@ export default async function ({ addon, console, msg }) {
             stageSelectorContainer.style.display = "";
         }
 
-        if (spriteSelectorContainer.contains(container)) {
-            spriteSelectorContainer.removeChild(container);
+        container = null;
+        container = defineContainer();
+        if (String(window.getComputedStyle(container).display) !== "none") {
+            container.style.display = "none";
         }
     }
     while (true) {
