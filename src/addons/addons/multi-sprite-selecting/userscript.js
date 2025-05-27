@@ -277,12 +277,16 @@ export default async function ({ addon, console, msg }) {
             isSelectingContainer = document.createElement("div");
             isSelectingContainer.className = "sa-sprite-info-isselecting";
 
+            console.log(isSelectingLabel, isSelectingInput);
             isSelectingContainer.appendChild(isSelectingLabel);
             isSelectingContainer.appendChild(isSelectingInput);
 
+            console.log("spriteInfoRowTertiary:", spriteInfoRowTertiary);
+            console.log("spritesContainer:", spritesContainer);
             if (!spriteInfoRowTertiary || !spritesContainer) return;
 
             const spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
+            console.log("spriteInfoGroup:", spriteInfoGroup);
             if (!spriteInfoGroup) return;
 
             if (!spriteInfoGroup.contains(isSelectingContainer)) {
