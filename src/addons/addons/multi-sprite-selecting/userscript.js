@@ -31,33 +31,23 @@ export default async function ({ addon, console, msg }) {
         "deleteIcon": `<?xml version="1.0" encoding="UTF-8"?><svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>Delete</title><defs><path d="M4.54751641,6.99994966 L15.4523042,6.99994966 C15.7284466,6.99994966 15.9523042,7.22380729 15.9523042,7.49994966 C15.9523042,7.51506367 15.9516189,7.5301699 15.9502504,7.54522183 L15.1651793,16.1801783 C15.0715275,17.2102489 14.207924,17.9989808 13.1736049,17.9990897 L6.82662224,17.9997575 C5.79213514,17.9998663 4.92828345,17.2110677 4.83462539,16.180829 L4.04956981,7.54521753 C4.02456905,7.27020922 4.22724022,7.02700381 4.50224854,7.00200306 C4.51729904,7.00063483 4.53240384,6.99994966 4.54751641,6.99994966 Z M7.33333333,4 L7.88603796,2.34188612 C7.95409498,2.13771505 8.14516441,2 8.36037961,2 L11.6396204,2 C11.8548356,2 12.045905,2.13771505 12.113962,2.34188612 L12.6666667,4 L16.5,4 C16.7761424,4 17,4.22385763 17,4.5 L17,5.5 C17,5.77614237 16.7761424,6 16.5,6 L3.5,6 C3.22385763,6 3,5.77614237 3,5.5 L3,4.5 C3,4.22385763 3.22385763,4 3.5,4 L7.33333333,4 Z M8.38742589,4 L11.6125741,4 L11.2792408,3 L8.72075922,3 L8.38742589,4 Z M10,11.7204812 L11.5952436,10.1252376 C11.7905057,9.92997548 12.1070882,9.92997548 12.3023504,10.1252376 L12.3747624,10.1976496 C12.5700245,10.3929118 12.5700245,10.7094943 12.3747624,10.9047564 L10.7795188,12.5 L12.3747624,14.0952436 C12.5700245,14.2905057 12.5700245,14.6070882 12.3747624,14.8023504 L12.3023504,14.8747624 C12.1070882,15.0700245 11.7905057,15.0700245 11.5952436,14.8747624 L10,13.2795188 L8.40475641,14.8747624 C8.20949427,15.0700245 7.89291178,15.0700245 7.69764963,14.8747624 L7.62523762,14.8023504 C7.42997548,14.6070882 7.42997548,14.2905057 7.62523762,14.0952436 L9.22048121,12.5 L7.62523762,10.9047564 C7.42997548,10.7094943 7.42997548,10.3929118 7.62523762,10.1976496 L7.69764963,10.1252376 C7.89291178,9.92997548 8.20949427,9.92997548 8.40475641,10.1252376 L10,11.7204812 Z" id="path-1"></path></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><mask id="mask-2" fill="white"><use xlink:href="#path-1"></use></mask><g mask="url(#mask-2)" fill="#FFFFFF"><rect x="0" y="0" width="20" height="20"></rect></g></g></svg>`
     }
 
-    let selectAllButton;
-    let unselectAllButton;
-    let deleteButton;
+    const selectAllButton = createIconButton("Select All", icons["selectAll"], selectAll);
+    const unselectAllButton = createIconButton("Unselect All", icons["unselectAll"], unselectAll);
+    const deleteButton = createIconButton("Delete Selected Sprites", icons["deleteIcon"], deleteSelected);
 
-    let selectedCountText;
+    const selectedCountText = document.createElement("div");
+    selectedCountText.className = "sa-sprite-selected-count";
 
-    let container;
+    const container = document.createElement("div");
+    container.className = "sa-sprite-selecting-container"
+    container.appendChild(selectAllButton);
+    container.appendChild(unselectAllButton);
+    container.appendChild(deleteButton);
+    container.appendChild(selectedCountText);
 
-    function defineContainer() {
-        selectAllButton = createIconButton("Select All", icons["selectAll"], selectAll);
-        unselectAllButton = createIconButton("Unselect All", icons["unselectAll"], unselectAll);
-        deleteButton = createIconButton("Delete Selected Sprites", icons["deleteIcon"], deleteSelected);
-
-        selectedCountText = document.createElement("div");
-        selectedCountText.className = "sa-sprite-selected-count";
-
-        container = document.createElement("div");
-        container.className = "sa-sprite-selecting-container"
-        container.appendChild(selectAllButton);
-        container.appendChild(unselectAllButton);
-        container.appendChild(deleteButton);
-        container.appendChild(selectedCountText);
-
-        addon.tab.displayNoneWhileDisabled(container, {
-            display: "flex",
-        });
-    }
+    addon.tab.displayNoneWhileDisabled(container, {
+        display: "flex",
+    });
 
     const isSelectingLabel = document.createElement("label");
     isSelectingLabel.className = "sa-sprite-info-isselecting-label";
@@ -283,7 +273,6 @@ export default async function ({ addon, console, msg }) {
         spriteDeleteButton = document.querySelector('[class^="delete-button_delete-button"]');
         stageSelectorContainer = document.querySelector('[class^="stage-selector_stage-selector"]');
 
-        defineContainer();
         spriteSelectorContainer.insertBefore(container, spritesContainer);
 
         if (observer) observer.disconnect();
@@ -336,8 +325,6 @@ export default async function ({ addon, console, msg }) {
 
         spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
         spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
-
-        defineContainer();
 
         if (!spriteInfoGroup.contains(isSelectingContainer)) {
             spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
