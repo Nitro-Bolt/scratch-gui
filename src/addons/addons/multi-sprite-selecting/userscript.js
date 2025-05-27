@@ -336,11 +336,11 @@ export default async function ({ addon, console, msg }) {
     }
 
     function bindIsSelectingCheckbox() {
-        isSelectingInput = isSelectingContainer.querySelector('input[type="checkbox"]');
+        let fetchedIsSelectingInput = isSelectingContainer.querySelector('input[type="checkbox"]');
 
-        if (!isSelectingInput) return;
+        if (!fetchedIsSelectingInput) return;
 
-        isSelectingInput.onchange = async (event) => {
+        fetchedIsSelectingInput.onchange = async (event) => {
             isSelectingChecked = event.target.checked;
             runIsChecked();
         };
