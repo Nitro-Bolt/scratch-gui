@@ -57,7 +57,11 @@ export default async function ({ addon, console, msg }) {
         addon.tab.displayNoneWhileDisabled(container, {
             display: "flex",
         });
+
+        return container;
     }
+
+    container = defineContainer();
 
     const isSelectingLabel = document.createElement("label");
     isSelectingLabel.className = "sa-sprite-info-isselecting-label";
@@ -282,9 +286,9 @@ export default async function ({ addon, console, msg }) {
         spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
         spriteDeleteButton = document.querySelector('[class^="delete-button_delete-button"]');
         stageSelectorContainer = document.querySelector('[class^="stage-selector_stage-selector"]');
+        
+        container = defineContainer();
 
-        container = null;
-        defineContainer();
         spriteSelectorContainer.insertBefore(container, spritesContainer);
 
         if (observer) observer.disconnect();
