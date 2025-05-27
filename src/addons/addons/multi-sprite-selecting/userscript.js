@@ -293,7 +293,7 @@ export default async function ({ addon, console, msg }) {
         stageSelectorContainer = document.querySelector('[class^="stage-selector_stage-selector"]');
 
         if (!spriteSelectorContainer.contains(container)) {
-            spriteSelectorContainer.insertBefore(container, spritesContainer);
+            spriteSelectorContainer.appendChild(container);
         }
 
         if (observer) observer.disconnect();
