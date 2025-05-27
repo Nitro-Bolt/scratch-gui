@@ -57,11 +57,9 @@ export default async function ({ addon, console, msg }) {
         addon.tab.displayNoneWhileDisabled(container, {
             display: "flex",
         });
-
-        return container;
     }
 
-    container = defineContainer();
+    defineContainer();
 
     const isSelectingLabel = document.createElement("label");
     isSelectingLabel.className = "sa-sprite-info-isselecting-label";
@@ -287,8 +285,7 @@ export default async function ({ addon, console, msg }) {
         spriteDeleteButton = document.querySelector('[class^="delete-button_delete-button"]');
         stageSelectorContainer = document.querySelector('[class^="stage-selector_stage-selector"]');
 
-        container = null;
-        container = defineContainer();
+        defineContainer();
         if (String(window.getComputedStyle(container).display) == "none") {
             container.style.display = "";
         }
@@ -331,8 +328,7 @@ export default async function ({ addon, console, msg }) {
             stageSelectorContainer.style.display = "";
         }
 
-        container = null;
-        container = defineContainer();
+        defineContainer();
         if (String(window.getComputedStyle(container).display) !== "none") {
             container.style.display = "none";
         }
