@@ -261,14 +261,20 @@ export default async function ({ addon, console, msg }) {
         highlightSelected();
         runIsChecked();
     }
+
+    let HasWaitedForElement = false;
+
     async function enableSelecting() {
         console.log("enableSelecting() called");
-        await addon.tab.waitForElement("div[class^='sprite-selector_items-wrapper']", {
-            markAsSeen: true,
-            reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
-            reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
-        });
 
+        if (!HasWaitedForElement) {
+            await addon.tab.waitForElement("div[class^='sprite-selector_items-wrapper']", {
+                markAsSeen: true,
+                reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
+                reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
+            });
+            HasWaitedForElement = true;
+        }
         console.log("enableSelecting() waited for element");
 
         spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
