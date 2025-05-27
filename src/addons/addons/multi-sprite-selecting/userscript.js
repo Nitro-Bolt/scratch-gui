@@ -103,7 +103,6 @@ export default async function ({ addon, console, msg }) {
     function updateSelectedText() {
         const state = ReduxStore.getState();
         const newSpriteInfoDisabled = state.scratchGui.spriteInfoDisabled;
-        defineContainer();
         if (!isSelectingChecked || !!newSpriteInfoDisabled) { 
             selectedCountText.textContent = ""; 
             selectedCountText.style.display = "none"; 
