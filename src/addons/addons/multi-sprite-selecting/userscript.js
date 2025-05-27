@@ -266,9 +266,9 @@ export default async function ({ addon, console, msg }) {
 
     const StageSizeUnsubscribe = ReduxStore.subscribe(() => {
         const state = ReduxStore.getState();
-        const newStageSize = state.scratchGui.stageSize;
+        const newStageSize = state.scratchGui.stageSize.stageSize;
 
-        if (JSON.parse(previousStageSize).stageSize === 'small' && JSON.parse(newStageSize).stageSize === 'large') {
+        if (previousStageSize === 'small' && newStageSize === 'large') {
             runIsChecked();
             spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
             spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
