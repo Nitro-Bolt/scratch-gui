@@ -220,7 +220,7 @@ export default async function ({ addon, console, msg }) {
             updateSelectedText();
             highlightSelected();
             updateButtonsVisibility();
-            await enableSelecting();
+            enableSelecting();
             console.log('Checkbox is checked!');
         } else {
             disableSelecting();
