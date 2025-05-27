@@ -15,7 +15,11 @@
 }
 
 .sa-sprite-selected-count {
-    color: white;
+    color: black;
     margin-left: "10px";
     display: "none";
+}
+
+[theme="dark"] .sa-sprite-selected-count {
+    color: white;
 }

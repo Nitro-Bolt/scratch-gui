@@ -58,12 +58,13 @@ export default async function ({ addon, console, msg }) {
 
     const isSelectingLabel = document.createElement("label");
     isSelectingLabel.className = "sa-sprite-info-isselecting-label";
-    isSelectingLabel.innerHTML = "<span class=\"sa-label_input-label\"><span style=\"font-size: 11px;\">   Is Selecting?</span></span>"; // The Characters that aren't basic ASCII characters serve as a gap between "draggability" and the "is selecting" label.
+    isSelectingLabel.innerHTML = "<span class=\"sa-label_input-label\"><span style=\"font-size: 10.5px;\">   Is Selecting?   </span></span>"; // The Characters that aren't basic ASCII characters serve as a gap between "draggability" and the "is selecting" label.
 
     const isSelectingInput = document.createElement("input");
     isSelectingInput.type = "checkbox";
     isSelectingInput.className = "sa-sprite-info-isselecting-input";
     isSelectingInput.style.accentColor = "#80f41a";
+    isSelectingInput.style.transform = "transform: translate(0%, 20%);";
 
     isSelectingInput.addEventListener('click', async (event) => {
         isSelectingChecked = isSelectingInput.checked;
@@ -272,14 +273,6 @@ export default async function ({ addon, console, msg }) {
             runIsChecked();
             const spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
             const spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
-            
-            // Redefine IsSelectingContainer
-            isSelectingContainer = document.createElement("div");
-            isSelectingContainer.className = "sa-sprite-info-isselecting";
-
-            console.log(isSelectingLabel, isSelectingInput);
-            isSelectingContainer.appendChild(isSelectingLabel);
-            isSelectingContainer.appendChild(isSelectingInput);
 
             console.log("spriteInfoRowTertiary:", spriteInfoRowTertiary);
             console.log("spritesContainer:", spritesContainer);
@@ -289,11 +282,23 @@ export default async function ({ addon, console, msg }) {
             console.log("spriteInfoGroup:", spriteInfoGroup);
             if (!spriteInfoGroup) return;
 
-            console.log("isSelectingContainer:", isSelectingContainer);
+            // Redefine IsSelectingContainer
+            if (!isSelectingContainer) {
+                isSelectingContainer = document.createElement("div");
+                isSelectingContainer.className = "sa-sprite-info-isselecting";
 
-            if (!spriteInfoGroup.contains(isSelectingContainer)) {
-                spriteInfoGroup.insertBefore(isSelectingContainer, null);
+                isSelectingContainer.appendChild(isSelectingLabel);
+                isSelectingContainer.appendChild(isSelectingInput);
             }
+
+            if (isSelectingContainer.parentNode) {
+                isSelectingContainer.parentNode.removeChild(isSelectingContainer);
+            }
+
+            console.log("isSelectingContainer:", isSelectingContainer);
+            if (!isSelectingContainer) return;
+
+            spriteInfoGroup.insertBefore(isSelectingContainer, null);
         }
         previousStageSize = newStageSize;
     });
@@ -452,7 +457,7 @@ export default async function ({ addon, console, msg }) {
         spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
 
         if (!spriteInfoGroup.contains(isSelectingContainer)) {
-            spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
+            spriteInfoGroup.insertBefore(isSelectingContainer, null);
         }
     }
 }
