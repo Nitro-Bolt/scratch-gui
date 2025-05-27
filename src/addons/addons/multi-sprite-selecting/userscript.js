@@ -58,8 +58,8 @@ export default async function ({ addon, console, msg }) {
     isSelectingInput.className = "sa-sprite-info-isselecting-input";
     isSelectingInput.style.accentColor = "#80f41a";
 
-    isSelectingInput.addEventListener('click', async (event) => {
-        isSelectingChecked = isSelectingInput.checked;
+    isSelectingInput.addEventListener('change', async (event) => {
+        isSelectingChecked = event.target.checked;
         runIsChecked();
     });
 
