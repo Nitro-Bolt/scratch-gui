@@ -70,7 +70,7 @@ export default async function ({ addon, console, msg }) {
         runIsChecked();
     });
 
-    const isSelectingContainer = document.createElement("div");
+    let isSelectingContainer = document.createElement("div");
     isSelectingContainer.className = "sa-sprite-info-isselecting";
 
     isSelectingContainer.appendChild(isSelectingLabel);
@@ -272,6 +272,13 @@ export default async function ({ addon, console, msg }) {
             runIsChecked();
             const spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
             const spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
+            
+            // Redefine IsSelectingContainer
+            isSelectingContainer = document.createElement("div");
+            isSelectingContainer.className = "sa-sprite-info-isselecting";
+
+            isSelectingContainer.appendChild(isSelectingLabel);
+            isSelectingContainer.appendChild(isSelectingInput);
 
             if (!spriteInfoRowTertiary || !spritesContainer) return;
 
