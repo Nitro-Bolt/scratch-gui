@@ -19,6 +19,7 @@ export default async function ({ addon, console, msg }) {
         const button = document.createElement("button");
         button.innerHTML = iconSVG;
         button.title = title;
+        button.style.transform = "translate(-50%, -50%)"
         button.className = "sa-sprite-selecting-button"
         button.addEventListener("click", onClick);
         return button;

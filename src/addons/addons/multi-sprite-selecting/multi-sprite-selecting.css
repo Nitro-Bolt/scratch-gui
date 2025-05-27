@@ -1,19 +1,19 @@
 .sa-sprite-selecting-container {
     display: "flex";
-    gap: "8px";
+    gap: 4px;
 }
 
 .sa-sprite-selecting-button {
     width: "24px";
     height: "24px";
-    background-color: #575E75;
-    border-radius: "4px";
-    border: "none";
+    background-color: #80f41a;
+    border-radius: 4px;
+    border: solid 2px var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     cursor: pointer;
 }
 
 .sa-sprite-selected-count {
-    color: "white";
+    color: white;
     margin-left: "10px";
     display: "none";
 }
