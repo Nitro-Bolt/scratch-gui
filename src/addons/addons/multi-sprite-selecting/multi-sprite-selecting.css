@@ -4,10 +4,12 @@
 }
 
 .sa-sprite-selecting-button {
-    width: "24px";
-    height: "24px";
+    width: 24px;
+    line-height: 20px;
+    height: 20px;
     background-color: #80f41a;
     border-radius: 4px;
+    text-align: center;
     border: solid 2px var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     cursor: pointer;
 }
