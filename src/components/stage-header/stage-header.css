@@ -93,7 +93,7 @@
     border-bottom-left-radius: 0;
 }
 
-[dir="ltr"] .stage-button-middle {
+.stage-button-middle {
     border-left: none;
     border-right: none;
     border-top-left-radius: 0;
@@ -116,7 +116,7 @@
 }
 [theme="dark"] .stage-button-toggled-off img,
 /* for the fullscreen button */
-[theme="dark"] .stage-button:not(.stage-button-first):not(.stage-button-last) img {
+[theme="dark"] .stage-button:not(.stage-button-first):not(.stage-button-last):not(.stage-button-middle) img {
     filter: brightness(0) invert(1);
     opacity: 0.8;
 }
