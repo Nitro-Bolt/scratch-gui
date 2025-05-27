@@ -262,11 +262,14 @@ export default async function ({ addon, console, msg }) {
         runIsChecked();
     }
     async function enableSelecting() {
+        console.log("enableSelecting() called");
         await addon.tab.waitForElement("div[class^='sprite-selector_items-wrapper']", {
             markAsSeen: true,
             reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
             reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
         });
+
+        console.log("enableSelecting() waited for element");
 
         spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
         spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
@@ -274,8 +277,10 @@ export default async function ({ addon, console, msg }) {
         stageSelectorContainer = document.querySelector('[class^="stage-selector_stage-selector"]');
 
         spriteSelectorContainer.insertBefore(container, spritesContainer);
+        console.log("inserted container before sprites container");
 
         if (observer) observer.disconnect();
+        console.log("disconnected observer if it exists");
 
         observer = new MutationObserver(() => {
             updateButtonsVisibility();
