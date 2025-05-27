@@ -222,7 +222,7 @@ export default async function ({ addon, console, msg }) {
             updateSelectedText();
             highlightSelected();
             updateButtonsVisibility();
-            enableSelecting();
+            await enableSelecting();
             console.log('Checkbox is checked!');
         } else {
             disableSelecting();
@@ -274,6 +274,8 @@ export default async function ({ addon, console, msg }) {
         runIsChecked();
     }
     async function enableSelecting() {
+        defineContainer();
+
         await addon.tab.waitForElement("div[class^='sprite-selector_items-wrapper']", {
             markAsSeen: true,
             reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
@@ -285,9 +287,8 @@ export default async function ({ addon, console, msg }) {
         spriteDeleteButton = document.querySelector('[class^="delete-button_delete-button"]');
         stageSelectorContainer = document.querySelector('[class^="stage-selector_stage-selector"]');
 
-        defineContainer();
-        if (String(window.getComputedStyle(container).display) == "none") {
-            container.style.display = "";
+        if (!spriteSelectorContainer.contains(container)) {
+            spriteSelectorContainer.insertBefore(container, spritesContainer);
         }
 
         if (observer) observer.disconnect();
@@ -329,8 +330,8 @@ export default async function ({ addon, console, msg }) {
         }
 
         defineContainer();
-        if (String(window.getComputedStyle(container).display) !== "none") {
-            container.style.display = "none";
+        if (spriteSelectorContainer.contains(container)) {
+            spriteSelectorContainer.removeChild(container);
         }
     }
     while (true) {
