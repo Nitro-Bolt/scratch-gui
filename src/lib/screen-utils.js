@@ -28,6 +28,9 @@ const STAGE_DIMENSION_DEFAULTS = {
  * @return {STAGE_DISPLAY_SIZES} - the stage size enum value we should use in this situation.
  */
 const resolveStageSize = (stageSizeMode, isFullSize) => {
+    if (stageSizeMode === STAGE_SIZE_MODES.none) {
+        return STAGE_DISPLAY_SIZES.none;
+    }
     if (stageSizeMode === STAGE_SIZE_MODES.small) {
         return STAGE_DISPLAY_SIZES.small;
     }

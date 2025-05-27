@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>No Stage (inactive)</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="No-Stage-(inactive)" stroke="#76fa02">
+            <g id="no-stage-(inactive)" transform="translate(3.000000, 4.000000)">
+                <path d="M1,0 L13,0 C13.5522847,0 14,0.44771525 14,1 L14,11 C14,11.5522847 13.5522847,12 13,12 L1,12 C0.44771525,12 0,11.5522847 0,11 L0,1 C0,0.44771525 0.44771525,0 1,0 Z"></path>
+            </g>
+        </g>
+    </g>
+</svg>
