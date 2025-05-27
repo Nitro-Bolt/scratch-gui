@@ -330,9 +330,7 @@ export default async function ({ addon, console, msg }) {
         }
 
         defineContainer();
-        if (spriteSelectorContainer.contains(container)) {
-            spriteSelectorContainer.removeChild(container);
-        }
+        spriteSelectorContainer.removeChild(container);
     }
 
     function bindIsSelectingCheckbox() {
@@ -355,7 +353,7 @@ export default async function ({ addon, console, msg }) {
         spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
         spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
 
-        defineContainer();
+        bindIsSelectingCheckbox();
 
         if (!spriteInfoGroup.contains(isSelectingContainer)) {
             spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
