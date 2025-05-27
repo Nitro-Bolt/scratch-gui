@@ -270,8 +270,9 @@ export default async function ({ addon, console, msg }) {
 
         if (previousStageSize === 'small' && newStageSize === 'large') {
             runIsChecked();
-            spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
+            spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
             spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
+            spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
 
             if (!spriteInfoGroup.contains(isSelectingContainer)) {
                 spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
