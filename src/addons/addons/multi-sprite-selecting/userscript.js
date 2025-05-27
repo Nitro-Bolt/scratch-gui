@@ -200,13 +200,6 @@ export default async function ({ addon, console, msg }) {
         const newStageSize = state.scratchGui.stageSize;
 
         if (previousStageSize === 'small' && newStageSize === 'large') {
-            isSelectingContainer.appendChild(isSelectingLabel);
-            isSelectingContainer.appendChild(isSelectingInput);
-
-            addon.tab.displayNoneWhileDisabled(isSelectingContainer, {
-                display: "flex",
-            });
-
             spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
 
             runIsChecked();
