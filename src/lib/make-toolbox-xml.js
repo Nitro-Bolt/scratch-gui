@@ -1473,7 +1473,6 @@ const operators = function (isInitialSetup) {
                 </shadow>
             </value>
         </block>
-        <label text="Numeric"></label>
         <block type="operator_stringify">
             <value name="ONE">
                 <shadow type="math_number">
@@ -1481,7 +1480,6 @@ const operators = function (isInitialSetup) {
                 </shadow>
             </value>
         </block>
-        <label text="Boolean"></label>
         <block type="operator_boolify">
             <value name="ONE">
                 <shadow type="text">
@@ -1489,13 +1487,11 @@ const operators = function (isInitialSetup) {
                 </shadow>
             </value>
         </block>
-        <label text="Color"></label>
         <block type="operator_stringify">
             <value name="ONE">
                 <shadow type="colour_picker"/>
             </value>
         </block>
-        <label text="Empty"></label>
         <block type="operator_stringify">
             <value name="ONE"/>
         </block>
