@@ -75,6 +75,11 @@ export default async function ({ addon, console, msg }) {
         runIsChecked();
     });
 
+    isSelectingInput.addEventListener('click', async () => {
+        isSelectingChecked = isSelectingInput.checked;
+        runIsChecked();
+    });
+
     const isSelectingContainer = document.createElement("div");
     isSelectingContainer.className = "sa-sprite-info-isselecting";
 
@@ -334,6 +339,7 @@ export default async function ({ addon, console, msg }) {
     }
 
     function bindIsSelectingCheckbox() {
+        if (!!isCheckboxBound) return;
         let fetchedIsSelectingInput = isSelectingContainer.querySelector('input[type="checkbox"]');
 
         if (!fetchedIsSelectingInput) return;
@@ -342,7 +348,9 @@ export default async function ({ addon, console, msg }) {
             isSelectingChecked = event.target.checked;
             runIsChecked();
         };
+        isCheckboxBound = true;
     }
+    let isCheckboxBound = false;
     while (true) {
         await addon.tab.waitForElement("div[class*='sprite-info_row-tertiary']", {
             markAsSeen: true,
