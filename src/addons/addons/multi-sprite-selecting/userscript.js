@@ -283,6 +283,7 @@ export default async function ({ addon, console, msg }) {
         spriteDeleteButton = document.querySelector('[class^="delete-button_delete-button"]');
         stageSelectorContainer = document.querySelector('[class^="stage-selector_stage-selector"]');
 
+        container = null;
         defineContainer();
         spriteSelectorContainer.insertBefore(container, spritesContainer);
 
