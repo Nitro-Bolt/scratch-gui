@@ -59,8 +59,6 @@ export default async function ({ addon, console, msg }) {
         });
     }
 
-    defineContainer();
-
     const isSelectingLabel = document.createElement("label");
     isSelectingLabel.className = "sa-sprite-info-isselecting-label";
     isSelectingLabel.innerHTML = "<span class=\"sa-label_input-label\"><span style=\"font-size: 11px;\">Is Selecting?</span></span>";
@@ -72,11 +70,6 @@ export default async function ({ addon, console, msg }) {
 
     isSelectingInput.addEventListener('change', async (event) => {
         isSelectingChecked = event.target.checked;
-        runIsChecked();
-    });
-
-    isSelectingInput.addEventListener('click', async () => {
-        isSelectingChecked = isSelectingInput.checked;
         runIsChecked();
     });
 
@@ -279,8 +272,6 @@ export default async function ({ addon, console, msg }) {
         runIsChecked();
     }
     async function enableSelecting() {
-        defineContainer();
-
         await addon.tab.waitForElement("div[class^='sprite-selector_items-wrapper']", {
             markAsSeen: true,
             reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
@@ -292,13 +283,11 @@ export default async function ({ addon, console, msg }) {
         spriteDeleteButton = document.querySelector('[class^="delete-button_delete-button"]');
         stageSelectorContainer = document.querySelector('[class^="stage-selector_stage-selector"]');
 
-        if (!spriteSelectorContainer.contains(container)) {
-            spriteSelectorContainer.appendChild(container);
-        }
+        defineContainer();
+        spriteSelectorContainer.insertBefore(container, spritesContainer);
 
         if (observer) observer.disconnect();
 
-        observer = null;
         observer = new MutationObserver(() => {
             updateButtonsVisibility();
             bindClickHandlers();
@@ -334,23 +323,10 @@ export default async function ({ addon, console, msg }) {
             stageSelectorContainer.style.display = "";
         }
 
-        defineContainer();
-        spriteSelectorContainer.removeChild(container);
+        if (spriteSelectorContainer.contains(container)) {
+            spriteSelectorContainer.removeChild(container);
+        }
     }
-
-    function bindIsSelectingCheckbox() {
-        if (!!isCheckboxBound) return;
-        let fetchedIsSelectingInput = isSelectingContainer.querySelector('input[type="checkbox"]');
-
-        if (!fetchedIsSelectingInput) return;
-
-        fetchedIsSelectingInput.onchange = async (event) => {
-            isSelectingChecked = event.target.checked;
-            runIsChecked();
-        };
-        isCheckboxBound = true;
-    }
-    let isCheckboxBound = false;
     while (true) {
         await addon.tab.waitForElement("div[class*='sprite-info_row-tertiary']", {
             markAsSeen: true,
@@ -363,7 +339,6 @@ export default async function ({ addon, console, msg }) {
 
         if (!spriteInfoGroup.contains(isSelectingContainer)) {
             spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
-            bindIsSelectingCheckbox();
         }
     }
 }
