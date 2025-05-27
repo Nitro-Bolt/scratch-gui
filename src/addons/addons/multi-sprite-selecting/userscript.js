@@ -103,6 +103,7 @@ export default async function ({ addon, console, msg }) {
     function updateSelectedText() {
         const state = ReduxStore.getState();
         const newSpriteInfoDisabled = state.scratchGui.spriteInfoDisabled;
+        defineContainer();
         if (!isSelectingChecked || !!newSpriteInfoDisabled) { 
             selectedCountText.textContent = ""; 
             selectedCountText.style.display = "none"; 
@@ -336,6 +337,8 @@ export default async function ({ addon, console, msg }) {
 
         spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
         spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
+
+        defineContainer();
 
         if (!spriteInfoGroup.contains(isSelectingContainer)) {
             spriteInfoGroup.insertBefore(isSelectingContainer, spritesContainer);
