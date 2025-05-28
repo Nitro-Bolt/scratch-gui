@@ -4,6 +4,7 @@ export default async function ({ addon, console, msg }) {
     let spriteWrappers = [];
     let spriteInfoRowTertiary;
     let spriteInfoGroup;
+    let spriteInfoColumn;
     let spriteDeleteButton;
     let stageSelectorContainer;
     let stageHeaderStageSizeGroup;
