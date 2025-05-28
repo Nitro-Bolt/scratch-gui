@@ -462,6 +462,19 @@ export default async function ({ addon, console, msg }) {
         spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
         spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
 
+        // Redefine IsSelectingContainer
+        if (!isSelectingContainer) {
+            isSelectingContainer = document.createElement("div");
+            isSelectingContainer.className = "sa-sprite-info-isselecting";
+
+            isSelectingContainer.appendChild(isSelectingLabel);
+            isSelectingContainer.appendChild(isSelectingInput);
+        }
+
+        if (isSelectingContainer.parentNode) {
+            isSelectingContainer.parentNode.removeChild(isSelectingContainer);
+        }
+
         spriteInfoGroup.insertBefore(isSelectingContainer, null);
     }
 }
