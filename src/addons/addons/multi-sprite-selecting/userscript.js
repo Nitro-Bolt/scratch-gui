@@ -302,7 +302,7 @@ export default async function ({ addon, console, msg }) {
             if (!isSelectingContainer) return;
 
             if (!spriteInfoGroup && spriteInfoColumn) {
-                spriteInfoRowTertiary.insertBefore(spriteInfoColumn, isSelectingContainer);
+                spriteInfoRowTertiary.insertBefore(isSelectingContainer, spriteInfoColumn);
             } else if (spriteInfoGroup && !spriteInfoColumn) {
                 spriteInfoGroup.insertBefore(isSelectingContainer, null);
             }
@@ -502,7 +502,7 @@ export default async function ({ addon, console, msg }) {
                     isSelectingContainer.parentNode.removeChild(isSelectingContainer);
                 }
 
-                spriteInfoRowTertiary.insertBefore(spriteInfoColumn, isSelectingContainer);
+                spriteInfoRowTertiary.insertBefore(isSelectingContainer, spriteInfoColumn);
             } else {
                 console.warn("spriteInfoColumn not found.");
             }
