@@ -498,7 +498,7 @@ export default async function ({ addon, console, msg }) {
                     isSelectingContainer.parentNode.removeChild(isSelectingContainer);
                 }
 
-                spriteInfoColumn.insertBefore(isSelectingContainer, null);
+                spriteInfoRowTertiary.insertBefore(isSelectingContainer, spriteInfoColumn);
             } else {
                 console.warn("spriteInfoColumn not found.");
             }
