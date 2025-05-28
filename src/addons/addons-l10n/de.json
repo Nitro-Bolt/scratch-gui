@@ -245,5 +245,6 @@
     "swap-local-global/edit-variable-option": "Variable bearbeiten oder umbenennen",
     "swap-local-global/to-global": "In \"Für alle Figuren\" umwandeln",
     "swap-local-global/to-local": "In \"Nur für diese Figur\" umwandeln",
-    "hide-stage/hide-stage": "Bühne ausblenden"
+    "hide-stage/hide-stage": "Bühne ausblenden",
+    "multi-sprite-selecting/isselectinglabel": "Figuren auswählen"
 }

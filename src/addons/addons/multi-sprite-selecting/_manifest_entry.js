@@ -3,10 +3,10 @@ const manifest = {
     "name": "Multi Sprite Selecting",
     "description": "Adds a checkbox that, when checked, adds Select All, Unselect All, Delete and Export Selected Sprites Buttons. You can select each sprite by clicking on it's sprite box.",
     "editorOnly": true,
-    "noTranslations": true,
+    // "noTranslations": true,
     "info": [
         {
-          "text": "When the 'Is Selecting?' checkbox is checked, the delete button of each sprite, the stage and the stage size toggle buttons are hidden until it's unchecked.",
+          "text": "When the 'Select Sprites' checkbox is checked, the delete button of each sprite, the stage and the stage size toggle buttons are hidden until it's unchecked.",
           "id": "checkbox-notice"
         }
     ],
@@ -26,9 +26,9 @@ const manifest = {
           "url": "multi-sprite-selecting.css"
         }
     ],
-    "tags": ["beta", "new"],
+    "tags": ["recommended", "new"],
     "enabledByDefault": false,
-    //"dynamicEnable": true,
-    //"dynamicDisable": false
+    "dynamicEnable": true,
+    "dynamicDisable": false
 };
 export default manifest;

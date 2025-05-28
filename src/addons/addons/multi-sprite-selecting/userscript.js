@@ -56,9 +56,11 @@ export default async function ({ addon, console, msg }) {
         display: "flex",
     });
 
+    const IsSelectingLabelText = msg("isselectinglabel")
+
     const isSelectingLabel = document.createElement("label");
     isSelectingLabel.className = "sa-sprite-info-isselecting-label";
-    isSelectingLabel.innerHTML = "<span class=\"sa-label_input-label\"><span style=\"font-size: 10.5px;\">   Is Selecting?   </span></span>"; // The Characters that aren't basic ASCII characters serve as a gap between "draggability" and the "is selecting" label.
+    isSelectingLabel.innerHTML = "<span class=\"sa-label_input-label\"><span style=\"font-size: 10.5px;\">   " + IsSelectingLabelText + "   </span></span>"; // The Characters that aren't basic ASCII characters serve as a gap between "draggability" and the "is selecting" label.
 
     const isSelectingInput = document.createElement("input");
     isSelectingInput.type = "checkbox";
