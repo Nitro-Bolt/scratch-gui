@@ -460,21 +460,49 @@ export default async function ({ addon, console, msg }) {
         });
 
         spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
-        spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
+        
+        if (spriteInfoRowTertiary) {
+            spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
+            spriteInfoColumn = spriteInfoRowTertiary.querySelector('[class^="sprite-info_column"]');
 
-        // Redefine IsSelectingContainer
-        if (!isSelectingContainer) {
-            isSelectingContainer = document.createElement("div");
-            isSelectingContainer.className = "sa-sprite-info-isselecting";
+            if (spriteInfoGroup) {
+                // Redefine IsSelectingContainer
+                if (!isSelectingContainer) {
+                    isSelectingContainer = document.createElement("div");
+                    isSelectingContainer.className = "sa-sprite-info-isselecting";
 
-            isSelectingContainer.appendChild(isSelectingLabel);
-            isSelectingContainer.appendChild(isSelectingInput);
+                    isSelectingContainer.appendChild(isSelectingLabel);
+                    isSelectingContainer.appendChild(isSelectingInput);
+                }
+
+                if (isSelectingContainer.parentNode) {
+                    isSelectingContainer.parentNode.removeChild(isSelectingContainer);
+                }
+
+                spriteInfoGroup.insertBefore(isSelectingContainer, null);
+            } else {
+                console.warn("spriteInfoGroup not found.");
+            }
+            if (spriteInfoColumn) {
+                // Redefine IsSelectingContainer
+                if (!isSelectingContainer) {
+                    isSelectingContainer = document.createElement("div");
+                    isSelectingContainer.className = "sa-sprite-info-isselecting";
+
+                    isSelectingContainer.appendChild(isSelectingLabel);
+                    isSelectingContainer.appendChild(isSelectingInput);
+                }
+
+                if (isSelectingContainer.parentNode) {
+                    isSelectingContainer.parentNode.removeChild(isSelectingContainer);
+                }
+
+                spriteInfoColumn.insertBefore(isSelectingContainer, null);
+            } else {
+                console.warn("spriteInfoColumn not found.");
+            }
+        } else {
+            console.warn("spriteInfoRowTertiary not found.");
         }
-
-        if (isSelectingContainer.parentNode) {
-            isSelectingContainer.parentNode.removeChild(isSelectingContainer);
-        }
-
-        spriteInfoGroup.insertBefore(isSelectingContainer, null);
     }
 }
