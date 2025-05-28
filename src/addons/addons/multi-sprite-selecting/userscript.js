@@ -283,7 +283,7 @@ export default async function ({ addon, console, msg }) {
 
             const spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
             console.log("spriteInfoGroup:", spriteInfoGroup);
-            if (!spriteInfoGroup) return;
+            if (!spriteInfoGroup && !spriteInfoColumn) return;
 
             // Redefine IsSelectingContainer
             if (!isSelectingContainer) {
@@ -301,7 +301,11 @@ export default async function ({ addon, console, msg }) {
             console.log("isSelectingContainer:", isSelectingContainer);
             if (!isSelectingContainer) return;
 
-            spriteInfoGroup.insertBefore(isSelectingContainer, null);
+            if (!spriteInfoGroup && spriteInfoColumn) {
+                spriteInfoRowTertiary.insertBefore(spriteInfoColumn, isSelectingContainer);
+            } else if (spriteInfoGroup && !spriteInfoColumn) {
+                spriteInfoGroup.insertBefore(isSelectingContainer, null);
+            }
         }
         previousStageSize = newStageSize;
     });
@@ -498,7 +502,7 @@ export default async function ({ addon, console, msg }) {
                     isSelectingContainer.parentNode.removeChild(isSelectingContainer);
                 }
 
-                spriteInfoRowTertiary.insertBefore(isSelectingContainer, spriteInfoColumn);
+                spriteInfoRowTertiary.insertBefore(spriteInfoColumn, isSelectingContainer);
             } else {
                 console.warn("spriteInfoColumn not found.");
             }
