@@ -135,7 +135,7 @@ Interface.propTypes = {
     isFullScreen: PropTypes.bool,
     isLoading: PropTypes.bool,
     isPlayerOnly: PropTypes.bool,
-    isRtl: PropTypes.bool || false,
+    isRtl: PropTypes.bool,
     onClickTheme: PropTypes.func,
     projectId: PropTypes.string
 };
@@ -147,7 +147,7 @@ const mapStateToProps = state => ({
     isFullScreen: state.scratchGui.mode.isFullScreen,
     isLoading: getIsLoading(state.scratchGui.projectState.loadingState),
     isPlayerOnly: state.scratchGui.mode.isPlayerOnly,
-    isRtl: state.locales.isRtl,
+    isRtl: state.locales.isRtl || false,
     projectId: state.scratchGui.projectState.projectId
 });
 
