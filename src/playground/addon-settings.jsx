@@ -18,16 +18,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
 import downloadBlob from '../lib/download-blob.js';
 import Settings from '../addons/settings/settings.jsx';
 import appTarget from './app-target';
-import guiReducer from '../reducers/gui.js';
 
 import {LANGUAGE_KEY} from '../lib/detect-locale.js';
 
 import entries from '../addons/generated/l10n-entries.js';
 import settings_entries from '../addons/generated/l10n-settings-entries.js';
+
+import AddonHooks from '../addons/hooks';
+import "../lib/app-state-hoc.jsx";
 
 const onExportSettings = settings => {
     const blob = new Blob([JSON.stringify(settings)]);
@@ -64,7 +65,7 @@ const normalizeLocale = (loc) => {
 const locale = normalizeLocale(getLanguageKey());
 const localeMessages = messages[locale];
 
-const store = createStore(guiReducer);
+const store = AddonHooks.appStateStore;
 
 ReactDOM.render((
     <Provider store={store}>
