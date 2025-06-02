@@ -70,6 +70,7 @@ ReactDOM.render((
     <Provider store={store}>
         <IntlProvider locale={locale} messages={localeMessages}>
             <Settings
+                store={store}
                 onExportSettings={onExportSettings}
                 onRequestClose={onRequestClose}
                 visible={true}

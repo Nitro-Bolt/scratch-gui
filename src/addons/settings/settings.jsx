@@ -1089,18 +1089,20 @@ class AddonSettingsComponent extends React.Component {
                         />
                     )}
                 </div>
-                <LibraryComponent
-                    data={addonState}
-                    filterable={true}
-                    tags={addonTags}
-                    id="addonSettingsComponent"
-                    actor="AddonSettingsComponent"
-                    header={"Addons"}
-                    title={`${settingsTranslations.title} - DinosaurMod`}
-                    visible={this.props.visible}
-                    onItemSelected={this.props.handleItemSelect}
-                    onRequestClose={this.props.onRequestClose}
-                />
+                <Provider store={ReduxStore}>
+                    <LibraryComponent
+                        data={addonState}
+                        filterable={true}
+                        tags={addonTags}
+                        id="addonSettingsComponent"
+                        actor="AddonSettingsComponent"
+                        header={"Addons"}
+                        title={`${settingsTranslations.title} - DinosaurMod`}
+                        visible={this.props.visible}
+                        onItemSelected={this.props.handleItemSelect}
+                        onRequestClose={this.props.onRequestClose}
+                    />
+                </Provider>
                 <div className={styles.addons}>
                     {!this.state.loading && (
                         <div className={styles.section}>
