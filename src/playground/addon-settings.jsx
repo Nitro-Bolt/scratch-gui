@@ -63,6 +63,9 @@ const normalizeLocale = (loc) => {
 const locale = normalizeLocale(getLanguageKey());
 const localeMessages = messages[locale];
 
+const rtlLocales = ['ar', 'he', 'fa', 'ur'];
+const isRtl = rtlLocales.includes(locale);
+
 const AppStateSettings = AppStateHOC(Settings);
 
 ReactDOM.render((
@@ -72,6 +75,7 @@ ReactDOM.render((
             onRequestClose={onRequestClose}
             visible={true}
             handleItemSelect={handleItemSelect}
+            isRtl={isRtl}
         />
     </IntlProvider>
 ), appTarget);
