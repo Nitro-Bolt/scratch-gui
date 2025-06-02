@@ -42,8 +42,8 @@ import '../../lib/normalize.css';
 
 import ReduxStore from '../settings-store-redux-store';
 
-//import LibraryComponent from '../../components/library/library.jsx';
-//import addonTags from './addon-tags.js';
+import LibraryComponent from '../../components/library/library.jsx';
+import addonTags from './addon-tags.js';
 
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
