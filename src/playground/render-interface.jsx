@@ -544,7 +544,7 @@ const mapStateToProps = state => ({
     isFullScreen: state.scratchGui.mode.isFullScreen,
     isLoading: getIsLoading(state.scratchGui.projectState.loadingState),
     isPlayerOnly: state.scratchGui.mode.isPlayerOnly,
-    isRtl: state.locales.isRtl,
+    isRtl: state.locales.isRtl || false,
     projectId: state.scratchGui.projectState.projectId
 });
 

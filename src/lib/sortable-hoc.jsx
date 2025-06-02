@@ -131,7 +131,7 @@ const SortableHOC = function (WrappedComponent) {
 
     const mapStateToProps = state => ({
         dragInfo: state.scratchGui.assetDrag,
-        isRtl: state.locales.isRtl
+        isRtl: state.locales.isRtl || false
     });
 
     const mapDispatchToProps = () => ({});

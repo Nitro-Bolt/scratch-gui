@@ -148,7 +148,7 @@ const mapStateToProps = state => {
         isEmbedded: state.scratchGui.mode.isEmbedded,
         isFullScreen: state.scratchGui.mode.isFullScreen || state.scratchGui.mode.isEmbedded,
         isPlayerOnly: state.scratchGui.mode.isPlayerOnly,
-        isRtl: state.locales.isRtl,
+        isRtl: state.locales.isRtl || false,
         isShowingProject: getIsShowingProject(loadingState),
         loadingStateVisible: state.scratchGui.modals.loadingProject,
         projectId: state.scratchGui.projectState.projectId,
