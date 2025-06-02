@@ -20,7 +20,6 @@ import { IntlProvider } from 'react-intl';
 import downloadBlob from '../lib/download-blob.js';
 import Settings from '../addons/settings/settings.jsx';
 import appTarget from './app-target';
-import ConnectedIntlProvider from '../lib/connected-intl-provider.jsx';
 
 import {LANGUAGE_KEY} from '../lib/detect-locale.js';
 
@@ -70,7 +69,7 @@ const isRtl = rtlLocales.includes(locale);
 const AppStateSettings = AppStateHOC(Settings);
 
 ReactDOM.render((
-    <ConnectedIntlProvider>
+    <IntlProvider locale={locale} messages={localeMessages}>
         <AppStateSettings
             onExportSettings={onExportSettings}
             onRequestClose={onRequestClose}
@@ -78,5 +77,5 @@ ReactDOM.render((
             handleItemSelect={handleItemSelect}
             isRtl={isRtl}
         />
-    </ConnectedIntlProvider>
+    </IntlProvider>
 ), appTarget);
