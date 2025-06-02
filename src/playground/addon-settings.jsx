@@ -17,7 +17,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
-import { Provider } from 'react-redux';
 import downloadBlob from '../lib/download-blob.js';
 import Settings from '../addons/settings/settings.jsx';
 import appTarget from './app-target';
@@ -27,8 +26,7 @@ import {LANGUAGE_KEY} from '../lib/detect-locale.js';
 import entries from '../addons/generated/l10n-entries.js';
 import settings_entries from '../addons/generated/l10n-settings-entries.js';
 
-import AddonHooks from '../addons/hooks';
-import "../lib/app-state-hoc.jsx";
+import AppStateHOC from "../lib/app-state-hoc.jsx";
 
 const onExportSettings = settings => {
     const blob = new Blob([JSON.stringify(settings)]);
@@ -65,18 +63,15 @@ const normalizeLocale = (loc) => {
 const locale = normalizeLocale(getLanguageKey());
 const localeMessages = messages[locale];
 
-const store = AddonHooks.appStateStore;
+const AppStateSettings = AppStateHOC(Settings);
 
 ReactDOM.render((
-    <Provider store={store}>
-        <IntlProvider locale={locale} messages={localeMessages}>
-            <Settings
-                store={store}
-                onExportSettings={onExportSettings}
-                onRequestClose={onRequestClose}
-                visible={true}
-                handleItemSelect={handleItemSelect}
-            />
-        </IntlProvider>
-    </Provider>
+    <IntlProvider locale={locale} messages={localeMessages}>
+        <AppStateSettings
+            onExportSettings={onExportSettings}
+            onRequestClose={onRequestClose}
+            visible={true}
+            handleItemSelect={handleItemSelect}
+        />
+    </IntlProvider>
 ), appTarget);
