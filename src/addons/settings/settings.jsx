@@ -20,6 +20,7 @@ import { Provider } from 'react-redux';
 import { /*IntlProvider,*/ intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import {connect} from 'react-redux';
 
 import Search from './search';
 import importedAddons from '../generated/addon-manifests';
@@ -1164,4 +1165,10 @@ AddonSettingsComponent.propTypes = {
     intl: intlShape
 };
 
-export default AddonSettingsComponent;
+const mapStateToProps = (state) => ({
+    isRtl: state.locales.isRtl ?? false
+});
+
+export default connect(
+    mapStateToProps
+)(AddonSettingsComponent);

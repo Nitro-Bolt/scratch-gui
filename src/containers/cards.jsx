@@ -51,7 +51,7 @@ const mapStateToProps = state => ({
     expanded: state.scratchGui.cards.expanded,
     x: state.scratchGui.cards.x,
     y: state.scratchGui.cards.y,
-    isRtl: state.locales.isRtl || false,
+    isRtl: state.locales.isRtl ?? false,
     locale: state.locales.locale,
     dragging: state.scratchGui.cards.dragging,
     showVideos: notScratchDesktop()
