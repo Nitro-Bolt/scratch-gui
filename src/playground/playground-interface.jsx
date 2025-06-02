@@ -135,7 +135,7 @@ Interface.propTypes = {
     isFullScreen: PropTypes.bool,
     isLoading: PropTypes.bool,
     isPlayerOnly: PropTypes.bool,
-    isRtl: PropTypes.bool,
+    isRtl: PropTypes.bool || false,
     onClickTheme: PropTypes.func,
     projectId: PropTypes.string
 };
