@@ -17,7 +17,7 @@
 import React from 'react';
 //import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-//import { IntlProvider } from 'react-intl';
+import { IntlProvider } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -1089,18 +1089,20 @@ class AddonSettingsComponent extends React.Component {
                         />
                     )}
                 </div>
-                <LibraryComponent
-                    data={addonState}
-                    filterable={true}
-                    tags={addonTags}
-                    id="addonSettingsComponent"
-                    actor="AddonSettingsComponent"
-                    header={"Addons"}
-                    title={`${settingsTranslations.title} - DinosaurMod`}
-                    visible={this.props.visible}
-                    onItemSelected={this.props.handleItemSelect}
-                    onRequestClose={this.props.onRequestClose}
-                />
+                <IntlProvider>
+                    <LibraryComponent
+                        data={addonState}
+                        filterable={true}
+                        tags={addonTags}
+                        id="addonSettingsComponent"
+                        actor="AddonSettingsComponent"
+                        header={"Addons"}
+                        title={`${settingsTranslations.title} - DinosaurMod`}
+                        visible={this.props.visible}
+                        onItemSelected={this.props.handleItemSelect}
+                        onRequestClose={this.props.onRequestClose}
+                    />
+                </IntlProvider>
                 <div className={styles.addons}>
                     {!this.state.loading && (
                         <div className={styles.section}>
