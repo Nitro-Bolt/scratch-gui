@@ -23,38 +23,8 @@ import appTarget from './app-target';
 
 import {LANGUAGE_KEY} from '../lib/detect-locale.js';
 
-import de1 from '../addons/addons-l10n/de.json';
-import en from '../addons/addons-l10n/en.json';
-import es1 from '../addons/addons-l10n/es.json';
-import fr1 from '../addons/addons-l10n/fr.json';
-import hu1 from '../addons/addons-l10n/hu.json';
-import it1 from '../addons/addons-l10n/it.json';
-import ja1 from '../addons/addons-l10n/ja.json';
-import ko1 from '../addons/addons-l10n/ko.json';
-import nl1 from '../addons/addons-l10n/nl.json';
-import pl1 from '../addons/addons-l10n/pl.json';
-import pt1 from '../addons/addons-l10n/pt.json';
-import ro1 from '../addons/addons-l10n/ro.json';
-import ru1 from '../addons/addons-l10n/ru.json';
-import sl1 from '../addons/addons-l10n/sl.json';
-import tr1 from '../addons/addons-l10n/tr.json';
-import zhtw1 from '../addons/addons-l10n/zh-tw.json';
-
-import de2 from '../addons/addons-l10n-settings/de.json';
-import es2 from '../addons/addons-l10n-settings/es.json';
-import fr2 from '../addons/addons-l10n-settings/fr.json';
-import hu2 from '../addons/addons-l10n-settings/hu.json';
-import it2 from '../addons/addons-l10n-settings/it.json';
-import ja2 from '../addons/addons-l10n-settings/ja.json';
-import ko2 from '../addons/addons-l10n-settings/ko.json';
-import nl2 from '../addons/addons-l10n-settings/nl.json';
-import pl2 from '../addons/addons-l10n-settings/pl.json';
-import pt2 from '../addons/addons-l10n-settings/pt.json';
-import ro2 from '../addons/addons-l10n-settings/ro.json';
-import ru2 from '../addons/addons-l10n-settings/ru.json';
-import sl2 from '../addons/addons-l10n-settings/sl.json';
-import tr2 from '../addons/addons-l10n-settings/tr.json';
-import zhtw2 from '../addons/addons-l10n-settings/zh-tw.json';
+import entries from '../addons/generated/l10n-entries.js';
+import settings_entries from '../addons/generated/l10n-settings-entries.js';
 
 const onExportSettings = settings => {
     const blob = new Blob([JSON.stringify(settings)]);
@@ -73,78 +43,26 @@ const getLanguageKey = () => {
     return localStorage.getItem(LANGUAGE_KEY);
 };
 
-const messages = {
-    'de': {
-        ...de1, 
-        ...de2
-    },
-    'en': {
-        ...en
-    },
-    'es': {
-        ...es1, 
-        ...es2
-    },
-    'es-419': {
-        ...es1, 
-        ...es2
-    },
-    'fr': {
-        ...fr1, 
-        ...fr2
-    },
-    'hu': {
-        ...hu1, 
-        ...hu2
-    },
-    'it': {
-        ...it1, 
-        ...it2
-    },
-    'ja': {
-        ...ja1, 
-        ...ja2
-    },
-    'ko': {
-        ...ko1, 
-        ...ko2
-    },
-    'nl': {
-        ...nl1, 
-        ...nl2
-    },
-    'pl': {
-        ...pl1, 
-        ...pl2
-    },
-    'pt': {
-        ...pt1, 
-        ...pt2
-    },
-    'ro': {
-        ...ro1, 
-        ...ro2
-    },
-    'ru': {
-        ...ru1, 
-        ...ru2
-    },
-    'sl': {
-        ...sl1, 
-        ...sl2
-    },
-    'tr': {
-        ...tr1, 
-        ...tr2
-    },
-    'zh-tw': {
-        ...zhtw1, 
-        ...zhtw2
-    },
+const messages = {};
+for (const locale of Object.keys(entries)) {
+    messages[locale] = {
+        ...(entries[locale] || {}),
+        ...(settings_entries[locale] || {})
+    };
 }
 
+const normalizeLocale = (loc) => {
+    if (!loc) return 'en';
+    if (messages[loc]) return loc;
+    const shortLoc = loc.split('-')[0];
+    return messages[shortLoc] ? shortLoc : 'en';
+};
+
+const locale = normalizeLocale(getLanguageKey());
+const localeMessages = messages[locale];
+
 ReactDOM.render((
-    <IntlProvider locale={getLanguageKey} messages={messages[getLanguageKey]}>
+    <IntlProvider locale={locale} messages={localeMessages}>
         <Settings
             onExportSettings={onExportSettings}
             onRequestClose={onRequestClose}
