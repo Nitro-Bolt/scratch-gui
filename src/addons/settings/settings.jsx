@@ -15,9 +15,9 @@
  */
 
 import React from 'react';
-//import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { IntlProvider } from 'react-intl';
+import { /*IntlProvider,*/ intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -1089,20 +1089,18 @@ class AddonSettingsComponent extends React.Component {
                         />
                     )}
                 </div>
-                <IntlProvider>
-                    <LibraryComponent
-                        data={addonState}
-                        filterable={true}
-                        tags={addonTags}
-                        id="addonSettingsComponent"
-                        actor="AddonSettingsComponent"
-                        header={"Addons"}
-                        title={`${settingsTranslations.title} - DinosaurMod`}
-                        visible={this.props.visible}
-                        onItemSelected={this.props.handleItemSelect}
-                        onRequestClose={this.props.onRequestClose}
-                    />
-                </IntlProvider>
+                <LibraryComponent
+                    data={addonState}
+                    filterable={true}
+                    tags={addonTags}
+                    id="addonSettingsComponent"
+                    actor="AddonSettingsComponent"
+                    header={"Addons"}
+                    title={`${settingsTranslations.title} - DinosaurMod`}
+                    visible={this.props.visible}
+                    onItemSelected={this.props.handleItemSelect}
+                    onRequestClose={this.props.onRequestClose}
+                />
                 <div className={styles.addons}>
                     {!this.state.loading && (
                         <div className={styles.section}>
@@ -1157,6 +1155,7 @@ class AddonSettingsComponent extends React.Component {
 
 }
 AddonSettingsComponent.propTypes = {
+    intl: intlShape
     onRequestClose: PropTypes.func,
     visible: PropTypes.bool,
     onExportSettings: PropTypes.func,
