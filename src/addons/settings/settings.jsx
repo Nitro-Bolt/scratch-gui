@@ -1155,11 +1155,11 @@ class AddonSettingsComponent extends React.Component {
 
 }
 AddonSettingsComponent.propTypes = {
-    intl: intlShape
     onRequestClose: PropTypes.func,
     visible: PropTypes.bool,
     onExportSettings: PropTypes.func,
     handleItemSelect: PropTypes.func,
+    intl: intlShape
 };
 
 export default AddonSettingsComponent;

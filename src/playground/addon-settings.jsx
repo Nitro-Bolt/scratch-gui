@@ -24,7 +24,7 @@ import appTarget from './app-target';
 import {LANGUAGE_KEY} from '../lib/detect-locale.js';
 
 import de1 from '../addons/addons-l10n/de.json';
-import en1 from '../addons/addons-l10n/en.json';
+import en from '../addons/addons-l10n/en.json';
 import es1 from '../addons/addons-l10n/es.json';
 import fr1 from '../addons/addons-l10n/fr.json';
 import hu1 from '../addons/addons-l10n/hu.json';
@@ -41,7 +41,6 @@ import tr1 from '../addons/addons-l10n/tr.json';
 import zhtw1 from '../addons/addons-l10n/zh-tw.json';
 
 import de2 from '../addons/addons-l10n-settings/de.json';
-import en2 from '../addons/addons-l10n-settings/en.json';
 import es2 from '../addons/addons-l10n-settings/es.json';
 import fr2 from '../addons/addons-l10n-settings/fr.json';
 import hu2 from '../addons/addons-l10n-settings/hu.json';
@@ -80,8 +79,7 @@ const messages = {
         ...de2
     },
     'en': {
-        ...en1, 
-        ...en2
+        ...en
     },
     'es': {
         ...es1, 
