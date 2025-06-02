@@ -25,8 +25,19 @@ const onExportSettings = settings => {
     downloadBlob('turbowarp-addon-settings.json', blob);
 };
 
+const onRequestClose = () => {
+    console.log("This does absolutely nothing.")
+};
+
+const handleItemSelect = () => {
+    console.log("This does absolutely nothing.")
+};
+
 ReactDOM.render((
     <Settings
         onExportSettings={onExportSettings}
+        onRequestClose={onRequestClose}
+        visible={true}
+        handleItemSelect={handleItemSelect}
     />
 ), appTarget);

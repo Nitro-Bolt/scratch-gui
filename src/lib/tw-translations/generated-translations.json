@@ -2083,8 +2083,6 @@
         "tw.webglModal.description": "Het ziet er helaas uit dat je browser of computer {webGlLink}. Deze technologie is vereist voor deze site om goed te werken. Probeer je browser en grafische stuurprogramma's te updaten of start je computer opnieuw op."
     },
     "pl": {
-        "pm.extraLibraryExtensions.description": "Vedere alcune estensioni presentate dagli utenti. Apre una nuova scheda.",
-        "pm.extraLibraryExtensions.name": "Penguinmod altre estensioni",
         "tw.alerts.creatingRestorePoint": "Tworzenie punktu przywracania…",
         "tw.alerts.lostPeripheralConnection": "Utracono połączenie do {extensionName}.",
         "tw.alerts.savedToDisk": "Zapisano na twoim komputerze.",

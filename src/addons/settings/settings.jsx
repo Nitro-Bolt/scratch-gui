@@ -1041,9 +1041,6 @@ class AddonSettingsComponent extends React.Component {
             e.preventDefault();
         }
     }
-    handleItemSelect() {
-        // doesn't do anything right now
-    }
     
     render() {
         const addonState = Object.entries(supportedAddons).map(([id, manifest]) => ({
@@ -1092,7 +1089,7 @@ class AddonSettingsComponent extends React.Component {
                         />
                     )}
                 </div>
-                {/*<LibraryComponent
+                <LibraryComponent
                     data={addonState}
                     filterable={true}
                     tags={addonTags}
@@ -1101,9 +1098,9 @@ class AddonSettingsComponent extends React.Component {
                     header={"Addons"}
                     title={`${settingsTranslations.title} - DinosaurMod`}
                     visible={this.props.visible}
-                    onItemSelected={this.handleItemSelect}
+                    onItemSelected={this.props.handleItemSelect}
                     onRequestClose={this.props.onRequestClose}
-                />*/}
+                />
                 <div className={styles.addons}>
                     {!this.state.loading && (
                         <div className={styles.section}>
@@ -1160,18 +1157,8 @@ class AddonSettingsComponent extends React.Component {
 AddonSettingsComponent.propTypes = {
     onRequestClose: PropTypes.func,
     visible: PropTypes.bool,
-    onExportSettings: PropTypes.func
+    onExportSettings: PropTypes.func,
+    handleItemSelect: PropTypes.func,
 };
-
-/*
-const container = document.getElementById('app');
-
-ReactDOM.render(
-    <Provider store={ReduxStore}>
-      <AddonSettingsComponent />
-    </Provider>,
-    container
-);
-*/
 
 export default AddonSettingsComponent;

@@ -85,6 +85,16 @@ const Credits = () => (
             </p>
             <UserList users={UserData.pmDevelopers} />
             <p><i>The list order is randomized on each refresh.</i></p>
+            <p>
+                We've also included work from other open-source projects inside of PenguinMod.
+                Here's a list of some other projects you should check out:
+            </p>
+            <UserList users={UserData.pmCodeUsedFrom} />
+            <p><i>The list order is randomized on each refresh.</i></p>
+            <ul>
+                <li>Code for "Center" option in Costume editor is from <a href="https://github.com/Nitro-Bolt/scratch-paint/blob/develop/src/containers/mode-tools.jsx#L203-L216">Cubester@Nitro-Bolt</a></li>
+                <li>The 404 page comes from <a href="https://github.com/Snail-ide/snail-ide.github.io/blob/develop/static/404.html">nmsderp@Snail-IDE</a></li>
+            </ul>
         </section>
         <section>
             <h2>GitHub Pages</h2>
@@ -227,8 +237,8 @@ const Credits = () => (
                 hopefully the same number of languages can be supported. It'll take a while until we get there though.
             </p>
             <p>
-                Dinosaurmod is not getting translated into other languages because this is edited by one person, in the very future
-                we hope the same languages can be supported. It's going to take a long while until we get to the number of languages.
+                Dinosaurmod is finally (so so so slowly) getting translated into other languages.
+                But it will take a very long while. Hopefully the same number of languages can be supported.
             </p>
             <p>Contributors:</p>
             <UserList users={UserData.pmTranslators} />

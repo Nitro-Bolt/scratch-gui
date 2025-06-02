@@ -125,7 +125,7 @@ const pmDevelopers = [
 
 // todo: should translators be only named or...?
 const pmTranslators = [
-    ''
+    'GabsTheCuriousKid'
 ].map(fromHardcodedGithub);
 const pmTranslatorsNamed = [
     ''
@@ -302,6 +302,35 @@ const pmExtensionDevelopers = [
     // 'pooiod' // add if ListsPlus gets merged
 ].map(fromHardcodedGithub);
 
+const pmCodeUsedFrom = [
+    {
+        text: "PenguinMod",
+        image: `https://github.com/PenguinMod.png`,
+        href: `https://github.com/PenguinMod/`,
+    },
+    {
+        text: "TurboWarp",
+        image: `https://github.com/TurboWarp.png`,
+        href: `https://github.com/TurboWarp/`,
+    },
+    {
+        text: "scratchfoundation",
+        image: `https://github.com/scratchfoundation.png`,
+        href: `https://github.com/scratchfoundation/`,
+    },
+    {
+        text: "Nitro-Bolt",
+        image: `https://github.com/Nitro-Bolt.png`,
+        href: `https://github.com/Nitro-Bolt/`,
+    },
+    {
+        text: "Snail-IDE",
+        image: `https://github.com/Snail-IDE.png`,
+        href: `https://github.com/Snail-IDE/`,
+    },
+    // TODO: There are 1000% more projects we've used some stuff from but I don't remember
+];
+
 export default {
     addonDevelopers: shuffle(addonDevelopers),
     pmDevelopers: shuffle(pmDevelopers),
@@ -311,4 +340,5 @@ export default {
     pmSoundSubmittors: shuffle(pmSoundSubmittors),
     pmCostumeSubmittors: shuffle(pmCostumeSubmittors),
     pmTranslators: [].concat(shuffle(pmTranslators), shuffle(pmTranslatorsNamed)),
+    pmCodeUsedFrom: shuffle(pmCodeUsedFrom),
 };
