@@ -1162,6 +1162,7 @@ AddonSettingsComponent.propTypes = {
     visible: PropTypes.bool,
     onExportSettings: PropTypes.func,
     handleItemSelect: PropTypes.func,
+    isRtl: PropTypes.bool,
     intl: intlShape
 };
 
