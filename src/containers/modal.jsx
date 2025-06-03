@@ -55,7 +55,7 @@ Modal.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    isRtl: state.locales.isRtl ?? false
+    isRtl: state.locales && typeof state.locales.isRtl === 'boolean' ? state.locales.isRtl : false
 });
 
 export default connect(

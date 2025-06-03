@@ -17,6 +17,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
+import { Provider } from 'react-redux';
 import downloadBlob from '../lib/download-blob.js';
 import Settings from '../addons/settings/settings.jsx';
 import appTarget from './app-target';
@@ -68,14 +69,23 @@ const isRtl = rtlLocales.includes(locale);
 
 const AppStateSettings = AppStateHOC(Settings);
 
-ReactDOM.render((
-    <IntlProvider locale={locale} messages={localeMessages}>
-        <AppStateSettings
-            onExportSettings={onExportSettings}
-            onRequestClose={onRequestClose}
-            visible={true}
-            handleItemSelect={handleItemSelect}
-            isRtl={isRtl}
-        />
-    </IntlProvider>
-), appTarget);
+const waitForStore = setInterval(() => {
+    const store = AddonHooks?.appStateStore;
+    if (store) {
+        clearInterval(waitForStore);
+
+        ReactDOM.render((
+            <Provider store={store}>
+                <IntlProvider locale={locale} messages={localeMessages}>
+                    <AppStateSettings
+                        onExportSettings={onExportSettings}
+                        onRequestClose={onRequestClose}
+                        visible={true}
+                        handleItemSelect={handleItemSelect}
+                        isRtl={isRtl}
+                    />
+                </IntlProvider>
+            </Provider>
+        ), appTarget);
+    }
+}, 50);
