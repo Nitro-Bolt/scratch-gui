@@ -19,7 +19,7 @@ import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import downloadBlob from '../lib/download-blob.js';
-import Settings, {AddonHooks} from '../addons/settings/settings.jsx';
+import Settings from '../addons/settings/settings.jsx';
 import appTarget from './app-target';
 
 import {LANGUAGE_KEY} from '../lib/detect-locale.js';
@@ -27,7 +27,7 @@ import {LANGUAGE_KEY} from '../lib/detect-locale.js';
 import entries from '../addons/generated/l10n-entries.js';
 import settings_entries from '../addons/generated/l10n-settings-entries.js';
 
-import AppStateHOC from "../lib/app-state-hoc.jsx";
+import AppStateHOC, {AddonHooks} from "../lib/app-state-hoc.jsx";
 
 const onExportSettings = settings => {
     const blob = new Blob([JSON.stringify(settings)]);
