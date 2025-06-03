@@ -95,7 +95,7 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
             );
             window.ReduxStore = this.store;
             AddonHooks.appStateStore = this.store;
-            localStorage.setItem("tw:TEMP_AddonHooksAppStateStore", this.store)
+            AppStateWrapper.AddonHooks = AddonHooks;
         }
         componentDidUpdate (prevProps) {
             if (localesOnly) return;
@@ -131,9 +131,6 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
         showTelemetryModal: PropTypes.bool,
         isEmbedded: PropTypes.bool
     };
-
-    AppStateWrapper.AddonHooks = localStorage.getItem("tw:TEMP_AddonHooksAppStateStore") ?? AddonHooks;
-    localStorage.removeItem("tw:TEMP_AddonHooksAppStateStore")
 
     return AppStateWrapper;
 };
