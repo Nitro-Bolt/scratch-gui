@@ -932,6 +932,7 @@ class AddonSettingsComponent extends React.Component {
             result[id] = addonState;
         }
         console.log("AddonState: ", result)
+        console.log("Supported Addons: ", Object.entries(supportedAddons))
         return result;
     }
     handleSettingStoreChanged(e) {
