@@ -43,7 +43,7 @@ import '../../lib/normalize.css';
 
 import ReduxStore from '../settings-store-redux-store';
 
-import LibraryComponent from '../../components/library/library.jsx';
+import LibraryComponent from './modified-library.jsx';
 import addonTags from './addon-tags.js';
 
 /* eslint-disable no-alert */
@@ -931,6 +931,7 @@ class AddonSettingsComponent extends React.Component {
             }
             result[id] = addonState;
         }
+        console.log("AddonState: ", result)
         return result;
     }
     handleSettingStoreChanged(e) {
