@@ -132,12 +132,6 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
         isEmbedded: PropTypes.bool
     };
 
-    Object.defineProperty(AppStateWrapper, 'AddonHooks', {
-        get() {
-            return AddonHooks;
-        }
-    });
-
     return AppStateWrapper;
 };
 
