@@ -74,6 +74,8 @@ new AppStateSettings({});
 const AddonHooks = AppStateSettings.AddonHooks;
 console.log("AddonHooks: ", AddonHooks)
 
+let getBackButtonDiv;
+
 const waitForStore = setInterval(() => {
     const store = AddonHooks.appStateStore;
     if (store) {
@@ -92,5 +94,10 @@ const waitForStore = setInterval(() => {
                 </IntlProvider>
             </Provider>
         ), appTarget);
+
+        getBackButtonDiv = document.querySelector('[class^="button_outlined-button"]');
+        if (getBackButtonDiv) {
+            getBackButtonDiv.innerHTML = ''
+        }
     }
 }, 50);
