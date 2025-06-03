@@ -27,7 +27,7 @@ import {LANGUAGE_KEY} from '../lib/detect-locale.js';
 import entries from '../addons/generated/l10n-entries.js';
 import settings_entries from '../addons/generated/l10n-settings-entries.js';
 
-import AppStateHOC, {AddonHooks} from "../lib/app-state-hoc.jsx";
+import {AppStateHOC, AddonHooks} from "../lib/app-state-hoc.jsx";
 
 const onExportSettings = settings => {
     const blob = new Blob([JSON.stringify(settings)]);
@@ -70,7 +70,7 @@ const isRtl = rtlLocales.includes(locale);
 const AppStateSettings = AppStateHOC(Settings);
 
 const waitForStore = setInterval(() => {
-    const store = AddonHooks?.appStateStore;
+    const store = AddonHooks.appStateStore;
     if (store) {
         clearInterval(waitForStore);
 
