@@ -68,7 +68,7 @@ const rtlLocales = ['ar', 'he', 'fa', 'ur'];
 const isRtl = rtlLocales.includes(locale);
 
 const AppStateSettings = AppStateHOC(Settings);
-const { AddonHooks } = AppStateSettings;
+const { AddonHooks } = AppStateHOC;
 
 const waitForStore = setInterval(() => {
     const store = AddonHooks.appStateStore;
