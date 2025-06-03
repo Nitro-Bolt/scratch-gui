@@ -134,3 +134,8 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
 };
 
 export default AppStateHOC;
+
+export {
+    AppStateHOC,
+    AddonHooks
+};
