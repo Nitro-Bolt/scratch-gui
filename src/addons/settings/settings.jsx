@@ -933,6 +933,7 @@ class AddonSettingsComponent extends React.Component {
         }
         console.log("AddonState: ", result)
         console.log("Supported Addons: ", Object.entries(supportedAddons))
+        console.log("Unsupported Addons?: ", Object.entries(unsupportedAddons))
         return result;
     }
     handleSettingStoreChanged(e) {
