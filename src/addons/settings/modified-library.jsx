@@ -14,6 +14,11 @@ import TagCheckbox from '../../containers/tag-checkbox.jsx';
 import Spinner from '../../components/spinner/spinner.jsx';
 import Separator from '../../components/tw-extension-separator/separator.jsx';
 
+import { getInitialDarkMode } from '../../lib/tw-theme-hoc.jsx';
+
+const theme = getInitialDarkMode() ? 'dark' : 'light';
+document.body.setAttribute('theme', theme);
+
 import styles from './settings.css';
 
 const messages = defineMessages({
