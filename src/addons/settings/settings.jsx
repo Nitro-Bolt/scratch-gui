@@ -1105,6 +1105,7 @@ class AddonSettingsComponent extends React.Component {
                         visible={this.props.visible}
                         onItemSelected={this.props.handleItemSelect}
                         onRequestClose={this.props.onRequestClose}
+                        theme={theme}
                     />
                 </Provider>
                 <div className={styles.addons}>
