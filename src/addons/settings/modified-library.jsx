@@ -7,12 +7,12 @@ import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
 import LibraryItem from '../../containers/library-item.jsx';
 import Modal from '../../containers/modal.jsx';
-import Divider from '../divider/divider.jsx';
-import Filter from '../filter/filter.jsx';
+import Divider from '../../components/divider/divider.jsx';
+import Filter from '../../components/filter/filter.jsx';
 import TagButton from '../../containers/tag-button.jsx';
 import TagCheckbox from '../../containers/tag-checkbox.jsx';
-import Spinner from '../spinner/spinner.jsx';
-import Separator from '../tw-extension-separator/separator.jsx';
+import Spinner from '../../components/spinner/spinner.jsx';
+import Separator from '../../components/tw-extension-separator/separator.jsx';
 
 import styles from './settings.css';
 
