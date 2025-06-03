@@ -95,6 +95,8 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
             );
             window.ReduxStore = this.store;
             AddonHooks.appStateStore = this.store;
+
+            AppStateWrapper.AddonHooks = AddonHooks;
         }
         componentDidUpdate (prevProps) {
             if (localesOnly) return;
@@ -134,8 +136,3 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
 };
 
 export default AppStateHOC;
-
-export {
-    AppStateHOC,
-    AddonHooks
-};
