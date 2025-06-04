@@ -1729,6 +1729,15 @@ if (IsLocal || IsLiveTests) {
             extDeveloper: 'MrIncredibleMakerZe'
         },
         {
+            name: 'Timers Plus',
+            extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/legacy-extensions/timers-plus.js',
+            tags: ['dinosaurmod'],
+            iconURL: defaultExtensionIcon,
+            description: "Create your own timers! There's also pause and resume options.",
+            featured: true,
+            extDeveloper: 'MrIncredibleMakerZe'
+        },
+        {
             name: 'Unite',
             extensionId: 'jwUnite',
             iconURL: jwUniteExtensionIcon,

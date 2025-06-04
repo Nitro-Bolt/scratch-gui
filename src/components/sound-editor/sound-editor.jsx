@@ -82,6 +82,11 @@ const messages = defineMessages({
         description: 'Title of the button to copy the selection into a new sound',
         defaultMessage: 'Copy to New'
     },
+    cutToNew: {
+        id: 'gui.soundEditor.cutToNew',
+        description: 'Title of the button to cut the selection into a new sound',
+        defaultMessage: 'Cut to New'
+    },
     delete: {
         id: 'gui.soundEditor.delete',
         description: 'Title of the button to delete the sound',
@@ -260,6 +265,13 @@ const SoundEditor = props => (
                     img={copyToNewIcon}
                     title={props.intl.formatMessage(messages.copyToNew)}
                     onClick={props.onCopyToNew}
+                />
+                <IconButton
+                    className={classNames(styles.toolButton, styles.flipInRtl)}
+                    disabled={props.trimStart === null}
+                    img={copyToNewIcon}
+                    title={props.intl.formatMessage(messages.cutToNew)}
+                    onClick={props.onCutToNew}
                 />
             </div>
             <IconButton
@@ -488,6 +500,7 @@ SoundEditor.propTypes = {
     onCopy: PropTypes.func.isRequired,
     onCopyToNew: PropTypes.func.isRequired,
     onCut: PropTypes.func.isRequired,
+    onCutToNew: PropTypes.func.isRequired,
     onDelete: PropTypes.func,
     onEcho: PropTypes.func.isRequired,
     onLowPass: PropTypes.func.isRequired,

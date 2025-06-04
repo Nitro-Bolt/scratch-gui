@@ -29,6 +29,7 @@ class SoundEditor extends React.Component {
             'copy',
             'copyCurrentBuffer',
             'handleCopyToNew',
+            'handleCutToNew',
             'handleStoppedPlaying',
             'handleChangeName',
             'handlePlay',
@@ -354,6 +355,13 @@ class SoundEditor extends React.Component {
     }
     handleCut() {
         this.copy();
+        this.handleDelete();
+    }
+    handleCutToNew() {
+        this.copy(() => {
+            encodeAndAddSoundToVM(this.props.vm, this.state.copyBuffer.samples,
+                this.state.copyBuffer.sampleRate, this.props.name);
+        });
         this.handleDelete();
     }
     resampleBufferToRate(buffer, newRate) {
@@ -841,6 +849,7 @@ class SoundEditor extends React.Component {
                 onCopy={this.handleCopy}
                 onCopyToNew={this.handleCopyToNew}
                 onCut={this.handleCut}
+                onCutToNew={this.handleCutToNew}
                 onDelete={this.handleDelete}
                 onEcho={this.effectFactory(effectTypes.ECHO)}
                 onFadeIn={this.effectFactory(effectTypes.FADEIN)}
