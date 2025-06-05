@@ -77,6 +77,7 @@ const AddonHooks = AppStateSettings.AddonHooks;
 console.log("AddonHooks: ", AddonHooks)
 
 let getBackButtonDiv;
+let reactModel;
 
 const waitForStore = setInterval(() => {
     const store = AddonHooks.appStateStore;
@@ -101,7 +102,7 @@ const waitForStore = setInterval(() => {
         if (getBackButtonDiv) {
             getBackButtonDiv.innerHTML = ''
         }
-        
+
         reactModel = document.querySelector('ReactModal__Overlay ReactModal__Overlay--after-open modal_modal-overlay');
         const theme = getInitialDarkMode() ? 'dark' : 'light';
         if (reactModel) {
