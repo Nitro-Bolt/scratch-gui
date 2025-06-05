@@ -43,8 +43,8 @@ import '../../lib/normalize.css';
 
 import ReduxStore from '../settings-store-redux-store';
 
-import LibraryComponent from './modified-library.jsx';
-import addonTags from './addon-tags.js';
+//import LibraryComponent from './modified-library.jsx';
+//import addonTags from './addon-tags.js';
 
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
@@ -1093,7 +1093,7 @@ class AddonSettingsComponent extends React.Component {
                         />
                     )}
                 </div>
-                <Provider store={ReduxStore}>
+                {/*<Provider store={ReduxStore}>
                     <LibraryComponent
                         data={addonState}
                         filterable={true}
@@ -1107,7 +1107,7 @@ class AddonSettingsComponent extends React.Component {
                         onRequestClose={this.props.onRequestClose}
                         theme={theme}
                     />
-                </Provider>
+                </Provider>*/}
                 <div className={styles.addons}>
                     {!this.state.loading && (
                         <div className={styles.section}>
