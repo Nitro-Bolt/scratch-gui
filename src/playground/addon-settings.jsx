@@ -29,6 +29,8 @@ import settings_entries from '../addons/generated/l10n-settings-entries.js';
 
 import AppStateHOC from "../lib/app-state-hoc.jsx";
 
+import { getInitialDarkMode } from '../lib/tw-theme-hoc.jsx';
+
 const onExportSettings = settings => {
     const blob = new Blob([JSON.stringify(settings)]);
     downloadBlob('turbowarp-addon-settings.json', blob);
@@ -98,6 +100,12 @@ const waitForStore = setInterval(() => {
         getBackButtonDiv = document.querySelector('[class^="button_outlined-button"]');
         if (getBackButtonDiv) {
             getBackButtonDiv.innerHTML = ''
+        }
+        
+        reactModel = document.querySelector('ReactModal__Overlay ReactModal__Overlay--after-open modal_modal-overlay');
+        const theme = getInitialDarkMode() ? 'dark' : 'light';
+        if (reactModel) {
+            reactModel.setAttribute('theme', theme);
         }
     }
 }, 50);

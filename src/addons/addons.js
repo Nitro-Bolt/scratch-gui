@@ -74,6 +74,7 @@ const addons = [
 const newAddons = [
     'multi-sprite-selecting',
     'paint-gradient-maker',
+    'paint-tool-panel',
     'custom-web-font',
     'expanded-backpack',
     'editor-create-music',

@@ -75,4 +75,5 @@ export default {
   "expanded-backpack": () => import(/* webpackChunkName: "addon-entry-expanded-backpack" */ "../addons/expanded-backpack/_runtime_entry.js"),
   "custom-web-font": () => import(/* webpackChunkName: "addon-entry-custom-web-font" */ "../addons/custom-web-font/_runtime_entry.js"),
   "multi-sprite-selecting": () => import(/* webpackChunkName: "addon-entry-multi-sprite-selecting" */ "../addons/multi-sprite-selecting/_runtime_entry.js"),
+  "paint-tool-panel": () => import(/* webpackChunkName: "addon-entry-paint-tool-panel" */ "../addons/paint-tool-panel/_runtime_entry.js"),
 };
