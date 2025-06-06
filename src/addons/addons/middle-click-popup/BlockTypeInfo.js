@@ -344,7 +344,21 @@ export class BlockTypeInfo {
     else if (block.type === "sensing_set_of") name = "sensing";
     else if (block.type === "operator_indexOfTextInText") name = "operators";
     else if (block.type === "operator_lastIndexOfTextInText") name = "operators";
+    else if (block.type === "operator_textStartsOrEndsWith") name = "operators";
+    else if (block.type === "motion_goto_menu") name = "motion";
+    else if (block.type === "motion_pointtowards_menu") name = "motion";
+    else if (block.type === "looks_costume") name = "looks";
+    else if (block.type === "looks_backdrops") name = "looks";
+    else if (block.type === "looks_getinput_menu") name = "looks";
+    else if (block.type === "sound_sounds_menu") name = "sounds";
     else if (block.type === "event_whenbackdropswitchesto") name = "events";
+    else if (block.type === "event_touchingobjectmenu") name = "events";
+    else if (block.type === "event_broadcast_menu") name = "events";
+    else if (block.type === "control_run_as_sprite_menu") name = "control";
+    else if (block.type === "control_create_clone_of_menu") name = "control";
+    else if (block.type === "sensing_touchingobjectmenu") name = "sensing";
+    else if (block.type === "sensing_keyoptions") name = "sensing";
+    else if (block.type === "sensing_scrolldirections") name = "sensing";
     else name = block.category_;
 
     return {
