@@ -506,7 +506,7 @@ export default async function ({ addon, msg, console }) {
         0,
         {
           enabled: true,
-          text: "",
+          text: "Insert blocks by name",
           callback: () => {
             openPopup();
           },

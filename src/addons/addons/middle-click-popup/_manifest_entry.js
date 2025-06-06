@@ -2,7 +2,7 @@
 const manifest = {
   "editorOnly": true,
   "name": "Insert blocks by name (Modified)",
-  "description": "Middle click on the code area, use Ctrl+Space or Shift+Click to bring up a floating input box where you can type the name of a block (or parts of it) and drag the block into the code area. Hold Shift while dragging to avoid closing the box when adding multiple blocks at once.",
+  "description": "Middle click on the code area, use Ctrl+Space, Shift+Click or click the \"Insert blocks by name\" button in the context menu to bring up a floating input box where you can type the name of a block (or parts of it) and drag the block into the code area. Hold Shift while dragging to avoid closing the box when adding multiple blocks at once.",
   "credits": [
     {
       "name": "griffpatch"
