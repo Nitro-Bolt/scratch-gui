@@ -493,4 +493,29 @@ export default async function ({ addon, msg, console }) {
     }
     return _isDeleteArea.call(this, e);
   };
+
+  addon.tab.createBlockContextMenu(
+    (items) => {
+      if (addon.self.disabled) return items;
+  
+      const pasteItemIndex = items.findIndex((obj) => obj._isDevtoolsFirstItem);
+      const insertBeforeIndex = items.length;
+  
+      items.splice(
+        insertBeforeIndex,
+        0,
+        {
+          enabled: true,
+          text: "",
+          callback: () => {
+            openPopup();
+          },
+          separator: true,
+        },
+      );
+  
+      return items;
+    },
+    { workspace: true }
+  );
 }

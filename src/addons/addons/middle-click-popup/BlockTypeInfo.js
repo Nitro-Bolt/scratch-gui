@@ -341,6 +341,9 @@ export class BlockTypeInfo {
       else name = "more";
     } else if (block.isScratchExtension) name = "pen";
     else if (block.type === "sensing_of") name = "sensing";
+    else if (block.type === "sensing_set_of") name = "sensing";
+    else if (block.type === "operator_indexOfTextInText") name = "operators";
+    else if (block.type === "operator_lastIndexOfTextInText") name = "operators";
     else if (block.type === "event_whenbackdropswitchesto") name = "events";
     else name = block.category_;
 
