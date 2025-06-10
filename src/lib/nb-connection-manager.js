@@ -1,20 +1,46 @@
+/* eslint-disable no-alert */
 /* eslint-disable indent */
 // eslint-disable-next-line
-import Peer, { DataConnection } from 'peerjs';
+import Peer, {DataConnection, PeerJSOption} from 'peerjs';
 import {EventEmitter} from 'events';
+import bindAll from 'lodash.bindall';
+
+/**
+ * @typedef {DataConnection} CollaborationPeer
+ * @property {Boolean} authenticated Whether this peer has been authenticated
+ * @property {string} username The username of this peer
+ * @property {NodeJS.Timeout} killTimeout The timeout which will be fired to check if this peer is authenticated
+ */
+
+/**
+ * @typedef {string} PeerId
+ */
+
+/**
+ * @callback JoinRequestHandler
+ * @param {string} username The username of the peer attempting to join the room
+ * @param {CollaborationPeer} peer The {@link DataConnection} object of the peer attempting to join
+ */
 
 class NBConnectionManager extends EventEmitter {
   constructor () {
     super();
-    /**
-     * @typedef {DataConnection} CollaborationPeer
-     * @property {Boolean} authenticated Whether this peer has been authenticated
-     * @property {string} username The username of this peer
-     */
 
-    /**
-     * @typedef {string} PeerId
-     */
+    bindAll(this, [
+      'init',
+      'joinRoom',
+      'createRoom',
+      'setUsername',
+      'sendTo',
+      'sendToAll',
+      'destroy',
+      'close',
+      '_handleConnection',
+      '_handleDisconnection',
+      '_handlePacket',
+      '_killPeer',
+      '_handleServerDisconnect'
+    ]);
 
     /** @type {Peer} */
     this.peer = null;
@@ -26,25 +52,33 @@ class NBConnectionManager extends EventEmitter {
     this.hostId = null;
     /** @type {string | null} */
     this.roomId = null;
-    /** @type {Boolean} */
+    /** @type {boolean} */
     this.isHost = false;
-    /** @type {Boolean} */
+    /** @type {boolean} */
     this.connected = false;
-    /** @type {Boolean} */
+    /** @type {boolean} */
     this.initialized = false;
+    /** @type {boolean} */
+    this.authenticated = false;
 
     /** @type {string} */
     this.username = 'Anonymous';
-    /** @type {{ [s: string]: CollaborationPeer}} */
+    /** @type {{ [s: PeerId]: CollaborationPeer}} */
     this.connections = {};
-    /** @type {{ [s: string]: string }} */
-    this.authKeys = {};
-    /** @type {Map<PeerId, string>} */
+    /** @type {{ [s: PeerId]: string }} */
+    this.authKeys = {}; // PeerId, auth key
+    /** @type {Map<PeerId, string | null>} */
     this.users = new Map(); // PeerId, username
+    /** @type {boolean} */
+    this.connectionLocked = false; // whether the ability to connect to new rooms is locked
+    // eslint-disable-next-line valid-jsdoc
+    /** @type {JoinRequestHandler} */
+    this.joinRequestHandler = username => confirm(`Allow ${username} to join?`); // overrideable
 
     /**
      * Event types fired by various connection events
      * @readonly
+     * @constant
      * @enum {string}
      */
     this.Event = {
@@ -59,12 +93,19 @@ class NBConnectionManager extends EventEmitter {
        * @event SERVERDISCONNECT
        */
       SERVERDISCONNECT: 'SERVERDISCONNECT',
-      /** @description Fired when, as a peer, a new peer connects to this client
+      /**
+       * @description Fired when, as a peer, a new possible peer connects to this client
        * @event PEERCONNECT
        * @param {CollaborationPeer} peer The {@link CollaborationPeer} object of the connected peer
-       * @param {string} username The username of the connected peer
       */
       PEERCONNECT: 'PEERCONNECT',
+      /**
+       * @description Fired when, as a peer, a connected client is upgraded to a peer
+       * @event PEERUPGRADE
+       * @param {CollaborationPeer} peer The {@link CollaborationPeer} object of the upgraded peer
+       * @param {string} username The username of the upgraded peer
+       */
+      PEERUPGRADE: 'PEERUPGRADE',
       /**
        * @description Fired when, as a peer, a connected peer disconnects from this client
        * @event PEERDISCONNECT
@@ -105,7 +146,8 @@ class NBConnectionManager extends EventEmitter {
        */
       ROOMLEAVE: 'ROOMLEAVE',
       /**
-       * @description Fired when the room this client is connected to is closed due to the host disconnecting or the host closing the room
+       * @description Fired when the room this client is connected to is closed
+       * due to the host disconnecting or the host closing the room
        * @event ROOMCLOSE
        * @param {string} id The id of the room that was closed
        * @param {CollaborationPeer} host The {@link CollaborationPeer} object of the host of the room that disconnected
@@ -114,9 +156,9 @@ class NBConnectionManager extends EventEmitter {
       /**
        * @description Fired when the room this client is connected to(if any) changes
        * @event ROOMCHANGE
-       * @param {string | null} room The id of the room this client is connected to, or null if none
+       * @param {string | null} room The id of the room this client is now connected to, or null if none
        */
-      ROOMCHANGE: "ROOMCHANGE",
+      ROOMCHANGE: 'ROOMCHANGE',
       /**
        * @description Fired when a peer is kicked from a room
        * @event PEERKICK
@@ -131,393 +173,587 @@ class NBConnectionManager extends EventEmitter {
       HOSTDISCONNECT: 'HOSTDISCONNECT',
       /**
        * @description Fired when the list of peers connected to this client is updated
-       * @event PEERSUPDATE
+       * @event CONNECTIONSUPDATE
        * @param {Array<CollaborationPeer>} peers An array of the peers connected to this client
        */
-      PEERSUPDATE: 'PEERSUPDATE',
+      CONNECTIONSUPDATE: 'CONNECTIONSUPDATE',
+      /**
+       * @description Fired when a peer changes their username
+       * @event USERNAMEUPDATE
+       * @param {CollaborationPeer | null} peer The {@link CollaborationPeer} object of the peer
+       * that updated its username, or null if it was this client
+       * @param {string} username The new username of the peer
+       */
+      USERNAMEUPDATE: 'USERNAMEUPDATE',
       /**
        * @description Fired when a packet is received from any peer
        * @event PACKET
        * @param {*} data The data from the packet
        * @param {CollaborationPeer} peer The peer who sent this packet
        */
-      PACKET: 'PACKET'
+      PACKET: 'PACKET',
+      /**
+       * @description Fired when the connection manager is destroyed, requiring a new initialization.
+       * @event DESTROY
+       */
+      DESTROY: 'DESTROY',
+      /**
+       * @description Fired when the ability to join a room locks
+       * @event JOINLOCK
+       */
+      JOINLOCK: 'JOINLOCK',
+      /**
+       * @description Fired when the ability to join a room unlocks
+       * @event JOINUNLOCK
+       */
+      JOINUNLOCK: 'JOINUNLOCK'
     };
 
-    
+    /**
+     * Types of protocol packets send between peers
+     * @readonly
+     * @constant
+     * @enum {string}
+     */
+    this.PacketType = {
+      REQUESTJOIN: 'REQUESTJOIN',
+      ALLOWJOIN: 'ALLOWJOIN',
+      DENYJOIN: 'DENYJOIN',
+      AUTHKEY: 'AUTHKEY',
+      VERIFYKEY: 'VERIFYKEY',
+      ACCEPT: 'ACCEPT',
+      PACKET: 'PACKET',
+      CHANGEUSERNAME: 'CHANGEUSERNAME',
+      KICK: 'KICK',
+      ROOMCLOSED: 'ROOMCLOSED'
+    };
   }
 
   /**
-   * Initialize the connection to peerjs
-   * @param {string} username The username to set this peer to
+   * Initialize the peerjs connection
+   * @param {string} username The username to give this client
+   * @param {PeerJSOption | null} connectionSettings Optional, the settings to use when connecting to the peerjs server
    */
-  init (username = 'Anonymous') {
-    if (this.initialized) return;
-    this.initialized = true;
+  init (username = 'Anonymous', connectionSettings = null) {
+    this.initialized = false;
+    if (this.peer) {
+      this.destroy();
+    }
     this.username = username;
-
-    this.peer = new Peer({
-      // host: "nitrobolt-backend.derpygamer2142.com",
+    this.peer = new Peer(connectionSettings ?? {
       host: 'localhost',
       port: 1296,
       path: '/peerjs',
-      //secure: true,
-      debug: 2
+      debug: 3
     });
 
     this.peer.on('open', id => {
       this.peerId = id;
       this.emit(this.Event.SERVERCONNECT, id);
-      const room = this._getRoomFromUrl();
-      if (room) this.joinRoom(room);
+      this.initialized = true;
+
+      const roomId = this._getRoomFromUrl();
+      if (roomId) this.joinRoom(roomId);
     });
-
-    this.peer.on('connection', conn => this._handleIncomingConnection(conn));
-    this.peer.on('error', () => this.leaveRoom(false)); // todo: should this be handled more gracefully?
-    this.peer.on('close', () => this.destroy());
+    this.peer.on('connection', peer => {
+      this._handleConnection(peer, false, false);
+    });
+    this.peer.on('close', this._handleServerDisconnect);
   }
 
   /**
-   * Create a new room using this peer's id
-   * @returns {string} The room id that was created
-   */
-  createRoom () {
-    if (!this.peerId || !this.initialized) throw new Error('Peer not ready');
-    this.isHost = true;
-    this.connected = true;
-    this.roomId = this.hostId = this.peerId;
-    this.emit(this.Event.ROOMCREATE, this.roomId);
-    this.emit(this.Event.ROOMCHANGE, this.roomId);
-    this._setRoomInUrl(this.roomId);
-    return this.roomId;
-  }
-
-  /**
-   * Join a room with the given id, leaving the current room if needed
+   * Connect to a given room's host
    * @param {string} roomId The id of the room to join
+   * @returns {Promise<boolean>} A promise that will resolve to true if joining was successful and false otherwise
    */
   joinRoom (roomId) {
-    if (!roomId || this.peer.disconnected) return;
-    if (this.roomId) {
-      this.leaveRoom(false);
-    }
-    this.isHost = false;
-    this.roomId = roomId;
-    this.hostId = roomId;
-    this._setRoomInUrl(roomId);
+    if (!this.initialized) return;
+    if (this.connectionLocked) return;
 
-    const conn = this.peer.connect(roomId);
-    this.host = conn;
+    this.connectionLocked = true;
+    this.emit(this.Event.JOINLOCK);
 
-    conn.on('open', () => {
+    if (this.connected) this.close();
+    this.host = this.peer.connect(roomId); // try to connect to the host of the room
+    let promiseResolution; /* so that we can resolve the returned promise
+                              when we have either connected or failed to connected */
+
+    const handleFail = err => {
+      this.host.close();
+      this.host = null;
+      this.connectionLocked = false;
+      this.emit(this.Event.JOINUNLOCK);
+      this._clearRoomInUrl();
+
+      console.log(err);
+      promiseResolution(false);
+    };
+
+
+    this.peer.once('error', handleFail); // if connecting fails we give up and close the connection
+    this.host.on('open', () => {
+      this.hostId = roomId;
+      this.roomId = roomId;
       this.connected = true;
-      this._bindHost(conn);
-      this.emit(this.Event.ROOMJOIN, this.roomId, conn);
-      this.emit(this.Event.ROOMCHANGE, this.roomId);
-      conn.send({type: 'REQUESTJOIN', username: this.username});
+      this.connectionLocked = false;
+
+      this.peer.off('error', handleFail);
+      this.emit(this.Event.JOINUNLOCK);
+      this._setRoomInUrl(roomId);
+      this._handleConnection(this.host, true, false);
+      this.emit(this.Event.ROOMJOIN, roomId, this.host);
+      this.emit(this.Event.ROOMCHANGE, roomId);
+
+      promiseResolution(true);
+    });
+    
+    return new Promise(resolve => {
+      promiseResolution = resolve; // this is super freaky
     });
   }
 
   /**
-   * Shut down a room and destroy all connections, requires this peer to be the host
+   * Create a new room
+   * @returns {boolean} A boolean representing whether or not room creation was successful
    */
-  shutdownRoom () {
-    if (!this.isHost) return;
+  createRoom () {
+    if (!this.initialized) return console.error('Client not initialized!') && false;
+    if (this.connectionLocked) return console.log('Connection locked!') && false;
+    this.connectionLocked = true;
+    this.emit(this.Event.JOINLOCK);
 
-    this.sendToAll({type: 'ROOMCLOSED'});
-    this.disconnectAll();
+    if (this.connected) this.close();
 
-    this._clearRoomInUrl();
-    this.peer?.destroy();
-
-    Object.assign(this, {
-      peer: null,
-      host: null,
-      hostId: null,
-      roomId: null,
-      isHost: false,
-      connected: false,
-      initialized: false,
-      connections: {},
-      users: []
-    });
-  }
-
-  /**
-   * Leave the room this peer is currently connected to
-   * @param {boolean} silent If false a ROOMLEAVE event will be emitted
-   */
-  leaveRoom (silent) {
-    if (!silent) this.emit(this.Event.ROOMLEAVE, this.roomId, this.host);
-    if (!silent) this.emit(this.Event.ROOMCHANGE, null);
-    this.disconnectAll();
-    this._clearRoomInUrl();
-    this.roomId = null;
-    this.hostId = null;
-    this.isHost = false;
-    this.connected = false;
-
-    this.host?.close();
+    this.hostId = this.peerId;
+    this.isHost = true;
+    this.authenticated = true;
+    this.connected = true;
     this.host = null;
+
+    
+    this._setRoomInUrl(this.peerId);
+
+    this.connectionLocked = false;
+
+    this.emit(this.Event.ROOMCREATE, this.peerId);
+    this.emit(this.Event.ROOMCHANGE, this.peerId);
+    this.emit(this.Event.JOINUNLOCK);
+
+    return true;
   }
 
   /**
-   * Safely close all connections and disconnect from peerjs
-   */
-  destroy () {
-    this.disconnectAll();
-    this.peer?.destroy();
-    this._clearRoomInUrl();
-    Object.assign(this, {
-      peer: null,
-      host: null,
-      hostId: null,
-      initialized: false,
-      connected: false
-    });
-  }
-
-  /**
-   * Disconnect from all peers currently connected to this peer
-   */
-  disconnectAll () {
-    Object.values(this.connections).forEach(conn => conn.close());
-    this.connections = {};
-    this.users.clear();
-  }
-
-  /**
-   * Send a packet to all connected users
-   * @param {*} packet The data to send to all peers
-   */
-  sendToAll (packet) {
-    Object.values(this.connections).forEach(conn => {
-      if (conn.open) conn.send(packet);
-    });
-    if (this.host?.open) this.host.send(packet);
-  }
-
-  /**
-   * Set this peer's username to a given string
-   * @param {string} username What this peer's username should be set to
+   * Set the username of this client
+   * @param {string} username The username to use
    */
   setUsername (username) {
     this.username = username;
-    this.sendToAll({type: 'CHANGEUSERNAME', payload: username});
-  }
 
-  /**
-   * Kick a given peer, this peer must be the host
-   * @param {string} peerId The id of the peer to kick
-   * @param {boolean} sendPacket Whether to send a kick packet to peers
-   */
-  kickPeer (peerId, sendPacket) {
-    if (sendPacket) this.sendToAll({type: 'KICK', payload: peerId});
-    this.connections[peerId]?.close();
-    delete this.connections[peerId];
-    this.users.delete(peerId);
-  }
-  
-  /**
-   * Get a user's username by their id
-   * @param {string} peerId  The id to get
-   * @returns {string | null} The username of the given peer id
-   */
-  getUsernameByPeerId (peerId) {
-    return this.users.get(peerId) ?? null;
-  }
-
-  // --- Internal Handlers ---
-  /**
-   * As a peer, handle the connection of a new client
-   * @param {CollaborationPeer} conn The peer to handle the connection of
-   */
-  _handleIncomingConnection (conn) {
-    conn.authenticated = false;
-    this.connections[conn.peer] = conn;
-
-    conn.on('open', () => {
-      // PEERCONNECT event is emitted when the connection has been authenticated
-      setTimeout(() => {
-        if (!conn.authenticated) conn.close();
-      }, 25000);
+    this.sendToAll({
+      type: this.PacketType.CHANGEUSERNAME,
+      payload: username
     });
 
-    conn.on('data', data => this._handlePacket(conn, data));
-    conn.on('close', () => {
-      this.emit(this.Event.PEERDISCONNECT, conn);
-      delete this.connections[conn.peer];
-      this.users.delete(conn.peer);
+    this.emit(this.Event.USERNAMEUPDATE, null, username);
+  }
 
-      // we don't handle the host disconnecting here because conn should never be the host
+  /**
+   * Send a packet to a specific peer
+   * @param {PeerId} peerId The id of the peer to send the packet to
+   * @param {*} packet The data to send to the peer
+   */
+  sendTo (peerId, packet) {
+    this.connections[peerId].send(packet);
+  }
 
-      this.emit(this.Event.PEERSUPDATE, Object.keys(this.connections));
-    });
+  /**
+   * Send some data to all authenticated and open peers
+   * @param {*} packet The data to send to all peers
+   */
+  sendToAll (packet) {
+    for (const peer of Object.values(this.connections)) {
+      if (peer.authenticated && peer.open) peer.send(packet);
+    }
+  }
+
+  /**
+   * Destroy all connections and leave the current room
+   * @param {boolean} silent Whether to emit update events
+   */
+  destroy (silent) {
+    if (!silent) {
+      this.emit(this.Event.DESTROY);
+      this.emit(this.Event.SERVERDISCONNECT);
+      this.emit(this.Event.ROOMCHANGE, null);
+      this.emit(this.Event.ROOMLEAVE, this.roomId, this.host);
+      this.emit(this.Event.CONNECTIONSUPDATE, Object.values(this.connections));
+    }
+    
+    if (this.isHost) {
+      this.sendToAll({
+        type: this.PacketType.ROOMCLOSED
+      });
+    }
+
+    this.username = null;
+    this.roomId = null;
+    this.peerId = null;
+    this.hostId = null;
+    this.host = null;
+
+    this.connected = false;
+    this.isHost = false;
+    this.initialized = false;
+    this.authenticated = false;
+
+    this.users.clear();
+    this.connections = {};
+
+    this.peer?.destroy();
+    this.peer = null;
 
     
   }
 
   /**
-   * As a client connecting to a room, bind connection to a host
-   * @param {CollaborationPeer} conn The peer connection of the host to bind
+   * Disconnect from the current room
+   * @param {boolean} silent Whether to emit room and connection update events
    */
-  _bindHost (conn) {
-    conn.authenticated = true;
-    conn.on('data', data => this._handlePacket(conn, data));
-    conn.on('close', () => {
-      this.emit(this.Event.HOSTDISCONNECT, this.host);
-      this.emit(this.Event.ROOMCLOSE, conn.peer, conn);
+  close (silent) {
+    if (!silent) {
+      this.emit(this.Event.ROOMLEAVE, this.roomId, this.host);
       this.emit(this.Event.ROOMCHANGE, null);
-      this.leaveRoom(true);
-    });
+      this.emit(this.Event.CONNECTIONSUPDATE, Object.values(this.connections));
+    }
+
+    if (this.isHost) {
+      this.sendToAll({
+        type: this.PacketType.ROOMCLOSED
+      });
+    }
+
+    this.username = null;
+    this.roomId = null;
+    this.peerId = null;
+    this.hostId = null;
+    this.host?.close();
+    this.host = null;
+
+    this.connected = false;
+    this.isHost = false;
+    this.authenticated = false;
+
+    this.users.clear();
+    Object.values(this.connections).forEach(c => c.close());
+    this.connections = {};
   }
 
-  /**
-   * Bind the connection to a client, upgrading them to a peer by providing them with the authentication key
-   * @param {CollaborationPeer} conn The peer connection to bind to
-   * @param {string} key The key to send to the client which they will use to authenticate with other clients
-   */
-  _bindPeer (conn, key) {
-    conn.on('open', () => {
-      this.emit(this.Event.CLIENTCONNECT, conn);
-      conn.send({type: 'VERIFYKEY', key, username: this.username});
-    });
-    conn.on('data', data => this._handlePacket(conn, data));
-    conn.on('close', () => {
-      this.emit(this.Event.CLIENTDISCONNECT, conn.id);
-      delete this.connections[conn.peer];
-      this.users.delete(conn.peer);
-      this.emit(this.Event.PEERSUPDATE, Object.keys(this.connections));
-    });
+  // internal handlers
 
-    this.connections[conn.peer] = conn;
+  /**
+   * Handle the connection of a peer
+   * @param {CollaborationPeer} peer The peer to handle the connection of
+   * @param {boolean} isHost Whether this peer is the host
+   * @param {boolean} isPeer Whether this peer is an existing peer
+   */
+  _handleConnection (peer, isHost, isPeer) {
+    peer.username = null; // not yet set
+    peer.killTimeout = null;
+    this.connections[peer.peer] = peer;
+    this.users.set(peer.peer, null);
+    this.emit(this.Event.CONNECTIONSUPDATE, Object.values(this.connections));
+
+    if (this.isHost) { // we are the host, this is a client
+      peer.authenticated = false;
+      peer.killTimeout = setTimeout(() => {
+        if (!peer.authenticated) {
+          console.warn('Client failed to join', peer);
+          peer.close();
+        }
+      }, 25000);
+
+      peer.on('data', packet => this._handlePacket(packet, peer));
+      peer.on('close', () => this._handleDisconnection(peer));
+
+      this.emit(this.Event.CLIENTCONNECT, peer);
+
+    } else if (isHost) { // this connection is the host
+
+      peer.authenticated = true;
+      peer.send({
+        type: this.PacketType.REQUESTJOIN,
+        username: this.username
+      });
+
+      peer.on('data', packet => this._handlePacket(packet, peer));
+      peer.on('close', () => this._handleDisconnection(peer));
+    } else if (isPeer) { // we are a client, this is a peer
+      peer.authenticated = true;
+
+      peer.send({
+        type: this.PacketType.VERIFYKEY,
+        key: this.authKeys[this.peerId],
+        username: this.username
+      });
+
+      peer.on('data', packet => this._handlePacket(packet, peer));
+      peer.on('close', () => this._handleDisconnection(peer));
+
+    } else { // we are a peer, this is a client
+      peer.authenticated = false;
+      peer.killTimeout = setTimeout(() => {
+        if (!peer.authenticated) {
+          console.log('Client failed to join', peer);
+          peer.close();
+        }
+      }, 25000);
+
+      peer.on('data', packet => this._handlePacket(packet, peer));
+      peer.on('close', () => this._handleDisconnection(peer));
+
+      this.emit(this.Event.PEERCONNECT, peer);
+    }
+  }
+  
+  /**
+   * Handle the disconnection of a given peer
+   * @param {CollaborationPeer} peer The peer to handle the disconnection of
+   */
+  _handleDisconnection (peer) {
+    if (this.host === peer) {
+      this.emit(this.Event.HOSTDISCONNECT, peer);
+      this.emit(this.Event.ROOMCLOSE, peer.peer, peer);
+      this.emit(this.Event.ROOMCHANGE, null);
+      this.emit(this.Event.CONNECTIONSUPDATE, Object.values(this.connections));
+
+      this.close(true);
+    } else {
+      this._killPeer(peer);
+      this.emit(this.Event.CONNECTIONSUPDATE, Object.values(this.connections));
+      if (Object.prototype.hasOwnProperty.call(this.authKeys, peer.peer)) delete this.authKeys[peer.peer];
+    }
   }
 
   /**
    * Handle a packet from a peer
-   * @param {CollaborationPeer} conn The peer who sent this packet
-   * @param {{ "type": string }} data The packet sent by the peer
+   * @param {object} packet The received packet
+   * @param {CollaborationPeer} peer The peer who sent the packet
    * @returns {void}
    */
-  _handlePacket (conn, data) {
-    if (typeof data !== 'object') return;
-    if (!data?.type) return;
+  _handlePacket (packet, peer) {
+    if (typeof packet !== 'object') return console.error('Received malformed packet', packet);
+    if (typeof packet?.type !== 'string') return console.error('Received malformed packet', packet);
 
-    const sendTo = (peerId, msg) => this.connections[peerId]?.send(msg);
+    switch (packet.type) {
+      case (this.PacketType.REQUESTJOIN): {
+        if (typeof packet?.username !== 'string') return console.error('Received malformed packet', packet);
+        if (!this.isHost) return console.error('Client attempted to authenticate with incorrect peer!', peer, packet);
 
-    switch (data.type) {
-      case 'REQUESTJOIN': {
-        if (!this.isHost) return;
-        // eslint-disable-next-line no-alert
-        if (!window.confirm(`Allow ${data.username} to join?`)) return conn.close();
+        if (this.joinRequestHandler(packet.username, peer)) {
+          peer.authenticated = true;
+          peer.username = packet.username;
+          this.users.set(peer.peer, packet.username);
+          this.emit(this.Event.USERNAMEUPDATE, peer, packet.username);
 
-        const key = crypto.randomUUID();
-        conn.authenticated = true;
-        conn.username = data.username;
-        this.users.set(conn.peer, data.username);
+          clearTimeout(peer.killTimeout);
+          peer.killTimeout = null;
 
-        conn.send({
-          type: 'ALLOWJOIN',
-          key,
-          clients: Object.keys(this.connections).filter(p => p !== conn.peer),
-          username: this.username
-        });
+          const key = crypto.randomUUID();
+          const clients = Object.values(this.connections).filter(p => p.authenticated && p.open && p !== peer);
 
-        Object.keys(this.connections).forEach(peerId =>
-          sendTo(peerId, {type: 'AUTHKEY', id: conn.peer, key})
-        );
+          clients.forEach(c =>
+            c.send({
+              type: this.PacketType.AUTHKEY,
+              id: peer.peer,
+              key: key
+            })
+          );
 
-        this.emit(this.Event.PEERCONNECT, conn, data.username);
-        this.emit(this.Event.PEERSUPDATE, Object.keys(this.connections));
-        break;
-      }
+          peer.send({/* this is sent after giving the key to all existing peers
+            so that if the new peer tries to authenticate immediately after receiving the key,
+            it's less likely to cause issues */
+            type: this.PacketType.ALLOWJOIN,
+            key: key,
+            clients: clients.map(c => c.peer),
+            username: this.username
+          });
 
-      case 'ALLOWJOIN': {
-        if (conn !== this.host) return;
-        this.hostId = conn.peer;
+          this.emit(this.Event.PEERUPGRADE, peer, peer.username);
+        } else {
+          peer.authenticated = false;
+          peer.send({
+            type: this.PacketType.DENYJOIN
+          });
 
-        data.clients.forEach(peerId => {
-          const peerConn = this.peer.connect(peerId);
-          this._bindPeer(peerConn, data.key);
-        });
-
-        this.users.set(conn.peer, data.username);
-        this.emit(this.Event.PEERCONNECT, conn, data.username);
-        this.emit(this.Event.PEERSUPDATE, Object.keys(this.connections));
-        break;
-      }
-
-      case 'AUTHKEY': {
-        if (conn !== this.host) return;
-        this.authKeys[data.key] = {
-          id: data.id,
-          timeout: setTimeout(() => delete this.authKeys[data.key], 25000)
-        };
-        break;
-      }
-
-      case 'VERIFYKEY': {
-        const auth = this.authKeys[data.key];
-        if (!auth || auth.id !== conn.peer) return conn.close();
-
-        clearTimeout(auth.timeout);
-        delete this.authKeys[data.key];
-
-        conn.authenticated = true;
-        conn.username = data.username;
-        this.users.set(conn.peer, data.username);
-
-        conn.send({type: 'ACCEPT', username: this.username});
-        this.emit(this.Event.PEERCONNECT, conn, data.username);
-        this.emit(this.Event.PEERSUPDATE, Object.keys(this.connections));
-        break;
-      }
-
-      case 'ACCEPT': {
-        conn.authenticated = true;
-        conn.username = data.username;
-        this.users.set(conn.peer, data.username);
-        this.emit(this.Event.PEERCONNECT, conn, data.username);
-        this.emit(this.Event.PEERSUPDATE, Object.keys(this.connections));
-        break;
-      }
-
-      case 'PACKET': {
-        if (conn.authenticated) {
-          this.emit(this.Event.PACKET, conn, data.payload);
+          this._killPeer(peer);
         }
+
         break;
       }
 
-      case 'CHANGEUSERNAME': {
-        if (!conn.authenticated) return;
-        conn.username = data.payload;
-        this.users.delete(conn.peer);
-        this.users.set(conn.peer, conn.username);
-        this.emit(this.Event.PEERSUPDATE, Object.keys(this.connections));
-        break;
-      }
+      case (this.PacketType.ALLOWJOIN): {
+        if (this.host !== peer) return console.error('Client impersonating host!', peer, packet);
+        if (this.authenticated) return console.error('Host repeated authentication!', peer, packet);
 
-      case 'KICK': {
-        if (this.isHost && conn === this.host && Object.prototype.hasOwnProperty.call(this.connections, data.payload)) {
-          if (this.connections[data.payload].open) {
-            this.emit(this.Event.PEERKICK, this.connections[data.payload]);
-            this.kickPeer(data.payload);
-          }
+        if (typeof packet?.key !== 'string') return console.error('Received malformed packet', packet);
+        if (!Array.isArray(packet?.clients)) return console.error('Received malformed packet', packet);
+        if (typeof packet?.username !== 'string') return console.error('Received malformed packet', packet);
+
+        this.authenticated = true;
+        this.host.username = packet.username;
+        this.users.set(this.hostId, this.host.username);
+        this.emit(this.Event.USERNAMEUPDATE, this.host, this.host.username);
+        this.authKeys[this.peerId] = packet.key;
+
+        for (const id of packet.clients) {
+          const conn = this.peer.connect(id);
+
+          conn.on('open', () => {
+            this._handleConnection(conn, false, true);
+          });
         }
+
         break;
       }
 
-      case 'ROOMCLOSED': {
+      case (this.PacketType.DENYJOIN): {
+        console.error('We weren\'t allowed to connect :(');
 
-        if (!this.isHost && conn === this.host) {
-          this.emit(this.Event.ROOMCLOSE, this.roomId, this.host);
-          this.emit(this.Event.ROOMCHANGE, null);          
-          this.leaveRoom(true);
-        }
+        this._killPeer(this.host);
+        this.close();
+
         break;
+      }
+
+      case (this.PacketType.AUTHKEY): {
+        if (this.host !== peer) return console.error('Client impersonating host!', peer, packet);
+        
+        if (typeof packet?.key !== 'string') return console.error('Received malformed packet', packet);
+        if (typeof packet?.id !== 'string') return console.error('Received malformed packet', packet);
+
+        if (this.connections[packet.id]?.authenticated ||
+          Object.prototype.hasOwnProperty.call(this.authKeys, packet.id)) {
+            return console.error('Host repeated authentication!', peer, packet);
+        }
+
+        this.authKeys[packet.id] = packet.key;
+
+        break;
+      }
+
+      case (this.PacketType.VERIFYKEY): {
+        if (peer.authenticated) return console.error('Peer repeated authentication!', peer, packet);
+
+        if (typeof packet?.key !== 'string') return console.error('Received malformed packet', packet);
+        if (typeof packet?.username !== 'string') return console.error('Received malformed packet', packet);
+
+        if (!Object.prototype.hasOwnProperty.call(this.authKeys, peer.peer)) {
+          return console.error('Client attempted to authenticate but a key was not yet received!', peer, packet);
+          // todo: maybe add a listener for a packet here just in case it's the next packet received
+        }
+        
+
+        if (this.authKeys[peer.peer] === packet.key) {
+          peer.authenticated = true;
+          peer.username = packet.username;
+          this.users.set(peer.peer, peer.username);
+          this.emit(this.Event.USERNAMEUPDATE, peer, peer.username);
+
+          clearTimeout(peer.killTimeout);
+          peer.killTimeout = null;
+
+          peer.send({
+            type: this.PacketType.ACCEPT,
+            username: this.username
+          });
+        } else return console.error('Client attempted to authenticate with the incorrect key', peer, packet);
+        
+        break;
+      }
+
+      case (this.PacketType.ACCEPT): {
+        if (typeof packet?.username !== 'string') return console.error('Received malformed packet', packet);
+
+        peer.username = packet.username;
+        this.users.set(peer.peer, peer.username);
+        this.emit(this.Event.USERNAMEUPDATE, peer, peer.username);
+
+        break;
+      }
+
+      case (this.PacketType.PACKET): {
+        if (!peer.authenticated) return console.error('Received unauthenticated packet', peer, packet);
+        if (!Object.prototype.hasOwnProperty.call(packet, 'payload')) {
+          return console.error('Received malformed packet', peer, packet);
+        }
+
+        console.log('authenticated packet', packet);
+        this.emit(this.Event.PACKET, packet.payload, peer);
+        break;
+      }
+
+      case (this.PacketType.CHANGEUSERNAME): {
+        if (typeof packet?.payload !== 'string') return console.error('Received malformed packet', packet);
+
+        peer.username = packet.payload;
+        this.users.set(peer.peer, packet.payload);
+        this.emit(this.Event.USERNAMEUPDATE, peer, peer.username);
+
+        break;
+      }
+
+      case (this.PacketType.KICK): {
+        if (peer !== this.host) return console.error('Peer impersonating host!', peer, packet);
+        if (typeof packet?.payload !== 'string') return console.error('Received malformed packet', packet);
+        if (!Object.prototype.hasOwnProperty.call(this.connections, packet.payload)) {
+          return console.error('Failed to kicked non existent peer', peer, packet, this.connections);
+        }
+        
+        this.emit(this.Event.PEERKICK, this.connections[packet.payload]);
+        this._killPeer(this.connections[packet.payload]);
+        
+        break;
+      }
+
+      case (this.PacketType.ROOMCLOSED): {
+        if (peer !== this.host) return console.error('Peer impersonating host!"-', peer, packet);
+
+        this.emit(this.Event.ROOMCLOSE, this.roomId, this.host);
+        this.emit(this.Event.ROOMCHANGE, null);
+        this.emit(this.Event.CONNECTIONSUPDATE, Object.values(this.connections));
+        this.close(false);
+
+        break;
+      }
+
+      default: {
+        console.error('Received invalid packet type:', packet, peer);
       }
     }
+
+  }
+
+  /**
+   * Disconnect a peer
+   * @param {CollaborationPeer} peer The peer to kill connection with
+   */
+  _killPeer (peer) {
+    peer.close();
+    peer.authenticated = false;
+    if (peer.killTimeout) clearTimeout(peer.killTimeout);
+    delete this.connections[peer.peer];
+    this.users.delete(peer.peer);
+  }
+
+  /**
+   * Handle the disconnection from the peerjs server
+   */
+  _handleServerDisconnect () {
+    this.destroy(true); // todo: this is kinda freaky, maybe it should be changed
+    this.emit(this.Event.SERVERDISCONNECT);
+    this.emit(this.Event.ROOMCHANGE, null);
+    this.emit(this.Event.ROOMLEAVE, this.roomId, null);
+    this.emit(this.Event.CONNECTIONSUPDATE, Object.values(this.connections));
   }
 
   /**

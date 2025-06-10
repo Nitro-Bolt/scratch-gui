@@ -7,6 +7,7 @@ import React from 'react';
 import {intlShape, injectIntl, defineMessages} from 'react-intl';
 import VMScratchBlocks from '../lib/blocks';
 import VM from 'scratch-vm';
+import connectionManager from '../lib/nb-connection-manager.js';
 
 import log from '../lib/log.js';
 import Prompt from './prompt.jsx';
@@ -90,6 +91,7 @@ class Blocks extends React.Component {
     constructor (props) {
         super(props);
         this.ScratchBlocks = VMScratchBlocks(props.vm, false);
+        this.connectionManager = connectionManager;
 
         window.ScratchBlocks = this.ScratchBlocks;
         AddonHooks.blockly = this.ScratchBlocks;
@@ -109,6 +111,9 @@ class Blocks extends React.Component {
             'handlePromptCallback',
             'handlePromptClose',
             'handleCustomProceduresClose',
+            'sendBlocklyEvent',
+            'sendPacket',
+            'handlePacket',
             'onScriptGlowOn',
             'onScriptGlowOff',
             'onBlockGlowOn',
@@ -137,6 +142,7 @@ class Blocks extends React.Component {
         this.toolboxUpdateQueue = [];
     }
     componentDidMount () {
+        connectionManager.init(localStorage.getItem('tw:username'))
         this.ScratchBlocks = VMScratchBlocks(this.props.vm, this.props.useCatBlocks);
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -353,6 +359,8 @@ class Blocks extends React.Component {
     }
 
     attachVM () {
+        // this.workspace.addChangeListener(this.sendBlocklyEvent);
+        // this.connectionManager.on(this.connectionManager.Event.PACKET, this.handlePacket);
         this.workspace.addChangeListener(this.props.vm.blockListener);
         this.flyoutWorkspace = this.workspace
             .getFlyout()
@@ -432,6 +440,45 @@ class Blocks extends React.Component {
             }, 0);
         }
     }
+    sendBlocklyEvent(e) {
+        console.log("Sending blockly event ", e)
+        if (this.connectionManager.connected) this.connectionManager.sendToAll({
+            type: "PACKET",
+            payload: {
+                type: {
+                    isBlockly: true,
+                    type: e.type
+                },
+                data: e.toJson()
+            }
+        });
+        else console.error("Connection manager disconnected")
+    }
+    sendPacket(data) {
+        console.log("Sending packet from blocks");
+        if (this.connectionManager.connected) this.connectionManager.sendToAll({
+            type: "PACKET",
+            payload: {
+                type: {
+                    isBlockly: false,
+                    type: "MISC"
+                },
+                data: "Hello, world!"
+            }
+        });
+        else console.error("Connection manager is disconnected");
+    }
+    handlePacket(data) { // data is packet.payload
+        if (typeof data.type !== "object") return console.error("Received malformed blockly packet", data);
+        if (!Object.prototype.hasOwnProperty.call(data, "data")) return console.error("Received malformed blockly packet", data);
+        if (data.type?.isBlockly) {
+            this.workspace.fireChangeListener(this.ScratchBlocks.Events.fromJson(data.data));
+            console.log("Blockly event fired from remote:", data.data)
+        }
+        else {
+            console.error("Received packet not from blockly", data);
+        }
+    }
     onScriptGlowOn (data) {
         this.workspace.glowStack(data.id, true);
     }
@@ -475,6 +522,7 @@ class Blocks extends React.Component {
         }
     }
     onWorkspaceUpdate (data) {
+        console.log("workspace update: ", data)
         // When we change sprites, update the toolbox to have the new sprite's blocks
         const toolboxXML = this.getToolboxXML();
         if (toolboxXML) {

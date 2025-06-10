@@ -66,7 +66,7 @@ const LiveCollaborationModal = props =>
                             <button
                                 className={styles.button}
                                 onClick={props.onJoinRoom}
-                                disabled={props.input === ''}
+                                disabled={props.input === '' || props.connectionLocked}
                                 id='joinRoom'
                             >
                                 Connect to Room
@@ -84,6 +84,7 @@ const LiveCollaborationModal = props =>
                                 className={classNames(styles.button, styles.buttonFlex)}
                                 onClick={props.onCreateRoom}
                                 id='createRoom'
+                                disabled={props.connectionLocked}
                             >
                                 Create a Room
                             </button>
@@ -239,7 +240,8 @@ LiveCollaborationModal.propTypes = {
     onCloseRoom: PropTypes.func,
     kickUser: PropTypes.func,
     updateUserList: PropTypes.func,
-    kickUsers: PropTypes.func
+    kickUsers: PropTypes.func,
+    connectionLocked: PropTypes.bool
 };
 
 export default injectIntl(LiveCollaborationModal);

@@ -11,6 +11,12 @@ class NBLiveCollaborationModal extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
+            'handleConnectionLock',
+            'handleConnectionUnlock',
+            'handlePeersUpdate',
+            'handleUsernameUpdate',
+            'handleRoomChange',
+            'handlePacket',
             'handleClose',
             'handleInput',
             'handlePacketInput',
@@ -33,19 +39,46 @@ class NBLiveCollaborationModal extends React.Component {
             users: connectionManager.users,
             selectedUsers: [],
             multiSelect: false,
-            packetInput: ''
+            packetInput: '',
+            connectionLocked: connectionManager.connectionLocked
         };
+
+
     }
 
     componentDidMount () {
-        connectionManager.init(localStorage.getItem('tw:username'));
+        connectionManager.on(connectionManager.Event.CONNECTIONSUPDATE, this.handlePeersUpdate);
+        connectionManager.on(connectionManager.Event.ROOMCHANGE, this.handleRoomChange);
+        connectionManager.on(connectionManager.Event.JOINLOCK, this.handleConnectionLock);
+        connectionManager.on(connectionManager.Event.JOINUNLOCK, this.handleConnectionUnlock);
+        connectionManager.on(connectionManager.Event.USERNAMEUPDATE, this.handleUsernameUpdate);
+    }
 
-        connectionManager.on(connectionManager.Event.PEERSUPDATE, peers => this.setState({users: connectionManager.users}));
-        connectionManager.on(connectionManager.Event.ROOMCHANGE, room => this.setState({connected: connectionManager.connected}));
+    componentWillUnmount () {
+        connectionManager.off(connectionManager.Event.CONNECTIONSUPDATE, this.handlePeersUpdate);
+        connectionManager.off(connectionManager.Event.ROOMCHANGE, this.handleRoomChange);
+        connectionManager.off(connectionManager.Event.JOINLOCK, this.handleConnectionLock);
+        connectionManager.off(connectionManager.Event.JOINUNLOCK, this.handleConnectionUnlock);
+        connectionManager.off(connectionManager.Event.USERNAMEUPDATE, this.handleUsernameUpdate);
+    }
 
-        connectionManager.on(connectionManager.Event.PACKET, (data, peer) => {
-            console.log("Received data from peer", data, peer);
-        })
+    handleConnectionLock() { this.setState({connectionLocked: true}); console.log("connection lock") }
+    handleConnectionUnlock() { this.setState({connectionLocked: false}); console.log("connection unlock") }
+
+    handlePeersUpdate (peers) {
+        this.setState({users: connectionManager.users});
+    }
+
+    handleUsernameUpdate () {
+        this.setState({users: connectionManager.users});
+    }
+
+    handleRoomChange (room) {
+        this.setState({connected: connectionManager.connected});
+    }
+
+    handlePacket(data, peer) {
+        console.log("Received data from peer", data, peer);
     }
 
     handleClose () {
@@ -75,6 +108,7 @@ class NBLiveCollaborationModal extends React.Component {
     }
 
     handleCreateRoom () {
+        console.log("trying to create room")
         connectionManager.createRoom();
         this.setState({connected: true, isHost: true});
     }
@@ -101,7 +135,8 @@ class NBLiveCollaborationModal extends React.Component {
     }
 
     handleCloseRoom () {
-        connectionManager.shutdownRoom();
+        connectionManager.close();
+        connectionManager._clearRoomInUrl();
         connectionManager.init(localStorage.getItem('tw:username'));
         this.setState({connected: false, isHost: false});
     }
@@ -137,6 +172,7 @@ class NBLiveCollaborationModal extends React.Component {
         return (
             <LiveCollaborationModalComponent
                 onClose={this.handleClose}
+                connectionLocked={this.state.connectionLocked}
                 isHost={this.state.isHost}
                 users={this.state.users}
                 multiSelect={this.state.multiSelect}
