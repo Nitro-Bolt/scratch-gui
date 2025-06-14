@@ -66,7 +66,7 @@ const LiveCollaborationModal = props =>
                             <button
                                 className={styles.button}
                                 onClick={props.onJoinRoom}
-                                disabled={props.input === '' || props.connectionLocked}
+                                disabled={props.input === '' || props.connectionLocked} // todo: check initialization
                                 id='joinRoom'
                             >
                                 Connect to Room

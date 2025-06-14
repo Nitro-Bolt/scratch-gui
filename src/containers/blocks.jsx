@@ -92,6 +92,8 @@ class Blocks extends React.Component {
         super(props);
         this.ScratchBlocks = VMScratchBlocks(props.vm, false);
         this.connectionManager = connectionManager;
+        this.eventIgnoreList = []; // to keep events from retriggering
+        this.debugCount = 0
 
         window.ScratchBlocks = this.ScratchBlocks;
         AddonHooks.blockly = this.ScratchBlocks;
@@ -359,8 +361,8 @@ class Blocks extends React.Component {
     }
 
     attachVM () {
-        // this.workspace.addChangeListener(this.sendBlocklyEvent);
-        // this.connectionManager.on(this.connectionManager.Event.PACKET, this.handlePacket);
+        this.workspace.addChangeListener(this.sendBlocklyEvent);
+        this.connectionManager.on(this.connectionManager.Event.PACKET, this.handlePacket);
         this.workspace.addChangeListener(this.props.vm.blockListener);
         this.flyoutWorkspace = this.workspace
             .getFlyout()
@@ -440,8 +442,42 @@ class Blocks extends React.Component {
             }, 0);
         }
     }
+    eventToJson(e) {
+        const o = e.toJson();
+        for (const p of Object.getOwnPropertyNames(e)) {
+            if (!Object.prototype.hasOwnProperty.call(o, p) && typeof e[p] !== "function") o[p] = e[p];
+        }
+        o.type = e.type;
+
+        return o;
+    }
+    jsonToEvent(o) {
+        const e = this.ScratchBlocks.Events.fromJson(o, this.workspace)
+        for (const [key, value] of Object.entries(o)) {
+            if (!Object.prototype.hasOwnProperty.call(e, key)) e[key] = value;
+        }
+
+        return e
+    }
+    eventFired(e) {
+        const i = this.eventIgnoreList.findIndex((v) => (v[0] === e.group || (v[2] === e.blockId && v[2] && e.blockId)) && v[1] === e.type);
+        return i < 0 ? false : i;
+    }
+    removeFromIgnoreList(e) {
+        this.eventIgnoreList.splice(this.eventFired(e), 1)
+    }
     sendBlocklyEvent(e) {
-        console.log("Sending blockly event ", e)
+        console.log("Sending blockly event ", e, this.debugCount)
+        this.debugCount++
+        //if (this.debugCount > 20) return console.log("too many events fired")
+        if (this.eventFired(e)) {
+            return console.log("ignoring cringe duplicate event")
+        }
+        else {
+            this.eventIgnoreList.push([e.group, e.type, e?.blockId]) // todo: add timeout so we don't leak memory
+            setTimeout(() => this.removeFromIgnoreList(e), 1250);
+        }
+        
         if (this.connectionManager.connected) this.connectionManager.sendToAll({
             type: "PACKET",
             payload: {
@@ -453,6 +489,9 @@ class Blocks extends React.Component {
             }
         });
         else console.error("Connection manager disconnected")
+
+        console.log(e.toJson(), this.eventToJson(e))
+        console.log(this.ScratchBlocks.Events.fromJson(e.toJson(), this.workspace), this.jsonToEvent(this.eventToJson(e)))
     }
     sendPacket(data) {
         console.log("Sending packet from blocks");
@@ -468,12 +507,23 @@ class Blocks extends React.Component {
         });
         else console.error("Connection manager is disconnected");
     }
+    
     handlePacket(data) { // data is packet.payload
         if (typeof data.type !== "object") return console.error("Received malformed blockly packet", data);
         if (!Object.prototype.hasOwnProperty.call(data, "data")) return console.error("Received malformed blockly packet", data);
         if (data.type?.isBlockly) {
-            this.workspace.fireChangeListener(this.ScratchBlocks.Events.fromJson(data.data));
-            console.log("Blockly event fired from remote:", data.data)
+            if (this.eventFired(data.data)) {
+                return console.log("ignoring cringe duplicate event")
+            }
+            else {
+                this.eventIgnoreList.push([data.data.group, data.data.type, data.data?.blockId])
+                setTimeout(() => this.removeFromIgnoreList(data.data), 1250);
+            }
+            if (! ["create"].includes(data.data.type)) return
+            //this.ScratchBlocks.Events.fire(this.jsonToEvent(data.data));
+            const e = this.ScratchBlocks.Events.fromJson(data.data, this.workspace)//this.jsonToEvent(data.data)
+            e.run(true);
+            console.log("Blockly event fired from remote:", data.data, e)
         }
         else {
             console.error("Received packet not from blockly", data);
