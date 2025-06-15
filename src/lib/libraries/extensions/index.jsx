@@ -1243,7 +1243,7 @@ const menuItems = [
     },
     {
         name: 'Clipping and Blending',
-        extensionId: 'xeltallivclipblend',
+        extensionId: 'https://extensions.turbowarp.org/Xeltalliv/clippingblending.js',
         iconURL: clippingblending,
         tags: ['turbowarp'],
         insetIconURL: turbowarpIcon,
