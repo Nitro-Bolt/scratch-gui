@@ -74,6 +74,7 @@ import _expanded_backpack from "../addons/expanded-backpack/_manifest_entry.js";
 import _custom_web_font from "../addons/custom-web-font/_manifest_entry.js";
 import _multi_sprite_selecting from "../addons/multi-sprite-selecting/_manifest_entry.js";
 import _paint_tool_panel from "../addons/paint-tool-panel/_manifest_entry.js";
+import _remove_logo from "../addons/remove-logo/_manifest_entry.js";
 
 export default {
   "cat-blocks": _cat_blocks,
@@ -152,4 +153,5 @@ export default {
   "custom-web-font": _custom_web_font,
   "multi-sprite-selecting": _multi_sprite_selecting,
   "paint-tool-panel": _paint_tool_panel,
+  "remove-logo": _remove_logo,
 };

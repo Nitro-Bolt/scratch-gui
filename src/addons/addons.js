@@ -79,7 +79,8 @@ const newAddons = [
     'expanded-backpack',
     'editor-create-music',
     'rename-broadcasts',
-    'editor-block-chomping'
+    'editor-block-chomping',
+    'remove-logo'
 ];
 
 // eslint-disable-next-line import/no-commonjs
