@@ -25,7 +25,7 @@ export default async function ({ addon, msg, console }) {
 
     function createIconButton(title, iconSVG, onClick, extraClasses = '', attributes = '') {
         const imageNode = document.createElement("img");
-        imageNode.src = iconSVG;
+        imageNode.src = "data:image/svg+xml;utf8," + encodeURIComponent(iconSVG);
         imageNode.className = "icon";
 
         const button = document.createElement("button");
@@ -87,8 +87,9 @@ export default async function ({ addon, msg, console }) {
             while (!isUIloaded) {
                 await new Promise(resolve => setTimeout(resolve, 10))
             }
-            const uiUndoButton = document.querySelector("[class=\"sa-buttons-button sa-radio-first]\"")
-            const uiRedoButton = document.querySelector("[class=\"sa-buttons-button sa-radio-last]\"")
+            const uiUndoButton = document.querySelector("button[class=\"sa-buttons-button sa-radio-first]\"")
+            const uiRedoButton = document.querySelector("button[class=\"sa-buttons-button sa-radio-last]\"")
+            console.log("undo button: ", uiUndoButton, " redo button: ", uiRedoButton)
 
             const undoStack = Blockly.getWorkspace.undoStack_;
             const redoStack = Blockly.getWorkspace.redoStack_;
