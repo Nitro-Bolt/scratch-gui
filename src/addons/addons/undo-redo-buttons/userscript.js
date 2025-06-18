@@ -25,7 +25,7 @@ export default async function ({ addon, msg, console }) {
 
     function createIconButton(title, iconSVG, onClick, extraClasses = '', attributes = '') {
         const imageNode = document.createElement("img");
-        imageNode.innerHTML = iconSVG;
+        imageNode.src = iconSVG;
         imageNode.className = "icon";
 
         const button = document.createElement("button");
@@ -80,8 +80,8 @@ export default async function ({ addon, msg, console }) {
         previousActiveTabDisabled = newActiveTabDisabled;
     });
 
-    let previousUndoStack = null;
-    let previousRedoStack = null;
+    let previousUndoLength = null;
+    let previousRedoLength = null;
     const stackUnsubscribe = ReduxStore.subscribe(() => {
         (async () => {
             while (!isUIloaded) {
