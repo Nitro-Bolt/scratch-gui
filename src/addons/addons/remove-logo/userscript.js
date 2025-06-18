@@ -1,10 +1,9 @@
 export default async function ({ addon, console, msg }) {
     let logo;
-    await addon.tab.waitForElement("img[class^='menu-bar_scratch-logo']", {
-        markAsSeen: true,
-        reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
-        reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
-    });
+    console.warn("remove logo addon activated"); // debug log
+    while (!document.querySelector("img[class^='menu-bar_scratch-logo']")) {
+        await new Promise(resolve => setTimeout(resolve, 10))
+    }
     function Logo(toggle) {
         logo = document.querySelector("img[class^='menu-bar_scratch-logo']");
         if (logo) {
