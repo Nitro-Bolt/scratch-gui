@@ -51,8 +51,8 @@ export default async function ({ addon, msg, console }) {
         let buttonsOut = buttonsWrapper.appendChild(document.createElement("label"));
         buttonsOut.className = "sa-buttons-dropdown-out";
     
-        undoButton = createIconButton("Undo", icons["undoSvg"], () => Blockly.getWorkspace.undo(false), 'sa-radio-first', [{ "name": "dir", "value": "ltr" }]);
-        redoButton = createIconButton("Redo", icons["redoSvg"], () => Blockly.getWorkspace.undo(true), 'sa-radio-last', [{ "name": "dir", "value": "ltr" }]);
+        undoButton = createIconButton("Undo", icons["undoSvg"], () => Blockly.getWorkspace.undo(false), 'sa-radio-first', [{ "name": "dir", "value": "ltr" }, { "name": "draggable", "value": "no" }]);
+        redoButton = createIconButton("Redo", icons["redoSvg"], () => Blockly.getWorkspace.undo(true), 'sa-radio-last', [{ "name": "dir", "value": "ltr" }, { "name": "draggable", "value": "no" }]);
 
         buttonsOut.appendChild(undoButton)
         buttonsOut.appendChild(redoButton)
@@ -89,7 +89,6 @@ export default async function ({ addon, msg, console }) {
             }
             const uiUndoButton = document.querySelector("button[class=\"sa-buttons-button sa-radio-first\"]")
             const uiRedoButton = document.querySelector("button[class=\"sa-buttons-button sa-radio-last\"]")
-            console.log("undo button: ", uiUndoButton, " redo button: ", uiRedoButton)
 
             const undoStack = Blockly.getWorkspace.undoStack_;
             const redoStack = Blockly.getWorkspace.redoStack_;
