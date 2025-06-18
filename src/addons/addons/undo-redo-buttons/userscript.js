@@ -1,5 +1,5 @@
 export default async function ({ addon, msg, console }) {
-    let buttonsContainer;
+    let buttonsContainer, undoButton, redoButton;
     const ThisBlockly = await addon.tab.traps.getBlockly();
 
     const icons = {
@@ -22,11 +22,14 @@ export default async function ({ addon, msg, console }) {
 
     const Blockly = new BlocklyUtil(ThisBlockly)
 
-    function createIconButton(title, iconSVG, onClick) {
+    function createIconButton(title, iconSVG, onClick, extraClasses = '', attributes = '') {
         const button = document.createElement("button");
         button.innerHTML = iconSVG;
         button.title = title;
-        button.className = "sa-buttons-button"
+        button.className = "sa-buttons-button" + (extraClasses !=== '' ? (' ' + extraClasses) : '')
+        for (const attribute of attributes) {
+            button[attribute["name"]] = attribute["value"]
+        }
         button.addEventListener("click", onClick);
         return button;
     }
@@ -43,8 +46,8 @@ export default async function ({ addon, msg, console }) {
         let buttonsOut = buttonsWrapper.appendChild(document.createElement("label"));
         buttonsOut.className = "sa-buttons-dropdown-out";
     
-        let undoButton = createIconButton("undo", icons["undoSvg"], () => Blockly.getWorkspace.undo(false));
-        let redoButton = createIconButton("redo", icons["redoSvg"], () => Blockly.getWorkspace.undo(true));
+        undoButton = createIconButton("Undo", icons["undoSvg"], () => Blockly.getWorkspace.undo(false), 'sa-radio-first', { "name": "dir", "value": "ltr" });
+        redoButton = createIconButton("Redo", icons["redoSvg"], () => Blockly.getWorkspace.undo(true), 'sa-radio-last', { "name": "dir", "value": "rtl" });
 
         buttonsOut.appendChild(undoButton)
         buttonsOut.appendChild(redoButton)
@@ -61,13 +64,29 @@ export default async function ({ addon, msg, console }) {
 
     let previousActiveTabDisabled = null;
 
-    const ActiveTabUnsubscribe = ReduxStore.subscribe(() => {
+    const activeTabUnsubscribe = ReduxStore.subscribe(() => {
         const newActiveTabDisabled = addon.tab.redux.state.scratchGui.editorTab.activeTabIndex;
     
         if (previousActiveTabDisabled !== newActiveTabDisabled) {
             tabChanged(buttonsContainer)
         }
         previousActiveTabDisabled = newActiveTabDisabled;
+    });
+
+    let previousUndoStack = null;
+    let previousRedoStack = null;
+    const stackUnsubscribe = ReduxStore.subscribe(() => {
+        const newUndoStack = Blockly.getWorkspace.undoStack_;
+        const newRedoStack = Blockly.getWorkspace.redoStack_;
+    
+        if (previousUndoStack !== newUndoStack) {
+            undoButton.disabled = !!newUndoStack.length < 1
+        }
+        if (previousRedoStack !== newRedoStack) {
+            redoButton.disabled = !!newRedoStack.length < 1
+        }
+        previousUndoStack = newUndoStack;
+        previousRedoStack = newRedoStack;
     });
     while (true) {
         const root = await addon.tab.waitForElement("ul[class*=gui_tab-list_]", {
