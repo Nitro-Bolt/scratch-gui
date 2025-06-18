@@ -26,7 +26,7 @@ export default async function ({ addon, msg, console }) {
         const button = document.createElement("button");
         button.innerHTML = iconSVG;
         button.title = title;
-        button.className = "sa-buttons-button" + (extraClasses !=== '' ? (' ' + extraClasses) : '')
+        button.className = "sa-buttons-button" + (extraClasses !== '' ? (' ' + extraClasses) : '')
         for (const attribute of attributes) {
             button[attribute["name"]] = attribute["value"]
         }
