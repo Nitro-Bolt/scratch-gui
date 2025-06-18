@@ -87,8 +87,8 @@ export default async function ({ addon, msg, console }) {
             while (!isUIloaded) {
                 await new Promise(resolve => setTimeout(resolve, 10))
             }
-            const uiUndoButton = document.querySelector("button[class=\"sa-buttons-button sa-radio-first]\"")
-            const uiRedoButton = document.querySelector("button[class=\"sa-buttons-button sa-radio-last]\"")
+            const uiUndoButton = document.querySelector("button[class=\"sa-buttons-button sa-radio-first\"]")
+            const uiRedoButton = document.querySelector("button[class=\"sa-buttons-button sa-radio-last\"]")
             console.log("undo button: ", uiUndoButton, " redo button: ", uiRedoButton)
 
             const undoStack = Blockly.getWorkspace.undoStack_;
