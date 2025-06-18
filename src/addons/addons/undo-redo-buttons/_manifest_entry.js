@@ -17,7 +17,6 @@ const manifest = {
     "beta",
     "new"
   ],
-  "dynamicDisable": true,
   "enabledByDefault": false
 };
 export default manifest;

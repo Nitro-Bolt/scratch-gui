@@ -48,7 +48,7 @@ export default async function ({ addon, msg, console }) {
         buttonsOut.appendChild(redoButton)
     }
 
-    tabChanged(node) {
+    function tabChanged(node) {
         if (!node) {
             return;
         }
@@ -62,7 +62,7 @@ export default async function ({ addon, msg, console }) {
     const ActiveTabUnsubscribe = ReduxStore.subscribe(() => {
         const newActiveTabDisabled = addon.tab.redux.state.scratchGui.editorTab.activeTabIndex;
     
-        if (!!newActiveTabDisabled) {
+        if (previousActiveTabDisabled !== newActiveTabDisabled) {
             tabChanged(buttonsContainer)
         }
         previousActiveTabDisabled = newActiveTabDisabled;
