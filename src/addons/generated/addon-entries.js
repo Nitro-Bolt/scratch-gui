@@ -77,4 +77,5 @@ export default {
   "multi-sprite-selecting": () => import(/* webpackChunkName: "addon-entry-multi-sprite-selecting" */ "../addons/multi-sprite-selecting/_runtime_entry.js"),
   "paint-tool-panel": () => import(/* webpackChunkName: "addon-entry-paint-tool-panel" */ "../addons/paint-tool-panel/_runtime_entry.js"),
   "remove-logo": () => import(/* webpackChunkName: "addon-entry-paint-tool-panel" */ "../addons/remove-logo/_runtime_entry.js"),
+  "undo-redo-buttons": () => import(/* webpackChunkName: "addon-entry-paint-tool-panel" */ "../addons/undo-redo-buttons/_runtime_entry.js"),
 };

@@ -80,7 +80,8 @@ const newAddons = [
     'editor-create-music',
     'rename-broadcasts',
     'editor-block-chomping',
-    'remove-logo'
+    'remove-logo',
+    'undo-redo-buttons'
 ];
 
 // eslint-disable-next-line import/no-commonjs
