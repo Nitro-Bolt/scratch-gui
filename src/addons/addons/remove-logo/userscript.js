@@ -1,11 +1,11 @@
 export default async function ({ addon, console, msg }) {
     let logo;
     console.log("remove logo addon activated"); // debug log
-    while (!document.querySelector("img[class^='menu-bar_scratch-logo']")) {
+    while (!document.querySelector("[class^='menu-bar_scratch-logo']")) {
         await new Promise(resolve => setTimeout(resolve, 10))
     }
     function Logo(toggle) {
-        logo = document.querySelector("img[class^='menu-bar_scratch-logo']");
+        logo = document.querySelector("[class^='menu-bar_scratch-logo']");
         if (logo) {
             logo.style.display = toggle ? "none" : ""
         } else {
@@ -21,7 +21,7 @@ export default async function ({ addon, console, msg }) {
         Logo(true)
     }
     
-    addon.settings.addEventListener("change", removeLogo);
+    //addon.settings.addEventListener("change", removeLogo);
     addon.self.addEventListener("disabled", addLogo);
     addon.self.addEventListener("reenabled", removeLogo);
     removeLogo()

@@ -1,5 +1,6 @@
 export default async function ({ addon, msg, console }) {
     let buttonsContainer, undoButton, redoButton;
+    let isUIloaded = false;
     const ThisBlockly = await addon.tab.traps.getBlockly();
 
     const icons = {
@@ -23,14 +24,18 @@ export default async function ({ addon, msg, console }) {
     const Blockly = new BlocklyUtil(ThisBlockly)
 
     function createIconButton(title, iconSVG, onClick, extraClasses = '', attributes = '') {
+        const imageNode = document.createElement("img");
+        imageNode.innerHTML = iconSVG;
+        imageNode.className = "icon";
+
         const button = document.createElement("button");
-        button.innerHTML = iconSVG;
         button.title = title;
         button.className = "sa-buttons-button" + (extraClasses !== '' ? (' ' + extraClasses) : '')
         for (const attribute of attributes) {
             button[attribute["name"]] = attribute["value"]
         }
         button.addEventListener("click", onClick);
+        button.appendChild(imageNode);
         return button;
     }
 
@@ -47,10 +52,12 @@ export default async function ({ addon, msg, console }) {
         buttonsOut.className = "sa-buttons-dropdown-out";
     
         undoButton = createIconButton("Undo", icons["undoSvg"], () => Blockly.getWorkspace.undo(false), 'sa-radio-first', [{ "name": "dir", "value": "ltr" }]);
-        redoButton = createIconButton("Redo", icons["redoSvg"], () => Blockly.getWorkspace.undo(true), 'sa-radio-last', [{ "name": "dir", "value": "rtl" }]);
+        redoButton = createIconButton("Redo", icons["redoSvg"], () => Blockly.getWorkspace.undo(true), 'sa-radio-last', [{ "name": "dir", "value": "ltr" }]);
 
         buttonsOut.appendChild(undoButton)
         buttonsOut.appendChild(redoButton)
+
+        isUIloaded = true
     }
 
     function tabChanged(node) {
@@ -76,25 +83,37 @@ export default async function ({ addon, msg, console }) {
     let previousUndoStack = null;
     let previousRedoStack = null;
     const stackUnsubscribe = ReduxStore.subscribe(() => {
-        const newUndoStack = Blockly.getWorkspace.undoStack_;
-        const newRedoStack = Blockly.getWorkspace.redoStack_;
-    
-        if (previousUndoStack !== newUndoStack) {
-            if (!!newUndoStack.length < 1) {
-                undoButton.setAttribute("disabled", "");
-            } else {
-                undoButton.removeAttribute("disabled");
+        (async () => {
+            while (!isUIloaded) {
+                await new Promise(resolve => setTimeout(resolve, 10))
             }
-        }
-        if (previousRedoStack !== newRedoStack) {
-            if (!!newRedoStack.length < 1) {
-                redoButton.setAttribute("disabled", "");
-            } else {
-                redoButton.removeAttribute("disabled");
+            const uiUndoButton = document.querySelector("[class=\"sa-buttons-button sa-radio-first]\"")
+            const uiRedoButton = document.querySelector("[class=\"sa-buttons-button sa-radio-last]\"")
+
+            const undoStack = Blockly.getWorkspace.undoStack_;
+            const redoStack = Blockly.getWorkspace.redoStack_;
+
+            const undoLength = undoStack.length;
+            const redoLength = redoStack.length;
+
+            if (undoLength !== previousUndoLength) {
+                if (undoLength < 1) {
+                    uiUndoButton.setAttribute("disabled", "");
+                } else {
+                    uiUndoButton.removeAttribute("disabled");
+                }
+                previousUndoLength = undoLength;
             }
-        }
-        previousUndoStack = newUndoStack;
-        previousRedoStack = newRedoStack;
+
+            if (redoLength !== previousRedoLength) {
+                if (redoLength < 1) {
+                    uiRedoButton.setAttribute("disabled", "");
+                } else {
+                    uiRedoButton.removeAttribute("disabled");
+                }
+                previousRedoLength = redoLength;
+            }
+        })()
     });
     while (true) {
         const root = await addon.tab.waitForElement("ul[class*=gui_tab-list_]", {

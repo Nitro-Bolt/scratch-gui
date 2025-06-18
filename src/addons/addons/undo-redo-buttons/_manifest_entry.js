@@ -10,7 +10,7 @@ const manifest = {
   ],
   "userstyles": [
     {
-      "url": "style.css"
+      "url": "undo-redo-buttons.css"
     }
   ],
   "tags": [
