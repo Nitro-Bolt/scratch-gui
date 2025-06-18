@@ -10,7 +10,7 @@ const manifest = {
     ],
     "userscripts": [
         {
-            "url": "userscript.css"
+            "url": "userscript.js"
         }
     ],
     "tags": ["new"],
