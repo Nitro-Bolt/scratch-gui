@@ -46,8 +46,8 @@ export default async function ({ addon, msg, console }) {
         let buttonsOut = buttonsWrapper.appendChild(document.createElement("label"));
         buttonsOut.className = "sa-buttons-dropdown-out";
     
-        undoButton = createIconButton("Undo", icons["undoSvg"], () => Blockly.getWorkspace.undo(false), 'sa-radio-first', { "name": "dir", "value": "ltr" });
-        redoButton = createIconButton("Redo", icons["redoSvg"], () => Blockly.getWorkspace.undo(true), 'sa-radio-last', { "name": "dir", "value": "rtl" });
+        undoButton = createIconButton("Undo", icons["undoSvg"], () => Blockly.getWorkspace.undo(false), 'sa-radio-first', [{ "name": "dir", "value": "ltr" }]);
+        redoButton = createIconButton("Redo", icons["redoSvg"], () => Blockly.getWorkspace.undo(true), 'sa-radio-last', [{ "name": "dir", "value": "rtl" }]);
 
         buttonsOut.appendChild(undoButton)
         buttonsOut.appendChild(redoButton)
@@ -80,10 +80,18 @@ export default async function ({ addon, msg, console }) {
         const newRedoStack = Blockly.getWorkspace.redoStack_;
     
         if (previousUndoStack !== newUndoStack) {
-            undoButton.disabled = !!newUndoStack.length < 1
+            if (!!newUndoStack.length < 1) {
+                undoButton.setAttribute("disabled", "");
+            } else {
+                undoButton.removeAttribute("disabled");
+            }
         }
         if (previousRedoStack !== newRedoStack) {
-            redoButton.disabled = !!newRedoStack.length < 1
+            if (!!newRedoStack.length < 1) {
+                redoButton.setAttribute("disabled", "");
+            } else {
+                redoButton.removeAttribute("disabled");
+            }
         }
         previousUndoStack = newUndoStack;
         previousRedoStack = newRedoStack;
