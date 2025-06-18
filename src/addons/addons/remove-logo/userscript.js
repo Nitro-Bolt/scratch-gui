@@ -22,7 +22,7 @@ export default async function ({ addon, console, msg }) {
         toggleLogo(true)
     }
     
-    //addon.settings.addEventListener("change", removeLogo);
+    addon.settings.addEventListener("change", removeLogo);
     addon.self.addEventListener("disabled", addLogo);
     addon.self.addEventListener("reenabled", removeLogo);
     removeLogo()
