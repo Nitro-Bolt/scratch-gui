@@ -5,7 +5,7 @@ export default async function ({ addon, console, msg }) {
         await new Promise(resolve => setTimeout(resolve, 10))
     }
     console.log(document.querySelector("[class^=\"menu-bar_scratch-logo\"]"));
-    function Logo(toggle) {
+    function toggleLogo(toggle) {
         logo = document.querySelector("[class^=\"menu-bar_scratch-logo\"]");
         if (logo) {
             logo.style.display = toggle ? "none" : ""
@@ -15,11 +15,11 @@ export default async function ({ addon, console, msg }) {
     }
 
     function addLogo() {
-        Logo(false)
+        toggleLogo(false)
     }
 
     function removeLogo() {
-        Logo(true)
+        toggleLogo(true)
     }
     
     //addon.settings.addEventListener("change", removeLogo);
