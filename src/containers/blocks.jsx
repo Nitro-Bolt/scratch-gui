@@ -8,6 +8,7 @@ import {intlShape, injectIntl, defineMessages} from 'react-intl';
 import VMScratchBlocks from '../lib/blocks';
 import VM from 'scratch-vm';
 import connectionManager from '../lib/nb-connection-manager.js';
+import * as JSZip from "@turbowarp/jszip"
 
 import log from '../lib/log.js';
 import Prompt from './prompt.jsx';
@@ -93,7 +94,6 @@ class Blocks extends React.Component {
         this.ScratchBlocks = VMScratchBlocks(props.vm, false);
         this.connectionManager = connectionManager;
         this.eventIgnoreList = []; // to keep events from retriggering
-        this.debugCount = 0
 
         window.ScratchBlocks = this.ScratchBlocks;
         AddonHooks.blockly = this.ScratchBlocks;
@@ -114,7 +114,7 @@ class Blocks extends React.Component {
             'handlePromptClose',
             'handleCustomProceduresClose',
             'sendBlocklyEvent',
-            'sendPacket',
+            'handleConnection',
             'handlePacket',
             'onScriptGlowOn',
             'onScriptGlowOff',
@@ -363,6 +363,7 @@ class Blocks extends React.Component {
     attachVM () {
         this.workspace.addChangeListener(this.sendBlocklyEvent);
         this.connectionManager.on(this.connectionManager.Event.PACKET, this.handlePacket);
+        this.connectionManager.on(this.connectionManager.Event.PEERUPGRADE, peer => { if (this.connectionManager.isHost) this.handleConnection(peer) });
         this.workspace.addChangeListener(this.props.vm.blockListener);
         this.flyoutWorkspace = this.workspace
             .getFlyout()
@@ -467,16 +468,7 @@ class Blocks extends React.Component {
         this.eventIgnoreList.splice(this.eventFired(e), 1)
     }
     sendBlocklyEvent(e) {
-        console.log("Sending blockly event ", e, this.debugCount)
-        this.debugCount++
-        //if (this.debugCount > 20) return console.log("too many events fired")
-        if (this.eventFired(e)) {
-            return console.log("ignoring cringe duplicate event")
-        }
-        else {
-            this.eventIgnoreList.push([e.group, e.type, e?.blockId]) // todo: add timeout so we don't leak memory
-            setTimeout(() => this.removeFromIgnoreList(e), 1250);
-        }
+        console.log("Sending blockly event ", e)
         
         if (this.connectionManager.connected) this.connectionManager.sendToAll({
             type: "PACKET",
@@ -489,45 +481,63 @@ class Blocks extends React.Component {
             }
         });
         else console.error("Connection manager disconnected")
-
-        console.log(e.toJson(), this.eventToJson(e))
-        console.log(this.ScratchBlocks.Events.fromJson(e.toJson(), this.workspace), this.jsonToEvent(this.eventToJson(e)))
     }
-    sendPacket(data) {
-        console.log("Sending packet from blocks");
-        if (this.connectionManager.connected) this.connectionManager.sendToAll({
-            type: "PACKET",
-            payload: {
-                type: {
-                    isBlockly: false,
-                    type: "MISC"
-                },
-                data: "Hello, world!"
-            }
-        });
-        else console.error("Connection manager is disconnected");
-    }
-    
     handlePacket(data) { // data is packet.payload
-        if (typeof data.type !== "object") return console.error("Received malformed blockly packet", data);
-        if (!Object.prototype.hasOwnProperty.call(data, "data")) return console.error("Received malformed blockly packet", data);
-        if (data.type?.isBlockly) {
-            if (this.eventFired(data.data)) {
-                return console.log("ignoring cringe duplicate event")
+        if (typeof data.type !== "object") {
+            if (typeof data?.type !== "string") return console.error("Received malformed packet")
+            switch (data.type) {
+                case "project": {
+                    console.log("received project", data)
+                    if (typeof data.zip !== "object") return console.error("received malformed project", data)
+                    if (typeof data.json !== "string") return console.error("received malformed project", data)
+
+                    const zip = new JSZip()
+                    zip.loadAsync(data.zip).then((zip) => {
+                        console.log("loaded zip")
+                        const json = JSON.parse(data.json)
+                        json.projectVersion = 3 // this is wrong and i should not be doing it but i'm too lazy to fix it
+                        // todo: fix it
+                        console.log("json:", json)
+                        this.props.vm.deserializeProject(json, zip).then(() => console.log("project loaded"))
+                    })
+                    
+                    break
+                }
             }
-            else {
-                this.eventIgnoreList.push([data.data.group, data.data.type, data.data?.blockId])
-                setTimeout(() => this.removeFromIgnoreList(data.data), 1250);
-            }
-            if (! ["create"].includes(data.data.type)) return
-            //this.ScratchBlocks.Events.fire(this.jsonToEvent(data.data));
-            const e = this.ScratchBlocks.Events.fromJson(data.data, this.workspace)//this.jsonToEvent(data.data)
-            e.run(true);
-            console.log("Blockly event fired from remote:", data.data, e)
         }
         else {
-            console.error("Received packet not from blockly", data);
+            if (!Object.prototype.hasOwnProperty.call(data, "data")) return console.error("Received malformed blockly packet", data);
+            if (data.type?.isBlockly) {
+                //this.ScratchBlocks.Events.disable()
+                this.workspace.removeChangeListener(this.sendBlocklyEvent)
+                //this.ScratchBlocks.Events.fire(this.jsonToEvent(data.data));
+                const e = this.ScratchBlocks.Events.fromJson(data.data, this.workspace)//this.jsonToEvent(data.data)
+                e.run(true);
+                this.ScratchBlocks.Events.fireNow_() // hickity hackity
+                //this.ScratchBlocks.Events.enable()
+                this.workspace.addChangeListener(this.sendBlocklyEvent)
+                console.log("Blockly event fired from remote:", data.data, e)
+            }
+            else {
+                console.error("Received packet not from blockly", data);
+            }            
         }
+
+    }
+    handleConnection(peer) {
+        console.log("client connected")
+        this.props.vm._saveProjectZip().generateAsync({ type: "blob" }).then((blob) => {
+            console.log("blob generated")
+            peer.send({
+                type: this.connectionManager.PacketType.PACKET,
+                payload: {
+                    type: "project",
+                    zip: blob,
+                    json: this.props.vm.toJSON()
+                }
+            })
+        })
+
     }
     onScriptGlowOn (data) {
         this.workspace.glowStack(data.id, true);

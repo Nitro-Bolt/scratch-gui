@@ -100,7 +100,7 @@ class NBConnectionManager extends EventEmitter {
       */
       PEERCONNECT: 'PEERCONNECT',
       /**
-       * @description Fired when, as a peer, a connected client is upgraded to a peer
+       * @description Fired when, as a peer or host, a connected client is upgraded to a peer
        * @event PEERUPGRADE
        * @param {CollaborationPeer} peer The {@link CollaborationPeer} object of the upgraded peer
        * @param {string} username The username of the upgraded peer
@@ -666,6 +666,8 @@ class NBConnectionManager extends EventEmitter {
             type: this.PacketType.ACCEPT,
             username: this.username
           });
+
+          this.emit(this.Event.PEERUPGRADE, peer, peer.username)
         } else return console.error('Client attempted to authenticate with the incorrect key', peer, packet);
         
         break;
