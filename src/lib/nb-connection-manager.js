@@ -241,23 +241,10 @@ class NBConnectionManager extends EventEmitter {
     }
     this.username = username;
     this.peer = new Peer(connectionSettings ?? {
-      /*host: 'localhost',
+      host: 'localhost',
       port: 1296,
-      path: '/peerjs',*/
-      host: "nitrobolt-backend.derpygamer2142.com",
-      path: "/peerjs",
-      secure: true,
-      debug: 3,
-      config: {
-        iceServers: [
-          {
-            "urls": "turn:turn.derpygamer2142.com:3478",
-            username: "username", // lazy
-            credential: "password"
-          }
-        ],
-        sdpSemantics: "unified-plan"
-      }
+      path: '/peerjs',
+      debug: 3
     });
 
     this.peer.on('open', id => {
