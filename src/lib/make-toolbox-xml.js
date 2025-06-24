@@ -1501,6 +1501,28 @@ const operators = function (isInitialSetup) {
             </value>
         </block>
         <block type="operator_stringify">
+            <value name="ONE">
+                <shadow type="matrix">
+                    <field name="MATRIX">0101010101100010101000100</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="operator_stringify">
+            <value name="ONE">
+                <shadow type="note"/>
+            </value>
+        </block>
+        <block type="operator_stringify">
+            <value name="ONE">
+                <shadow type="polygon"/>
+            </value>
+        </block>
+        <block type="operator_stringify">
+            <value name="ONE">
+                <shadow type="math_angle"/>
+            </value>
+        </block>
+        <block type="operator_stringify">
             <value name="ONE"/>
         </block>
         ${categorySeparator}

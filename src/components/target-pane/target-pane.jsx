@@ -29,6 +29,7 @@ const TargetPane = ({
     onChangeSpriteVolume,
     onChangeSpriteVisibility,
     onChangeSpriteDraggability,
+    onChangeSpriteLayer,
     onChangeSpriteX,
     onChangeSpriteY,
     onDeleteSprite,
@@ -69,6 +70,7 @@ const TargetPane = ({
             onChangeSpriteVolume={onChangeSpriteVolume}
             onChangeSpriteVisibility={onChangeSpriteVisibility}
             onChangeSpriteDraggability={onChangeSpriteDraggability}
+            onChangeSpriteLayer={onChangeSpriteLayer}
             onChangeSpriteX={onChangeSpriteX}
             onChangeSpriteY={onChangeSpriteY}
             onDeleteSprite={onDeleteSprite}
@@ -147,6 +149,7 @@ TargetPane.propTypes = {
     onChangeSpriteVolume: PropTypes.func,
     onChangeSpriteVisibility: PropTypes.func,
     onChangeSpriteDraggability: PropTypes.func,
+    onChangeSpriteLayer: PropTypes.func,
     onChangeSpriteX: PropTypes.func,
     onChangeSpriteY: PropTypes.func,
     onDeleteSprite: PropTypes.func,

@@ -49,7 +49,8 @@ class SpriteInfo extends React.Component {
             Math.round(this.props.size) !== Math.round(nextProps.size) ||
             Math.round(this.props.volume) !== Math.round(nextProps.volume) ||
             Math.round(this.props.x) !== Math.round(nextProps.x) ||
-            Math.round(this.props.y) !== Math.round(nextProps.y)
+            Math.round(this.props.y) !== Math.round(nextProps.y) ||
+            Math.round(this.props.layer) !== Math.round(nextProps.layer)
         );
     }
     componentDidUpdate (prevProps) {
@@ -95,6 +96,13 @@ class SpriteInfo extends React.Component {
                 defaultMessage="Volume"
                 description="Sprite info volume label"
                 id="gui.SpriteInfo.volume"
+            />
+        );
+        const layerLabel = (
+            <FormattedMessage
+                defaultMessage="Layer"
+                description="Sprite info layer label"
+                id="gui.SpriteInfo.layer"
             />
         );
 
@@ -353,6 +361,23 @@ class SpriteInfo extends React.Component {
                             />
                         </Label>
                     </div>*/}
+                    <div className={classNames(styles.group, styles.largerInput)}>
+                        <Label
+                            secondary
+                            above={labelAbove}
+                            text={layerLabel}
+                        >
+                            <BufferedInput
+                                small
+                                disabled={this.props.disabled}
+                                label={volumeLabel}
+                                tabIndex="0"
+                                type="text"
+                                value={this.props.disabled ? '' : Math.round(this.props.layer)}
+                                onSubmit={this.props.onChangeLayer}
+                            />
+                        </Label>
+                    </div>
                 </div>
             </Box>
         );
@@ -372,6 +397,7 @@ SpriteInfo.propTypes = {
     onChangeRotationStyle: PropTypes.func,
     onChangeSize: PropTypes.func,
     onChangeVolume: PropTypes.func,
+    onChangeLayer: PropTypes.func,
     onChangeX: PropTypes.func,
     onChangeY: PropTypes.func,
     onClickNotVisible: PropTypes.func,
@@ -388,6 +414,10 @@ SpriteInfo.propTypes = {
         PropTypes.number
     ]),
     volume: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
+    layer: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number
     ]),
