@@ -26,7 +26,7 @@ const manifest = {
           "url": "multi-sprite-selecting.css"
         }
     ],
-    "tags": ["recommended", "new"],
+    "tags": ["recommended", "dinosaurmod", "new"],
     "enabledByDefault": false,
     "dynamicEnable": true,
     "dynamicDisable": false

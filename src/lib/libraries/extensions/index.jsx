@@ -481,26 +481,6 @@ const menuItems = [
         featured: true
     },
     {
-        name: '3D',
-        extensionId: 'jg3d',
-        iconURL: jg3dExtensionIcon,
-        tags: ['penguinmod'],
-        customInsetColor: '#B200FF',
-        insetIconURL: jg3dInsetExtensionIcon,
-        description: 'Use the magic of 3D to spice up your project.',
-        featured: true
-    },
-    {
-        name: '3D Physics',
-        extensionId: 'fr3d',
-        iconURL: fr3dPhysicsExtensionIcon,
-        tags: ['penguinmod'],
-        customInsetColor: '#D066FE',
-        insetIconURL: fr3dPhysicsInsetExtensionIcon,
-        description: 'Physics for the 3D extension.',
-        featured: true
-    },
-    {
         name: 'Pen+',
         extensionId: 'https://extensions.penguinmod.com/extensions/ObviousAlexC/PenPlus.js',
         tags: ['categoryexpansion'],
@@ -991,6 +971,17 @@ const menuItems = [
         featured: true
     },
     {
+        name: "Data Analysis",
+        extensionId: 'https://extensions.turbowarp.org/qxsck/data-analysis.js',
+        iconURL: 'https://extensions.turbowarp.org/images/qxsck/data-analysis.svg',
+        insetIconURL: turbowarpIcon,
+        customInsetColor: '#ff4d4d',
+        tags: ['turbowarp'],
+        description: 'Blocks to compute means, medians, maximums, minimums, variances, and modes.',
+        featured: true,
+        extDeveloper: 'qxsck'
+    },
+    {
         name: '3D Math',
         extensionId: 'https://extensions.penguinmod.com/extensions/ObviousAlexC/3DMath.js',
         iconURL: 'https://extensions.penguinmod.com/images/ObviousAlexC/3DMath.svg',
@@ -1372,6 +1363,15 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'Vector',
+        extensionId: 'jwVector',
+        iconURL: 'https://studio.penguinmod.com/static/assets/3b0c388c2cf1462401585224ffe2f077.svg',
+        tags: ['penguinmod'],
+        description: 'Vector type for calculating with X and Y coordinates.',
+        extDeveloper: 'jwklong',
+        featured: true
+    },
+    {
         name: (
             <FormattedMessage
                 defaultMessage="TurboWarp Blocks"
@@ -1693,6 +1693,26 @@ if (IsLocal || IsLiveTests) {
             featured: true
         },
         {
+            name: '3D',
+            extensionId: 'jg3d',
+            iconURL: jg3dExtensionIcon,
+            tags: ['penguinmod'],
+            customInsetColor: '#B200FF',
+            insetIconURL: jg3dInsetExtensionIcon,
+            description: 'Use the magic of 3D to spice up your project.',
+            featured: true
+        },
+        {
+            name: '3D Physics',
+            extensionId: 'fr3d',
+            iconURL: fr3dPhysicsExtensionIcon,
+            tags: ['penguinmod'],
+            customInsetColor: '#D066FE',
+            insetIconURL: fr3dPhysicsInsetExtensionIcon,
+            description: 'Physics for the 3D extension.',
+            featured: true
+        },
+        {
             name: 'Fetch+',
             extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/fetchplus.js',
             tags: ['dinosaurmod'],
@@ -1733,7 +1753,7 @@ if (IsLocal || IsLiveTests) {
             extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/legacy-extensions/timers-plus.js',
             tags: ['dinosaurmod'],
             iconURL: defaultExtensionIcon,
-            description: "Create your own timers! There's also pause and resume options.",
+            description: "(Timers don't save currently!) Create your own timers! There's also pause and resume options.",
             featured: true,
             extDeveloper: 'MrIncredibleMakerZe'
         },

@@ -401,6 +401,16 @@ a:active, a:focus {
     background: #fd2b2b;
     border-color: #d81212;
 }
+.tag-penguinmod {
+    color: white;
+    background: #00c3ff;
+    border-color: #009ccc;
+}
+.tag-dinosaurmod {
+    color: white;
+    background: #80f41a;
+    border-color: #7dd100;
+}
 @media (max-width: 550px) {
     .tag:not(.tag-beta) {
         display: none;

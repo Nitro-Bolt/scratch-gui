@@ -13,6 +13,8 @@
   "tagTheme": "Theme",
   "tagBeta": "Beta",
   "tagNew": "New!",
+  "tagPenguinMod": "PenguinMod",
+  "tagDinosaurMod": "DinosaurMod",
   "groupNew": "New ({number})",
   "groupOthers": "Others ({number})",
   "groupDanger": "Dangerous ({number})",

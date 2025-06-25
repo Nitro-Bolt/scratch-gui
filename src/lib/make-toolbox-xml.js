@@ -1514,11 +1514,6 @@ const operators = function (isInitialSetup) {
         </block>
         <block type="operator_stringify">
             <value name="ONE">
-                <shadow type="polygon"/>
-            </value>
-        </block>
-        <block type="operator_stringify">
-            <value name="ONE">
                 <shadow type="math_angle"/>
             </value>
         </block>

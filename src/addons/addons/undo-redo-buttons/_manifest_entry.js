@@ -15,6 +15,7 @@ const manifest = {
   ],
   "tags": [
     "beta",
+    "dinosaurmod",
     "new"
   ],
   "enabledByDefault": false

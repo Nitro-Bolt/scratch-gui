@@ -13,7 +13,7 @@ const manifest = {
         "url": "userscript.js"
       }
     ],
-    "tags": ["editor", "codeEditor", "new", "beta"],
+    "tags": ["editor", "codeEditor", "new", "penguinmod", "beta"],
     "enabledByDefault": false,
     "dynamicEnable": true,
     "dynamicDisable": true

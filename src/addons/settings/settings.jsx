@@ -238,6 +238,30 @@ const Tags = ({ manifest }) => (
                 {settingsTranslations.tagDanger}
             </span>
         )}
+        {manifest.tags.includes('penguinmod') && (
+            <span className={classNames(styles.tag, styles.tagPenguinMod)}
+                style={{display: "inline-flex", alignItems: "center", gap: "5px"}}
+            >
+                <img
+                    src="https://studio.penguinmod.com/favicon.ico"
+                    style={{width: "13px", height: "13px"}}
+                    alt="PenguinMod Icon"
+                />
+                {settingsTranslations.tagPenguinMod}
+            </span>
+        )}
+        {manifest.tags.includes('dinosaurmod') && (
+            <span className={classNames(styles.tag, styles.tagDinosaurMod)} 
+                style={{display: "inline-flex", alignItems: "center", gap: "5px"}}
+            >
+                <img
+                    src="https://dinosaurmod.github.io/favicon.ico"
+                    style={{width: "13px", height: "13px"}}
+                    alt="DinosaurMod Icon"
+                />
+                {settingsTranslations.tagDinosaurMod}
+            </span>
+        )}
     </span>
 );
 Tags.propTypes = {

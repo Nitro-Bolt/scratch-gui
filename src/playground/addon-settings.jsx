@@ -103,10 +103,20 @@ const waitForStore = setInterval(() => {
             getBackButtonDiv.innerHTML = ''
         }
 
-        reactModel = document.querySelector('ReactModal__Overlay ReactModal__Overlay--after-open modal_modal-overlay');
+        let previousThemeValue = null;
+
+        setInterval(() => {
+            const themeValue = getInitialDarkMode() ? 'dark' : 'light';
+            if (themeValue !== previousThemeValue) {
+                document.body.setAttribute("theme", themeValue)
+                previousThemeValue = themeValue;
+            }
+        }, 50);
+
+        /*reactModel = document.querySelector('ReactModal__Overlay ReactModal__Overlay--after-open modal_modal-overlay');
         const theme = getInitialDarkMode() ? 'dark' : 'light';
         if (reactModel) {
             reactModel.setAttribute('theme', theme);
-        }
+        }*/
     }
 }, 50);
