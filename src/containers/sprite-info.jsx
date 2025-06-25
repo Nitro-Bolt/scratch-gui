@@ -83,6 +83,7 @@ SpriteInfo.propTypes = {
     onChangeVolume: PropTypes.func,
     onChangeVisibility: PropTypes.func,
     onChangeDraggability: PropTypes.func,
+    onChangeLayer: PropTypes.func,
     onChangeX: PropTypes.func,
     onChangeY: PropTypes.func,
     x: PropTypes.number,

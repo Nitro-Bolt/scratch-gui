@@ -370,7 +370,7 @@ class SpriteInfo extends React.Component {
                             <BufferedInput
                                 small
                                 disabled={this.props.disabled}
-                                label={volumeLabel}
+                                label={layerLabel}
                                 tabIndex="0"
                                 type="text"
                                 value={this.props.disabled ? '' : Math.round(this.props.layer)}
