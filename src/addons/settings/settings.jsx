@@ -239,7 +239,7 @@ const Tags = ({ manifest }) => (
             </span>
         )}
         {manifest.tags.includes('penguinmod') && (
-            <span className={classNames(styles.tag, styles.tagPenguinMod)}
+            <span className={classNames(styles.tag, styles.tagPenguinmod)}
                 style={{display: "inline-flex", alignItems: "center", gap: "5px"}}
             >
                 <img
@@ -251,7 +251,7 @@ const Tags = ({ manifest }) => (
             </span>
         )}
         {manifest.tags.includes('dinosaurmod') && (
-            <span className={classNames(styles.tag, styles.tagDinosaurMod)} 
+            <span className={classNames(styles.tag, styles.tagDinosaurmod)} 
                 style={{display: "inline-flex", alignItems: "center", gap: "5px"}}
             >
                 <img
