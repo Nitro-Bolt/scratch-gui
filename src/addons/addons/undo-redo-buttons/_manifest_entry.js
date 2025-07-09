@@ -2,7 +2,7 @@
 const manifest = {
   "noTranslations": true,
   "name": "Undo Redo Buttons",
-  "description": "Adds undo and redo buttons so it is easier to undo and redo",
+  "description": "Adds undo and redo buttons so it is easier to undo and redo in the code editor",
   "userscripts": [
     {
       "url": "userscript.js"

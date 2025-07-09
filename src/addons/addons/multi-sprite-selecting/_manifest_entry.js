@@ -27,7 +27,7 @@ const manifest = {
         }
     ],
     "tags": ["recommended", "dinosaurmod", "new"],
-    "enabledByDefault": false,
+    "enabledByDefault": true,
     "dynamicEnable": true,
     "dynamicDisable": false
 };
