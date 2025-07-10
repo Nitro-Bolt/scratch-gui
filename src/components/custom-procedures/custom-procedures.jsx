@@ -306,13 +306,8 @@ const CustomProcedures = props => (
                         onClick={() => props.onOutputTypeChanged('string')}
                     >
                         <img
-                            className={styles.optionIcon}
+                            className={styles.optionIcon, styles.optionSquareReporterIcon}
                             src={squareReporterBlockIcon}
-                            style={{
-                                height: "55px",
-                                width: "65px",
-                                transform: "translate(0%, -15%)"
-                            }}
                         />
                         <div className={styles.optionTitle}>
                             <FormattedMessage
