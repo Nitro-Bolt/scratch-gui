@@ -308,6 +308,11 @@ const CustomProcedures = props => (
                         <img
                             className={styles.optionIcon}
                             src={squareReporterBlockIcon}
+                            style={{
+                                height: "55px",
+                                width: "65px",
+                                transform: "translate(0%, -15%)"
+                            }}
                         />
                         <div className={styles.optionTitle}>
                             <FormattedMessage
