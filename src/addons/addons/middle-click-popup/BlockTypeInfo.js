@@ -5,6 +5,11 @@
 
 // import * as SABlocks from "../../addon-api/content-script/blocks.js";
 
+import greenFlagIcon from "./icons/event_whenflagclicked.svg"
+import stopIcon from "./icons/control_stop.svg"
+import rotateLeftIcon from "./icons/rotate-left.svg"
+import rotateRightIcon from "./icons/rotate-right.svg"
+
 /**
  * A numeric value to represent the type of an {@link BlockInput}
  * @readonly
@@ -422,14 +427,20 @@ export class BlockTypeInfo {
         addInput(new BlockInputEnum(options, inputIdx, fieldIdx, fieldIdx === -1));
       } else if (field instanceof Blockly.FieldImage) {
         switch (field.src_) {
-          case "/static/blocks-media/green-flag.svg":
-            parts.push(locale("/_general/blocks/green-flag"));
+          case "/static/blocks-media/blue-flag.svg":
+            //parts.push(locale("/_general/blocks/blue-flag"));
+            parts.push(greenFlagIcon)
             break;
           case "/static/blocks-media/rotate-right.svg":
-            parts.push(locale("/_general/blocks/clockwise"));
+            //parts.push(locale("/_general/blocks/clockwise"));
+            parts.push(rotateRightIcon)
             break;
           case "/static/blocks-media/rotate-left.svg":
-            parts.push(locale("/_general/blocks/anticlockwise"));
+            //parts.push(locale("/_general/blocks/anticlockwise"));
+            parts.push(rotateLeftIcon)
+            break;
+          case "/static/blocks-media/icons/control_stop.svg":
+            parts.push(stopIcon)
             break;
         }
       } else {
