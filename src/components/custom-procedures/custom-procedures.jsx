@@ -8,6 +8,7 @@ import plusIcon from './icon--plus.svg';
 
 import booleanInputIcon from './icon--boolean-input.svg';
 import textInputIcon from './icon--text-input.svg';
+import newTextInputIcon from './icon--new-text-input.svg';
 import numberInputIcon from './icon--number-input.svg';
 import colorInputIcon from './icon--color-input.svg';
 import labelIcon from './icon--label.svg';
@@ -15,6 +16,7 @@ import labelIcon from './icon--label.svg';
 import stackBlockIcon from './icon--stack-block.svg';
 import terminalBlockIcon from './icon--terminal-block.svg';
 import reporterBlockIcon from './icon--reporter-block.svg';
+import squareReporterBlockIcon from './icon--square-reporter-block.svg';
 import booleanBlockIcon from './icon--boolean-block.svg';
 
 import styles from './custom-procedures.css';
@@ -184,7 +186,7 @@ const CustomProcedures = props => (
                 >
                     <img
                         className={styles.optionIcon}
-                        src={textInputIcon}
+                        src={newTextInputIcon}
                     />
                     <div className={styles.optionTitle}>
                         <FormattedMessage
@@ -209,7 +211,7 @@ const CustomProcedures = props => (
                 >
                     <img
                         className={styles.optionIcon}
-                        src={numberInputIcon}
+                        src={textInputIcon}
                     />
                     <div className={styles.optionTitle}>
                         <FormattedMessage
@@ -305,7 +307,7 @@ const CustomProcedures = props => (
                     >
                         <img
                             className={styles.optionIcon}
-                            src={reporterBlockIcon}
+                            src={squareReporterBlockIcon}
                         />
                         <div className={styles.optionTitle}>
                             <FormattedMessage
