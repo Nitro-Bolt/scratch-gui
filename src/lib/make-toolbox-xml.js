@@ -30,13 +30,6 @@ const motion = function (isInitialSetup, isStage, targetId) {
                 </shadow>
             </value>
         </block>
-        <block type="motion_movebacksteps">
-            <value name="STEPS">
-                <shadow type="math_number">
-                    <field name="NUM">10</field>
-                </shadow>
-            </value>
-        </block>
         <block type="motion_moveupdownsteps">
             <value name="STEPS">
                 <shadow type="math_number">
@@ -817,18 +810,6 @@ const control = function (isInitialSetup, isStage) {
             <block type="control_delete_this_clone"/>
             <block type="control_is_clone"/>
         `}
-            ${blockSeparator}
-            <block type="control_get_counter"/>
-            <block type="control_incr_counter"/>
-            <block type="control_decr_counter"/>
-            <block type="control_set_counter">
-                <value name="VALUE">
-                    <shadow type="math_number">
-                        <field name="NUM">10</field>
-                    </shadow>
-                </value>
-            </block>
-            <block type="control_clear_counter"/>
         ${LazyScratchBlocks.isNameUrMom() ? '<block type="your_mom"/>' : ''}
         ${LazyScratchBlocks.isNameJurassicPark() ? '' : ''}
         ${categorySeparator}
@@ -945,18 +926,6 @@ const sensing = function (isInitialSetup, isStage, targetId) {
         `}
         <block id="answer" type="sensing_answer"/>
         ${blockSeparator}
-        <block type="sensing_getspritewithattrib">
-            <value name="var">
-                <shadow type="text">
-                    <field name="TEXT">my variable</field>
-                </shadow>
-            </value>
-            <value name="val">
-                <shadow type="text">
-                    <field name="TEXT">0</field>
-                </shadow>
-            </value>
-        </block>
         <block type="sensing_thing_is_text">
             <value name="TEXT1">
                 <shadow type="text">
