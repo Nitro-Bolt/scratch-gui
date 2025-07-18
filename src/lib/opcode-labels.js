@@ -1,6 +1,11 @@
 import {defineMessages} from 'react-intl';
 
 const messages = defineMessages({
+    motion_rotationstyle: {
+        defaultMessage: 'rotation style',
+        description: 'Label for the rotation style monitor when shown on the stage',
+        id: 'gui.opcodeLabels.rotationstyle'
+    },
     motion_direction: {
         defaultMessage: 'direction',
         description: 'Label for the direction monitor when shown on the stage',
@@ -298,6 +303,7 @@ class OpcodeLabels {
          */
         this._opcodeMap = {
             // Motion
+            motion_rotationstyle: {category: 'motion'},
             motion_direction: {category: 'motion'},
             motion_xposition: {category: 'motion'},
             motion_yposition: {category: 'motion'},
@@ -364,6 +370,7 @@ class OpcodeLabels {
      */
     _refreshOpcodeMap () {
         // Motion
+        this._opcodeMap.motion_rotationstyle.labelFn = () => this._translator(messages.motion_rotationstyle);
         this._opcodeMap.motion_direction.labelFn = () => this._translator(messages.motion_direction);
         this._opcodeMap.motion_xposition.labelFn = () => this._translator(messages.motion_xposition);
         this._opcodeMap.motion_yposition.labelFn = () => this._translator(messages.motion_yposition);
