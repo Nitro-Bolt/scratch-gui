@@ -374,16 +374,6 @@ class Interface extends React.Component {
                             <div className={styles.section}>
                                 <ProjectInput />
                             </div>
-                            <div className={styles.remixWarningBox}>
-                                <p>
-                                    Starting July 18th, 2025, you will no longer be able to upload DinosaurMod projects to PenguinMod, as DinosaurMod will begin losing compatibility.
-                                    (You'll still be able to view PenguinMod projects in DinosaurMod.)
-                                    
-                                    Right now, I feel like DinosaurMod is just a dinosaur-themed version of PenguinMod - but I want to give it its own blocks and features.
-                                    This change helps start that shift.
-                                    Thank you for using DinosaurMod.
-                                </p>
-                            </div>
                             {/* project not approved message */}
                             {(!extraProjectInfo.accepted) && (
                                 <div className={styles.remixWarningBox}>

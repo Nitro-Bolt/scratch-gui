@@ -1397,15 +1397,6 @@ const menuItems = [
         featured: true
     },
     {
-        name: 'DinosaurMod Blocks 2',
-        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/legacy-extensions/dinosaurmod-vm-blocks.js',
-        iconURL: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/images/dinosaurmodextras.png',
-        tags: ['dinosaurmod'],
-        description: '(This Extension does NOT work in penguinmod and will soon merge into the main toolbox.) Extra extra blocks',
-        inspiredExt: 'TurboWarp Blocks',
-        featured: true
-    },
-    {
         name: 'micro:bit',
         extensionId: 'microbit',
         collaborator: 'micro:bit',

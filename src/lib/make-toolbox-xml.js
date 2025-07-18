@@ -221,6 +221,7 @@ const motion = function (isInitialSetup, isStage, targetId) {
         </block>
         ${blockSeparator}
         <block type="motion_setrotationstyle"/>
+        <block id="${targetId}_rotationstyle" type="motion_rotationstyle"/>
         ${blockSeparator}
         <block type="motion_move_sprite_to_scene_side"/>
         ${blockSeparator}
@@ -454,7 +455,10 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
         <block type="looks_getEffectValue"/>
         <block type="looks_tintColor"/>
         ${blockSeparator}
-        ${isStage ? '' : `
+        ${isStage ? `
+            <block type="looks_showallsprites"/>
+            <block type="looks_hideallsprites"/>
+        ` : `
             <block type="looks_show"/>
             <block type="looks_hide"/>
             <block type="looks_getSpriteVisible"/>
@@ -474,6 +478,9 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                     <shadow type="looks_getOtherSpriteVisible_menu"/>
                 </value>
             </block>
+            ${blockSeparator}
+            <block type="looks_showallsprites"/>
+            <block type="looks_hideallsprites"/>
             ${blockSeparator}
             <block type="looks_gotofrontback"/>
             <block type="looks_goforwardbackwardlayers">
@@ -999,7 +1006,13 @@ const sensing = function (isInitialSetup, isStage, targetId) {
         </block>
         ${blockSeparator}
         <block id="current" type="sensing_current"/>
-        <block type="sensing_dayssince2000"/>
+        <block type="sensing_dayssince">
+            <value name="year">
+                <shadow type="math_number">
+                    <field name="NUM">2000</field>
+                </shadow>
+            </value>
+        </block>
         ${blockSeparator}
         <block type="sensing_mobile"></block>
         <block type="sensing_fingerdown">
@@ -1143,6 +1156,18 @@ const operators = function (isInitialSetup) {
             <value name="AMOUNT">
                 <shadow type="math_number">
                     <field name="NUM">0.5</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="operator_percentage">
+            <value name="PER">
+                <shadow type="math_number">
+                    <field name="NUM">1</field>
+                </shadow>
+            </value>
+            <value name="NUM">
+                <shadow type="math_number">
+                    <field name="NUM">100</field>
                 </shadow>
             </value>
         </block>
@@ -1584,6 +1609,12 @@ const liveTests = function () {
         <block type="control_fieldbutton"></block>
         <block type="operators_expandablejoininputs"></block>
         <block type="motion_mutatorCheckboxTest"></block>
+        ${blockSeparator}
+        <block type="sound_getTimePosition">
+            <value name="SOUND_MENU">
+                <shadow type="sound_sounds_menu"></shadow>
+            </value>
+        </block>
         ${blockSeparator}
         <block type="data_filterlist">
             <value name="INDEX">

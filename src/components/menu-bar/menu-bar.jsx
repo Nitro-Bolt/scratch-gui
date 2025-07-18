@@ -875,7 +875,7 @@ class MenuBar extends React.Component {
                             />
                         ) : []))}
                     </div>
-                    {/* tw: add a feedback button */}
+                    {/* tw: add a feedback button 
                     <div className={styles.menuBarItem}>
                         {this.props.isShowingProject && this.props.canEditTitle ?
                             (<ShareButton
@@ -883,7 +883,7 @@ class MenuBar extends React.Component {
                                 isShared={this.props.isShared}
                             />)
                             : (null)}
-                    </div>
+                    </div>*/}
                 </div>
 
                 <div className={styles.accountInfoGroup}>
