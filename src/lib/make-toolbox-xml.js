@@ -670,6 +670,13 @@ const events = function (isInitialSetup, isStage) {
                 </shadow>
             </value>
         </block>
+        <block type="event_whenlesserthan">
+            <value name="VALUE">
+                <shadow type="math_number">
+                    <field name="NUM">10</field>
+                </shadow>
+            </value>
+        </block>
         ${blockSeparator}
         <block type="event_whenbroadcastreceived">
         </block>
@@ -1115,6 +1122,18 @@ const operators = function (isInitialSetup) {
                 </shadow>
             </value>
         </block>
+        <block type="operator_percentage">
+            <value name="PER">
+                <shadow type="math_number">
+                    <field name="NUM">1</field>
+                </shadow>
+            </value>
+            <value name="NUM">
+                <shadow type="math_number">
+                    <field name="NUM">100</field>
+                </shadow>
+            </value>
+        </block>
         ${blockSeparator}
         <block type="operator_random">
             <value name="FROM">
@@ -1159,18 +1178,6 @@ const operators = function (isInitialSetup) {
             <value name="AMOUNT">
                 <shadow type="math_number">
                     <field name="NUM">0.5</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="operator_percentage">
-            <value name="PER">
-                <shadow type="math_number">
-                    <field name="NUM">1</field>
-                </shadow>
-            </value>
-            <value name="NUM">
-                <shadow type="math_number">
-                    <field name="NUM">100</field>
                 </shadow>
             </value>
         </block>
