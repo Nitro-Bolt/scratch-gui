@@ -72,6 +72,7 @@ const addons = [
 ];
 
 const newAddons = [
+    'reorder-custom-inputs',
     'multi-sprite-selecting',
     'paint-gradient-maker',
     'paint-tool-panel',

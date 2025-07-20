@@ -76,6 +76,7 @@ import _multi_sprite_selecting from "../addons/multi-sprite-selecting/_manifest_
 import _paint_tool_panel from "../addons/paint-tool-panel/_manifest_entry.js";
 import _remove_logo from "../addons/remove-logo/_manifest_entry.js";
 import _undo_redo_buttons from "../addons/undo-redo-buttons/_manifest_entry.js";
+import _reorder_custom_inputs from "../addons/reorder-custom-inputs/_manifest_entry.js";
 
 export default {
   "cat-blocks": _cat_blocks,
@@ -156,4 +157,5 @@ export default {
   "paint-tool-panel": _paint_tool_panel,
   "remove-logo": _remove_logo,
   "undo-redo-buttons": _undo_redo_buttons,
+  "reorder-custom-inputs": _reorder_custom_inputs,
 };

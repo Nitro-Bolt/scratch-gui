@@ -78,4 +78,5 @@ export default {
   "paint-tool-panel": () => import(/* webpackChunkName: "addon-entry-paint-tool-panel" */ "../addons/paint-tool-panel/_runtime_entry.js"),
   "remove-logo": () => import(/* webpackChunkName: "addon-entry-paint-tool-panel" */ "../addons/remove-logo/_runtime_entry.js"),
   "undo-redo-buttons": () => import(/* webpackChunkName: "addon-entry-paint-tool-panel" */ "../addons/undo-redo-buttons/_runtime_entry.js"),
+  "reorder-custom-inputs": () => import(/* webpackChunkName: "addon-entry-reorder-custom-inputs" */ "../addons/reorder-custom-inputs/_runtime_entry.js"),
 };
