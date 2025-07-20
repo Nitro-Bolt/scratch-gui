@@ -15,6 +15,7 @@ import labelIcon from './icon--label.svg';
 
 import stackBlockIcon from './icon--stack-block.svg';
 import terminalBlockIcon from './icon--terminal-block.svg';
+import hatBlockIcon from './icon--hat-block.svg';
 import reporterBlockIcon from './icon--reporter-block.svg';
 import squareReporterBlockIcon from './icon--square-reporter-block.svg';
 import booleanBlockIcon from './icon--boolean-block.svg';
@@ -373,6 +374,26 @@ const CustomProcedures = props => (
                             />
                         </div>
                     </div>
+                    {new URLSearchParams(window.location.search).has('livetests') &&
+                        <div
+                            className={styles.optionCard}
+                            role="button"
+                            tabIndex="0"
+                            onClick={() => props.onOutputTypeChanged('hat')}
+                        >
+                            <img
+                                className={styles.optionIcon}
+                                src={hatBlockIcon}
+                            />
+                            <div className={styles.optionTitle}>
+                                <FormattedMessage
+                                    defaultMessage="Hat block"
+                                    description="Label for block to be an hat block for a stack"
+                                    id="gui.customProcedures.hatBlock"
+                                />
+                            </div>
+                        </div>
+                    }
                 </>}
                 {props.returns && <div
                     className={styles.optionCard}
