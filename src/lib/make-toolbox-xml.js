@@ -458,6 +458,7 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
         ${isStage ? `
             <block type="looks_showallsprites"/>
             <block type="looks_hideallsprites"/>
+            <block type="looks_getAllSpritesVisible"/>
             ${blockSeparator}
         ` : `
             <block type="looks_show"/>
@@ -482,6 +483,7 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
             ${blockSeparator}
             <block type="looks_showallsprites"/>
             <block type="looks_hideallsprites"/>
+            <block type="looks_getAllSpritesVisible"/>
             ${blockSeparator}
             <block type="looks_gotofrontback"/>
             <block type="looks_goforwardbackwardlayers">
