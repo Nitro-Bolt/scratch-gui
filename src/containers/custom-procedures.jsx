@@ -193,6 +193,7 @@ class CustomProcedures extends React.Component {
     handleRemoveAllInputs () {
         if (this.mutationRoot) {
             this.mutationRoot.removeAllInputs_();
+            this.handleAddLabel();
         }
     }
     handleToggleWarp () {
