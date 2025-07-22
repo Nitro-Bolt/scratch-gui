@@ -168,6 +168,8 @@ const BlockColorSection = props => (
     </div>
 )
 
+setIsHat(false)
+
 const CustomProcedures = props => (
     <Modal
         scrollable={true}
