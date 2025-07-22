@@ -22,7 +22,7 @@ import booleanBlockIcon from './icon--boolean-block.svg';
 
 import styles from './custom-procedures.css';
 
-import { getIsHat, setIsHat } from './is-hat-helper.js'
+import { isHat, setIsHat } from './is-hat-helper.js'
 
 const messages = defineMessages({
     myblockModalTitle: {
@@ -182,7 +182,7 @@ const CustomProcedures = props => (
             componentRef={props.componentRef}
         />
         <Box className={styles.body}>
-            {!getIsHat && 
+            {!isHat && 
                 <div className={styles.optionsRow}>
                     <div
                         className={styles.optionCard}
