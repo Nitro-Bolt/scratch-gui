@@ -48,7 +48,8 @@ class CustomProcedures extends React.Component {
             'handleBlockColorChange',
             'setHexBlockColor',
             'setBlocks',
-            'handleTestFunction'
+            'handleTestFunction',
+            'handleRemoveAllInputs'
         ]);
         this.state = {
             rtlOffset: 0,
@@ -189,6 +190,15 @@ class CustomProcedures extends React.Component {
             this.mutationRoot.addNumberExternal();
         }
     }
+    handleRemoveAllInputs () {
+        if (this.mutationRoot) {
+            let mutation = this.mutationRoot.mutation
+            mutation.argumentnames = [];
+            mutation.argumentids = [];
+            mutation.proccode = mutation.proccode.split('%')[0].trim();
+            this.mutationRoot.mutation = mutation
+        }
+    }
     handleToggleWarp () {
         if (this.mutationRoot) {
             const newWarp = !this.mutationRoot.getWarp();
@@ -265,6 +275,7 @@ class CustomProcedures extends React.Component {
                 onBlockColorChange={this.handleBlockColorChange}
                 setHexBlockColor={this.setHexBlockColor}
                 onTestStart={this.handleTestFunction}
+                onRemoveAllInputs={this.handleRemoveAllInputs}
             />
         );
     }

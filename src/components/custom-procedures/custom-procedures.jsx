@@ -394,6 +394,7 @@ const CustomProcedures = props => (
                             onClick={() => {
                                 props.onOutputTypeChanged('hat');
                                 setIsHat(true);
+                                props.onRemoveAllInputs();
                             }}
                         >
                             <img
@@ -498,7 +499,8 @@ CustomProcedures.propTypes = {
     returns: PropTypes.bool.isRequired,
     editing: PropTypes.bool.isRequired,
     selectedType: PropTypes.string.isRequired,
-    onOutputTypeChanged: PropTypes.func.isRequired
+    onOutputTypeChanged: PropTypes.func.isRequired,
+    onRemoveAllInputs: PropTypes.func.isRequired
 };
 
 export default injectIntl(CustomProcedures);
