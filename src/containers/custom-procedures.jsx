@@ -192,7 +192,7 @@ class CustomProcedures extends React.Component {
     }
     handleRemoveAllInputs () {
         if (this.mutationRoot) {
-            let mutation = this.mutationRoot.mutation
+            let mutation = this.mutationRoot
             console.log(mutation)
         }
     }
