@@ -22,6 +22,8 @@ import defineDynamicBlock from '../lib/define-dynamic-block';
 import AddonHooks from '../addons/hooks';
 import LoadScratchBlocksHOC from '../lib/tw-load-scratch-blocks-hoc.jsx';
 
+import { isHat, setIsHat } from '../components/custom-procedures/is-hat-helper.js';
+
 import {connect} from 'react-redux';
 import {updateToolbox} from '../reducers/toolbox';
 import {activateColorPicker} from '../reducers/color-picker';
@@ -671,6 +673,9 @@ class Blocks extends React.Component {
             ...props
         } = this.props;
         /* eslint-enable no-unused-vars */
+        if customProceduresVisible == true {
+            setIsHat(false)
+        }
         return (
             <React.Fragment>
                 <DroppableBlocks
