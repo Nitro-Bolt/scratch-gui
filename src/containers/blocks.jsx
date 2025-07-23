@@ -673,7 +673,7 @@ class Blocks extends React.Component {
             ...props
         } = this.props;
         /* eslint-enable no-unused-vars */
-        if customProceduresVisible == true {
+        if (customProceduresVisible == true) {
             setIsHat(false)
         }
         return (
