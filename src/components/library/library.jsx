@@ -434,48 +434,52 @@ class LibraryComponent extends React.Component {
                         ref={this.setFilteredDataRef}
                     >
                         {this.state.loaded ? this.getFilteredData().map((dataItem, index) => (
-                            <LibraryItem
-                                bluetoothRequired={dataItem.bluetoothRequired}
-                                collaborator={dataItem.collaborator}
-                                extDeveloper={dataItem.extDeveloper}
-                                credits={dataItem.credits}
-                                twDeveloper={dataItem.twDeveloper}
-                                inspiredExt={dataItem.inspiredExt}
-                                eventSubmittor={dataItem.eventSubmittor}
-                                customInsetColor={dataItem.customInsetColor}
-                                description={dataItem.description}
-                                disabled={dataItem.disabled}
-                                extensionId={dataItem.extensionId}
-                                featured={dataItem.featured}
-                                isNew={dataItem.tags && dataItem.tags.includes("new")}
-                                hidden={dataItem.hidden}
-                                href={dataItem.href}
-                                iconMd5={dataItem.costumes ? dataItem.costumes[0].md5ext : dataItem.md5ext}
-                                iconRawURL={this.props.actor === "CostumeLibrary" ? `${PM_LIBRARY_API}files/${dataItem.libraryFilePage}` : dataItem.rawURL}
-                                icons={dataItem.costumes}
-                                id={index}
-                                _id={dataItem._id}
-                                styleForSound={this.props.actor === "SoundLibrary"}
-                                soundType={dataItem.soundType}
-                                soundLength={dataItem.soundLength}
-                                incompatibleWithScratch={dataItem.incompatibleWithScratch}
-                                insetIconURL={dataItem.insetIconURL}
-                                internetConnectionRequired={dataItem.internetConnectionRequired}
-                                isPlaying={this.state.playingItem === index}
-                                key={typeof dataItem.name === 'string' ? dataItem.name : dataItem.rawURL}
-                                name={dataItem.name}
-                                showPlayButton={this.props.showPlayButton}
-                                onMouseEnter={this.handleMouseEnter}
-                                onMouseLeave={this.handleMouseLeave}
-                                onSelect={this.handleSelect}
+                            dataItem === '---' ? (
+                                <Separator key={index} />
+                            ) : (
+                                <LibraryItem
+                                    bluetoothRequired={dataItem.bluetoothRequired}
+                                    collaborator={dataItem.collaborator}
+                                    extDeveloper={dataItem.extDeveloper}
+                                    credits={dataItem.credits}
+                                    twDeveloper={dataItem.twDeveloper}
+                                    inspiredExt={dataItem.inspiredExt}
+                                    eventSubmittor={dataItem.eventSubmittor}
+                                    customInsetColor={dataItem.customInsetColor}
+                                    description={dataItem.description}
+                                    disabled={dataItem.disabled}
+                                    extensionId={dataItem.extensionId}
+                                    featured={dataItem.featured}
+                                    isNew={dataItem.tags && dataItem.tags.includes("new")}
+                                    hidden={dataItem.hidden}
+                                    href={dataItem.href}
+                                    iconMd5={dataItem.costumes ? dataItem.costumes[0].md5ext : dataItem.md5ext}
+                                    iconRawURL={this.props.actor === "CostumeLibrary" ? `${PM_LIBRARY_API}files/${dataItem.libraryFilePage}` : dataItem.rawURL}
+                                    icons={dataItem.costumes}
+                                    id={index}
+                                    _id={dataItem._id}
+                                    styleForSound={this.props.actor === "SoundLibrary"}
+                                    soundType={dataItem.soundType}
+                                    soundLength={dataItem.soundLength}
+                                    incompatibleWithScratch={dataItem.incompatibleWithScratch}
+                                    insetIconURL={dataItem.insetIconURL}
+                                    internetConnectionRequired={dataItem.internetConnectionRequired}
+                                    isPlaying={this.state.playingItem === index}
+                                    key={typeof dataItem.name === 'string' ? dataItem.name : dataItem.rawURL}
+                                    name={dataItem.name}
+                                    showPlayButton={this.props.showPlayButton}
+                                    onMouseEnter={this.handleMouseEnter}
+                                    onMouseLeave={this.handleMouseLeave}
+                                    onSelect={this.handleSelect}
 
-                                favoritable={this.props.actor === "ExtensionLibrary" && dataItem.extensionId}
-                                favorited={this.state.favorites.includes(dataItem.extensionId)}
-                                deletable={dataItem.deletable}
-                                custom={dataItem.custom}
-                                onFavoriteUpdated={() => this.handleFavoritesUpdate()}
-                                _unsandboxed={dataItem._unsandboxed}
-                            />
+                                    favoritable={this.props.actor === "ExtensionLibrary" && dataItem.extensionId}
+                                    favorited={this.state.favorites.includes(dataItem.extensionId)}
+                                    deletable={dataItem.deletable}
+                                    custom={dataItem.custom}
+                                    onFavoriteUpdated={() => this.handleFavoritesUpdate()}
+                                    _unsandboxed={dataItem._unsandboxed}
+                                />
+                            )
                         )) : (
                             <div className={styles.spinnerWrapper}>
                                 <Spinner
