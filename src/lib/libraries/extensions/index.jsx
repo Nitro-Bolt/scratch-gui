@@ -1892,7 +1892,6 @@ if (IsLocal || IsLiveTests) {
             featured: true
         },
     ];
-    menuItems.push('---');
     extras.forEach(ext => {
         menuItems.push(ext);
     });
@@ -1925,7 +1924,6 @@ if (IsSecret && IsJoke) {
             featured: true
         },
     ];
-    menuItems.push('---');
     secret.forEach(ext => {
         menuItems.push(ext);
     });
@@ -2019,7 +2017,6 @@ if (IsJoke) {
             featured: true
         },
     ];
-    menuItems.push('---');
     JokeExtensions.forEach(ext => {
         menuItems.push(ext);
     });
