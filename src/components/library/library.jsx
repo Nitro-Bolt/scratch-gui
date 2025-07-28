@@ -434,7 +434,7 @@ class LibraryComponent extends React.Component {
                         ref={this.setFilteredDataRef}
                     >
                         {this.state.loaded ? this.getFilteredData().map((dataItem, index) => (
-                            dataItem == '---' ? (
+                            dataItem === "---" ? (
                                 <Separator key={index} />
                             ) : (
                                 <LibraryItem
@@ -492,12 +492,6 @@ class LibraryComponent extends React.Component {
                 </div>
             </Modal>
         );
-        if (this.state.loaded) {
-            this.getFilteredData().map((dataItem, index) => {
-                console.log(dataItem)
-                console.log(dataItem == '---')
-            })
-        }
     }
 }
 
