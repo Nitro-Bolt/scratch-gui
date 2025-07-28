@@ -1894,6 +1894,7 @@ if (IsLocal || IsLiveTests) {
         },
     ];
     extras.forEach(ext => {
+        menuItems.push('---');
         menuItems.push(ext);
     });
 };
@@ -1927,6 +1928,7 @@ if (IsSecret && IsJoke) {
         },
     ];
     secret.forEach(ext => {
+        menuItems.push('---');
         menuItems.push(ext);
     });
 }
@@ -2021,8 +2023,9 @@ if (IsJoke) {
         },
     ];
     JokeExtensions.forEach(ext => {
-        menuItems.push(ext)
-    })
+        menuItems.push('---');
+        menuItems.push(ext);
+    });
 }
 
 console.log(menuItems)
