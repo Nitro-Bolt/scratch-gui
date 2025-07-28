@@ -2025,4 +2025,6 @@ if (IsJoke) {
     })
 }
 
+console.log(menuItems)
+
 export default menuItems;
