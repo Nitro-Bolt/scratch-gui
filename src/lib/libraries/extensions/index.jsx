@@ -1684,6 +1684,7 @@ const menuItems = [
 
 if (IsLocal || IsLiveTests) {
     const extras = [
+        '---',
         {
             name: 'Clone Communication',
             extensionId: 'jgClones',
@@ -1899,6 +1900,7 @@ if (IsLocal || IsLiveTests) {
 
 if (IsSecret && IsJoke) {
     const secret = [
+        '---',
         {
             name: 'MR BEAST UTILITIES',
             extensionId: 'https://turbololder.vercel.app/extensions/mrbeastutil.js',
@@ -1931,6 +1933,7 @@ if (IsSecret && IsJoke) {
 
 if (IsJoke) {
     const JokeExtensions = [
+        '---',
         {
             name: 'Cats',
             extensionId: 'https://extensions.penguinmod.com/extensions/Gen1x/CATS.js',
