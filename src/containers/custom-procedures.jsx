@@ -192,8 +192,19 @@ class CustomProcedures extends React.Component {
     }
     handleRemoveAllInputs () {
         if (this.mutationRoot) {
-            this.mutationRoot.removeAllInputs_();
-            this.handleAddLabel();
+            const block = this.mutationRoot
+            for (let i = block.inputList.length - 1; i >= 0; i--) {
+                const input = block.inputList[i];
+
+                const isLabelOnly =
+                    input.type === ScratchBlocks.DUMMY_INPUT &&
+                    input.fieldRow.length === 1 &&
+                    input.fieldRow[0] instanceof ScratchBlocks.FieldLabel;
+
+                if (!isLabelOnly) {
+                    block.removeInput(input.name);
+                }
+            }
         }
     }
     handleToggleWarp () {
