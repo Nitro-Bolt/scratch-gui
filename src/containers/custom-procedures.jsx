@@ -191,20 +191,24 @@ class CustomProcedures extends React.Component {
         }
     }
     handleRemoveAllInputs () {
-        if (this.mutationRoot) {
-            const block = this.mutationRoot
+        function removeAllInputsExceptLabels(block, Blockly) {
             for (let i = block.inputList.length - 1; i >= 0; i--) {
                 const input = block.inputList[i];
 
-                const isLabelOnly =
-                    input.type === ScratchBlocks.DUMMY_INPUT &&
+                const keep =
+                    input.type === Blockly.DUMMY_INPUT &&
                     input.fieldRow.length === 1 &&
-                    input.fieldRow[0] instanceof ScratchBlocks.FieldLabel;
+                    input.fieldRow[0] instanceof Blockly.FieldLabel;
 
-                if (!isLabelOnly) {
+                if (!keep) {
                     block.removeInput(input.name);
                 }
             }
+        }
+        if (this.mutationRoot) {
+            removeAllInputsExceptLabels(this.mutationRoot, ScratchBlocks);
+            this.mutationRoot.initSvg();
+            this.mutationRoot.render();
         }
     }
     handleToggleWarp () {
