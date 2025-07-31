@@ -1308,6 +1308,16 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'JavaScript V2',
+        extensionId: 'SPjavascriptV2',
+        iconURL: jgJavascriptExtensionIcon,
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
+        tags: ['penguinmod', 'programminglanguage'],
+        description: 'Run your own custom code written in JavaScript!',
+        featured: true
+    },
+    {
         name: 'Python',
         extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/python.js',
         iconURL: dmPythonIcon,
@@ -1753,7 +1763,7 @@ if (IsLocal || IsLiveTests) {
             extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/legacy-extensions/timers-plus.js',
             tags: ['dinosaurmod'],
             iconURL: defaultExtensionIcon,
-            description: "(Timers don't save currently!) Create your own timers! There's also pause and resume options.",
+            description: "(This Extension won't be worked on because during the creation of this extension i forgot about the Multiple Timers Extension) (Timers don't save!) Create your own timers! There's also pause and resume options.",
             featured: true,
             extDeveloper: 'MrIncredibleMakerZe'
         },
