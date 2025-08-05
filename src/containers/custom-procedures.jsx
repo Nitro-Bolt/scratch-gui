@@ -40,6 +40,7 @@ class CustomProcedures extends React.Component {
             'handleAddBoolean',
             'handleAddTextNumber',
             'handleAddNumber',
+            'handleAddColor',
             'handleToggleWarp',
             'handleToggleReturns',
             'handleCancel',
@@ -190,6 +191,11 @@ class CustomProcedures extends React.Component {
             this.mutationRoot.addNumberExternal();
         }
     }
+    handleAddColor () {
+        if (this.mutationRoot) {
+            this.mutationRoot.addColorExternal();
+        }
+    }
     handleRemoveAllInputs () {
         function keepOnlyLabelsInProcCode(block) {
             const cleanedProcCode = block.procCode_.replace(/%./g, '').trim();
@@ -266,6 +272,7 @@ class CustomProcedures extends React.Component {
                 onAddLabel={this.handleAddLabel}
                 onAddTextNumber={this.handleAddTextNumber}
                 onAddNumber={this.handleAddNumber}
+                onAddColor={this.handleAddColor}
                 onCancel={this.handleCancel}
                 onOk={this.handleOk}
                 onToggleWarp={this.handleToggleWarp}
