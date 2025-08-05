@@ -234,7 +234,7 @@ const CustomProcedures = props => (
                                     id="gui.customProcedures.numberType"
                                 />
                             </div>
-                        </div>*/}
+                        </div>
                         <div
                             className={styles.optionCard}
                             role="button"
@@ -259,7 +259,7 @@ const CustomProcedures = props => (
                                     id="gui.customProcedures.colorType"
                                 />
                             </div>
-                        </div>
+                        </div>*/}
                         <div
                             className={styles.optionCard}
                             role="button"
@@ -492,7 +492,7 @@ CustomProcedures.propTypes = {
     onAddLabel: PropTypes.func.isRequired,
     onAddTextNumber: PropTypes.func.isRequired,
     onAddNumber: PropTypes.func.isRequired,
-    onAddColor: PropTypes.func.isRequired,
+    //onAddColor: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     onToggleWarp: PropTypes.func.isRequired,
