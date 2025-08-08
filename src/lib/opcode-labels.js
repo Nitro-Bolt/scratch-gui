@@ -416,6 +416,8 @@ class OpcodeLabels {
         this._opcodeMap.looks_tintColor.labelFn = () => this._translator(messages.looks_tintColor);
         this._opcodeMap.looks_getSpriteVisible.labelFn = () => this._translator(messages.looks_getSpriteVisible);
         this._opcodeMap.looks_layersGetLayer.labelFn = () => this._translator(messages.looks_layersGetLayer);
+        this._opcodeMap.looks_getbackdroplength.labelFn = () => this._translator(messages.looks_getbackdroplength);
+        this._opcodeMap.looks_getcostumelength.labelFn = () => this._translator(messages.looks_getcostumelength);
 
         // Data
         this._opcodeMap.data_variable.labelFn = params => params.VARIABLE;
