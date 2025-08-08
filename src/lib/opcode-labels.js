@@ -331,6 +331,8 @@ class OpcodeLabels {
             looks_tintColor: {category: 'looks'},
             looks_getSpriteVisible: {category: 'looks'},
             looks_layersGetLayer: {category: 'looks'},
+            looks_getbackdroplength: {category: 'looks'},
+            looks_getcostumelength: {category: 'looks'},
 
             // Data
             data_variable: {category: 'data'},
