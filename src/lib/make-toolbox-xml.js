@@ -595,12 +595,16 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
                 </shadow>
             </value>
         </block>
-        ${blockSeparator}
         <block id="${targetId}_sound_getLength" type="sound_getLength">
             <value name="SOUND_MENU">
                 <shadow type="sound_sounds_menu">
                     <field name="SOUND_MENU">${soundName}</field>
                 </shadow>
+            </value>
+        </block>
+        <block type="sound_getTimePosition">
+            <value name="SOUND_MENU">
+                <shadow type="sound_sounds_menu"></shadow>
             </value>
         </block>
         ${blockSeparator}
@@ -1001,6 +1005,9 @@ const sensing = function (isInitialSetup, isStage, targetId) {
         ${blockSeparator}
         <block id="${targetId}_timer" type="sensing_timer"/>
         <block type="sensing_resettimer"/>
+        <block type="sensing_pausetimer"/>
+        <block type="sensing_resumetimer"/>
+        <block type="sensing_istimerpaused"/>
         ${blockSeparator}
         <block id="of" type="sensing_of">
             <value name="OBJECT">
@@ -1640,12 +1647,6 @@ const liveTests = function () {
         <block type="control_fieldbutton"></block>
         <block type="operators_expandablejoininputs"></block>
         <block type="motion_mutatorCheckboxTest"></block>
-        ${blockSeparator}
-        <block type="sound_getTimePosition">
-            <value name="SOUND_MENU">
-                <shadow type="sound_sounds_menu"></shadow>
-            </value>
-        </block>
         ${blockSeparator}
         <block type="data_filterlist">
             <value name="INDEX">
