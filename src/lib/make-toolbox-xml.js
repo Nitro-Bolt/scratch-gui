@@ -510,11 +510,13 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
         `}
         ${isStage ? `
             <block id="backdropnumbername" type="looks_backdropnumbername"/>
+            <block type="looks_getbackdroplength"/>
         ` : `
-            <block type="looks_getcostumelength"/>
             <block id="${targetId}_costumenumbername" type="looks_costumenumbername"/>
             <block id="backdropnumbername" type="looks_backdropnumbername"/>
             <block id="${targetId}_size" type="looks_size"/>
+            <block id="${targetId}_getcostumelength" type="looks_getcostumelength"/>
+            <block type="looks_getbackdroplength"/>
         `}
         ${categorySeparator}
     </category>
