@@ -151,12 +151,12 @@ const messages = defineMessages({
     looks_getbackdroplength: {
         defaultMessage: '# of backdrops',
         description: 'Label for the length of backdrops monitor when shown on the stage',
-        id: 'gui.opcodeLabels.backdropname'
+        id: 'gui.opcodeLabels.backdroplength'
     },
     looks_getcostumelength: {
         defaultMessage: '# of costumes',
         description: 'Label for the length of costumes monitor when shown on the stage',
-        id: 'gui.opcodeLabels.backdropnumber'
+        id: 'gui.opcodeLabels.costumelength'
     },
 
 
