@@ -148,6 +148,16 @@ const messages = defineMessages({
         description: 'Label for the layer monitor when shown on the stage',
         id: 'gui.opcodeLabels.layersGetLayer'
     },
+    looks_getbackdroplength: {
+        defaultMessage: '# of backdrops',
+        description: 'Label for the length of backdrops monitor when shown on the stage',
+        id: 'gui.opcodeLabels.backdropname'
+    },
+    looks_getcostumelength: {
+        defaultMessage: '# of costumes',
+        description: 'Label for the length of costumes monitor when shown on the stage',
+        id: 'gui.opcodeLabels.backdropnumber'
+    },
 
 
     // Sound
