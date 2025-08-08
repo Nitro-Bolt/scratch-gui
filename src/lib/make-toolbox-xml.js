@@ -604,7 +604,7 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
         </block>
         <block type="sound_getTimePosition">
             <value name="SOUND_MENU">
-                <shadow type="sound_sounds_menu"></shadow>
+                <shadow type="sound_sounds_menu">${soundName}</shadow>
             </value>
         </block>
         ${blockSeparator}
