@@ -575,6 +575,23 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
         <block type="sound_playallsounds"/>
         <block type="sound_stopallsounds"/>
         ${blockSeparator}
+        <block id="${targetId}_sound_pause" type="sound_pause">
+            <value name="SOUND_MENU">
+                <shadow type="sound_sounds_menu">
+                    <field name="SOUND_MENU">${soundName}</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="sound_pauseallsounds"/>
+        <block id="${targetId}_sound_resume" type="sound_resume">
+            <value name="SOUND_MENU">
+                <shadow type="sound_sounds_menu">
+                    <field name="SOUND_MENU">${soundName}</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="sound_resumeallsounds"/>
+        ${blockSeparator}
         <block id="${targetId}_sound_set_stop_fadeout_to" type="sound_set_stop_fadeout_to">
             <value name="VALUE">
                 <shadow type="math_number">
