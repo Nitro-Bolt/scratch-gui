@@ -142,7 +142,7 @@ export default async function createLogsTab({ debug, addon, console, msg }) {
       type,
       count: 1,
       preview: true,
-      customData = null
+      customData
     };
     if (thread) {
       log.blockId = thread.peekStack ? thread.peekStack() : thread.thread.peekStack();
