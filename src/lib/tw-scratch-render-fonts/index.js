@@ -20,6 +20,7 @@ const ArchivoBlack = require('./Archivo-Black.ttf');
 
 /* DinosaurMod Fonts */
 const Fredoka = require('./Fredoka-Regular.ttf');
+const Impact = require('./Impact.ttf');
 
 const log = require('../log').default;
 
@@ -39,7 +40,8 @@ const fontSource = {
     'Arcade': Arcade,
     'Archivo': Archivo,
     'Archivo Black': ArchivoBlack,
-    'Fredoka': Fredoka
+    'Fredoka': Fredoka,
+    'Impact': Impact,
 };
 
 const fontData = {};
