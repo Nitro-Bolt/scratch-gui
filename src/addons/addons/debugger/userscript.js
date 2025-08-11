@@ -61,6 +61,18 @@ export default async function ({ addon, console, msg }) {
       logMessage(content, thread, "error");
     },
   });
+  addon.tab.addBlock("\u200B\u200Bcustom log\u200B\u200B %s // background color: %c text color: %c border color: %c", {
+    args: ["content", "color1", "color2", "color3"],
+    displayName: msg("block-error"),
+    callback: ({ content, color1, color2, color3 }, thread) => {
+      let customData = {
+        "backgroundcolor": color1,
+        "textcolor": color2,
+        "bordercolor": color3
+      }
+      logMessage(content, thread, "custom", customData);
+    },
+  });
 
   const vm = addon.tab.traps.vm;
   await new Promise((resolve, reject) => {

@@ -30,6 +30,11 @@ export default async function createLogsTab({ debug, addon, console, msg }) {
     if (row.internal) {
       root.classList.add("sa-debugger-log-internal");
     }
+    if (row.type === "custom") {
+      document.documentElement.style.setProperty("--custom-background-color", row.backgroundcolor);
+      document.documentElement.style.setProperty("--custom-color", row.textcolor);
+      document.documentElement.style.setProperty("--custom-border-color", row.bordercolor);
+    }
     root.dataset.type = row.type;
 
     const icon = document.createElement("div");
@@ -131,12 +136,13 @@ export default async function createLogsTab({ debug, addon, console, msg }) {
     a.blockId === b.blockId &&
     a.targetId === b.targetId;
 
-  const addLog = (text, thread, type) => {
+  const addLog = (text, thread, type, customData = null) => {
     const log = {
       text,
       type,
       count: 1,
       preview: true,
+      customData = null
     };
     if (thread) {
       log.blockId = thread.peekStack ? thread.peekStack() : thread.thread.peekStack();

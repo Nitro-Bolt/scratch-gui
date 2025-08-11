@@ -190,11 +190,11 @@ const untilInEditor = () => {
 const getDisplayNoneWhileDisabledClass = id => `addons-display-none-${id}`;
 
 const parseArguments = code => code
-    .split(/(?=[^\\]%[nbs])/g)
+    .split(/(?=[^\\]%[nbsc])/g)
     .map(i => i.trim())
     .filter(i => i.charAt(0) === '%')
     .map(i => i.substring(0, 2));
-const fixDisplayName = displayName => displayName.replace(/([^\s])(%[nbs])/g, (_, before, arg) => `${before} ${arg}`);
+const fixDisplayName = displayName => displayName.replace(/([^\s])(%[nbsc])/g, (_, before, arg) => `${before} ${arg}`);
 const compareArrays = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 let _firstAddBlockRan = false;

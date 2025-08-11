@@ -185,6 +185,11 @@
   color: red;
   background-color: hsl(0deg 100% 95%);
 }
+.sa-debugger-log[data-type="custom"] {
+  border-color: var(--custom-border-color);
+  color: var(--custom-color);
+  background-color: var(--custom-background-color);
+}
 [theme="dark"] .sa-debugger-log[data-type="warn"] {
   border-color: hsl(50deg, 100%, 15%);
   color: hsl(39deg 100% 90%);
