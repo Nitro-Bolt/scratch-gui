@@ -170,7 +170,6 @@ const motion = function (isInitialSetup, isStage, targetId) {
                 </shadow>
             </value>
         </block>
-        <block type="motion_turnaround"/>
         ${blockSeparator}
         <block type="motion_changexby">
             <value name="DX">
@@ -1305,10 +1304,7 @@ const operators = function (isInitialSetup) {
         <block type="operator_randomBoolean"></block>
         ${blockSeparator}
         <block type="operator_and"/>
-        <block type="operator_nand"/>
-        <block type="operator_nor"/>
         <block type="operator_xor"/>
-        <block type="operator_xnor"/>
         <block type="operator_or"/>
         <block type="operator_not"/>
         ${blockSeparator}
