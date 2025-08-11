@@ -61,7 +61,7 @@ export default async function ({ addon, console, msg }) {
       logMessage(content, thread, "error");
     },
   });
-  addon.tab.addBlock("\u200B\u200Bcustom log\u200B\u200B %s // background color: %s text color: %s border color: %s", {
+  /*addon.tab.addBlock("\u200B\u200Bcustom log\u200B\u200B %s // background color: %s text color: %s border color: %s", {
     args: ["content", "color1", "color2", "color3"],
     displayName: msg("block-error"),
     callback: ({ content, color1, color2, color3 }, thread) => {
@@ -72,7 +72,7 @@ export default async function ({ addon, console, msg }) {
       }
       logMessage(content, thread, "custom", customData);
     },
-  });
+  });*/
 
   const vm = addon.tab.traps.vm;
   await new Promise((resolve, reject) => {
