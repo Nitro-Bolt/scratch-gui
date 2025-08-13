@@ -54,7 +54,9 @@ const MonitorComponent = props => (
                 data-opcode={props.opcode}
             >
                 {React.createElement(modes[props.mode], {
-                    categoryColor: categories[props.category],
+                    categoryColor: categories[props.category] ?? props.category,
+                    // Either get the color by category, or assume the passed category
+                    // is a valid color.
                     ...props
                 })}
             </Box>
@@ -132,7 +134,10 @@ MonitorComponent.categories = categories;
 const monitorModes = Object.keys(modes);
 
 MonitorComponent.propTypes = {
-    category: PropTypes.oneOf(Object.keys(categories)),
+    category: PropTypes.oneOf([
+        PropTypes.string,
+        ...Object.keys(categories)
+    ]),
     componentRef: PropTypes.func.isRequired,
     draggable: PropTypes.bool.isRequired,
     id: PropTypes.string.isRequired,
