@@ -275,7 +275,7 @@ export default async function ({ addon, console }) {
     if (!this.svgFace_) {
       this.sa_catBlockConstructor();
     }
-    if (this.output_ === undefined && (!this.outputConnection && !this.previousConnection)) {
+    const r = originalRenderDraw.call(this, ...args);
     if (this.output_ !== undefined) return r;
     if (!this.outputConnection && !this.previousConnection) {
       this.initCatStuff();
