@@ -460,7 +460,7 @@ class OpcodeLabels {
                 return this._translator(messages.sensing_current_minute);
             case 'second':
                 return this._translator(messages.sensing_current_second);
-            case 'second':
+            case 'millisecond':
                 return this._translator(messages.sensing_current_millisecond);
             case 'timestamp':
                 return this._translator(messages.sensing_current_timestamp);
