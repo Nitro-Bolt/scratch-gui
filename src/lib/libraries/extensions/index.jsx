@@ -179,7 +179,7 @@ const menuItems = [
         iconURL: musicIconURL,
         insetIconURL: musicInsetIconURL,
         customInsetColor: '#CF63CF',
-        tags: ['scratch'],
+        tags: ['scratch', 'noisemaker'],
         description: (
             <FormattedMessage
                 defaultMessage="Play instruments and drums."
@@ -200,7 +200,7 @@ const menuItems = [
         extensionId: 'pen',
         iconURL: penIconURL,
         insetIconURL: penInsetIconURL,
-        tags: ['scratch'],
+        tags: ['scratch', 'graphics'],
         description: (
             <FormattedMessage
                 defaultMessage="Draw with your sprites."
@@ -359,7 +359,7 @@ const menuItems = [
         description: 'Blocks to compute lengths, angles, and areas in two dimensions.',
         iconURL: 'https://extensions.turbowarp.org/images/NOname-awa/graphics2d.svg',
         insetIconURL: turbowarpIcon,
-        tags: ['turbowarp'],
+        tags: ['turbowarp', 'graphics'],
         extDeveloper: 'NOname-awa',
         customInsetColor: '#ff4d4d',
         featured: true
@@ -418,7 +418,7 @@ const menuItems = [
         credits: 'snail\-ide',
         iconURL: defaultExtensionIcon,
         insetIconURL: turbowarpIcon,
-        tags: ['turbowarp'],
+        tags: ['turbowarp', 'noisemaker'],
         description: 'A better way to handle audio from urls.',
         featured: true
     },
@@ -484,7 +484,7 @@ const menuItems = [
     {
         name: 'Pen+',
         extensionId: 'https://extensions.penguinmod.com/extensions/ObviousAlexC/PenPlus.js',
-        tags: ['categoryexpansion'],
+        tags: ['categoryexpansion', 'graphics'],
         iconURL: 'https://extensions.penguinmod.com/images/ObviousAlexC/PenPlus.svg',
         description: "An extension to the Pen category!",
         featured: true,
@@ -1237,7 +1237,7 @@ const menuItems = [
         name: 'Clipping and Blending',
         extensionId: 'https://extensions.turbowarp.org/Xeltalliv/clippingblending.js',
         iconURL: clippingblending,
-        tags: ['turbowarp'],
+        tags: ['turbowarp', 'graphics'],
         insetIconURL: turbowarpIcon,
         description: 'Clipping outside of a specified rectangular area and additive color blending.',
         featured: true,
