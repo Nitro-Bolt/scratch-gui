@@ -15,7 +15,7 @@ export default [
     { tag: 'categoryexpansion', intlLabel: messages.categoryexpansion },
     { tag: 'programminglanguage', intlLabel: messages.programminglanguage },
     { tag: 'divider1', intlLabel: messages.scratch, type: 'divider' },
-    { tag: 'library', intlLabel: messages.library },
+    { tag: 'collections', intlLabel: messages.collections },
     { tag: 'extcreate', intlLabel: messages.extcreate },
     { tag: 'divider3', intlLabel: messages.scratch, type: 'divider' },
     { tag: 'divider1', intlLabel: 'Actions', type: 'title' },
