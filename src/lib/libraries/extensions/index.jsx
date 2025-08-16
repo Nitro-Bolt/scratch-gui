@@ -626,6 +626,15 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'Swift JSON',
+        extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/JSON-Array.js',
+        iconURL: 'https://studio.penguinmod.com/static/assets/e48e8bc4ca2913e19da20f085e9adbe9.svg',
+        tags: ['penguinmod', 'datamgmt'],
+        extDeveloper: 'SharkPool',
+        description: 'POTENTIALLY DANGEROUS, but faster extension for handling JSON objects and arrays. Recommended if you are heavily using JSON several times in a project.',
+        featured: true
+    },
+    {
         name: 'Particle Engine',
         extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/Particle-Engine.js',
         iconURL: 'https://studio.penguinmod.com/static/assets/bd055c3853854218f060871e694b16f7.svg',
@@ -649,7 +658,7 @@ const menuItems = [
         iconURL: theshovelCustomStylesIcon,
         insetIconURL: PenguinmodThumb,
         customInsetColor: '#00c3ff',
-        tags: ['penguinmod'],
+        tags: ['penguinmod', 'graphics'],
         description: 'Customize the appearance of variable monitors and prompts in your project.',
         extDeveloper: 'TheShovel',
         featured: true
@@ -746,7 +755,7 @@ const menuItems = [
         name: 'Canvas Effects',
         extensionId: 'theshovelcanvaseffects',
         iconURL: theshovelCanvasEffectsIcon,
-        tags: ['penguinmod'],
+        tags: ['penguinmod', 'graphics'],
         description: 'Apply visual effects to the entire stage.',
         extDeveloper: 'TheShovel',
         insetIconURL: PenguinmodThumb,
@@ -793,6 +802,16 @@ const menuItems = [
         description: "Have your sprites show themselves as other images or costumes.",
         featured: true,
         twDeveloper: 'LilyMakesThings'
+    },
+    {
+        name: 'Turbo Skins',
+        extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/Turbo-Skins.js',
+        tags: ['penguinmod', 'graphics'],
+        iconURL: 'https://studio.penguinmod.com/static/assets/1f6edff805eca1968b4d615456b1033f.svg',
+        description: 'Display sprites with various images or costumes and control their hitboxes',
+        inspiredExt: '\"Skins\" by LilyMakesThings',
+        featured: true,
+        credits: 'SharkPool'
     },
     {
         name: 'Multiple Timers',
@@ -892,7 +911,7 @@ const menuItems = [
         name: 'Font Manager',
         extensionId: 'https://extensions.penguinmod.com/extensions/SharkPool/Font-Manager.js',
         iconURL: 'https://extensions.penguinmod.com/images/SharkPool/Font-Manager.svg',
-        tags: ['penguinmod'],
+        tags: ['penguinmod', 'graphics'],
         description: 'Manage, create, and delete fonts.',
         credits: 'SharkPool, Ashimee',
         featured: true
