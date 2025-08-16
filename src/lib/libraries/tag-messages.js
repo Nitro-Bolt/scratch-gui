@@ -201,6 +201,16 @@ export default defineMessages({
         description: 'Tag for filtering a library by hardware.',
         id: 'gui.libraryTags.hardware'
     },
+    library: {
+        defaultMessage: 'Collections',
+        description: 'Tag for filtering a library by extension collections.',
+        id: 'gui.libraryTags.library'
+    },
+    extcreate: {
+        defaultMessage: 'Extension Creators',
+        description: 'Tag for finding all extension creator programs / website',
+        id: 'gui.libraryTags.extcreate'
+    },
     collections: {
         defaultMessage: 'Collections',
         description: 'Tag for filtering a library by collections.',
@@ -211,6 +221,16 @@ export default defineMessages({
         description: 'Tag for filtering a library by data management',
         id: 'gui.libraryTags.datamgmt'
     },
+    graphics: {
+        defaultMessage: 'Graphics',
+        description: 'Tag for filtering a library by graphics.',
+        id: 'gui.libraryTags.graphics'
+    },
+    noisemaker: {
+        defaultMessage: 'Sound',
+        description: 'Tag for filtering a library by their relation to sound.',
+        id: 'gui.libraryTags.noisemaker'
+    },
     metal: {
         defaultMessage: 'Metal',
         description: 'Tag for filtering a library by metal sounds.',
@@ -220,6 +240,11 @@ export default defineMessages({
         defaultMessage: 'Monsters',
         description: 'Tag for filtering a library by monster sounds.',
         id: 'gui.libraryTags.monster'
+    },
+    math: {
+        defaultMessage: 'Math',
+        description: 'Tag for filtering a library by math.',
+        id: 'gui.libraryTags.math'
     },
     theme: {
         defaultMessage: 'Theme',
