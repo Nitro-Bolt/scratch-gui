@@ -255,7 +255,7 @@ const menuItems = [
         iconURL: text2speechIconURL,
         insetIconURL: text2speechInsetIconURL,
         customInsetColor: '#9966FF',
-        tags: ['scratch'],
+        tags: ['scratch', 'noisemaker'],
         description: (
             <FormattedMessage
                 defaultMessage="Make your projects talk."
@@ -438,7 +438,7 @@ const menuItems = [
         extensionId: 'https://extensions.turbowarp.org/bitwise.js',
         iconURL: 'https://extensions.turbowarp.org/images/bitwise.svg',
         insetIconURL: turbowarpIcon,
-        tags: ['turbowarp'],
+        tags: ['turbowarp', 'math'],
         customInsetColor: '#ff4d4d',
         description: 'Blocks that operate on the binary representation of numbers in computers.',
         extDeveloper: 'TrueFantom',
@@ -460,6 +460,7 @@ const menuItems = [
         extensionId: 'blockly2math',
         credits: 'Google',
         description: 'use math. that\'s it.',
+        tags: ['math'],
         iconURL: defaultExtensionIcon,
         featured: true
     },
@@ -493,7 +494,7 @@ const menuItems = [
         name: 'Sound Systems',
         extensionId: 'jgExtendedAudio',
         iconURL: jgExtendedAudioExtensionIcon,
-        tags: ['penguinmod', 'categoryexpansion'],
+        tags: ['penguinmod', 'categoryexpansion', 'noisemaker'],
         insetIconURL: PenguinmodThumb,
         customInsetColor: '#00c3ff',
         description: 'An audio grouping system for more intensive audio work.',
@@ -583,7 +584,7 @@ const menuItems = [
         iconURL: pmOperatorsExpansionExtensionIcon,
         insetIconURL: PenguinmodThumb,
         customInsetColor: '#00c3ff',
-        tags: ['penguinmod', 'categoryexpansion'],
+        tags: ['penguinmod', 'categoryexpansion', 'math'],
         description: 'More operators like nand, nor, character code to character, reading multiple lined text line by line, etc.',
         featured: true
     },
@@ -985,7 +986,7 @@ const menuItems = [
         name: '3D Math',
         extensionId: 'https://extensions.penguinmod.com/extensions/ObviousAlexC/3DMath.js',
         iconURL: 'https://extensions.penguinmod.com/images/ObviousAlexC/3DMath.svg',
-        tags: ['penguinmod', '3d', 'graphics'],
+        tags: ['penguinmod', '3d', 'graphics', 'math'],
         description: 'A handful of utilities for making your own sprite-based 3D engine.',
         extDeveloper: 'pinksheep2917',
         featured: true
@@ -994,7 +995,7 @@ const menuItems = [
         name: 'Extra Mathematics',
         extensionId: 'https://extensions.penguinmod.com/extensions/jwklong/mathematics.js',
         iconURL: 'https://extensions.penguinmod.com/images/jwklong/mathematics.png',
-        tags: ['penguinmod', 'categoryexpansion'],
+        tags: ['penguinmod', 'categoryexpansion', 'math'],
         description: 'Complicated maths extension for nerds.',
         extDeveloper: 'jwklong',
         featured: true
@@ -1181,7 +1182,7 @@ const menuItems = [
         iconURL: 'https://extensions.penguinmod.com/images/SharkPool/Sound-Waves.svg',
         insetIconURL: PenguinmodThumb,
         customInsetColor: '#00c3ff',
-        tags: ['penguinmod'],
+        tags: ['penguinmod', 'noisemaker'],
         description: 'Make sounds with oscillators!',
         credits: 'SharkPool',
         featured: true
@@ -1357,7 +1358,7 @@ const menuItems = [
         name: 'Infinity',
         extensionId: 'jwNum',
         iconURL: 'https://studio.penguinmod.com/static/assets/03562df738acb5b29670d58970eb432f.svg',
-        tags: ['penguinmod'],
+        tags: ['penguinmod', 'math'],
         description: 'Advanced number type capable of really big numbers.',
         extDeveloper: 'jwklong',
         credits: 'Naruyoko for ExpantaNum.js',
@@ -1376,7 +1377,7 @@ const menuItems = [
         name: 'Vector',
         extensionId: 'jwVector',
         iconURL: 'https://studio.penguinmod.com/static/assets/3b0c388c2cf1462401585224ffe2f077.svg',
-        tags: ['penguinmod'],
+        tags: ['penguinmod', 'math'],
         description: 'Vector type for calculating with X and Y coordinates.',
         extDeveloper: 'jwklong',
         featured: true
@@ -1627,6 +1628,7 @@ const menuItems = [
         iconURL: turboBuilderIcon,
         description: 'Create your own amazing extensions using a scratch-based UI!',
         credits: 'Started by JeremyGamer13, continued by jwklong',
+        tags: ['extcreate'],
         featured: true,
         disabled: false
     },
@@ -1637,6 +1639,7 @@ const menuItems = [
         iconURL: 'https://snail-ide.js.org/static/assets/2bcc1426567c2ca1179de43c02577d1a.svg',
         description: '[Temporarily disabled due to the link not working.] Snail IDE version of TurboBuilder',
         collaborator: 'Started by JeremyGamer13, continued by jwklong, modified by nmsderp',
+        tags: ['extcreate'],
         disabled: true,
         featured: true
     },
@@ -1657,6 +1660,7 @@ const menuItems = [
         iconURL: dmDinoBuilderIcon,
         description: 'Create your own amazing extensions using a TurboBuilder Mod scratch-based UI!',
         credits: 'MrIncredibleMakerZe',
+        tags: ['extcreate'],
         featured: true,
         disabled: false
     },
@@ -1667,6 +1671,7 @@ const menuItems = [
         iconURL: 'https://studio.penguinmod.com/static/assets/49a8736bf7fbb79e2469272f127e06d3.svg',
         description: 'Create extensions with a block-based UI.',
         extDeveloper: 'jwklong',
+        tags: ['extcreate'],
         featured: true,
     },
     {
