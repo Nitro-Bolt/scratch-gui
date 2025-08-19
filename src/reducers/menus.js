@@ -3,6 +3,7 @@ const CLOSE_MENU = 'scratch-gui/menus/CLOSE_MENU';
 
 const MENU_ABOUT = 'aboutMenu';
 const MENU_ACCOUNT = 'accountMenu';
+const MENU_SETTINGS = 'settingsMenu';
 const MENU_FILE = 'fileMenu';
 const MENU_EDIT = 'editMenu';
 const MENU_LANGUAGE = 'languageMenu';
@@ -13,6 +14,7 @@ const MENU_ERRORS = 'errorMenu';
 const initialState = {
     [MENU_ABOUT]: false,
     [MENU_ACCOUNT]: false,
+    [MENU_SETTINGS]: false,
     [MENU_FILE]: false,
     [MENU_EDIT]: false,
     [MENU_LANGUAGE]: false,
@@ -49,6 +51,9 @@ const aboutMenuOpen = state => state.scratchGui.menus[MENU_ABOUT];
 const openAccountMenu = () => openMenu(MENU_ACCOUNT);
 const closeAccountMenu = () => closeMenu(MENU_ACCOUNT);
 const accountMenuOpen = state => state.scratchGui.menus[MENU_ACCOUNT];
+const openSettingsMenu = () => openMenu(MENU_SETTINGS);
+const closeSettingsMenu = () => closeMenu(MENU_SETTINGS);
+const settingsMenuOpen = state => state.scratchGui.menus[MENU_SETTINGS];
 const openFileMenu = () => openMenu(MENU_FILE);
 const closeFileMenu = () => closeMenu(MENU_FILE);
 const fileMenuOpen = state => state.scratchGui.menus[MENU_FILE];

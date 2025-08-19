@@ -17,7 +17,7 @@ const BufferedInput = BufferedInputHOC(Input);
 
 const messages = defineMessages({
     title: {
-        defaultMessage: 'Settings',
+        defaultMessage: 'Advanced Settings',
         description: 'Title of settings modal',
         id: 'tw.settingsModal.title'
     },

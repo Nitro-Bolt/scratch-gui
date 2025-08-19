@@ -52,6 +52,9 @@ import {
     openFileMenu,
     closeFileMenu,
     fileMenuOpen,
+    openSettingsMenu,
+    closeSettingsMenu,
+    settingsMenuOpen,
     openEditMenu,
     closeEditMenu,
     editMenuOpen,
@@ -540,6 +543,36 @@ class MenuBar extends React.Component {
                                 </MenuBarMenu>
                             </div>
                         </div>}
+                        <div
+                            className={classNames(styles.menuBarItem, styles.hoverable, {
+                                [styles.active]: this.props.settingsMenuOpen
+                            })}
+                            onMouseUp={this.props.onClickSettingsItem}
+                        >
+                            <div className={classNames(styles.settingsMenu)}>
+                                <FormattedMessage
+                                    defaultMessage="Settings"
+                                    description="Text for settings dropdown menu"
+                                    id="tw.menuBar.settings"
+                                />
+                            </div>
+                            <MenuBarMenu
+                                className={classNames(styles.menuBarMenu)}
+                                open={this.props.settingsMenuOpen}
+                                place={this.props.isRtl ? 'left' : 'right'}
+                                onRequestClose={this.props.onRequestCloseSettings}
+                            >
+                                <MenuSection>
+                                    <MenuItem onClick={() => {alert("doesn't do anything")}}>
+                                        <FormattedMessage
+                                            defaultMessage="Nothing here yet.."
+                                            description="Placeholder Menu bar item for settings"
+                                            id="dm.menuBar.placeHolder"
+                                        />
+                                    </MenuItem>
+                                </MenuSection>
+                            </MenuBarMenu>
+                        </div>
                         {(this.props.canManageFiles) && (
                             <div
                                 className={classNames(styles.menuBarItem, styles.hoverable, {
@@ -785,8 +818,8 @@ class MenuBar extends React.Component {
                                 <MenuSection>
                                     <MenuItem onClick={this.props.onClickSettings}>
                                         <FormattedMessage
-                                            defaultMessage="Settings"
-                                            description="Menu bar item for settings"
+                                            defaultMessage="Advanced Settings"
+                                            description="Menu bar item for advanced settings"
                                             id="tw.menuBar.moreSettings"
                                         />
                                     </MenuItem>
@@ -814,7 +847,7 @@ class MenuBar extends React.Component {
                         >
                             <div>
                                 <FormattedMessage
-                                    defaultMessage="Settings"
+                                    defaultMessage="Advanced"
                                     description="Text for gameplay settings menu item"
                                     id="tw.menuBar.advanced"
                                 />
@@ -925,6 +958,7 @@ MenuBar.propTypes = {
     editMenuOpen: PropTypes.bool,
     enableCommunity: PropTypes.bool,
     fileMenuOpen: PropTypes.bool,
+    settingsMenuOpen: PropTypes.bool,
     handleSaveProject: PropTypes.func,
     intl: intlShape,
     isPlayerOnly: PropTypes.bool,
@@ -1006,6 +1040,7 @@ const mapStateToProps = (state, ownProps) => {
         compileErrors: state.scratchGui.tw.compileErrors,
         fileMenuOpen: fileMenuOpen(state),
         editMenuOpen: editMenuOpen(state),
+        settingsMenuOpen: settingsMenuOpen(state),
         isPlayerOnly: state.scratchGui.mode.isPlayerOnly,
         isRtl: state.locales.isRtl,
         isUpdating: getIsUpdating(loadingState),
@@ -1031,6 +1066,8 @@ const mapDispatchToProps = dispatch => ({
     onClickAccount: () => dispatch(openAccountMenu()),
     onRequestCloseAccount: () => dispatch(closeAccountMenu()),
     onClickFile: () => dispatch(openFileMenu()),
+    onRequestCloseSettings: () => dispatch(closeSettingsMenu()),
+    onClickSettingsItem: () => dispatch(openSettingsMenu()),
     onRequestCloseFile: () => dispatch(closeFileMenu()),
     onClickEdit: () => dispatch(openEditMenu()),
     onRequestCloseEdit: () => dispatch(closeEditMenu()),
