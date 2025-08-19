@@ -8,9 +8,9 @@ const manifest = {
             "link": "https://scratch.mit.edu/users/MrIncredibleMakerZe/"
         }
     ],
-    "userscripts": [
+    "userstyles": [
         {
-            "url": "userscript.js"
+            "url": "style.css"
         }
     ],
     "tags": ["new"],

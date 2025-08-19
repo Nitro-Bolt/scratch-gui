@@ -1,0 +1,3 @@
+img[class^='menu-bar_scratch-logo'] {
+    display: none;
+}
