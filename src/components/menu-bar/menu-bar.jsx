@@ -549,7 +549,7 @@ class MenuBar extends React.Component {
                             })}
                             onMouseUp={this.props.onClickSettingsItem}
                         >
-                            <div className={classNames(styles.settingsMenu)}>
+                            <div className={classNames(styles.editMenu)}>
                                 <FormattedMessage
                                     defaultMessage="Settings"
                                     description="Text for settings dropdown menu"
@@ -995,6 +995,7 @@ MenuBar.propTypes = {
     onClickSave: PropTypes.func,
     onClickSaveAsCopy: PropTypes.func,
     onClickSettings: PropTypes.func,
+    onClickSettingsItem: PropTypes.func,
     onClickErrors: PropTypes.func,
     onRequestCloseErrors: PropTypes.func,
     onLogOut: PropTypes.func,
@@ -1004,6 +1005,7 @@ MenuBar.propTypes = {
     onRequestOpenAbout: PropTypes.func,
     onRequestCloseAbout: PropTypes.func,
     onRequestCloseAccount: PropTypes.func,
+    onRequestCloseSettings: PropTypes.func,
     onRequestCloseEdit: PropTypes.func,
     onRequestCloseFile: PropTypes.func,
     onRequestCloseLanguage: PropTypes.func,
