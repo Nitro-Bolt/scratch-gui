@@ -3,7 +3,6 @@ import defaultsDeep from 'lodash.defaultsdeep';
 import accentLime from './accent/lime.js';
 import accentLightBlue from './accent/light-blue.js';
 import accentPurple from './accent/purple.js';
-import accentRed from './accent/red.js';
 
 const ACCENT_LIME = 'lime green';
 const ACCENT_LIGHTBLUE = 'light blue';
@@ -13,7 +12,6 @@ const ACCENT_MAP = {
     [ACCENT_LIME]: accentLime,
     [ACCENT_LIGHTBLUE]: accentLightBlue,
     [ACCENT_PURPLE]: accentPurple,
-    [ACCENT_RED]: accentRed,
 };
 
 const ACCENT_DEFAULT = ACCENT_LIME;
