@@ -22,6 +22,7 @@ import restoreDeletionReducer, {restoreDeletionInitialState} from './restore-del
 import spriteInfoDisabledReducer, {spriteInfoDisabledInitialState} from './set-spriteinfo-disabled';
 import stageSizeReducer, {stageSizeInitialState} from './stage-size';
 import targetReducer, {targetsInitialState} from './targets';
+import themeReducer, {themeInitialState} from './theme';
 import timeoutReducer, {timeoutInitialState} from './timeout';
 import toolboxReducer, {toolboxInitialState} from './toolbox';
 import twReducer, {twInitialState} from './tw';
@@ -60,6 +61,7 @@ const guiInitialState = {
     restoreDeletion: restoreDeletionInitialState,
     spriteInfoDisabled: spriteInfoDisabledInitialState,
     targets: targetsInitialState,
+    theme: themeInitialState,
     timeout: timeoutInitialState,
     toolbox: toolboxInitialState,
     tw: twInitialState,
@@ -165,6 +167,7 @@ const guiReducer = combineReducers({
     restoreDeletion: restoreDeletionReducer,
     spriteInfoDisabled: spriteInfoDisabledReducer,
     targets: targetReducer,
+    theme: themeReducer,
     timeout: timeoutReducer,
     toolbox: toolboxReducer,
     tw: twReducer,

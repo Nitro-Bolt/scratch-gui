@@ -26,6 +26,8 @@ import DeletionRestorer from '../../containers/deletion-restorer.jsx';
 import TurboMode from '../../containers/turbo-mode.jsx';
 import MenuBarHOC from '../../containers/menu-bar-hoc.jsx';
 
+import TWAccentThemeMenu from './tw-theme-accent.jsx';
+
 import FramerateChanger from '../../containers/tw-framerate-changer.jsx';
 import ChangeUsername from '../../containers/tw-change-username.jsx';
 import CloudVariablesToggler from '../../containers/tw-cloud-toggler.jsx';
@@ -563,9 +565,10 @@ class MenuBar extends React.Component {
                                 onRequestClose={this.props.onRequestCloseSettings}
                             >
                                 <MenuSection>
+                                    <TWAccentThemeMenu />
                                     <MenuItem onClick={() => {alert("doesn't do anything")}}>
                                         <FormattedMessage
-                                            defaultMessage="Nothing here yet.."
+                                            defaultMessage="Doesn't do anything.."
                                             description="Placeholder Menu bar item for settings"
                                             id="dm.menuBar.placeHolder"
                                         />

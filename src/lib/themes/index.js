@@ -29,6 +29,10 @@ class Theme {
         this.accent = Object.prototype.hasOwnProperty.call(ACCENT_MAP, accent) ? accent : ACCENT_DEFAULT;
     }
 
+    static light = new Theme(ACCENT_DEFAULT);
+    static dark = new Theme(ACCENT_DEFAULT);
+    static highContrast = new Theme(ACCENT_DEFAULT);
+
     set (to) {
         return new Theme(to);
     }
