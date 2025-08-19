@@ -1,3 +1,3 @@
-img[class^='menu-bar_scratch-logo'] {
+img[class*='menu-bar_scratch-logo'] {
     display: none;
 }
