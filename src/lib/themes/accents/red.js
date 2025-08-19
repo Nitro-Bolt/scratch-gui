@@ -2,6 +2,7 @@ const guiColors = {
     'motion-primary': '#ff4c4c',
     'motion-primary-transparent': '#ff4c4ce6',
     'motion-tertiary': '#cc3333',
+    'motion-primary-dark': '#333333',
 
     'extensions-primary': 'hsla(10, 85%, 65%, 1)',
     'extensions-tertiary': 'hsla(10, 85%, 40%, 1)',
