@@ -34,7 +34,7 @@ const ColorIcon = props => (
     <div
         className={styles.accentIconOuter}
         style={{
-            backgroundColor: ACCENT_MAP[props.id]['motion-secondary']
+            backgroundColor: ACCENT_MAP[props.id]['motion-primary']
         }}
     />
 );
