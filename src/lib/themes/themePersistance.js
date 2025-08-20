@@ -42,6 +42,28 @@ const detectTheme = () => {
 };
 
 /**
+ * @private
+ * this function uses the W3Color JavaScript Library.
+ * https://www.w3schools.com/colors/colors_converter.asp
+ */
+const convertColor = color => {
+    if (!document.getElementById("w3schools_w3color_script")) {
+        const script = document.createElement("script");
+        script.src = "https://www.w3schools.com/lib/w3color.js";
+        script.id = "w3schools_w3color_script";
+        document.body.appendChild(script)
+    }
+
+    const c = w3color(color)
+
+    if (c.valid) {
+        return c.toHslaString()
+    } else {
+        throw new Error(color, " is not a valid color.")
+    }
+}
+
+/**
  * @param {Theme} theme the theme
  */
 const persistTheme = theme => {
@@ -53,7 +75,7 @@ const persistTheme = theme => {
     
     const accentData = new Theme(local).accentData;
     for (const key in accentData) {
-        root.style.setProperty("--" + key, accentData[key]);
+        root.style.setProperty("--" + key, convertColor(accentData[key]));
     }
 };
 
