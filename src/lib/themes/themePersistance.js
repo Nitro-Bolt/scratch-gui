@@ -7,6 +7,8 @@ const PREFERS_DARK_QUERY = matchMedia('(prefers-color-scheme: dark)');
 const STORAGE_KEY = 'tw:theme';
 const ACCENT_KEY = 'tw:accent';
 
+window.themeTEST = theme => new Theme(theme)
+
 /**
  * @returns {Theme} detected theme
  */

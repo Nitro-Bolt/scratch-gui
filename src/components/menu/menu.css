@@ -8,10 +8,8 @@
     padding: 0;
     margin: 0;
     min-width: 186px;
-    /* tw: no max width */
-    /* max-width: 260px; */
     overflow: visible;
-    color: $ui-white;
+
     box-shadow: 0 8px 8px 0 $ui-black-transparent-default;
 }
 [theme="dark"] .menu {
@@ -34,10 +32,13 @@
     font-size: .75rem;
     margin: 0;
     font-weight: bold;
+    color: $ui-white;
+    position: relative;
 }
 
 .menu-item.active,
-.menu-item:hover {
+.menu-item:hover,
+.menu-item.expanded {
     background-color: $ui-black-transparent;
 }
 
@@ -47,4 +48,54 @@
 
 .menu-section {
     border-top: 1px solid $ui-black-transparent;
+}
+
+.submenu {
+    display: none;
+    position: absolute;
+    top: -1px;
+    min-width: 186px;
+    height: max-content;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.submenu.right {
+    left: 100%;
+}
+
+.submenu.left {
+    right: 100%;
+}
+
+.submenu > .menu {
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-color: #fff $motion-primary;
+    border-radius: 8px;
+}
+
+.menu-item.expanded > .submenu {
+    display: block;
+}
+
+:not(:has(> .menu-item.expanded)) > .menu-item:hover > .submenu {
+    display: block;
+}
+
+/* Fallback styling for webkit browsers that don't support scrollbar-color */
+
+.submenu > .menu::-webkit-scrollbar {
+    width: 12px;
+}
+
+.submenu > .menu::-webkit-scrollbar-track {
+    background: $motion-primary;
+}
+
+.submenu > .menu::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    border-radius: 12px;
+    border: 3px solid $motion-primary;
 }
