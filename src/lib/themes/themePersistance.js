@@ -9,6 +9,10 @@ const ACCENT_KEY = 'tw:accent';
 
 window.themeTEST = theme => new Theme(theme)
 
+if (localStorage && localStorage.getItem(ACCENT_KEY) === null) {
+    localStorage.setItem(ACCENT_KEY, 'lime green')
+}
+
 /**
  * @returns {Theme} detected theme
  */
@@ -41,7 +45,16 @@ const detectTheme = () => {
  * @param {Theme} theme the theme
  */
 const persistTheme = theme => {
+    const root = document.documentElement;
+
+    if (localStorage) localStorage.setItem(ACCENT_KEY, (new Theme(theme).accent));
+
+    const local = localStorage.getItem(ACCENT_KEY)
     
+    const accentData = new Theme(theme).accentData;
+    for (const key of accentData) {
+        root.style.setProperty("--" + key, accentData[key]);
+    }
 };
 
 export {

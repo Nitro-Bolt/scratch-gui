@@ -27,6 +27,8 @@ class Theme {
         this.id = ++themeObjectsCreated;
         /** @readonly */
         this.accent = Object.prototype.hasOwnProperty.call(ACCENT_MAP, accent) ? accent : ACCENT_DEFAULT;
+        /** @readonly */
+        this.accentData = ACCENT_MAP[accent] ? ACCENT_MAP[accent] : ACCENT_MAP[ACCENT_DEFAULT]
     }
 
     static light = new Theme(ACCENT_DEFAULT);
