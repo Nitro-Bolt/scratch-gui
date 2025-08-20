@@ -49,7 +49,7 @@ const persistTheme = theme => {
 
     const local = localStorage.getItem(ACCENT_KEY)
     
-    const accent = Theme.set(local).accent;
+    const accent = new Theme().set(local).accent;
     document.body.setAttribute("colorAccent", accent)
 };
 
