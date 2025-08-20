@@ -4,7 +4,7 @@ import {FormattedMessage} from 'react-intl';
 import {connect} from 'react-redux';
 
 import {MenuItem} from '../menu/menu.jsx';
-import {closeSettingsMenu} from '../../reducers/menus.js';
+import {settingsMenuOpen, closeSettingsMenu} from '../../reducers/menus.js';
 import lightModeIcon from './tw-sun.svg';
 import darkModeIcon from './tw-moon.svg';
 import styles from './settings-menu.css';
@@ -17,8 +17,10 @@ const GuiThemeMenu = ({
             className={styles.option}
             // eslint-disable-next-line react/jsx-no-bind
             onClick={() => {
-                closeSettingsMenu()
                 onChangeTheme()
+                do {
+                    closeSettingsMenu()
+                } while (!!settingsMenuOpen)
             }}
         >
             <img
