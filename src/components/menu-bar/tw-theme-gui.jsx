@@ -10,15 +10,14 @@ import darkModeIcon from './tw-moon.svg';
 import styles from './settings-menu.css';
 
 const GuiThemeMenu = ({
-    onChangeTheme,
-    theme
+    onChangeTheme
 }) => (
     <MenuItem>
         <div
             className={styles.option}
             // eslint-disable-next-line react/jsx-no-bind
             onClick={() => {
-                this.props.onChangeTheme()
+                onChangeTheme()
                 closeSettingsMenu()
             }}
         >
