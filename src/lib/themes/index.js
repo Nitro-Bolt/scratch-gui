@@ -9,11 +9,15 @@ const ACCENT_LIME = 'Lime Green';
 const ACCENT_LIGHTBLUE = 'Light Blue';
 const ACCENT_PURPLE = 'Purple';
 const ACCENT_RED = 'Red';
+const ACCENT_SCRATCH = 'Scratch';
+const ACCENT_MAGENTA = 'Magenta';
 const ACCENT_MAP = {
     [ACCENT_LIME]: accentLime,
     [ACCENT_LIGHTBLUE]: accentLightBlue,
     [ACCENT_PURPLE]: accentPurple,
     [ACCENT_RED]: accentRed,
+    [ACCENT_SCRATCH]: {},
+    [ACCENT_MAGENTA]: {},
 };
 
 const ACCENT_DEFAULT = ACCENT_LIME;
@@ -54,5 +58,7 @@ export {
     ACCENT_LIGHTBLUE,
     ACCENT_PURPLE,
     ACCENT_RED,
+    ACCENT_SCRATCH,
+    ACCENT_MAGENTA,
     ACCENT_MAP
 }

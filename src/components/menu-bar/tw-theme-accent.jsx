@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import check from './check.svg';
 import dropdownCaret from './dropdown-caret.svg';
 import {MenuItem, Submenu} from '../menu/menu.jsx';
-import {ACCENT_LIGHTBLUE, ACCENT_MAP, ACCENT_RED, ACCENT_LIME, Theme} from '../../lib/themes/index.js';
+import {ACCENT_LIGHTBLUE, ACCENT_MAP, ACCENT_RED, ACCENT_LIME, ACCENT_SCRATCH, ACCENT_PURPLE, ACCENT_MAGENTA, Theme} from '../../lib/themes/index.js';
 import {openAccentMenu, accentMenuOpen, closeSettingsMenu} from '../../reducers/menus.js';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
@@ -28,6 +28,16 @@ const options = defineMessages({
         defaultMessage: 'Light Blue',
         description: 'Name of the light blue color scheme. Matches Penguinmod\'s colors.',
         id: 'dm.accent.lightblue'
+    },
+    [ACCENT_SCRATCH]: {
+        defaultMessage: 'Scratch',
+        description: 'Name of the Scratch\'s color scheme. Matches Scratch-GUI\'s colors.',
+        id: 'dm.accent.scratch'
+    },
+    [ACCENT_MAGENTA]: {
+        defaultMessage: 'Magenta',
+        description: 'Name of the magenta (sort of) color scheme. Matches Snail-IDE\'s colors.',
+        id: 'dm.accent.magenta'
     }
 });
 
