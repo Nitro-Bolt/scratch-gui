@@ -8,7 +8,7 @@ const STORAGE_KEY = 'tw:theme';
 const ACCENT_KEY = 'tw:accent';
 
 if (localStorage && localStorage.getItem(ACCENT_KEY) === null) {
-    localStorage.setItem(ACCENT_KEY, 'lime green')
+    localStorage.setItem(ACCENT_KEY, 'Lime Green')
 }
 
 /**
@@ -45,7 +45,7 @@ const detectTheme = () => {
 const persistTheme = theme => {
     const root = document.documentElement;
 
-    if (localStorage) localStorage.setItem(ACCENT_KEY, (new Theme(theme).accent));
+    if (localStorage) localStorage.setItem(ACCENT_KEY, theme);
 
     const local = localStorage.getItem(ACCENT_KEY)
     
