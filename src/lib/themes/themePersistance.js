@@ -48,9 +48,7 @@ const persistTheme = theme => {
     if (localStorage) localStorage.setItem(ACCENT_KEY, theme);
 
     const local = localStorage.getItem(ACCENT_KEY)
-    
-    const accent = new Theme().set(local).accent;
-    document.body.setAttribute("colorAccent", accent)
+    document.body.setAttribute("coloraccent", local)
 };
 
 export {
