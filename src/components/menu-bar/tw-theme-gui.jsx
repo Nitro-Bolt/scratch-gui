@@ -17,8 +17,8 @@ const GuiThemeMenu = ({
             className={styles.option}
             // eslint-disable-next-line react/jsx-no-bind
             onClick={() => {
-                onChangeTheme()
                 closeSettingsMenu()
+                onChangeTheme()
             }}
         >
             <img
