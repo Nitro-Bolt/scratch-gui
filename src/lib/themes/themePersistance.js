@@ -43,8 +43,6 @@ const detectTheme = () => {
  * @param {Theme} theme the theme
  */
 const persistTheme = theme => {
-    const root = document.documentElement;
-
     if (localStorage) localStorage.setItem(ACCENT_KEY, theme);
 
     const local = localStorage.getItem(ACCENT_KEY)
