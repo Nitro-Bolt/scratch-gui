@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {FormattedMessage} from 'react-intl';
 import {connect} from 'react-redux';
 
@@ -8,6 +8,23 @@ import {closeSettingsMenu} from '../../reducers/menus.js';
 import lightModeIcon from './tw-sun.svg';
 import darkModeIcon from './tw-moon.svg';
 import styles from './settings-menu.css';
+
+const [theme, setTheme] = useState(localStorage.getItem("tw:theme") || "light");
+
+useEffect(() => {
+    const handleStorageChange = (e) => {
+        if (e.key === "tw:theme") {
+            setTheme(e.newValue);
+        }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+}, []);
+
+const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+};
 
 const GuiThemeMenu = ({
     onChangeTheme
@@ -18,17 +35,18 @@ const GuiThemeMenu = ({
             // eslint-disable-next-line react/jsx-no-bind
             onClick={() => {
                 onChangeTheme()
+                toggleTheme()
                 closeSettingsMenu()
             }}
         >
             <img
-                src={localStorage.getItem("tw:theme") === 'light' ? lightModeIcon : darkModeIcon}
+                src={theme === 'dark' ? lightModeIcon : darkModeIcon}
                 draggable={false}
                 width={24}
                 height={24}
             />
             <span className={styles.submenuLabel}>
-                {localStorage.getItem("tw:theme") === 'light' ? (
+                {theme === 'dark' ? (
                     <FormattedMessage
                         defaultMessage="Switch To Light Mode"
                         description="Menu item to change color scheme to light (it is currently dark)"
