@@ -42,20 +42,6 @@ const detectTheme = () => {
 };
 
 /**
- * @private
- */
-const convertColor = color => {
-    const div = document.createElement("div");
-    div.style.color = color;
-    document.body.appendChild(div);
-
-    const normalized = getComputedStyle(div).color;
-    document.body.removeChild(div);
-
-    return normalized;
-}
-
-/**
  * @param {Theme} theme the theme
  */
 const persistTheme = theme => {
@@ -67,7 +53,7 @@ const persistTheme = theme => {
     
     const accentData = new Theme(local).accentData;
     for (const key in accentData) {
-        root.style.setProperty("--" + key, convertColor(accentData[key]));
+        root.style.setProperty("--" + key, accentData[key]);
     }
 };
 
