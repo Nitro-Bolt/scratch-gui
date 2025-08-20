@@ -43,7 +43,7 @@ const detectTheme = () => {
  * @param {Theme} theme the theme
  */
 const persistTheme = theme => {
-    if (localStorage) localStorage.setItem(ACCENT_KEY, theme);
+    if (localStorage) localStorage.setItem(ACCENT_KEY, theme.accent);
 
     const local = localStorage.getItem(ACCENT_KEY)
     document.body.setAttribute("coloraccent", local)

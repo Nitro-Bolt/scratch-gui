@@ -99,7 +99,7 @@ const AccentThemeMenu = ({
                     id={item}
                     isSelected={theme.accent === item}
                     // eslint-disable-next-line react/jsx-no-bind
-                    onClick={() => {console.log(theme.set(item)); onChangeTheme(theme.set(item))}}
+                    onClick={() => onChangeTheme(theme.set(item))}
                 />
             ))}
         </Submenu>
