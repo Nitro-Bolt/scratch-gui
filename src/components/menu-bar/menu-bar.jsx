@@ -566,13 +566,13 @@ class MenuBar extends React.Component {
                             >
                                 <MenuSection>
                                     <TWAccentThemeMenu />
-                                    <MenuItem onClick={() => {alert("doesn't do anything")}}>
+                                    {/*<MenuItem onClick={() => {alert("doesn't do anything")}}>
                                         <FormattedMessage
                                             defaultMessage="Doesn't do anything.."
                                             description="Placeholder Menu bar item for settings"
                                             id="dm.menuBar.placeHolder"
                                         />
-                                    </MenuItem>
+                                    </MenuItem>*/}
                                 </MenuSection>
                             </MenuBarMenu>
                         </div>
