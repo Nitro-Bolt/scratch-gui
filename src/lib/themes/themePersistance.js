@@ -51,12 +51,10 @@ const persistTheme = theme => {
 
     const local = localStorage.getItem(ACCENT_KEY)
     
-    const accentData = new Theme(local).accentData;
-    /*for (const key of accentData) {
+    const accentData = JSON.parse(new Theme(local).accentData);
+    for (const key of accentData) {
         root.style.setProperty("--" + key, accentData[key]);
-    }*/
-
-    console.log("accentData of ", local, ": ", accentData, " accentData type: ", typeof accentData)
+    }
 };
 
 export {
