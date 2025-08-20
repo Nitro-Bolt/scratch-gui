@@ -27,6 +27,7 @@ import TurboMode from '../../containers/turbo-mode.jsx';
 import MenuBarHOC from '../../containers/menu-bar-hoc.jsx';
 
 import TWAccentThemeMenu from './tw-theme-accent.jsx';
+import TWGuiThemeMenu from './tw-theme-gui.jsx';
 
 import FramerateChanger from '../../containers/tw-framerate-changer.jsx';
 import ChangeUsername from '../../containers/tw-change-username.jsx';
@@ -565,6 +566,9 @@ class MenuBar extends React.Component {
                                 onRequestClose={this.props.onRequestCloseSettings}
                             >
                                 <MenuSection>
+                                    <TWGuiThemeMenu
+                                        onChangeTheme={this.props.onClickTheme}
+                                    />
                                     <TWAccentThemeMenu />
                                     {/*<MenuItem onClick={() => {alert("doesn't do anything")}}>
                                         <FormattedMessage

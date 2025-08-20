@@ -16,8 +16,12 @@ const ACCENT_MAP = {
     [ACCENT_LIGHTBLUE]: accentLightBlue,
     [ACCENT_PURPLE]: accentPurple,
     [ACCENT_RED]: accentRed,
-    [ACCENT_SCRATCH]: {},
-    [ACCENT_MAGENTA]: {},
+    [ACCENT_SCRATCH]: {
+        'motion-primary': 'hsla(260, 60%, 60%, 1)'
+    },
+    [ACCENT_MAGENTA]: {
+        'motion-primary': 'hsla(289, 100%, 54%, 1)'
+    },
 };
 
 const ACCENT_DEFAULT = ACCENT_LIME;

@@ -56,8 +56,8 @@ body[coloraccent="Scratch"] {
     --drop-highlight: hsla(215, 100%, 77%, 1);
 }
 body[coloraccent="Magenta"] {
-    --motion-primary: hsla(289, 100%, 54%, 1);;
-    --motion-tertiary: hsla(289, 100%, 39%, 1);;
+    --motion-primary: hsla(289, 100%, 54%, 1);
+    --motion-tertiary: hsla(289, 100%, 39%, 1);
     --motion-transparent: hsla(289, 100%, 54%, 0.35);
 
     --motion-primary-dark: #57039c;
