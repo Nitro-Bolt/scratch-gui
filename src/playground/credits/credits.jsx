@@ -86,7 +86,7 @@ const Credits = () => (
             <UserList users={UserData.pmDevelopers} />
             <p><i>The list order is randomized on each refresh.</i></p>
             <p>
-                We've also included work from other open-source projects inside of PenguinMod.
+                We've also included work from other open-source projects inside of DinosaurMod.
                 Here's a list of some other projects you should check out:
             </p>
             <UserList users={UserData.pmCodeUsedFrom} />
@@ -94,6 +94,7 @@ const Credits = () => (
             <ul>
                 <li>Code for "Center" option in Costume editor is from <a href="https://github.com/Nitro-Bolt/scratch-paint/blob/develop/src/containers/mode-tools.jsx#L203-L216">Cubester@Nitro-Bolt</a></li>
                 <li>The 404 page comes from <a href="https://github.com/Snail-ide/snail-ide.github.io/blob/develop/static/404.html">nmsderp@Snail-IDE</a></li>
+                <li>The Settings menu in the menu-bar is from <a href="https://github.com/TurboWarp/scratch-gui/blob/develop/src/components/menu-bar/settings-menu.jsx">GarboMuffin@TurboWarp</a></li>
             </ul>
         </section>
         <section>
