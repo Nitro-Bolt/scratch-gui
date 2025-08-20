@@ -4,7 +4,7 @@ import {FormattedMessage} from 'react-intl';
 import {connect} from 'react-redux';
 
 import {MenuItem} from '../menu/menu.jsx';
-import {settingsMenuOpen, closeSettingsMenu} from '../../reducers/menus.js';
+import {closeSettingsMenu} from '../../reducers/menus.js';
 import lightModeIcon from './tw-sun.svg';
 import darkModeIcon from './tw-moon.svg';
 import styles from './settings-menu.css';
@@ -18,19 +18,17 @@ const GuiThemeMenu = ({
             // eslint-disable-next-line react/jsx-no-bind
             onClick={() => {
                 onChangeTheme()
-                do {
-                    closeSettingsMenu()
-                } while (!!settingsMenuOpen)
+                closeSettingsMenu()
             }}
         >
             <img
-                src={localStorage.getItem("tw:theme") === 'dark' ? lightModeIcon : darkModeIcon}
+                src={localStorage.getItem("tw:theme") === 'light' ? lightModeIcon : darkModeIcon}
                 draggable={false}
                 width={24}
                 height={24}
             />
             <span className={styles.submenuLabel}>
-                {localStorage.getItem("tw:theme") === 'dark' ? (
+                {localStorage.getItem("tw:theme") === 'light' ? (
                     <FormattedMessage
                         defaultMessage="Switch To Light Mode"
                         description="Menu item to change color scheme to light (it is currently dark)"
