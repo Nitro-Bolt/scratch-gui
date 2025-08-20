@@ -43,24 +43,16 @@ const detectTheme = () => {
 
 /**
  * @private
- * this function uses the W3Color JavaScript Library.
- * https://www.w3schools.com/colors/colors_converter.asp
  */
 const convertColor = color => {
-    if (!document.getElementById("w3schools_w3color_script")) {
-        const script = document.createElement("script");
-        script.src = "https://www.w3schools.com/lib/w3color.js";
-        script.id = "w3schools_w3color_script";
-        document.body.appendChild(script)
-    }
+    const div = document.createElement("div");
+    div.style.color = color;
+    document.body.appendChild(div);
 
-    const c = w3color(color)
+    const normalized = getComputedStyle(div).color;
+    document.body.removeChild(div);
 
-    if (c.valid) {
-        return c.toHslaString()
-    } else {
-        throw new Error(color, " is not a valid color.")
-    }
+    return normalized;
 }
 
 /**
