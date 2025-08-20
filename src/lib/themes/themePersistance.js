@@ -7,8 +7,6 @@ const PREFERS_DARK_QUERY = matchMedia('(prefers-color-scheme: dark)');
 const STORAGE_KEY = 'tw:theme';
 const ACCENT_KEY = 'tw:accent';
 
-window.themeTEST = theme => new Theme(theme)
-
 if (localStorage && localStorage.getItem(ACCENT_KEY) === null) {
     localStorage.setItem(ACCENT_KEY, 'lime green')
 }

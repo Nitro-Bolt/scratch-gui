@@ -1,4 +1,4 @@
-body[colorAccent="lime green"] {
+body[colorAccent="Lime Green"] {
     --motion-primary: hsla(92, 91%, 53%, 1); /* #00c3ff */
     --motion-tertiary: hsla(92, 80%, 43%, 1); /* #007bc7 */
     --motion-transparent: hsla(92, 92%, 53%, 0.35); /* 35% transparent version of motion-primary */
@@ -13,7 +13,7 @@ body[colorAccent="lime green"] {
 
     --drop-highlight: hsla(92, 91%, 59%, 1); /* lighter than motion-primary */
 }
-body[colorAccent="light blue"] {
+body[colorAccent="Light Blue"] {
     --motion-primary: hsla(194, 100%, 50%, 1);
     --motion-tertiary: hsla(203, 100%, 39%, 1);
     --motion-transparent: hsla(203, 100%, 39%, 0.35);
@@ -27,11 +27,11 @@ body[colorAccent="light blue"] {
     
     --drop-highlight: hsla(203, 100%, 39%, 1);
 }
-body[colorAccent="red"] {
+body[colorAccent="Red"] {
     --motion-primary: #ff4c4c;
     --motion-tertiary: #cc3333;
-    --motion-transparent: #ff4c4ce6;
-    
+    --motion-transparent: #ff4c4c57;
+
     --motion-primary-dark: #333333;
 
     --extensions-primary: hsla(10, 85%, 65%, 1);

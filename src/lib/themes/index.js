@@ -5,10 +5,10 @@ import accentLightBlue from './accents/light-blue.js';
 import accentPurple from './accents/purple.js';
 import accentRed from './accents/red.js';
 
-const ACCENT_LIME = 'lime green';
-const ACCENT_LIGHTBLUE = 'light blue';
-const ACCENT_PURPLE = 'purple';
-const ACCENT_RED = 'red';
+const ACCENT_LIME = 'Lime Green';
+const ACCENT_LIGHTBLUE = 'Light Blue';
+const ACCENT_PURPLE = 'Purple';
+const ACCENT_RED = 'Red';
 const ACCENT_MAP = {
     [ACCENT_LIME]: accentLime,
     [ACCENT_LIGHTBLUE]: accentLightBlue,
