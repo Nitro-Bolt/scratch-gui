@@ -63,12 +63,6 @@ class SpriteInfo extends React.Component {
             stageSize
         } = this.props;
 
-        const [, setTick] = useState(0);
-        
-        document.body.addEventListener("RecolorEvent", (e) => {
-            setTick(t => t + 1);
-        })
-
         const sprite = (
             <FormattedMessage
                 defaultMessage="Sprite"
