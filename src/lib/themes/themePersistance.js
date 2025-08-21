@@ -47,6 +47,8 @@ const persistTheme = theme => {
 
     const local = localStorage.getItem(ACCENT_KEY)
     document.body.setAttribute("coloraccent", local)
+
+    window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
 };
 
 export {

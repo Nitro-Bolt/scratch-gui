@@ -1,6 +1,6 @@
 /* eslint-disable import/no-commonjs */
 
-const OLD_PRIMARY_COLOR = '#80f41a';
+const OLD_PRIMARY_COLOR = '#76fa02';
 
 const loader = source => `
     const original = ${JSON.stringify(source)};

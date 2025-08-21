@@ -48,6 +48,7 @@
         try {var accentTheme = localStorage.getItem('tw:accent');} catch (e) {}
         if (accentTheme) document.body.setAttribute("coloraccent", accentTheme || "Lime Green")
         if (accentTheme == null) document.body.setAttribute("coloraccent", "Lime Green")
+        window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
         <% } %>
       })();
     </script>
