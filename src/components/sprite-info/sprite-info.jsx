@@ -18,10 +18,10 @@ import styles from './sprite-info.css';
 
 import xIcon from './icon--x.svg';
 import yIcon from './icon--y.svg';
-import showIcon from './icon--show.svg';
-import hideIcon from './icon--hide.svg';
-import dragOnIcon from './icon--draggable-on.svg';
-import dragOffIcon from './icon--draggable-off.svg';
+import showIcon from '!../../lib/tw-recolor/build!./icon--show.svg';
+import hideIcon from '!../../lib/tw-recolor/build!./icon--hide.svg';
+import dragOnIcon from '!../../lib/tw-recolor/build!./icon--draggable-on.svg';
+import dragOffIcon from '!../../lib/tw-recolor/build!./icon--draggable-off.svg';
 
 import { setSpriteInfoDisabled } from '../../reducers/set-spriteinfo-disabled.js';
 

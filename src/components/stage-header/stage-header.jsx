@@ -12,9 +12,9 @@ import {getStageDimensions} from '../../lib/screen-utils';
 import {STAGE_SIZE_MODES} from '../../lib/layout-constants';
 
 import fullScreenIcon from './icon--fullscreen.svg';
-import largeStageIcon from './icon--large-stage.svg';
-import smallStageIcon from './icon--small-stage.svg';
-import noStageIcon from './icon--no-stage.svg';
+import largeStageIcon from '!../../lib/tw-recolor/build!./icon--large-stage.svg';
+import smallStageIcon from '!../../lib/tw-recolor/build!./icon--small-stage.svg';
+import noStageIcon from '!../../lib/tw-recolor/build!./icon--no-stage.svg';
 import unFullScreenIcon from './icon--unfullscreen.svg';
 import settingsIcon from './icon--settings.svg';
 
