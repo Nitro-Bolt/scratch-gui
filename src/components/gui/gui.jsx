@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
 import {connect} from 'react-redux';
 import MediaQuery from 'react-responsive';
@@ -172,6 +172,12 @@ const GUIComponent = props => {
         tabPanelSelected: classNames(tabStyles.reactTabsTabPanelSelected, styles.isSelected),
         tabSelected: classNames(tabStyles.reactTabsTabSelected, styles.isSelected)
     };
+
+    const [, setTick] = useState(0);
+            
+    document.body.addEventListener("RecolorEvent", (e) => {
+        setTick(t => t + 1);
+    })
 
     const minWidth = layout.fullSizeMinWidth + Math.max(0, customStageSize.width - layout.referenceWidth);
     return (<MediaQuery minWidth={minWidth}>{isFullSize => {

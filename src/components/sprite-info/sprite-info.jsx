@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
 import Box from '../box/box.jsx';
@@ -36,6 +36,13 @@ const messages = defineMessages({
 });
 
 class SpriteInfo extends React.Component {
+    constructor(props) {
+        const [, setTick] = useState(0);
+        
+        document.body.addEventListener("RecolorEvent", (e) => {
+            setTick(t => t + 1);
+        })
+    }
     shouldComponentUpdate (nextProps) {
         return (
             this.props.rotationStyle !== nextProps.rotationStyle ||
