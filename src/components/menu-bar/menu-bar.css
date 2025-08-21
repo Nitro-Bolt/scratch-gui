@@ -27,11 +27,11 @@
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: $menu-bar-standard-font-size;
     font-weight: bold;
-    background-color: $motion-primary;
+    background-color: $menu-bar-background;
     color: $ui-white;
 }
 [theme="dark"] .menu-bar {
-    background-color: $motion-primary-dark;
+    background-color: $menu-bar-background-dark;
 }
 
 .main-menu {

@@ -7,10 +7,11 @@ import {connect} from 'react-redux';
 import check from './check.svg';
 import dropdownCaret from './dropdown-caret.svg';
 import {MenuItem, Submenu} from '../menu/menu.jsx';
-import {ACCENT_LIGHTBLUE, ACCENT_MAP, ACCENT_RED, ACCENT_LIME, ACCENT_SCRATCH, ACCENT_PURPLE, ACCENT_MAGENTA, Theme} from '../../lib/themes/index.js';
+import {ACCENT_LIGHTBLUE, ACCENT_MAP, ACCENT_RED, ACCENT_LIME, ACCENT_BLUE, ACCENT_SCRATCH, ACCENT_MAGENTA, ACCENT_RAIBOW, Theme} from '../../lib/themes/index.js';
 import {openAccentMenu, accentMenuOpen, closeSettingsMenu} from '../../reducers/menus.js';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
+import rainbowIcon from './tw-accent-rainbow.svg';
 import styles from './settings-menu.css';
 
 const options = defineMessages({
@@ -38,16 +39,41 @@ const options = defineMessages({
         defaultMessage: 'Magenta',
         description: 'Name of the magenta (sort of) color scheme. Matches Snail-IDE\'s colors.',
         id: 'dm.accent.magenta'
+    },
+    [ACCENT_BLUE]: {
+        defaultMessage: 'Blue',
+        description: 'Name of the blue color scheme. Matches Scratch before the high contrast update.',
+        id: 'tw.accent.blue'
+    },
+    [ACCENT_RAINBOW]: {
+        defaultMessage: 'Rainbow',
+        description: 'Name of color scheme that uses a rainbow.',
+        id: 'tw.accent.rainbow'
     }
 });
 
+const icons = {
+    [ACCENT_RAINBOW]: rainbowIcon
+};
+
 const ColorIcon = props => (
-    <div
-        className={styles.accentIconOuter}
-        style={{
-            backgroundColor: ACCENT_MAP[props.id]['motion-primary']
-        }}
-    />
+    icons[props.id] ? (
+        <img
+            className={styles.accentIconOuter}
+            src={icons[props.id]}
+            draggable={false}
+            // Image is decorative
+            alt=""
+        />
+    ) : (
+        <div
+            className={styles.accentIconOuter}
+            style={{
+                // menu-bar-background is var(...), don't want to evaluate with the current values
+                backgroundColor: ACCENT_MAP[props.id].guiColors['motion-primary']
+            }}
+        />
+    )
 );
 
 ColorIcon.propTypes = {

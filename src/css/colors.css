@@ -12,6 +12,10 @@ body[coloraccent="Lime Green"] {
     --extensions-light: hsla(92, 80%, 43%, 1); /* opaque version of extensions-transparent, on white bg */
 
     --drop-highlight: hsla(92, 91%, 59%, 1); /* lighter than motion-primary */
+
+    /* menu bar colors */
+    --menu-bar-background: var(--motion-primary);
+    --menu-bar-background-dark: var(--motion-primary-dark);
 }
 body[coloraccent="Light Blue"] {
     --motion-primary: hsla(194, 100%, 50%, 1);
@@ -26,6 +30,9 @@ body[coloraccent="Light Blue"] {
     --extensions-light: hsla(203, 100%, 39%, 1);
     
     --drop-highlight: hsla(203, 100%, 39%, 1);
+
+    --menu-bar-background: var(--motion-primary);
+    --menu-bar-background-dark: var(--motion-primary-dark);
 }
 body[coloraccent="Red"] {
     --motion-primary: #ff4c4c;
@@ -40,6 +47,26 @@ body[coloraccent="Red"] {
     --extensions-light: hsla(10, 57%, 85%, 1);
     
     --drop-highlight: #ff8c8c;
+
+    --menu-bar-background: var(--motion-primary);
+    --menu-bar-background-dark: var(--motion-primary-dark);
+}
+body[coloraccent="Blue"] {
+    --motion-primary: hsla(215, 100%, 65%, 1);
+    --motion-tertiary: hsla(215, 60%, 50%, 1);
+    --motion-transparent: hsla(215, 100%, 65%, 0.35);
+
+    --motion-primary-dark: #333;
+
+    --extensions-primary: hsla(163, 85%, 40%, 1);
+    --extensions-tertiary: hsla(163, 85%, 30%, 1);
+    --extensions-transparent: hsla(163, 85%, 40%, 0.35);
+    --extensions-light: hsla(163, 57%, 85%, 1);
+    
+    --drop-highlight: hsla(215, 100%, 77%, 1);
+
+    --menu-bar-background: var(--motion-primary);
+    --menu-bar-background-dark: var(--motion-primary-dark);
 }
 body[coloraccent="Scratch"] {
     --motion-primary: hsla(260, 60%, 60%, 1);
@@ -54,6 +81,9 @@ body[coloraccent="Scratch"] {
     --extensions-light: hsla(163, 57%, 85%, 1);
     
     --drop-highlight: hsla(215, 100%, 77%, 1);
+
+    --menu-bar-background: var(--motion-primary);
+    --menu-bar-background-dark: var(--motion-primary-dark);
 }
 body[coloraccent="Magenta"] {
     --motion-primary: hsla(289, 100%, 54%, 1);
@@ -68,6 +98,26 @@ body[coloraccent="Magenta"] {
     --extensions-light: hsla(203, 100%, 39%, 1);
     
     --drop-highlight: hsla(289, 100%, 64%, 1);
+
+    --menu-bar-background: var(--motion-primary);
+    --menu-bar-background-dark: var(--motion-primary-dark);
+}
+body[coloraccent="Rainbow"] {
+    --motion-primary: #ff4c4c;
+    --motion-tertiary: #cc3333;
+    --motion-transparent: #ff4c4ce6;
+
+    --motion-primary-dark: #333;
+
+    --extensions-primary: hsla(10, 85%, 65%, 1);
+    --extensions-tertiary: hsla(10, 85%, 40%, 1);
+    --extensions-transparent: hsla(10, 57%, 85%, 1);
+    --extensions-light: hsla(10, 57%, 85%, 1);
+    
+    --drop-highlight: #ff8c8c;
+
+    --menu-bar-background: linear-gradient(90deg, rgba(255, 0, 0, 0.75) 0%, rgba(255, 154, 0, 0.75) 10%, rgba(208, 222, 33, 0.75) 20%, rgba(79, 220, 74, 0.75) 30%, rgba(63, 218, 216, 0.75) 40%, rgba(47, 201, 226, 0.75) 50%, rgba(28, 127, 238, 0.75) 60%, rgba(95, 21, 242, 0.75) 70%, rgba(186, 12, 248, 0.75) 80%, rgba(251, 7, 217, 0.75) 90%, rgba(255, 0, 0, 0.75) 100%);
+    --menu-bar-background-dark: linear-gradient(90deg, rgba(255, 0, 0, 0.75) 0%, rgba(255, 154, 0, 0.75) 10%, rgba(208, 222, 33, 0.75) 20%, rgba(79, 220, 74, 0.75) 30%, rgba(63, 218, 216, 0.75) 40%, rgba(47, 201, 226, 0.75) 50%, rgba(28, 127, 238, 0.75) 60%, rgba(95, 21, 242, 0.75) 70%, rgba(186, 12, 248, 0.75) 80%, rgba(251, 7, 217, 0.75) 90%, rgba(255, 0, 0, 0.75) 100%);
 }
 
 $ui-primary: var(--ui-primary, hsla(215, 100%, 95%, 1)); /* #E5F0FF */
@@ -98,6 +148,9 @@ $ui-primary-light: hsla(215, 100%, 95%, 1);
 $ui-secondary-light: hsla(215, 75%, 95%, 1);
 $ui-tertiary-light: hsla(215, 50%, 90%, 1);
 $text-primary-light: hsla(225, 15%, 40%, 1);
+
+$menu-bar-background: var(--menu-bar-background, $motion-primary)
+$menu-bar-background-dark: var(--menu-bar-background-dark, $motion-primary-dark)
 
 $red-primary: hsla(92, 91%, 53%, 1); /* #00c3ff */
 $red-tertiary: hsla(92, 80%, 43%, 1); /* #007bc7 */

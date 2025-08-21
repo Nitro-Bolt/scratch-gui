@@ -9,19 +9,25 @@ const ACCENT_LIME = 'Lime Green';
 const ACCENT_LIGHTBLUE = 'Light Blue';
 const ACCENT_PURPLE = 'Purple';
 const ACCENT_RED = 'Red';
+const ACCENT_BLUE = 'Blue';
 const ACCENT_SCRATCH = 'Scratch';
 const ACCENT_MAGENTA = 'Magenta';
+const ACCENT_RAINBOW = 'Rainbow';
 const ACCENT_MAP = {
     [ACCENT_LIME]: accentLime,
     [ACCENT_LIGHTBLUE]: accentLightBlue,
     [ACCENT_PURPLE]: accentPurple,
     [ACCENT_RED]: accentRed,
+    [ACCENT_BLUE]: {
+        'motion-primary': 'hsla(215, 100%, 65%, 1)'
+    },
     [ACCENT_SCRATCH]: {
         'motion-primary': 'hsla(260, 60%, 60%, 1)'
     },
     [ACCENT_MAGENTA]: {
         'motion-primary': 'hsla(289, 100%, 54%, 1)'
     },
+    [ACCENT_RAINBOW]: {}
 };
 
 const ACCENT_DEFAULT = ACCENT_LIME;
@@ -64,5 +70,7 @@ export {
     ACCENT_RED,
     ACCENT_SCRATCH,
     ACCENT_MAGENTA,
+    ACCENT_BLUE,
+    ACCENT_RAINBOW,
     ACCENT_MAP
 }
