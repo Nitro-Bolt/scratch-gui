@@ -36,13 +36,6 @@ const messages = defineMessages({
 });
 
 class SpriteInfo extends React.Component {
-    constructor(props) {
-        const [, setTick] = useState(0);
-        
-        document.body.addEventListener("RecolorEvent", (e) => {
-            setTick(t => t + 1);
-        })
-    }
     shouldComponentUpdate (nextProps) {
         return (
             this.props.rotationStyle !== nextProps.rotationStyle ||
@@ -69,6 +62,12 @@ class SpriteInfo extends React.Component {
         const {
             stageSize
         } = this.props;
+
+        const [, setTick] = useState(0);
+        
+        document.body.addEventListener("RecolorEvent", (e) => {
+            setTick(t => t + 1);
+        })
 
         const sprite = (
             <FormattedMessage
