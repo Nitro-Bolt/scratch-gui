@@ -149,8 +149,8 @@ $ui-secondary-light: hsla(215, 75%, 95%, 1);
 $ui-tertiary-light: hsla(215, 50%, 90%, 1);
 $text-primary-light: hsla(225, 15%, 40%, 1);
 
-$menu-bar-background: var(--menu-bar-background, $motion-primary)
-$menu-bar-background-dark: var(--menu-bar-background-dark, $motion-primary-dark)
+$menu-bar-background: var(--menu-bar-background, $motion-primary);
+$menu-bar-background-dark: var(--menu-bar-background-dark, $motion-primary-dark);
 
 $red-primary: hsla(92, 91%, 53%, 1); /* #00c3ff */
 $red-tertiary: hsla(92, 80%, 43%, 1); /* #007bc7 */
