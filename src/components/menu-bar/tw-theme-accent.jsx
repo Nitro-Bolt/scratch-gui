@@ -30,6 +30,11 @@ const options = defineMessages({
         description: 'Name of the light blue color scheme. Matches Penguinmod\'s colors.',
         id: 'dm.accent.lightblue'
     },
+    [ACCENT_BLUE]: {
+        defaultMessage: 'Blue',
+        description: 'Name of the blue color scheme. Matches Scratch before the high contrast update.',
+        id: 'tw.accent.blue'
+    },
     [ACCENT_SCRATCH]: {
         defaultMessage: 'Scratch',
         description: 'Name of the Scratch\'s color scheme. Matches Scratch-GUI\'s colors.',
@@ -39,11 +44,6 @@ const options = defineMessages({
         defaultMessage: 'Magenta',
         description: 'Name of the magenta (sort of) color scheme. Matches Snail-IDE\'s colors.',
         id: 'dm.accent.magenta'
-    },
-    [ACCENT_BLUE]: {
-        defaultMessage: 'Blue',
-        description: 'Name of the blue color scheme. Matches Scratch before the high contrast update.',
-        id: 'tw.accent.blue'
     },
     [ACCENT_RAINBOW]: {
         defaultMessage: 'Rainbow',

@@ -16,6 +16,8 @@ body[coloraccent="Lime Green"] {
     /* menu bar colors */
     --menu-bar-background: var(--motion-primary);
     --menu-bar-background-dark: var(--motion-primary-dark);
+
+    --menu-bar-background-image: none;
 }
 body[coloraccent="Light Blue"] {
     --motion-primary: hsla(194, 100%, 50%, 1);
@@ -33,6 +35,8 @@ body[coloraccent="Light Blue"] {
 
     --menu-bar-background: var(--motion-primary);
     --menu-bar-background-dark: var(--motion-primary-dark);
+
+    --menu-bar-background-image: none;
 }
 body[coloraccent="Red"] {
     --motion-primary: #ff4c4c;
@@ -50,6 +54,8 @@ body[coloraccent="Red"] {
 
     --menu-bar-background: var(--motion-primary);
     --menu-bar-background-dark: var(--motion-primary-dark);
+
+    --menu-bar-background-image: none;
 }
 body[coloraccent="Blue"] {
     --motion-primary: hsla(215, 100%, 65%, 1);
@@ -67,6 +73,8 @@ body[coloraccent="Blue"] {
 
     --menu-bar-background: var(--motion-primary);
     --menu-bar-background-dark: var(--motion-primary-dark);
+
+    --menu-bar-background-image: none;
 }
 body[coloraccent="Scratch"] {
     --motion-primary: hsla(260, 60%, 60%, 1);
@@ -84,6 +92,8 @@ body[coloraccent="Scratch"] {
 
     --menu-bar-background: var(--motion-primary);
     --menu-bar-background-dark: var(--motion-primary-dark);
+
+    --menu-bar-background-image: none;
 }
 body[coloraccent="Magenta"] {
     --motion-primary: hsla(289, 100%, 54%, 1);
@@ -101,6 +111,8 @@ body[coloraccent="Magenta"] {
 
     --menu-bar-background: var(--motion-primary);
     --menu-bar-background-dark: var(--motion-primary-dark);
+
+    --menu-bar-background-image: none;
 }
 body[coloraccent="Rainbow"] {
     --motion-primary: #ff4c4c;
@@ -116,8 +128,10 @@ body[coloraccent="Rainbow"] {
     
     --drop-highlight: #ff8c8c;
 
-    --menu-bar-background: linear-gradient(90deg, rgba(255, 0, 0, 0.75) 0%, rgba(255, 154, 0, 0.75) 10%, rgba(208, 222, 33, 0.75) 20%, rgba(79, 220, 74, 0.75) 30%, rgba(63, 218, 216, 0.75) 40%, rgba(47, 201, 226, 0.75) 50%, rgba(28, 127, 238, 0.75) 60%, rgba(95, 21, 242, 0.75) 70%, rgba(186, 12, 248, 0.75) 80%, rgba(251, 7, 217, 0.75) 90%, rgba(255, 0, 0, 0.75) 100%);
-    --menu-bar-background-dark: linear-gradient(90deg, rgba(255, 0, 0, 0.75) 0%, rgba(255, 154, 0, 0.75) 10%, rgba(208, 222, 33, 0.75) 20%, rgba(79, 220, 74, 0.75) 30%, rgba(63, 218, 216, 0.75) 40%, rgba(47, 201, 226, 0.75) 50%, rgba(28, 127, 238, 0.75) 60%, rgba(95, 21, 242, 0.75) 70%, rgba(186, 12, 248, 0.75) 80%, rgba(251, 7, 217, 0.75) 90%, rgba(255, 0, 0, 0.75) 100%);
+    --menu-bar-background: var(--motion-primary);
+    --menu-bar-background-dark: var(--motion-primary-dark);
+
+    --menu-bar-background-image: linear-gradient(90deg, rgba(255, 0, 0, 0.75) 0%, rgba(255, 154, 0, 0.75) 10%, rgba(208, 222, 33, 0.75) 20%, rgba(79, 220, 74, 0.75) 30%, rgba(63, 218, 216, 0.75) 40%, rgba(47, 201, 226, 0.75) 50%, rgba(28, 127, 238, 0.75) 60%, rgba(95, 21, 242, 0.75) 70%, rgba(186, 12, 248, 0.75) 80%, rgba(251, 7, 217, 0.75) 90%, rgba(255, 0, 0, 0.75) 100%);
 }
 
 $ui-primary: var(--ui-primary, hsla(215, 100%, 95%, 1)); /* #E5F0FF */
@@ -151,6 +165,8 @@ $text-primary-light: hsla(225, 15%, 40%, 1);
 
 $menu-bar-background: var(--menu-bar-background, $motion-primary);
 $menu-bar-background-dark: var(--menu-bar-background-dark, $motion-primary-dark);
+
+$menu-bar-background-image: var(--menu-bar-background-image, none);
 
 $red-primary: hsla(92, 91%, 53%, 1); /* #00c3ff */
 $red-tertiary: hsla(92, 80%, 43%, 1); /* #007bc7 */
