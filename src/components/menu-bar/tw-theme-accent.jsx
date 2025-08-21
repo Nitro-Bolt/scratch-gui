@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import check from './check.svg';
 import dropdownCaret from './dropdown-caret.svg';
 import {MenuItem, Submenu} from '../menu/menu.jsx';
-import {ACCENT_LIGHTBLUE, ACCENT_MAP, ACCENT_RED, ACCENT_LIME, ACCENT_BLUE, ACCENT_SCRATCH, ACCENT_MAGENTA, ACCENT_RAIBOW, Theme} from '../../lib/themes/index.js';
+import {ACCENT_LIGHTBLUE, ACCENT_MAP, ACCENT_RED, ACCENT_LIME, ACCENT_BLUE, ACCENT_SCRATCH, ACCENT_MAGENTA, ACCENT_RAINBOW, Theme} from '../../lib/themes/index.js';
 import {openAccentMenu, accentMenuOpen, closeSettingsMenu} from '../../reducers/menus.js';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
