@@ -70,7 +70,7 @@ const ColorIcon = props => (
             className={styles.accentIconOuter}
             style={{
                 // menu-bar-background is var(...), don't want to evaluate with the current values
-                backgroundColor: ACCENT_MAP[props.id].guiColors['motion-primary']
+                backgroundColor: ACCENT_MAP[props.id]['motion-primary']
             }}
         />
     )
