@@ -1620,7 +1620,7 @@ const myBlocks = function () {
     `;
 };
 
-const liveTests = function (isLiveTest, targetId) {
+const liveTests = function (isLiveTest, targetId, soundName) {
     return `
     <category name="Live Tests" id="liveTests" colour="#FF0000" secondaryColour="#FF0000">
         <block type="procedures_call">
@@ -1732,7 +1732,7 @@ const makeToolboxXML = function (isInitialSetup, isStage = true, targetId, categ
     const variablesXML = moveCategory('data') || variables(isInitialSetup, isStage, targetId);
     const listsXML = moveCategory('lists') || lists(isInitialSetup, isStage, targetId);
     const myBlocksXML = moveCategory('procedures') || myBlocks(isInitialSetup, isStage, targetId);
-    const liveTestsXML = moveCategory('liveTests') || liveTests(isLiveTest, targetId);
+    const liveTestsXML = moveCategory('liveTests') || liveTests(isLiveTest, targetId, soundName);
 
     const everything = [
         xmlOpen,
