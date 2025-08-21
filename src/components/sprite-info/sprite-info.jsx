@@ -241,7 +241,7 @@ class SpriteInfo extends React.Component {
                             >
                                 <img
                                     className={styles.icon}
-                                    src={showIcon}
+                                    src={showIcon()}
                                 />
                             </div>
                             <div
@@ -260,7 +260,7 @@ class SpriteInfo extends React.Component {
                             >
                                 <img
                                     className={styles.icon}
-                                    src={hideIcon}
+                                    src={hideIcon()}
                                 />
                             </div>
                         </div>
@@ -320,7 +320,7 @@ class SpriteInfo extends React.Component {
                             >
                                 <img
                                     className={styles.icon}
-                                    src={dragOnIcon}
+                                    src={dragOnIcon()}
                                 />
                             </div>
                             <div
@@ -339,7 +339,7 @@ class SpriteInfo extends React.Component {
                             >
                                 <img
                                     className={styles.icon}
-                                    src={dragOffIcon}
+                                    src={dragOffIcon()}
                                 />
                             </div>
                         </div>

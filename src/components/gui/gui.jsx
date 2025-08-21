@@ -324,7 +324,7 @@ const GUIComponent = props => {
                                     <Tab className={tabClassNames.tab}>
                                         <img
                                             draggable={false}
-                                            src={codeIcon}
+                                            src={codeIcon()}
                                         />
                                         <FormattedMessage
                                             defaultMessage="Code"
@@ -338,7 +338,7 @@ const GUIComponent = props => {
                                     >
                                         <img
                                             draggable={false}
-                                            src={costumesIcon}
+                                            src={costumesIcon()}
                                         />
                                         {targetIsStage ? (
                                             <FormattedMessage
@@ -360,7 +360,7 @@ const GUIComponent = props => {
                                     >
                                         <img
                                             draggable={false}
-                                            src={soundsIcon}
+                                            src={soundsIcon()}
                                         />
                                         <FormattedMessage
                                             defaultMessage="Sounds"

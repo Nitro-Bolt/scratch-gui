@@ -180,7 +180,7 @@ const StageHeaderComponent = function (props) {
                                 alt={props.intl.formatMessage(messages.noStageSizeMessage)}
                                 className={styles.stageButtonIcon}
                                 draggable={false}
-                                src={noStageIcon}
+                                src={noStageIcon()}
                             />
                         </Button>
                     </div>
@@ -197,7 +197,7 @@ const StageHeaderComponent = function (props) {
                                 alt={props.intl.formatMessage(messages.smallStageSizeMessage)}
                                 className={styles.stageButtonIcon}
                                 draggable={false}
-                                src={smallStageIcon}
+                                src={smallStageIcon()}
                             />
                         </Button>
                     </div>
@@ -214,7 +214,7 @@ const StageHeaderComponent = function (props) {
                                 alt={props.intl.formatMessage(messages.largeStageSizeMessage)}
                                 className={styles.stageButtonIcon}
                                 draggable={false}
-                                src={largeStageIcon}
+                                src={largeStageIcon()}
                             />
                         </Button>
                     </div>
