@@ -574,23 +574,6 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
         <block type="sound_playallsounds"/>
         <block type="sound_stopallsounds"/>
         ${blockSeparator}
-        <block id="${targetId}_sound_pause" type="sound_pause">
-            <value name="SOUND_MENU">
-                <shadow type="sound_sounds_menu">
-                    <field name="SOUND_MENU">${soundName}</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="sound_pauseallsounds"/>
-        <block id="${targetId}_sound_resume" type="sound_resume">
-            <value name="SOUND_MENU">
-                <shadow type="sound_sounds_menu">
-                    <field name="SOUND_MENU">${soundName}</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="sound_resumeallsounds"/>
-        ${blockSeparator}
         <block id="${targetId}_sound_set_stop_fadeout_to" type="sound_set_stop_fadeout_to">
             <value name="VALUE">
                 <shadow type="math_number">
@@ -616,11 +599,6 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
                 <shadow type="sound_sounds_menu">
                     <field name="SOUND_MENU">${soundName}</field>
                 </shadow>
-            </value>
-        </block>
-        <block type="sound_getTimePosition">
-            <value name="SOUND_MENU">
-                <shadow type="sound_sounds_menu">${soundName}</shadow>
             </value>
         </block>
         ${blockSeparator}
@@ -1024,6 +1002,13 @@ const sensing = function (isInitialSetup, isStage, targetId) {
         <block type="sensing_pausetimer"/>
         <block type="sensing_resumetimer"/>
         <block type="sensing_istimerpaused"/>
+        <block type="sensing_settimer">
+            <value name="NUM">
+                <shadow type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+        </block>
         ${blockSeparator}
         <block id="of" type="sensing_of">
             <value name="OBJECT">
@@ -1654,6 +1639,29 @@ const liveTests = function () {
                 <shadow type="math_number">
                     <field name="NUM">0</field>
                 </shadow>
+            </value>
+        </block>
+        ${blockSeparator}
+        <block id="${targetId}_sound_pause" type="sound_pause">
+            <value name="SOUND_MENU">
+                <shadow type="sound_sounds_menu">
+                    <field name="SOUND_MENU">${soundName}</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="sound_pauseallsounds"/>
+        <block id="${targetId}_sound_resume" type="sound_resume">
+            <value name="SOUND_MENU">
+                <shadow type="sound_sounds_menu">
+                    <field name="SOUND_MENU">${soundName}</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="sound_resumeallsounds"/>
+        ${blockSeparator}
+        <block type="sound_getTimePosition">
+            <value name="SOUND_MENU">
+                <shadow type="sound_sounds_menu">${soundName}</shadow>
             </value>
         </block>
         ${blockSeparator}
