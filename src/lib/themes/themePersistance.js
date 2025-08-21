@@ -9,7 +9,14 @@ const ACCENT_KEY = 'tw:accent';
 
 if (localStorage && localStorage.getItem(ACCENT_KEY) === null) {
     localStorage.setItem(ACCENT_KEY, 'Lime Green')
+    window.Recolor = {primary: (new Theme().set('Lime Green')).accentData['motion-primary']}
 }
+
+window.Recolor = {primary: new Theme(localStorage.GetItem(ACCENT_KEY)).accentData['motion-primary']}
+
+const recolorEvent = new CustomEvent("RecolorEvent", {
+    details: {}
+})
 
 /**
  * @returns {Theme} detected theme
@@ -49,6 +56,8 @@ const persistTheme = theme => {
     document.body.setAttribute("coloraccent", local)
 
     window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
+
+    document.body.dispatchEvent(recolorEvent);
 };
 
 export {

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {connect} from 'react-redux';
 import VM from 'scratch-vm';
 
@@ -84,6 +84,12 @@ const StageHeaderComponent = function (props) {
     } = props;
 
     let header = null;
+
+    const [, setTick] = useState(0);
+
+    document.body.addEventListener("RecolorEvent", (e) => {
+        setTick(t => t + 1);
+    })
 
     // const popoutWindowButton = <Button
     //     className={styles.stageButton}
