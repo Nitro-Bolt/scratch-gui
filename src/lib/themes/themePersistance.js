@@ -12,7 +12,7 @@ if (localStorage && localStorage.getItem(ACCENT_KEY) === null) {
     window.Recolor = {primary: (new Theme().set('Lime Green')).accentData['motion-primary']}
 }
 
-window.Recolor = {primary: new Theme(localStorage.GetItem(ACCENT_KEY)).accentData['motion-primary']}
+window.Recolor = {primary: new Theme(localStorage.getItem(ACCENT_KEY)).accentData['motion-primary']}
 
 const recolorEvent = new CustomEvent("RecolorEvent", {
     details: {}
