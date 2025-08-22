@@ -12,6 +12,8 @@ import bottomBlock from './bottom-block.svg';
 import * as progressMonitor from './tw-progress-monitor';
 import isScratchDesktop from '../../lib/isScratchDesktop';
 
+import {tips} from './random-unhelpful-tips.js'
+
 // tw:
 // we make some rather large changes here:
 //  - remove random message, replaced with message dependent on what is actually being loaded
@@ -74,6 +76,7 @@ class LoaderComponent extends React.Component {
         this.progress = 0;
         this.complete = 0;
         this.total = 0;
+        this.unhelpfulTip = tips[Math.round(Math.random() * tips.length)];
         bindAll(this, [
             'barInnerRef',
             'handleProgressChange',
@@ -155,6 +158,7 @@ class LoaderComponent extends React.Component {
                     <div className={styles.title}>
                         {mainMessages[this.props.messageId]}
                     </div>
+                    <p dangerouslySetInnerHTML={{__html: this.unhelpfulTip}} />
                     <div className={styles.messageContainerOuter}>
                         <div
                             className={styles.messageContainerInner}
