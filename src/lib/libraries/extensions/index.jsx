@@ -151,6 +151,7 @@ import pmOperatorsExpansionExtensionIcon from './penguinmod/extensions/operators
 import dmDinoBuilderIcon from './dinosaurmod/dinobuilder.png';
 import dmPythonIcon from './dinosaurmod/python.png';
 import dmLuaIcon from './dinosaurmod/lua.png';
+import dmGalleryIcon from './dinosaurmod/gallery.svg';
 
 // other stuff (not official by penguinmod)
 import PenguinmodThumb from './penguinmod/unofficial-icons/penguinmod-icon.svg';
@@ -1586,6 +1587,21 @@ const menuItems = [
             />
         ),
         helpLink: 'https://scratch.mit.edu/vernier'
+    },
+    {
+        name: (
+            <FormattedMessage
+                defaultMessage="DinosaurMod Extensions Gallery"
+                description="Name of library item to open the Extra Extensions gallery"
+                id="dm.extraLibraryExtensions.name"
+            />
+        ),
+        href: 'https://dinosaurmod.github.io/extensions/',
+        extensionId: 'special_dinosaurmodExtensionLibrary',
+        iconURL: dmGalleryIcon,
+        description: 'See some dinosaurmod and user-submitted extensions. Opens in a new tab.',
+        tags: ['dinosaurmod', 'collections'],
+        featured: true
     },
     {
         name: (
