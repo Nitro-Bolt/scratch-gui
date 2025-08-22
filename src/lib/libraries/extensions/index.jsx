@@ -1345,6 +1345,7 @@ const menuItems = [
         tags: ['dinosaurmod', 'programminglanguage'],
         description: 'Run your own custom code written in Python using Pyodide!',
         credits: 'Pyodide',
+        internetConnectionRequired: true,
         featured: true
     },
     {
@@ -1354,6 +1355,7 @@ const menuItems = [
         tags: ['dinosaurmod', 'programminglanguage'],
         description: 'Run your own custom code written in Lua using Fengari!',
         credits: 'Fengari',
+        internetConnectionRequired: true,
         featured: true
     },
     {
