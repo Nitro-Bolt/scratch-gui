@@ -38,6 +38,8 @@ import TWCustomExtensionModal from '../../containers/tw-custom-extension-modal.j
 import TWRestorePointManager from '../../containers/tw-restore-point-manager.jsx';
 import TWFontsModal from '../../containers/tw-fonts-modal.jsx';
 
+import DMCustomAccentModal from '../../containers/dm-custom-accent-modal.jsx';
+
 import layout, {STAGE_SIZE_MODES} from '../../lib/layout-constants';
 import {resolveStageSize} from '../../lib/screen-utils';
 
@@ -154,6 +156,7 @@ const GUIComponent = props => {
         tipsLibraryVisible,
         usernameModalVisible,
         settingsModalVisible,
+        customAccentModalVisible,
         customExtensionModalVisible,
         fontsModalVisible,
         isPlayground,
@@ -265,6 +268,9 @@ const GUIComponent = props => {
                     <ConnectionModal
                         vm={vm}
                     />
+                ) : null}
+                {customAccentModalVisible ? (
+                    <DMCustomAccentModal />
                 ) : null}
                 {costumeLibraryVisible ? (
                     <CostumeLibrary

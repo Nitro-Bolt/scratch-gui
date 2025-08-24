@@ -9,6 +9,7 @@ import dropdownCaret from './dropdown-caret.svg';
 import {MenuItem, Submenu} from '../menu/menu.jsx';
 import {ACCENT_LIGHTBLUE, ACCENT_MAP, ACCENT_RED, ACCENT_LIME, ACCENT_BLUE, ACCENT_SCRATCH, ACCENT_MAGENTA, ACCENT_RAINBOW, Theme} from '../../lib/themes/index.js';
 import {openAccentMenu, accentMenuOpen, closeSettingsMenu} from '../../reducers/menus.js';
+import {openCustomAccentModal} from '../../reducers/modals';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
 import rainbowIcon from './tw-accent-rainbow.svg';
@@ -49,6 +50,11 @@ const options = defineMessages({
         defaultMessage: 'Rainbow',
         description: 'Name of color scheme that uses a rainbow.',
         id: 'tw.accent.rainbow'
+    },
+    ["custom"]: {
+        defaultMessage: 'Custom Accent',
+        description: 'Label of the button that opens a custom accent modal.',
+        id: 'dm.accent.custom'
     }
 });
 
@@ -90,7 +96,7 @@ const AccentMenuItem = props => (
                 src={check}
                 draggable={false}
             />
-            <ColorIcon id={props.id} />
+            {props.hasIcon ? (<ColorIcon id={props.id} />) : null}
             <FormattedMessage {...options[props.id]} />
         </div>
     </MenuItem>
@@ -99,6 +105,7 @@ const AccentMenuItem = props => (
 AccentMenuItem.propTypes = {
     id: PropTypes.string,
     isSelected: PropTypes.bool,
+    hasIcon: PropTypes.bool,
     onClick: PropTypes.func
 };
 
@@ -107,6 +114,7 @@ const AccentThemeMenu = ({
     isRtl,
     onChangeTheme,
     onOpen,
+    onCustomAccent,
     theme
 }) => (
     <MenuItem expanded={isOpen}>
@@ -134,10 +142,19 @@ const AccentThemeMenu = ({
                     key={item}
                     id={item}
                     isSelected={theme.accent === item}
+                    hasIcon={true}
                     // eslint-disable-next-line react/jsx-no-bind
                     onClick={() => onChangeTheme(theme.set(item))}
                 />
             ))}
+            <AccentMenuItem
+                key={Object.keys(options).length}
+                id={"custom"}
+                isSelected={false}
+                hasIcon={false}
+                // eslint-disable-next-line react/jsx-no-bind
+                onClick={() => onCustomAccent()}
+            />
         </Submenu>
     </MenuItem>
 );
@@ -147,6 +164,7 @@ AccentThemeMenu.propTypes = {
     isRtl: PropTypes.bool,
     onChangeTheme: PropTypes.func,
     onOpen: PropTypes.func,
+    onCustomAccent: PropTypes.func,
     theme: PropTypes.instanceOf(Theme)
 };
 
@@ -162,7 +180,10 @@ const mapDispatchToProps = dispatch => ({
         dispatch(closeSettingsMenu());
         persistTheme(theme);
     },
-    onOpen: () => dispatch(openAccentMenu())
+    onOpen: () => dispatch(openAccentMenu()),
+    onCustomAccent: () => {
+        dispatch(openCustomAccentModal())
+    }
 });
 
 export default connect(

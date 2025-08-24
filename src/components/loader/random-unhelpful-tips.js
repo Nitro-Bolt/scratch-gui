@@ -20,5 +20,7 @@ export const tips = [
     "this is not a tip",
     "the",
     "idk",
-    "all mods are cool"
+    "all mods are cool",
+    "DinosaurMod is inspired by Snail-IDE",
+    "DinosaurMod is not a mod of Snail-IDE"
 ]
