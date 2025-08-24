@@ -139,12 +139,12 @@ const AccentThemeMenu = ({
         <Submenu place={isRtl ? 'left' : 'right'}>
             {Object.keys(options).map(item => (
                 <AccentMenuItem
-                    key={item == "custom" ? Object.keys(options).length : theme.accent === item}
+                    key={item}
                     id={item}
                     isSelected={item == "custom" ? false : theme.accent === item}
-                    hasIcon={item == "custom" ? false : true}
+                    hasIcon={!item == "custom"}
                     // eslint-disable-next-line react/jsx-no-bind
-                    onClick={item == "custom" ? onCustomAccent() : onChangeTheme(theme.set(item))}
+                    onClick={item == "custom" ? () => {onCustomAccent()} : () => {onChangeTheme(theme.set(item))}}
                 />
             ))}
         </Submenu>
