@@ -32,7 +32,7 @@ class CustomAccentModal extends React.Component {
     }
 }
 
-UsernameModal.propTypes = {
+CustomAccentModal.propTypes = {
     intl: intlShape,
     onClose: PropTypes.func,
 };
@@ -44,4 +44,4 @@ const mapDispatchToProps = dispatch => ({
 export default injectIntl(connect(
     (_ => ({})),
     mapDispatchToProps
-)(UsernameModal));
+)(CustomAccentModal));
