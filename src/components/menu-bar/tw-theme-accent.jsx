@@ -109,6 +109,28 @@ AccentMenuItem.propTypes = {
     onClick: PropTypes.func
 };
 
+const AccentMenuItem2 = props => (
+    <MenuItem onClick={props.onClick}>
+        <div className={styles.option}>
+            <img
+                className={classNames(styles.check, {[styles.selected]: props.isSelected})}
+                width={15}
+                height={12}
+                src={check}
+                draggable={false}
+            />
+            <FormattedMessage {...options[props.id]} />
+        </div>
+    </MenuItem>
+);
+
+AccentMenuItem2.propTypes = {
+    id: PropTypes.string,
+    isSelected: PropTypes.bool,
+    hasIcon: PropTypes.bool,
+    onClick: PropTypes.func
+};
+
 const AccentThemeMenu = ({
     isOpen,
     isRtl,
@@ -147,7 +169,7 @@ const AccentThemeMenu = ({
                     onClick={() => onChangeTheme(theme.set(item))}
                 />
             ))}
-            <AccentMenuItem
+            <AccentMenuItem2
                 key={Object.keys(options).length}
                 id={"custom"}
                 isSelected={false}
