@@ -16,7 +16,7 @@ const BufferedInput = BufferedInputHOC(Input);
 
 const messages = defineMessages({
     title: {
-        defaultMessage: 'Custom Accents',
+        defaultMessage: 'Custom Accent',
         description: 'Title of the custom accents modal',
         id: 'dm.customAccentModal.title'
     },
@@ -47,7 +47,9 @@ const CustomAccentModalComponent = props => (
         id="customAccentModal"
     >
         <Box className={styles.body}>
-
+            <Header>
+                This is work in progress and unfinised.
+            </Header>
         </Box>
     </Modal>
 )
