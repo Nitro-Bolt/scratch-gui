@@ -48,7 +48,7 @@ const CustomAccentModalComponent = props => (
     >
         <Box className={styles.body}>
             <Header>
-                This is work in progress and unfinised.
+                This is currently unfinished and being worked on.
             </Header>
         </Box>
     </Modal>
