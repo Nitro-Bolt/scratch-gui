@@ -24,7 +24,7 @@ class CustomAccentModal extends React.Component {
             ...props
         } = this.props;
         return (
-            <CustomAccentModal
+            <CustomAccentModalComponent
                 onClose={this.props.onClose}
                 {...props}
             />
