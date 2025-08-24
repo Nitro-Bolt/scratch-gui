@@ -96,35 +96,13 @@ const AccentMenuItem = props => (
                 src={check}
                 draggable={false}
             />
-            {!!props.hasIcon && (<ColorIcon id={props.id} />)}
+            {!!props.hasIcon ? (<ColorIcon id={props.id} />) : null}
             <FormattedMessage {...options[props.id]} />
         </div>
     </MenuItem>
 );
 
 AccentMenuItem.propTypes = {
-    id: PropTypes.string,
-    isSelected: PropTypes.bool,
-    hasIcon: PropTypes.bool,
-    onClick: PropTypes.func
-};
-
-const AccentMenuItem2 = props => (
-    <MenuItem onClick={props.onClick}>
-        <div className={styles.option}>
-            <img
-                className={classNames(styles.check, {[styles.selected]: props.isSelected})}
-                width={15}
-                height={12}
-                src={check}
-                draggable={false}
-            />
-            <FormattedMessage {...options[props.id]} />
-        </div>
-    </MenuItem>
-);
-
-AccentMenuItem2.propTypes = {
     id: PropTypes.string,
     isSelected: PropTypes.bool,
     hasIcon: PropTypes.bool,
@@ -161,22 +139,14 @@ const AccentThemeMenu = ({
         <Submenu place={isRtl ? 'left' : 'right'}>
             {Object.keys(options).map(item => (
                 <AccentMenuItem
-                    key={item}
+                    key={item == "custom" ? Object.keys(options).length : theme.accent === item}
                     id={item}
-                    isSelected={theme.accent === item}
-                    hasIcon={true}
+                    isSelected={item == "custom" ? false : theme.accent === item}
+                    hasIcon={item == "custom" ? false : true}
                     // eslint-disable-next-line react/jsx-no-bind
-                    onClick={() => onChangeTheme(theme.set(item))}
+                    onClick={item == "custom" ? onCustomAccent() : onChangeTheme(theme.set(item))}
                 />
             ))}
-            <AccentMenuItem2
-                key={Object.keys(options).length}
-                id={"custom"}
-                isSelected={false}
-                hasIcon={false}
-                // eslint-disable-next-line react/jsx-no-bind
-                onClick={() => onCustomAccent()}
-            />
         </Submenu>
     </MenuItem>
 );
