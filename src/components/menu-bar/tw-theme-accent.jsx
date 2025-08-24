@@ -96,7 +96,7 @@ const AccentMenuItem = props => (
                 src={check}
                 draggable={false}
             />
-            {!!props.hasIcon ? (<ColorIcon id={props.id} />) : null}
+            {!!props.hasIcon && (<ColorIcon id={props.id} />)}
             <FormattedMessage {...options[props.id]} />
         </div>
     </MenuItem>
