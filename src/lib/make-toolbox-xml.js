@@ -1674,15 +1674,6 @@ const liveTests = function (isLiveTest, targetId, soundName) {
         <block type="control_fieldbutton"></block>
         <block type="operators_expandablejoininputs"></block>
         <block type="motion_mutatorCheckboxTest"></block>
-        ${blockSeparator}
-        <block type="data_filterlist">
-            <value name="INDEX">
-                <shadow type="data_filterlistindex"></shadow>
-            </value>
-            <value name="ITEM">
-                <shadow type="data_filterlistitem"></shadow>
-            </value>
-        </block>
     </category>
     `;
 };
