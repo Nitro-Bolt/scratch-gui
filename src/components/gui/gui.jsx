@@ -194,6 +194,7 @@ const GUIComponent = props => {
                 {settingsModalVisible && <TWSettingsModal />}
                 {customExtensionModalVisible && <TWCustomExtensionModal />}
                 {fontsModalVisible && <TWFontsModal />}
+                {customAccentModalVisible && <DMCustomAccentModal />}
             </React.Fragment>
         );
 
@@ -268,9 +269,6 @@ const GUIComponent = props => {
                     <ConnectionModal
                         vm={vm}
                     />
-                ) : null}
-                {customAccentModalVisible ? (
-                    <DMCustomAccentModal />
                 ) : null}
                 {costumeLibraryVisible ? (
                     <CostumeLibrary
@@ -529,6 +527,7 @@ GUIComponent.propTypes = {
     usernameModalVisible: PropTypes.bool,
     settingsModalVisible: PropTypes.bool,
     customExtensionModalVisible: PropTypes.bool,
+    customAccentModalVisible: PropTypes.bool,
     fontsModalVisible: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired
 };
