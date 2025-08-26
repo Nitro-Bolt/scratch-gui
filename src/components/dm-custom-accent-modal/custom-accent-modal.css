@@ -38,3 +38,30 @@
     margin-left: 1rem;
     border-top: 1px dashed $ui-tertiary;
 }
+
+.button {
+    font-family: inherit;
+    font-size: 14px;
+    background-color: $motion-primary;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+}
+.button:active, .button:focus-within {
+    box-shadow: 0 0 0 3px $motion-transparent;
+}
+
+.label {
+    height: 32px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.label-unset-height {
+    height: initial;
+}

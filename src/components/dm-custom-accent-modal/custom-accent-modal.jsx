@@ -48,8 +48,11 @@ const CustomAccentModalComponent = props => (
     >
         <Box className={styles.body}>
             <Header>
-                This is currently unfinished and being worked on.
+                Custom Accents (This is currently unfinished and being worked on.)
             </Header>
+            <div className={styles.label}>
+                Saved Accents:
+            </div>
         </Box>
     </Modal>
 )
