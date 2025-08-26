@@ -50,6 +50,9 @@ const CustomAccentModalComponent = props => (
             <Header>
                 Custom Accents (This is currently unfinished and being worked on.)
             </Header>
+            <div className={styles.buttonStretchy}>
+                Create new Accent
+            </div>
             <div className={styles.label}>
                 Saved Accents:
             </div>
