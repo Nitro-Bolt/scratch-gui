@@ -68,7 +68,7 @@ const CustomAccentModalComponent = props => (
                             backgroundColor: `#757575`
                         }}
                     />
-                    *Name*
+                    <span style={{ lineHeight: '24px' }}>*Name*</span>
                 </div>
             </div>
         </Box>
