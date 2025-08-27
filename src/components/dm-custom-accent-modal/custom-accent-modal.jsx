@@ -57,13 +57,18 @@ const CustomAccentModalComponent = props => (
                 Saved Accents:
             </div>
             <div className={styles.divStretchy}>
-                <div
-                    className={styles.accentIconOuter}
-                    style={{
-                        backgroundColor: `#757575`
-                    }}
-                />
-                *Name*
+                <div style={{
+                    float: 'left',
+                    clear: 'none'
+                }}>
+                    <div
+                        className={styles.accentIconOuter}
+                        style={{
+                            backgroundColor: `#757575`
+                        }}
+                    />
+                    *Name*
+                </div>
             </div>
         </Box>
     </Modal>
