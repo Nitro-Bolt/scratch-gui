@@ -24,12 +24,11 @@ export default async function ({ addon, msg, console }) {
     const Blockly = new BlocklyUtil(ThisBlockly)
 
     function createIconButton(title, iconSVG, onClick, extraClasses = '', attributes = '') {
-        const imageNode = document.createElement("img");
         const imageNode = Object.assign(addon.tab.recolorable(), {
             src: "data:image/svg+xml;utf8," + encodeURIComponent(iconSVG),
             draggable: false,
-            className: "icon",
         });
+        imageNode.className = "icon";
 
         const button = document.createElement("button");
         button.title = title;
@@ -54,8 +53,8 @@ export default async function ({ addon, msg, console }) {
         let buttonsOut = buttonsWrapper.appendChild(document.createElement("label"));
         buttonsOut.className = "sa-buttons-dropdown-out";
     
-        undoButton = createIconButton("Undo", icons["undoSvg"], () => Blockly.getWorkspace.undo(false), 'sa-radio-first', [{ "name": "dir", "value": "ltr" }, { "name": "draggable", "value": "no" }]);
-        redoButton = createIconButton("Redo", icons["redoSvg"], () => Blockly.getWorkspace.undo(true), 'sa-radio-last', [{ "name": "dir", "value": "ltr" }, { "name": "draggable", "value": "no" }]);
+        undoButton = createIconButton("Undo", icons["undoSvg"], () => Blockly.getWorkspace.undo(false), 'sa-radio-first', [{ "name": "dir", "value": "ltr" }]);
+        redoButton = createIconButton("Redo", icons["redoSvg"], () => Blockly.getWorkspace.undo(true), 'sa-radio-last', [{ "name": "dir", "value": "ltr" }]);
 
         buttonsOut.appendChild(undoButton)
         buttonsOut.appendChild(redoButton)
