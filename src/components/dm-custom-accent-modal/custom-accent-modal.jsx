@@ -53,7 +53,7 @@ const CustomAccentModalComponent = props => (
             <div className={styles.buttonStretchy}>
                 Create new Accent
             </div>
-            <div className={styles.label}>
+            <div className={styles.header}>
                 Saved Accents:
             </div>
             <div className={styles.divStretchy}>
@@ -68,7 +68,7 @@ const CustomAccentModalComponent = props => (
                             backgroundColor: `#757575`
                         }}
                     />
-                    <span style={{ lineHeight: '24px' }}>*Name*</span>
+                    <span style={{ lineHeight: '32px' }}>*Name*</span>
                 </div>
             </div>
         </Box>
