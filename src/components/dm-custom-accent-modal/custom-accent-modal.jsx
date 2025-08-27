@@ -57,7 +57,7 @@ const CustomAccentModalComponent = props => (
                 Saved Accents:
             </div>
             <div className={styles.divStretchy}>
-                \<Name\>
+                *Name*
             </div>
         </Box>
     </Modal>
