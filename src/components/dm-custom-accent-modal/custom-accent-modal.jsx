@@ -40,6 +40,62 @@ Header.propTypes = {
     children: PropTypes.node
 };
 
+const CustomAccentComponent = props => (
+    <div
+        className={styles.divStretchy}
+        style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        }}
+    >
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+        }}>
+            <div
+                className={styles.accentIconOuter}
+                style={{
+                    backgroundColor: props.primaryColor ?? `#000000`
+                }}
+            />
+            <span style={{ lineHeight: '32px' }}>{props.name}</span>
+        </div>
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6px',
+            alignItems: 'flex-end',
+            flexShrink: '0'
+        }}>
+            <div
+                className={classNames(styles.iconButton)}
+                type={"edit"}
+            >
+                <img
+                    src={editIcon}
+                    draggable={"false"}
+                />
+            </div>
+            <div
+                className={classNames(styles.iconButton)}
+                type={"delete"}
+            >
+                <img
+                    src={deleteIcon}
+                    draggable={"false"}
+                />
+            </div>
+        </div>
+    </div>
+)
+
+CustomAccentComponent.propTypes = {
+    name: PropTypes.string,
+    primaryColor: PropTypes.string
+};
+
 const CustomAccentModalComponent = props => (
     <Modal
         className={styles.modalContent}
@@ -59,52 +115,14 @@ const CustomAccentModalComponent = props => (
             <div className={styles.header}>
                 Saved Accents:
             </div>
-            <div
-                className={styles.divStretchy}
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                }}
-            >
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                }}>
-                    <div
-                        className={styles.accentIconOuter}
-                        style={{
-                            backgroundColor: `#757575`
-                        }}
-                    />
-                    <span style={{ lineHeight: '32px' }}>*Name*</span>
-                </div>
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '6px',
-                    alignItems: 'flex-end',
-                    flexShrink: '0'
-                }}>
-                    <div
-                        className={classNames(styles.iconButton)}
-                        type={"edit"}
-                    >
-                        <img
-                            src={editIcon}
-                        />
-                    </div>
-                    <div
-                        className={classNames(styles.iconButton)}
-                        type={"delete"}
-                    >
-                        <img
-                            src={deleteIcon}
-                        />
-                    </div>
-                </div>
-            </div>
+            <CustomAccentComponent
+                name="*Name* (Accent 1)"
+                primaryColor="#757575"
+            />
+            <CustomAccentComponent
+                name="*Name* (Accent 2)"
+                primaryColor="#83da65"
+            />
         </Box>
     </Modal>
 )
