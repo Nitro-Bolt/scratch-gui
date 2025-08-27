@@ -58,8 +58,7 @@ const CustomAccentModalComponent = props => (
             </div>
             <div className={styles.divStretchy}>
                 <div style={{
-                    float: 'left',
-                    clear: 'none'
+                    display: 'flex'
                 }}>
                     <div
                         className={styles.accentIconOuter}
