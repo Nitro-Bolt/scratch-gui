@@ -28,7 +28,7 @@ export default async function ({ addon, msg, console }) {
         const imageNode = Object.assign(addon.tab.recolorable(), {
             src: "data:image/svg+xml;utf8," + encodeURIComponent(iconSVG),
             draggable: false,
-            className = "icon",
+            className: "icon",
         });
 
         const button = document.createElement("button");
