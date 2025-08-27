@@ -76,9 +76,9 @@ const CustomAccentModalComponent = props => (
                 <div style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '8px',
+                    gap: '6px',
                     alignItems: 'flex-end',
-                    flexShrink: 0
+                    flexShrink: '0'
                 }}>
                     <div
                         className={classNames(styles.iconButton)}

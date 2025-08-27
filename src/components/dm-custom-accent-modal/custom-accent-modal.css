@@ -127,11 +127,11 @@
 }
 
 .icon-button[type="edit"] {
-    background-color: $motion-primary;
+    background-color: rgb(0, 220, 255);
 }
 
 .icon-button[type="edit"]:active, .icon-button[type="edit"]:focus-within {
-    box-shadow: 0 0 0 3px $motion-transparent;
+    box-shadow: 0 0 0 3px rgb(0, 220, 255, 0.35);
 }
 
 .icon-button[type="delete"] {
