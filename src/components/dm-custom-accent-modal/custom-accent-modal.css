@@ -114,10 +114,8 @@
 
 
 .icon-button {
-    width: 28px;
-    height: 28px;
-    border: 3px solid #fff;
-    border-radius: 100%;
+    width: 30px;
+    height: 30px;
     box-sizing: border-box;
     transform-origin: center;
     transform: scale(90%);
@@ -127,7 +125,7 @@
 }
 
 .icon-button[type="edit"] {
-    background-color: $motion-transparent;
+    background-color: $motion-primary;
 }
 
 .icon-button[type="edit"]:active, .icon-button[type="edit"]:focus-within {
@@ -139,5 +137,5 @@
 }
 
 .icon-button[type="delete"]:active, .icon-button[type="delete"]:focus-within {
-    box-shadow: 0 0 0 3px red;
+    box-shadow: 0 0 0 3px rgb(255, 0, 0, 0.35);
 }
