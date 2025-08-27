@@ -1,5 +1,4 @@
 import {Theme} from '.';
-import AddonHooks from '../../addons/hooks';
 
 const matchMedia = query => (window.matchMedia ? window.matchMedia(query) : null);
 const PREFERS_HIGH_CONTRAST_QUERY = matchMedia('(prefers-contrast: more)');
@@ -57,7 +56,6 @@ const persistTheme = theme => {
     document.body.setAttribute("coloraccent", local)
 
     window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
-    AddonHooks.recolorCallbacks.forEach(i => i())
 
     document.body.dispatchEvent(recolorEvent);
 };
