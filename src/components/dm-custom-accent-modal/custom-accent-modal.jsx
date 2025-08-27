@@ -59,10 +59,17 @@ const CustomAccentModalComponent = props => (
             <div className={styles.header}>
                 Saved Accents:
             </div>
-            <div className={styles.divStretchy}>
+            <div
+                className={styles.divStretchy}
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                }}
+            >
                 <div style={{
                     display: 'flex',
-                    alignItems: 'middle',
+                    alignItems: 'center',
                     gap: '8px'
                 }}>
                     <div
