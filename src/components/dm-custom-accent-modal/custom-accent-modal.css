@@ -119,9 +119,11 @@
     box-sizing: border-box;
     transform-origin: center;
     transform: scale(90%);
-    display: 'flex';
-    justify-content: 'center';
-    align-items: 'center';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 4px;
 }
 
 .icon-button[type="edit"] {
