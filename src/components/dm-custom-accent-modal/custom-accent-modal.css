@@ -111,3 +111,33 @@
     background-color: black;
     color: white;
 }
+
+
+.icon-button {
+    width: 28px;
+    height: 28px;
+    border: 3px solid #fff;
+    border-radius: 100%;
+    box-sizing: border-box;
+    transform-origin: center;
+    transform: scale(90%);
+    display: 'flex';
+    justify-content: 'center';
+    align-items: 'center';
+}
+
+.icon-button[type="edit"] {
+    background-color: $motion-transparent;
+}
+
+.icon-button[type="edit"]:active, .icon-button[type="edit"]:focus-within {
+    box-shadow: 0 0 0 3px $motion-transparent;
+}
+
+.icon-button[type="delete"] {
+    background-color: red;
+}
+
+.icon-button[type="delete"]:active, .icon-button[type="delete"]:focus-within {
+    box-shadow: 0 0 0 3px red;
+}

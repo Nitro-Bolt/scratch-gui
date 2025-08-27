@@ -10,13 +10,16 @@ import Input from '../forms/input.jsx';
 import BufferedInputHOC from '../forms/buffered-input-hoc.jsx';
 import styles from './custom-accent-modal.css';
 
+import editIcon from './edit.svg';
+import deleteIcon from './delete.svg';
+
 /* eslint-disable react/no-multi-comp */
 
 const BufferedInput = BufferedInputHOC(Input);
 
 const messages = defineMessages({
     title: {
-        defaultMessage: 'Custom Accent',
+        defaultMessage: 'Custom Accents',
         description: 'Title of the custom accents modal',
         id: 'dm.customAccentModal.title'
     },
@@ -69,6 +72,27 @@ const CustomAccentModalComponent = props => (
                         }}
                     />
                     <span style={{ lineHeight: '32px' }}>*Name*</span>
+                </div>
+                <div style={{
+                    display: 'flex',
+                    right: '0'
+                }}>
+                    <div
+                        className={classNames(styles.iconButton)}
+                        type={"edit"}
+                    >
+                        <img
+                            src={editIcon}
+                        />
+                    </div>
+                    <div
+                        className={classNames(styles.iconButton)}
+                        type={"delete"}
+                    >
+                        <img
+                            src={deleteIcon}
+                        />
+                    </div>
                 </div>
             </div>
         </Box>
