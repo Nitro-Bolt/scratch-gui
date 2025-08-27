@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import filterIcon from './icon--filter.svg';
-import xIcon from './icon--x.svg';
-import styles from './filter.css';
+import xIcon from '!../../lib/tw-recolor/build!./icon--x.svg';
+import styles from '!../../lib/tw-recolor/build!./filter.css';
 
 const FilterComponent = props => {
     const {

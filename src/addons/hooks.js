@@ -2,7 +2,8 @@ const AddonHooks = {
     appStateReducer: () => {},
     appStateStore: null,
     blockly: null,
-    blocklyCallbacks: []
+    blocklyCallbacks: [],
+    recolorCallbacks: []
 };
 
 export default AddonHooks;

@@ -670,6 +670,38 @@ class Tab extends EventTargetShim {
     prompt (...args) {
         return modal.prompt(this, ...args);
     }
+
+    recolorable () {
+        // this is some pretty awful code that makes a *lot* of assumptions about how addons work
+
+        const image = document.createElement('img');
+
+        let svg = '';
+        const updateRealSrc = () => {
+            const newSrc = svg.replace(/#855cd6/gi, window.Recolor.primary);
+            const nativeSrcSetter = Object.getOwnPropertyDescriptor(window.HTMLImageElement.prototype, 'src').set;
+            nativeSrcSetter.call(image, `data:image/svg+xml;,${encodeURIComponent(newSrc)}`);
+        };
+
+        Object.defineProperty(image, 'src', {
+            get: () => {
+                // return the 'original' source, roughly
+                if (!svg) return '';
+                return `data:image/svg+xml;,${encodeURIComponent(svg)}`;
+            },
+            set: newSrc => {
+                // we assume it is a base64-encoded data: URI that is supported by atob()
+                const base64 = newSrc.split(';base64,')[1];
+                svg = atob(base64);
+                updateRealSrc();
+            }
+        });
+
+        // this leaks memory if an addon creates these disposably
+        AddonHooks.recolorCallbacks.push(updateRealSrc);
+
+        return image;
+    }
 }
 
 class Settings extends EventTargetShim {

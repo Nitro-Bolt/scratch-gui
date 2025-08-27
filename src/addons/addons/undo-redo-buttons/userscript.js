@@ -25,8 +25,11 @@ export default async function ({ addon, msg, console }) {
 
     function createIconButton(title, iconSVG, onClick, extraClasses = '', attributes = '') {
         const imageNode = document.createElement("img");
-        imageNode.src = "data:image/svg+xml;utf8," + encodeURIComponent(iconSVG);
-        imageNode.className = "icon";
+        const imageNode = Object.assign(addon.tab.recolorable(), {
+            src: "data:image/svg+xml;utf8," + encodeURIComponent(iconSVG),
+            draggable: false,
+            className = "icon",
+        });
 
         const button = document.createElement("button");
         button.title = title;
