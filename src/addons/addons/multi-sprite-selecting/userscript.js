@@ -69,7 +69,7 @@ export default async function ({ addon, console, msg }) {
     isSelectingInput.style.accentColor = "#80f41a";
     isSelectingInput.style.transform = "translate(0%, 20%)";
 
-    document.body.addEventListener('RecolorEvent', () => {
+    isSelectingInput.addEventListener('RecolorEvent', () => {
         isSelectingInput.style.accentColor = window.Recolor || "#80f41a";
     })
 

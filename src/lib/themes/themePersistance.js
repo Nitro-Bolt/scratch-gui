@@ -58,6 +58,13 @@ const persistTheme = theme => {
     window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
 
     document.body.dispatchEvent(recolorEvent);
+
+    let descendants = Array.prototype.slice.call(
+        document.body.querySelectorAll("*")
+    );
+    descendants.forEach(function(descendant) {
+        descendant.dispatchEvent(recolorEvent);
+    });
 };
 
 export {
