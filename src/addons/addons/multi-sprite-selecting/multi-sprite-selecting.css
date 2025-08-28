@@ -14,6 +14,26 @@
     cursor: pointer;
 }
 
+[coloraccent="Lime Green"] .sa-sprite-selecting-button {
+    background-color: #80f41a;
+}
+[coloraccent="Red"] .sa-sprite-selecting-button,
+[coloraccent="Rainbow"] .sa-sprite-selecting-button {
+    background-color: #ff4c4c;
+}
+[coloraccent="Light Blue"] .sa-sprite-selecting-button {
+    background-color: #00c3ff;
+}
+[coloraccent="Blue"] .sa-sprite-selecting-button {
+    background-color: #4c97ff;
+}
+[coloraccent="Scratch"] .sa-sprite-selecting-button {
+    background-color: #855cd6;
+}
+[coloraccent="Magenta"] .sa-sprite-selecting-button {
+    background-color: #d414ff;
+}
+
 .sa-sprite-selected-count {
     color: black;
     margin-left: "10px";
