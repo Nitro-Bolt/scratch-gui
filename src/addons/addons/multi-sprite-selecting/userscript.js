@@ -21,6 +21,7 @@ export default async function ({ addon, console, msg }) {
         button.innerHTML = iconSVG;
         button.title = title;
         button.className = "sa-sprite-selecting-button"
+        button.style.backgroundColor = Recolor.primary || "#80f41a"
         button.addEventListener("click", onClick);
         return button;
     }
@@ -66,7 +67,7 @@ export default async function ({ addon, console, msg }) {
     const isSelectingInput = document.createElement("input");
     isSelectingInput.type = "checkbox";
     isSelectingInput.className = "sa-sprite-info-isselecting-input";
-    isSelectingInput.style.accentColor = "#80f41a";
+    isSelectingInput.style.accentColor = Recolor.primary || "#80f41a";
     isSelectingInput.style.transform = "translate(0%, 20%)";
 
     isSelectingInput.addEventListener('click', async (event) => {
