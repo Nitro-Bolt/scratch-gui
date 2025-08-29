@@ -603,6 +603,13 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
             </value>
         </block>
         <block type="sound_resumeallsounds"/>
+        <block id="${targetId}_sound_isSoundPaused" type="sound_isSoundPaused">
+            <value name="SOUND_MENU">
+                <shadow type="sound_sounds_menu">
+                    <field name="SOUND_MENU">${soundName}</field>
+                </shadow>
+            </value>
+        </block>
         ${blockSeparator}
         <block id="${targetId}_sound_isSoundPlaying" type="sound_isSoundPlaying">
             <value name="SOUND_MENU">
@@ -1672,7 +1679,6 @@ const liveTests = function (isLiveTest, targetId, soundName) {
         </block>
         ${blockSeparator}
         <block type="control_fieldbutton"></block>
-        <block type="operators_expandablejoininputs"></block>
         <block type="motion_mutatorCheckboxTest"></block>
     </category>
     `;
