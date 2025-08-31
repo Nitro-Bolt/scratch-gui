@@ -18,6 +18,7 @@ import terminalBlockIcon from './icon--terminal-block.svg';
 import hatBlockIcon from './icon--hat-block.svg';
 import reporterBlockIcon from './icon--reporter-block.svg';
 import squareReporterBlockIcon from './icon--square-reporter-block.svg';
+import leafBlockIcon from './icon--leaf-block.svg';
 import booleanBlockIcon from './icon--boolean-block.svg';
 
 import styles from './custom-procedures.css';
@@ -413,24 +414,44 @@ const CustomProcedures = props => (
                         </div>
                     }
                 </>}
-                {props.returns && <div
-                    className={styles.optionCard}
-                    role="button"
-                    tabIndex="0"
-                    onClick={() => props.onOutputTypeChanged('boolean')}
-                >
-                    <img
-                        className={styles.optionIcon}
-                        src={booleanBlockIcon}
-                    />
-                    <div className={styles.optionTitle}>
-                        <FormattedMessage
-                            defaultMessage="Return a Boolean"
-                            description="Label for block to return a boolean"
-                            id="gui.customProcedures.returnABoolean"
+                {props.returns && <>
+                    <div
+                        className={styles.optionCard}
+                        role="button"
+                        tabIndex="0"
+                        onClick={() => props.onOutputTypeChanged('boolean')}
+                    >
+                        <img
+                            className={styles.optionIcon}
+                            src={booleanBlockIcon}
                         />
+                        <div className={styles.optionTitle}>
+                            <FormattedMessage
+                                defaultMessage="Return a Boolean"
+                                description="Label for block to return a boolean"
+                                id="gui.customProcedures.returnABoolean"
+                            />
+                        </div>
                     </div>
-                </div>}
+                    <div
+                        className={styles.optionCard}
+                        role="button"
+                        tabIndex="0"
+                        onClick={() => props.onOutputTypeChanged('leaf')}
+                    >
+                        <img
+                            className={styles.optionIcon, styles.optionSquareReporterIcon}
+                            src={leafBlockIcon}
+                        />
+                        <div className={styles.optionTitle}>
+                            <FormattedMessage
+                                defaultMessage="Return Vector"
+                                description="Label for block to return vector"
+                                id="gui.customProcedures.returnVector"
+                            />
+                        </div>
+                    </div>
+                </>}
             </div>}
 
             <BlockColorSection {...props} />

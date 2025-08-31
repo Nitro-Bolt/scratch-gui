@@ -1313,6 +1313,18 @@ const operators = function (isInitialSetup) {
                 </shadow>
             </value>
         </block>
+        <block type="operator_strictlyEquals">
+            <value name="A">
+                <shadow type="text">
+                    <field name="TEXT"/>
+                </shadow>
+            </value>
+            <value name="B">
+                <shadow type="text">
+                    <field name="TEXT">50</field>
+                </shadow>
+            </value>
+        </block>
         ${blockSeparator}
         <block type="operator_trueBoolean"></block>
         <block type="operator_falseBoolean"></block>
@@ -1404,6 +1416,18 @@ const operators = function (isInitialSetup) {
             </block>
             ${blockSeparator}
             <block type="operator_contains" id="operator_contains">
+              <value name="STRING1">
+                <shadow type="text">
+                  <field name="TEXT">${apple}</field>
+                </shadow>
+              </value>
+              <value name="STRING2">
+                <shadow type="text">
+                  <field name="TEXT">${letter}</field>
+                </shadow>
+              </value>
+            </block>
+            <block type="operator_strictlyContains">
               <value name="STRING1">
                 <shadow type="text">
                   <field name="TEXT">${apple}</field>

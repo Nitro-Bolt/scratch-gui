@@ -1319,16 +1319,6 @@ const menuItems = [
         featured: true
     },
     {
-        name: 'JavaScript',
-        extensionId: 'jgJavascript',
-        iconURL: jgJavascriptExtensionIcon,
-        insetIconURL: PenguinmodThumb,
-        customInsetColor: '#00c3ff',
-        tags: ['penguinmod', 'programminglanguage'],
-        description: 'Run your own custom code written in JavaScript!',
-        featured: true
-    },
-    {
         name: 'JavaScript V2',
         extensionId: 'SPjavascriptV2',
         iconURL: jgJavascriptExtensionIcon,
@@ -1765,6 +1755,16 @@ if (IsLocal || IsLiveTests) {
             customInsetColor: '#D066FE',
             insetIconURL: fr3dPhysicsInsetExtensionIcon,
             description: 'Physics for the 3D extension.',
+            featured: true
+        },
+        {
+            name: '(Old) JavaScript',
+            extensionId: 'jgJavascript',
+            iconURL: jgJavascriptExtensionIcon,
+            insetIconURL: PenguinmodThumb,
+            customInsetColor: '#00c3ff',
+            tags: ['penguinmod', 'programminglanguage'],
+            description: 'Run your own custom code written in JavaScript!',
             featured: true
         },
         {
