@@ -1,4 +1,5 @@
 import log from '../lib/log';
+import AddonHooks from '../addons/hooks';
 
 const ADD_MONITOR_RECT = 'scratch-gui/monitors/ADD_MONITOR_RECT';
 const MOVE_MONITOR_RECT = 'scratch-gui/monitors/MOVE_MONITOR_RECT';
@@ -10,6 +11,20 @@ const initialState = {
     monitors: {},
     savedMonitorPositions: {}
 };
+
+const _getStateIfPossible = function () {
+    if ((AddonHooks.appStateStore !== null) && (AddonHooks.appStateStore.getState !== undefined)) {
+        return {
+            state: AddonHooks.appStateStore,
+            status: "success"
+        }
+    } else {
+        return {
+            state: null,
+            status: "404"
+        }
+    }
+}
 
 // Verify that the rectangle formed by the 2 points is well-formed
 const _verifyRect = function (upperStart, lowerEnd) {
@@ -148,8 +163,8 @@ const reducer = function (state, action) {
 // Init position --------------------------
 const PADDING = 5;
 // @todo fix these numbers when we fix https://github.com/LLK/scratch-gui/issues/980
-const SCREEN_WIDTH = 400;
-const SCREEN_HEIGHT = 300;
+const SCREEN_WIDTH = 480;
+const SCREEN_HEIGHT = 360;
 const SCREEN_EDGE_BUFFER = 40;
 
 const _rectsIntersect = function (rect1, rect2) {

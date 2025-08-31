@@ -241,7 +241,7 @@ const Credits = () => (
                 Dinosaurmod is finally (so so so slowly) getting translated into other languages.
                 But it will take a very long while. Hopefully the same number of languages can be supported.
             </p>
-            <p>Contributors:</p>
+            <p>Contributors (also includes contributors from the home page):</p>
             <UserList users={UserData.pmTranslators} />
             <p><i>The list order is randomized on each refresh.</i></p>
         </section>

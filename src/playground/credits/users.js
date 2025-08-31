@@ -125,7 +125,8 @@ const pmDevelopers = [
 
 // todo: should translators be only named or...?
 const pmTranslators = [
-    'GabsTheCuriousKid'
+    'GabsTheCuriousKid',
+    'Supermetafora204321'
 ].map(fromHardcodedGithub);
 const pmTranslatorsNamed = [
     ''
