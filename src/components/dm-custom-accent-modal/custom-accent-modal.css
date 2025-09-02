@@ -147,7 +147,11 @@
 .nothing-text {
     width: 100%;
     background-color: transparent;
-    color: hsla(0, 0, 0, 0.5);
+    color: hsla(0, 0%, 0%, 0.5);
     font-style: italic;
     text-align: center;
+}
+
+[theme="dark"] .nothing-text {
+    color: hsla(0, 0%, 100%, 0.5);
 }

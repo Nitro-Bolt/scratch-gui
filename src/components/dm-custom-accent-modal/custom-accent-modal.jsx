@@ -119,9 +119,9 @@ const CustomAccentModalComponent = props => (
             >
                 Create new Accent
             </div>
-            <div className={styles.header}>
+            <Header>
                 Saved Accents:
-            </div>
+            </Header>
             <div className={styles.nothingText}>
                 You currently have no saved accents.
             </div>
