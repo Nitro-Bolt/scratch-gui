@@ -72,6 +72,7 @@ const CustomAccentComponent = props => (
             <div
                 className={classNames(styles.iconButton)}
                 type={"edit"}
+                onClick={props.onEditClicked}
             >
                 <img
                     src={editIcon}
@@ -81,6 +82,7 @@ const CustomAccentComponent = props => (
             <div
                 className={classNames(styles.iconButton)}
                 type={"delete"}
+                onClick={props.onDeleteClicked}
             >
                 <img
                     src={deleteIcon}
@@ -93,7 +95,9 @@ const CustomAccentComponent = props => (
 
 CustomAccentComponent.propTypes = {
     name: PropTypes.string,
-    primaryColor: PropTypes.string
+    primaryColor: PropTypes.string,
+    onEditClicked: PropTypes.func.isRequired,
+    onDeleteClicked: PropTypes.func.isRequired,
 };
 
 const CustomAccentModalComponent = props => (
@@ -118,10 +122,14 @@ const CustomAccentModalComponent = props => (
             <CustomAccentComponent
                 name="*Name* (Accent 1)"
                 primaryColor="#757575"
+                onEditClicked={() => console.log("edit button clicked")}
+                onDeleteClicked={() => console.log("delete button clicked")}
             />
             <CustomAccentComponent
                 name="*Name* (Accent 2)"
                 primaryColor="#83da65"
+                onEditClicked={() => console.log("edit button clicked")}
+                onDeleteClicked={() => console.log("delete button clicked")}
             />
         </Box>
     </Modal>
