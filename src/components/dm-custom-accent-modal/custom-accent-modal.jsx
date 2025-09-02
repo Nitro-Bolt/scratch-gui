@@ -30,6 +30,18 @@ const messages = defineMessages({
     }
 });
 
+const Gap = props => (
+    <div
+        className={styles.gap}
+        style={{
+            height: props.height
+        }}
+    />
+);
+Gap.propTypes = {
+    height: PropTypes.string
+};
+
 const Header = props => (
     <div className={styles.header}>
         {props.children}
@@ -122,6 +134,9 @@ const CustomAccentModalComponent = props => (
             <Header>
                 Saved Accents:
             </Header>
+            <Gap
+                height="18px"
+            />
             <div className={styles.nothingText}>
                 You currently have no saved accents.
             </div>

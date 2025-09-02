@@ -155,3 +155,8 @@
 [theme="dark"] .nothing-text {
     color: hsla(0, 0%, 100%, 0.5);
 }
+
+.gap {
+    width: 100%;
+    background-color: transparent;
+}
