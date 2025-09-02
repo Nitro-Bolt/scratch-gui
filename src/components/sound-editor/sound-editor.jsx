@@ -16,8 +16,8 @@ import styles from './sound-editor.css';
 
 import playIcon from './icon--play.svg';
 import stopIcon from './icon--stop.svg';
-import redoIcon from './icon--redo.svg';
-import undoIcon from './icon--undo.svg';
+import redoIcon from '!../../lib/tw-recolor/build!./icon--redo.svg';
+import undoIcon from '!../../lib/tw-recolor/build!./icon--undo.svg';
 import modifyIcon from './icon--modify.svg';
 import fasterIcon from './icon--faster.svg';
 import slowerIcon from './icon--slower.svg';
@@ -34,11 +34,11 @@ import muteIcon from './icon--mute.svg';
 import reverbIcon from './icon--reverb.svg';
 import bitcrushIcon from './icon--bit-crush.png';
 
-import deleteIcon from './icon--delete.svg';
-import copyIcon from './icon--copy.svg';
-import pasteIcon from './icon--paste.svg';
-import cutIcon from './icon--cut.svg';
-import copyToNewIcon from './icon--copy-to-new.svg';
+import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
+import copyIcon from '!../../lib/tw-recolor/build!./icon--copy.svg';
+import pasteIcon from '!../../lib/tw-recolor/build!./icon--paste.svg';
+import cutIcon from '!../../lib/tw-recolor/build!./icon--cut.svg';
+import copyToNewIcon from '!../../lib/tw-recolor/build!./icon--copy-to-new.svg';
 
 const BufferedInput = BufferedInputHOC(Input);
 
