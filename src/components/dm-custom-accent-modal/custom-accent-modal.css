@@ -143,3 +143,11 @@
 .icon-button[type="delete"]:active, .icon-button[type="delete"]:focus-within {
     box-shadow: 0 0 0 3px rgb(255, 0, 0, 0.35);
 }
+
+.nothing-text {
+    width: 100%;
+    background-color: transparent;
+    color: hsla(0, 0, 0, 0.5);
+    font-style: italic;
+    text-align: center;
+}

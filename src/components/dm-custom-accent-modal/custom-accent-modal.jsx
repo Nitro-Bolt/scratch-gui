@@ -113,13 +113,19 @@ const CustomAccentModalComponent = props => (
             <Header>
                 Custom Accents (This is currently unfinished and being worked on.)
             </Header>
-            <div className={styles.buttonStretchy}>
+            <div
+                className={styles.buttonStretchy}
+                onClick={props.onCreateAccentClicked}
+            >
                 Create new Accent
             </div>
             <div className={styles.header}>
                 Saved Accents:
             </div>
-            <CustomAccentComponent
+            <div className={styles.nothingText}>
+                You currently have no saved accents.
+            </div>
+            {/*<CustomAccentComponent
                 name="*Name* (Accent 1)"
                 primaryColor="#757575"
                 onEditClicked={props.onEditClicked}
@@ -130,7 +136,7 @@ const CustomAccentModalComponent = props => (
                 primaryColor="#83da65"
                 onEditClicked={props.onEditClicked}
                 onDeleteClicked={props.onDeleteClicked}
-            />
+            />*/}
         </Box>
     </Modal>
 )
@@ -140,6 +146,7 @@ CustomAccentModalComponent.propTypes = {
     onClose: PropTypes.func,
     onEditClicked: PropTypes.func.isRequired,
     onDeleteClicked: PropTypes.func.isRequired,
+    onCreateAccentClicked: PropTypes.func.isRequired,
 };
 
 export default injectIntl(CustomAccentModalComponent)

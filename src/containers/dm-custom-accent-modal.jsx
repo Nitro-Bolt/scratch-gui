@@ -12,7 +12,8 @@ class CustomAccentModal extends React.Component {
         bindAll(this, [
             'test',
             'handleEditClicked',
-            'handleDeleteClicked'
+            'handleDeleteClicked',
+            'handleCreateAccentClicked'
         ]);
     }
     test () {
@@ -28,6 +29,9 @@ class CustomAccentModal extends React.Component {
         console.log(name)
         alert("delete button clicked")
     }
+    handleCreateAccentClicked () {
+        alert("create accent button clicked")
+    }
     render () {
         const {
             /* eslint-disable no-unused-vars */
@@ -40,6 +44,7 @@ class CustomAccentModal extends React.Component {
                 onClose={this.props.onClose}
                 onEditClicked={this.handleEditClicked}
                 onDeleteClicked={this.handleDeleteClicked}
+                onCreateAccentClicked={this.handleCreateAccentClicked}
                 {...props}
             />
         );
