@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
+import TWRenderRecoloredImage from '../../lib/tw-recolor/render.jsx';
 import styles from './icon-button.css';
 
 const IconButton = ({
@@ -19,7 +20,7 @@ const IconButton = ({
         role="button"
         onClick={disabled ? null : onClick}
     >
-        <img
+        <TWRenderRecoloredImage
             className={styles.icon}
             draggable={false}
             src={img}
