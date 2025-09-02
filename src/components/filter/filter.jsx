@@ -2,6 +2,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import TWRenderRecoloredImage from '../../lib/tw-recolor/render.jsx';
+
 import filterIcon from '!../../lib/tw-recolor/build!./icon--filter.svg';
 import xIcon from '!../../lib/tw-recolor/build!./icon--x.svg';
 import styles from './filter.css';
@@ -21,9 +23,10 @@ const FilterComponent = props => {
                 [styles.isActive]: filterQuery.length > 0
             })}
         >
-            <img
+            <TWRenderRecoloredImage
                 className={styles.filterIcon}
                 src={filterIcon}
+                draggable={false}
             />
             <input
                 className={classNames(styles.filterInput, inputClassName)}
@@ -36,9 +39,10 @@ const FilterComponent = props => {
                 className={styles.xIconWrapper}
                 onClick={onClear}
             >
-                <img
+                <TWRenderRecoloredImage
                     className={styles.xIcon}
                     src={xIcon}
+                    draggable={false}
                 />
             </div>
         </div>
