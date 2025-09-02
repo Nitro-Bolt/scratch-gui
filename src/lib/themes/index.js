@@ -28,7 +28,7 @@ const ACCENT_MAP = {
         'motion-primary': 'hsla(289, 100%, 54%, 1)'
     },
     [ACCENT_RAINBOW]: {
-        'motion-primary': '#fff'
+        'motion-primary': '#ff4c4c'
     }
 };
 

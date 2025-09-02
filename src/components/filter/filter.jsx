@@ -2,8 +2,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import filterIcon from './icon--filter.svg';
-import xIcon from './icon--x.svg';
+import filterIcon from '!../../lib/tw-recolor/build!./icon--filter.svg';
+import xIcon from '!../../lib/tw-recolor/build!./icon--x.svg';
 import styles from './filter.css';
 
 const FilterComponent = props => {
