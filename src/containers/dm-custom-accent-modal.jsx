@@ -11,10 +11,22 @@ class CustomAccentModal extends React.Component {
         super(props);
         bindAll(this, [
             'test',
+            'handleEditClicked',
+            'handleDeleteClicked'
         ]);
     }
     test () {
         console.log("test")
+    }
+    handleEditClicked (name) {
+        console.log("edit button clicked")
+        console.log(name)
+        alert("edit button clicked")
+    }
+    handleDeleteClicked (name) {
+        console.log("delete button clicked")
+        console.log(name)
+        alert("delete button clicked")
     }
     render () {
         const {
@@ -26,6 +38,8 @@ class CustomAccentModal extends React.Component {
         return (
             <CustomAccentModalComponent
                 onClose={this.props.onClose}
+                onEditClicked={this.handleEditClicked}
+                onDeleteClicked={this.handleDeleteClicked}
                 {...props}
             />
         );
