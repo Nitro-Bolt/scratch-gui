@@ -483,9 +483,9 @@ const CustomProcedures = props => (
                 {!!(new URLSearchParams(location.search)).has('livetests') ? (<div>
                     <label>
                         <input
-                            checked={false}
+                            checked={props.isglobal}
                             type="checkbox"
-                            onChange={() => {}}
+                            onChange={props.onToggleIsGlobal}
                         />
                         Global Custom Block
                     </label>
@@ -530,9 +530,11 @@ CustomProcedures.propTypes = {
     onOk: PropTypes.func.isRequired,
     onToggleWarp: PropTypes.func.isRequired,
     onToggleReturns: PropTypes.func.isRequired,
+    onToggleIsGlobal: PropTypes.func.isRequired,
     warp: PropTypes.bool.isRequired,
     returns: PropTypes.bool.isRequired,
     editing: PropTypes.bool.isRequired,
+    isglobal: PropTypes.bool.isRequired,
     selectedType: PropTypes.string.isRequired,
     onOutputTypeChanged: PropTypes.func.isRequired,
     onRemoveAllInputs: PropTypes.func.isRequired

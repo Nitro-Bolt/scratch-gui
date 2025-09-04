@@ -25,6 +25,7 @@ class CustomProcedures extends React.Component {
             'handleAddNumber',
             'handleToggleWarp',
             'handleToggleReturns',
+            'handleToggleGlobal',
             'handleCancel',
             'handleOk',
             'handleChangeType',
@@ -38,6 +39,7 @@ class CustomProcedures extends React.Component {
             rtlOffset: 0,
             warp: false,
             returns: false,
+            isglobal: false,
             editing: false,
             blockColor: '#000000',
             type: 'statement'
@@ -198,6 +200,12 @@ class CustomProcedures extends React.Component {
             this.setState({returns: newReturns});
         }
     }
+    handleToggleGlobal () {
+        if (this.mutationRoot) {
+            const newIsGlobal = !this.state.isglobal
+            this.setState({isglobal: newIsGlobal});
+        }
+    }
     handleChangeType (value) {
         if (this.mutationRoot) {
             const newType = value
@@ -245,6 +253,7 @@ class CustomProcedures extends React.Component {
                 warp={this.state.warp}
                 blockColor={this.state.blockColor}
                 returns={this.state.returns}
+                isglobal={this.state.isglobal}
                 onAddBoolean={this.handleAddBoolean}
                 onAddLabel={this.handleAddLabel}
                 onAddTextNumber={this.handleAddTextNumber}
@@ -253,6 +262,7 @@ class CustomProcedures extends React.Component {
                 onOk={this.handleOk}
                 onToggleWarp={this.handleToggleWarp}
                 onToggleReturns={this.handleToggleReturns}
+                onToggleIsGlobal={this.handleToggleGlobal}
                 editing={this.state.editing}
                 selectedType={this.state.type}
                 onOutputTypeChanged={this.handleChangeType}
