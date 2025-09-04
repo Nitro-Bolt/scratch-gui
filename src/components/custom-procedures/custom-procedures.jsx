@@ -478,6 +478,18 @@ const CustomProcedures = props => (
                         />
                         Returns a value
                     </label>
+                    <br />
+                </div>) : null}
+                {!!(new URLSearchParams(location.search)).has('livetests') ? (<div>
+                    <label>
+                        <input
+                            checked={false}
+                            type="checkbox"
+                            onChange={() => {}}
+                        />
+                        Global Custom Block
+                    </label>
+                    <br />
                 </div>) : null}
             </div>
             <Box className={styles.buttonRow}>
