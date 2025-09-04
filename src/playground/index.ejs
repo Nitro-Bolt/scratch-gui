@@ -53,9 +53,16 @@
           while (document.querySelector('#app') == null) {await new Promise(r => setTimeout(r, 50))}
           document.querySelector('#app').style.filter = "contrast(200%)";
           while (true) {
-            const thisAudio = Audio('https://dinosaurmod.github.io/this.mp3');
-            await new Promise(r => setTimeout(r, Math.floor(Math.random() * 5000) + 1))
+            const thisAudio = new Audio('https://dinosaurmod.github.io/this.mp3');
+            const waittillthis = Math.floor(Math.random() * 2500) + 1
+            const thise = document.createElement("div");
+            thise.style.display = "none";
+            thise.innerHTML = String(waittillthis)
+            thise.className = "secret"
+            document.body.appendChild(thise)
+            await new Promise(r => setTimeout(r, waittillthis))
             thisAudio.play()
+            document.body.removeChild(thise)
           }
         }
         <% } %>
