@@ -49,9 +49,15 @@
         if (accentTheme) document.body.setAttribute("coloraccent", accentTheme || "Lime Green")
         if (accentTheme == null) document.body.setAttribute("coloraccent", "Lime Green")
         window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
-        if (new URLSearchParams(location.search).has("666")) {document.body.setAttribute("colorAccent", "OOHVERYSCARY"); document.body.setAttribute('theme', 'dark'); document.querySelector('#splash').setAttribute('splash-theme', 'dark');}
-        while (document.querySelector('#app') == null) {await new Promise(r => setTimeout(r, 50))}
-        document.querySelector('#app').style.filter = "contrast(200%)";
+        if (new URLSearchParams(location.search).has("666")) {document.body.setAttribute("colorAccent", "OOHVERYSCARY"); document.body.setAttribute('theme', 'dark'); document.querySelector('#splash').setAttribute('splash-theme', 'dark');
+          while (document.querySelector('#app') == null) {await new Promise(r => setTimeout(r, 50))}
+          document.querySelector('#app').style.filter = "contrast(200%)";
+          while (true) {
+            const thisAudio = Audio('https://dinosaurmod.github.io/this.mp3');
+            await new Promise(r => setTimeout(r, Math.floor(Math.random() * 5000) + 1))
+            thisAudio.play()
+          }
+        }
         <% } %>
       })();
     </script>
