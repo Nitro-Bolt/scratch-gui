@@ -152,6 +152,25 @@ body[coloraccent="Rainbow"] {
 
     --menu-bar-background-image: linear-gradient(90deg, rgba(255, 0, 0, 0.75) 0%, rgba(255, 154, 0, 0.75) 10%, rgba(208, 222, 33, 0.75) 20%, rgba(79, 220, 74, 0.75) 30%, rgba(63, 218, 216, 0.75) 40%, rgba(47, 201, 226, 0.75) 50%, rgba(28, 127, 238, 0.75) 60%, rgba(95, 21, 242, 0.75) 70%, rgba(186, 12, 248, 0.75) 80%, rgba(251, 7, 217, 0.75) 90%, rgba(255, 0, 0, 0.75) 100%);
 }
+body[coloraccent="OOHVERYSCARY"] {
+    --motion-primary: #ff0000;
+    --motion-tertiary: #d60000;
+    --motion-transparent: #ff000057;
+
+    --motion-primary-dark: #ff0000;
+
+    --extensions-primary: rgb(0, 0, 0);
+    --extensions-tertiary: rgb(47, 8, 0);
+    --extensions-transparent: hsla(0, 0%, 0%, 0.35);
+    --extensions-light: rgb(255, 141, 119);
+    
+    --drop-highlight: #000000;
+
+    --menu-bar-background: var(--motion-primary);
+    --menu-bar-background-dark: var(--motion-primary-dark);
+
+    --menu-bar-background-image: none;
+}
 
 $ui-primary: var(--ui-primary, hsla(215, 100%, 95%, 1)); /* #E5F0FF */
 $ui-secondary: var(--ui-secondary, hsla(215, 75%, 95%, 1)); /* #E9F1FC */

@@ -487,7 +487,7 @@ const CustomProcedures = props => (
                             type="checkbox"
                             onChange={props.onToggleIsGlobal}
                         />
-                        Global Custom Block
+                        Global custom block
                     </label>
                     <br />
                 </div>) : null}
