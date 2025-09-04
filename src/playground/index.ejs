@@ -52,9 +52,11 @@
         if (new URLSearchParams(location.search).has("666")) {document.body.setAttribute("colorAccent", "OOHVERYSCARY"); document.body.setAttribute('theme', 'dark'); document.querySelector('#splash').setAttribute('splash-theme', 'dark');
           while (document.querySelector('#app') == null) {await new Promise(r => setTimeout(r, 50))}
           document.querySelector('#app').style.filter = "contrast(200%)";
+          const evt = new Event('click');
+          document.dispatchEvent(evt);
           while (true) {
             const thisAudio = new Audio('https://dinosaurmod.github.io/this.mp3');
-            const waittillthis = Math.floor(Math.random() * 2500) + 1
+            const waittillthis = Math.floor(Math.random() * (2500 * 100)) + 1
             const thise = document.createElement("div");
             thise.style.display = "none";
             thise.innerHTML = String(waittillthis)
