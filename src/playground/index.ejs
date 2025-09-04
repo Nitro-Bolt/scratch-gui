@@ -50,9 +50,7 @@
         if (accentTheme == null) document.body.setAttribute("coloraccent", "Lime Green")
         window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
         if (new URLSearchParams(location.search).has("666")) {document.body.setAttribute("colorAccent", "OOHVERYSCARY"); document.body.setAttribute('theme', 'dark'); document.querySelector('#splash').setAttribute('splash-theme', 'dark');}
-        while (!document.querySelector('#app').style) {
-          await new Promise(r => setTimeout(r, 50))
-        }
+        while (document.querySelector('#app') == null) {await new Promise(r => setTimeout(r, 50))}
         document.querySelector('#app').style.filter = "contrast(200%)";
         <% } %>
       })();
