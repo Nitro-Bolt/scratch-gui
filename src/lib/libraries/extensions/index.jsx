@@ -1395,6 +1395,15 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'Lambda',
+        extensionId: 'jwLambda',
+        iconURL: 'https://studio.penguinmod.com/static/assets/15a7b793110951cfef352478c2d2642d.svg',
+        tags: ['penguinmod'],
+        description: 'Create anonymous functions with arguments and execute them.',
+        extDeveloper: 'jwklong',
+        featured: true
+    },
+    {
         name: (
             <FormattedMessage
                 defaultMessage="TurboWarp Blocks"
