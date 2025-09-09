@@ -667,7 +667,7 @@ const menuItems = [
     {
         name: 'TurboWeather',
         extensionId: 'https://extensions.penguinmod.com/extensions/RubyDevs/turboweather.js',
-        iconURL: 'https://extensions.penguinmod.com/images/RubyDevs/turboweather.webp',
+        iconURL: 'https://extensions.penguinmod.com/images/RubyDevs/turboweather.avif',
         insetIconURL: PenguinmodThumb,
         customInsetColor: '#00c3ff',
         tags: ['penguinmod'],
@@ -985,7 +985,7 @@ const menuItems = [
     {
         name: 'Pang API',
         extensionId: 'https://extensions.penguinmod.com/extensions/SammerLOL/pangapi.js',
-        iconURL: 'https://extensions.penguinmod.com/images/SammerLOL/pangapi.png',
+        iconURL: 'https://extensions.penguinmod.com/images/SammerLOL/pangapi.avif',
         tags: ['penguinmod'],
         description: 'Fetch information from the PenguinMod API.',
         extDeveloper: 'oc9x97',
@@ -1014,7 +1014,7 @@ const menuItems = [
     {
         name: 'Extra Mathematics',
         extensionId: 'https://extensions.penguinmod.com/extensions/jwklong/mathematics.js',
-        iconURL: 'https://extensions.penguinmod.com/images/jwklong/mathematics.png',
+        iconURL: 'https://extensions.penguinmod.com/images/jwklong/mathematics.avif',
         tags: ['penguinmod', 'categoryexpansion', 'math'],
         description: 'Complicated maths extension for nerds.',
         extDeveloper: 'jwklong',
@@ -1023,7 +1023,7 @@ const menuItems = [
     {
         name: 'Random Utilities',
         extensionId: 'https://extensions.penguinmod.com/extensions/Gen1x/random_utils.js',
-        iconURL: 'https://extensions.penguinmod.com/images/Gen1x/randomutils.png',
+        iconURL: 'https://extensions.penguinmod.com/images/Gen1x/randomutils.avif',
         tags: ['penguinmod'],
         description: 'Many blocks related to generating random values, including seed-based number generation, true number generation, UUID\'s, random strings, etc.',
         extDeveloper: 'G1nX',
@@ -1032,7 +1032,7 @@ const menuItems = [
     {
         name: 'Project Page',
         extensionId: 'https://extensions.penguinmod.com/extensions/jwklong/projectpage.js',
-        iconURL: 'https://extensions.penguinmod.com/images/jwklong/projectpage.png',
+        iconURL: 'https://extensions.penguinmod.com/images/jwklong/projectpage.avif',
         tags: ['penguinmod'],
         description: 'Modify and affect the studio project page from the code. How annoying can an extension possibly be?',
         featured: true,
