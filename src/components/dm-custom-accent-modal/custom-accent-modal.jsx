@@ -185,7 +185,7 @@ const CustomAccentModalComponent = function (props) {
                     onEditClicked={props.onEditClicked}
                     onDeleteClicked={props.onDeleteClicked}
                 />*/}
-                {customAccents}
+                {customAccentComponents}
             </Box>
         </Modal>
     )
