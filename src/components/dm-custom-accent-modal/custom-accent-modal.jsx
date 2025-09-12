@@ -119,6 +119,32 @@ const CustomAccentModalComponent = function (props) {
         setTick(t => t + 1);
     }
 
+    let customAccentComponents = null
+
+    let unitedCustomAccentComponents = (
+        <div>
+            {customAccentComponents}
+        </div>
+    )
+
+    function addToUI(node) {
+        customAccentComponents += (node)
+        unitedCustomAccentComponents = (
+            <div>
+                {customAccentComponents}
+            </div>
+        )
+    }
+
+    function deleteAccentComponentFromUIwithName(name) {
+        /*unitedCustomAccentComponents = (
+            <div>
+                {customAccentComponents}
+            </div>
+        )*/
+       alert("delete accent: ", name)
+    }
+
     return (
         <Modal
             className={styles.modalContent}
@@ -134,7 +160,7 @@ const CustomAccentModalComponent = function (props) {
                 </Header>
                 <div
                     className={styles.buttonStretchy}
-                    onClick={() => props.onCreateAccentClicked(refreshUI, CustomAccentComponent)}
+                    onClick={() => props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)}
                 >
                     Create new Accent
                 </div>
@@ -144,9 +170,9 @@ const CustomAccentModalComponent = function (props) {
                 <Gap
                     height="18px"
                 />
-                <div className={styles.nothingText}>
+                {customAccentComponents == null && <div className={styles.nothingText}>
                     You currently have no saved accents.
-                </div>
+                </div>}
                 {/*<CustomAccentComponent
                     name="*Name* (Accent 1)"
                     primaryColor="#757575"
@@ -159,6 +185,7 @@ const CustomAccentModalComponent = function (props) {
                     onEditClicked={props.onEditClicked}
                     onDeleteClicked={props.onDeleteClicked}
                 />*/}
+                {customAccents}
             </Box>
         </Modal>
     )
