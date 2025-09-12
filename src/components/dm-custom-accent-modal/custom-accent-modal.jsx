@@ -113,36 +113,21 @@ CustomAccentComponent.propTypes = {
 };
 
 const CustomAccentModalComponent = function (props) {
-    const [, setTick] = useState(0);
+    const [customAccentComponents, setCustomAccentComponents] = useState([]);
 
     function refreshUI() {
-        setTick(t => t + 1);
+        setCustomAccentComponents((prev) => [...prev]);
     }
 
-    let customAccentComponents = null
-
-    let unitedCustomAccentComponents = (
-        <div>
-            {customAccentComponents}
-        </div>
-    )
-
     function addToUI(node) {
-        customAccentComponents += (node)
-        unitedCustomAccentComponents = (
-            <div>
-                {customAccentComponents}
-            </div>
-        )
+        setCustomAccentComponents((prev) => [...prev, node]);
     }
 
     function deleteAccentComponentFromUIwithName(name) {
-        /*unitedCustomAccentComponents = (
-            <div>
-                {customAccentComponents}
-            </div>
-        )*/
-       alert("delete accent: ", name)
+        setCustomAccentComponents((prev) =>
+            prev.filter((child) => child.props.name !== name)
+        );
+        alert("Deleted accent: " + name);
     }
 
     return (
@@ -170,7 +155,7 @@ const CustomAccentModalComponent = function (props) {
                 <Gap
                     height="18px"
                 />
-                {customAccentComponents == null && <div className={styles.nothingText}>
+                {customAccentComponents.length === 0 && <div className={styles.nothingText}>
                     You currently have no saved accents.
                 </div>}
                 {/*<CustomAccentComponent
@@ -185,7 +170,7 @@ const CustomAccentModalComponent = function (props) {
                     onEditClicked={props.onEditClicked}
                     onDeleteClicked={props.onDeleteClicked}
                 />*/}
-                {customAccentComponents}
+                <div>{customAccentComponents}</div>
             </Box>
         </Modal>
     )
