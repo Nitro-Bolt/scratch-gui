@@ -155,6 +155,7 @@ const CustomAccentModalComponent = function (props) {
                 <Gap
                     height="18px"
                 />
+                <div>{customAccentComponents}</div>
                 {customAccentComponents.length === 0 && <div className={styles.nothingText}>
                     You currently have no saved accents.
                 </div>}
@@ -170,7 +171,6 @@ const CustomAccentModalComponent = function (props) {
                     onEditClicked={props.onEditClicked}
                     onDeleteClicked={props.onDeleteClicked}
                 />*/}
-                <div>{customAccentComponents}</div>
             </Box>
         </Modal>
     )
