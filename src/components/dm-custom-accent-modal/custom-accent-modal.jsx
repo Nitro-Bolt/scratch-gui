@@ -1,6 +1,6 @@
 import { defineMessages, FormattedMessage, intlShape, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import bindAll from 'lodash.bindall';
 import Box from '../box/box.jsx';
@@ -112,49 +112,57 @@ CustomAccentComponent.propTypes = {
     onDeleteClicked: PropTypes.func.isRequired,
 };
 
-const CustomAccentModalComponent = props => (
-    <Modal
-        className={styles.modalContent}
-        onRequestClose={(...args) => {
-            props.onClose(...args)
-        }}
-        contentLabel={props.intl.formatMessage(messages.title)}
-        id="customAccentModal"
-    >
-        <Box className={styles.body}>
-            <Header>
-                Custom Accents (This is currently unfinished and being worked on.)
-            </Header>
-            <div
-                className={styles.buttonStretchy}
-                onClick={props.onCreateAccentClicked}
-            >
-                Create new Accent
-            </div>
-            <Header>
-                Saved Accents:
-            </Header>
-            <Gap
-                height="18px"
-            />
-            <div className={styles.nothingText}>
-                You currently have no saved accents.
-            </div>
-            {/*<CustomAccentComponent
-                name="*Name* (Accent 1)"
-                primaryColor="#757575"
-                onEditClicked={props.onEditClicked}
-                onDeleteClicked={props.onDeleteClicked}
-            />
-            <CustomAccentComponent
-                name="*Name* (Accent 2)"
-                primaryColor="#83da65"
-                onEditClicked={props.onEditClicked}
-                onDeleteClicked={props.onDeleteClicked}
-            />*/}
-        </Box>
-    </Modal>
-)
+const CustomAccentModalComponent = function (props) {
+    const [, setTick] = useState(0);
+
+    function refreshUI() {
+        setTick(t => t + 1);
+    }
+
+    return (
+        <Modal
+            className={styles.modalContent}
+            onRequestClose={(...args) => {
+                props.onClose(...args)
+            }}
+            contentLabel={props.intl.formatMessage(messages.title)}
+            id="customAccentModal"
+        >
+            <Box className={styles.body}>
+                <Header>
+                    Custom Accents (This is currently unfinished and being worked on.)
+                </Header>
+                <div
+                    className={styles.buttonStretchy}
+                    onClick={() => props.onCreateAccentClicked(refreshUI, CustomAccentComponent)}
+                >
+                    Create new Accent
+                </div>
+                <Header>
+                    Saved Accents:
+                </Header>
+                <Gap
+                    height="18px"
+                />
+                <div className={styles.nothingText}>
+                    You currently have no saved accents.
+                </div>
+                {/*<CustomAccentComponent
+                    name="*Name* (Accent 1)"
+                    primaryColor="#757575"
+                    onEditClicked={props.onEditClicked}
+                    onDeleteClicked={props.onDeleteClicked}
+                />
+                <CustomAccentComponent
+                    name="*Name* (Accent 2)"
+                    primaryColor="#83da65"
+                    onEditClicked={props.onEditClicked}
+                    onDeleteClicked={props.onDeleteClicked}
+                />*/}
+            </Box>
+        </Modal>
+    )
+}
 
 CustomAccentModalComponent.propTypes = {
     intl: intlShape,
