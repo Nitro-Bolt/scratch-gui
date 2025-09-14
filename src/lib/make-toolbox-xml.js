@@ -1686,9 +1686,12 @@ const liveTests = function (isLiveTest, targetId, soundName) {
                 </shadow>
             </value>
         </block>
+        <block type="looks_sayColor"/>
+        <block type="looks_sayOther"/>
         ${blockSeparator}
         <block type="control_fieldbutton"></block>
         <block type="motion_mutatorCheckboxTest"></block>
+        <block type="control_expandableIf"></block>
     </category>
     `;
 };
