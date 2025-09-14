@@ -151,7 +151,7 @@ const CustomAccentModalComponent = function (props) {
                             </Header>
                             <div
                                 className={styles.buttonStretchy}
-                                onClick={() => {isNewAccUIOpen = true}}
+                                onClick={() => {isNewAccUIOpen = true; refreshUI(); alert("create accent button clicked")}}
                             >
                                 Create new Accent
                             </div>
