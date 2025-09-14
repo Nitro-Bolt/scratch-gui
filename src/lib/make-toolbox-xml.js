@@ -320,6 +320,8 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
         </block>
         <block id="${targetId}_sayWidth" type="looks_sayWidth"></block>
         <block id="${targetId}_sayHeight" type="looks_sayHeight"></block>
+        <block type="looks_sayColor"/>
+        <block type="looks_sayOther"/>
         ${blockSeparator}
         `}
         ${isStage ? `
@@ -1686,8 +1688,6 @@ const liveTests = function (isLiveTest, targetId, soundName) {
                 </shadow>
             </value>
         </block>
-        <block type="looks_sayColor"/>
-        <block type="looks_sayOther"/>
         ${blockSeparator}
         <block type="control_fieldbutton"></block>
         <block type="motion_mutatorCheckboxTest"></block>
