@@ -27,7 +27,7 @@ const addons = [
     'default-costume-editor-color',
     'bitmap-copy',
     '2d-color-picker',
-    'paint-skew',
+    //'paint-skew',
     'better-img-uploads',
     'pick-colors-from-stage',
     'custom-block-shape',
