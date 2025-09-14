@@ -30,6 +30,7 @@ class CustomAccentModal extends React.Component {
         console.log(name)
         //alert("delete button clicked")
         deleteAccentComponentFromUIwithName(name)
+        this.accents -= 1
     }
     handleCreateAccentClicked (refreshUI, CustomAccentDIV, addToUI, deleteAccentComponentFromUIwithName) {
         //alert("create accent button clicked")

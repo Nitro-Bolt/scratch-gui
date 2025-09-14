@@ -127,7 +127,7 @@ const CustomAccentModalComponent = function (props) {
         setCustomAccentComponents((prev) =>
             prev.filter((child) => child.props.name !== name)
         );
-        alert("Deleted accent: " + name);
+        //alert("Deleted accent: " + name);
     }
 
     return (
