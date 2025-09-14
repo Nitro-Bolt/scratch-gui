@@ -135,65 +135,63 @@ const CustomAccentModalComponent = function (props) {
     let isNewAccUIOpen = false
 
     return (
-            <Modal
-                className={styles.modalContent}
-                onRequestClose={(...args) => {
-                    props.onClose(...args)
-                }}
-                contentLabel={props.intl.formatMessage(messages.title)}
-                id="customAccentModal"
-            >
+        <Modal
+            className={styles.modalContent}
+            onRequestClose={(...args) => {
+                props.onClose(...args)
+            }}
+            contentLabel={props.intl.formatMessage(messages.title)}
+            id="customAccentModal"
+        >
+            {!isNewAccUIOpen && (
                 <Box className={styles.body}>
-                    {!isNewAccUIOpen && (
-                        <>
-                            <Header>
-                                Custom Accents (This is currently unfinished and being worked on.)
-                            </Header>
-                            <div
-                                className={styles.buttonStretchy}
-                                onClick={() => {isNewAccUIOpen = true; refreshUI(); alert("create accent button clicked")}}
-                            >
-                                Create new Accent
-                            </div>
-                            <Header>
-                                Saved Accents:
-                            </Header>
-                            <Gap
-                                height="18px"
-                            />
-                            <div>{customAccentComponents}</div>
-                            {customAccentComponents.length === 0 && <div className={styles.nothingText}>
-                                You currently have no saved accents.
-                            </div>}
-                            {/*<CustomAccentComponent
-                                name="*Name* (Accent 1)"
-                                primaryColor="#757575"
-                                onEditClicked={props.onEditClicked}
-                                onDeleteClicked={props.onDeleteClicked}
-                            />
-                            <CustomAccentComponent
-                                name="*Name* (Accent 2)"
-                                primaryColor="#83da65"
-                                onEditClicked={props.onEditClicked}
-                                onDeleteClicked={props.onDeleteClicked}
-                            />*/}
-                        </>
-                    )}
-                    {!!isNewAccUIOpen && (
-                        <>
-                            <Header>
-                                There's nothing here yet.
-                            </Header>
-                            <div
-                                className={styles.buttonStretchy}
-                                onClick={() => {isNewAccUIOpen = false; refreshUI()}}
-                            >
-                                Click here to go back
-                            </div>
-                        </>
-                    )}
+                    <Header>
+                        Custom Accents (This is currently unfinished and being worked on.)
+                    </Header>
+                    <div
+                        className={styles.buttonStretchy}
+                        onClick={() => {isNewAccUIOpen = true; refreshUI()}}
+                    >
+                        Create new Accent
+                    </div>
+                    <Header>
+                        Saved Accents:
+                    </Header>
+                    <Gap
+                        height="18px"
+                    />
+                    <div>{customAccentComponents}</div>
+                    {customAccentComponents.length === 0 && <div className={styles.nothingText}>
+                        You currently have no saved accents.
+                    </div>}
+                    {/*<CustomAccentComponent
+                        name="*Name* (Accent 1)"
+                        primaryColor="#757575"
+                        onEditClicked={props.onEditClicked}
+                        onDeleteClicked={props.onDeleteClicked}
+                    />
+                    <CustomAccentComponent
+                        name="*Name* (Accent 2)"
+                        primaryColor="#83da65"
+                        onEditClicked={props.onEditClicked}
+                        onDeleteClicked={props.onDeleteClicked}
+                    />*/}
                 </Box>
-            </Modal>
+            )}
+            {!!isNewAccUIOpen && (
+                <Box className={styles.body}>
+                    <Header>
+                        There's nothing here yet.
+                    </Header>
+                    <div
+                        className={styles.buttonStretchy}
+                        onClick={() => {isNewAccUIOpen = false; refreshUI()}}
+                    >
+                        Click here to go back
+                    </div>
+                </Box>
+            )}
+        </Modal>
     )
 }
 
