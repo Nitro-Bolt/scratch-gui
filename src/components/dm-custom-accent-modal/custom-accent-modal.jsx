@@ -130,6 +130,8 @@ const CustomAccentModalComponent = function (props) {
         //alert("Deleted accent: " + name);
     }
 
+    /*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/
+
     let isNewAccUIOpen = false
 
     return (
@@ -149,7 +151,7 @@ const CustomAccentModalComponent = function (props) {
                             </Header>
                             <div
                                 className={styles.buttonStretchy}
-                                onClick={() => {isNewAccUIOpen = true; refreshUI()/*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/}}
+                                onClick={() => {isNewAccUIOpen = true}}
                             >
                                 Create new Accent
                             </div>
