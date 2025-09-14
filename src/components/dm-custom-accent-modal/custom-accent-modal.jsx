@@ -114,9 +114,11 @@ CustomAccentComponent.propTypes = {
 
 const CustomAccentModalComponent = function (props) {
     const [customAccentComponents, setCustomAccentComponents] = useState([]);
+    const [_, setTick] = useState(0);
 
     function refreshUI() {
-        setCustomAccentComponents((prev) => [...prev]);
+        //setCustomAccentComponents((prev) => [...prev]);
+        setTick(t => t + 1);
     }
 
     function addToUI(node) {
