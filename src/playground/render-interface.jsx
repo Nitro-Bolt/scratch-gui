@@ -484,13 +484,13 @@ class Interface extends React.Component {
                                     <span>
                                         <a 
                                             style={{
-                                                color: '#80F41A',
+                                                color: '#7DD100',
                                                 cursor: 'pointer'
                                             }}
                                         >
                                             Dinosaurmod
                                         </a>
-                                         is a mod of 
+                                         is a mod of 
                                         <a 
                                             style={{
                                                 color: '#00C3FF',
@@ -500,7 +500,7 @@ class Interface extends React.Component {
                                         >
                                             Penguinmod
                                         </a>
-                                         that adds new blocks and features in extensions or the main toolbox. 
+                                         that adds new blocks and features in extensions or the main toolbox. 
                                         <a 
                                             style={{
                                                 color: '#00C3FF',
@@ -510,7 +510,7 @@ class Interface extends React.Component {
                                         >
                                             Penguinmod
                                         </a>
-                                         is a cool mod of 
+                                         is a cool mod of 
                                         <a 
                                             style={{
                                                 color: '#FF4C4C',
@@ -520,7 +520,7 @@ class Interface extends React.Component {
                                         >
                                             TurboWarp
                                         </a>
-                                         to share projects with other people. 
+                                         to share projects with other people. 
                                         <a 
                                             style={{
                                                 color: '#FF4C4C',
@@ -530,7 +530,7 @@ class Interface extends React.Component {
                                         >
                                             TurboWarp
                                         </a>
-                                         is a 
+                                         is a 
                                         <a 
                                             style={{
                                                 color: '#FCA919',
@@ -540,7 +540,7 @@ class Interface extends React.Component {
                                         >
                                             Scratch
                                         </a>
-                                         mod that compiles projects to JavaScript to make them run really fast. Try it out by choosing an uploaded project below or making your own in the editor.
+                                         mod that compiles projects to JavaScript to make them run really fast. Try it out by choosing an uploaded project below or making your own in the editor.
                                     </span>
                                 </p>
                             </div>
