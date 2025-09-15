@@ -477,7 +477,7 @@ class Interface extends React.Component {
                                 <p>
                                     <FormattedMessage
                                         // eslint-disable-next-line max-len
-                                        defaultMessage="Dinosaurmod is a mod of Penguinmod that adds new blocks and features in extensions or the main toolbox. Penguinmod is a cool mod of turbowarp to share projects with other people. TurboWarp is a Scratch mod that compiles projects to JavaScript to make them run really fast. Try it out by choosing an uploaded project below or making your own in the editor."
+                                        defaultMessage="<a style='color: #80F41A; text-decoration: underline;'>Dinosaurmod</a> is a mod of <a style='color: #00C3FF; text-decoration: underline;' href='https://penguinmod.com'>Penguinmod</a> that adds new blocks and features in extensions or the main toolbox. <a style='color: #00C3FF; text-decoration: underline;' href='https://penguinmod.com'>Penguinmod</a> is a cool mod of <a style='color: #FF4C4C; text-decoration: underline;' href='https://turbowarp.org'>turbowarp</a> to share projects with other people. <a style='color: #FF4C4C; text-decoration: underline;' href='https://turbowarp.org'>TurboWarp</a> is a <a style='color: #FCA919; text-decoration: underline;' href='https://scratch.mit.edu'>Scratch</a> mod that compiles projects to JavaScript to make them run really fast. Try it out by choosing an uploaded project below or making your own in the editor."
                                         description="Description of Dinosaurmod, PenguinMod and TurboWarp"
                                         id="tw.home.description"
                                     />
