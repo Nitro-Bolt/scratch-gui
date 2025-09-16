@@ -149,7 +149,7 @@ export default async function ({ addon, console, msg }) {
 
     function selectAll() {
         if (!spritesContainer) return;
-        console.log("Selecting all sprites");
+        // console.log("Selecting all sprites");
         const Gui = ReduxStore.getState().scratchGui;
         const sprites = Gui.targets.sprites;
 
@@ -166,7 +166,7 @@ export default async function ({ addon, console, msg }) {
 
     function unselectAll() {
         if (!spritesContainer) return;
-        console.log("Unselecting all sprites");
+        // console.log("Unselecting all sprites");
         selectedSprites.clear();
         updateSelectedText();
         highlightSelected();
@@ -175,7 +175,7 @@ export default async function ({ addon, console, msg }) {
 
     function deleteSelected() {
         if (!spritesContainer) return;
-        console.log("Deleting selected sprites");
+        // console.log("Deleting selected sprites");
         const Gui = ReduxStore.getState().scratchGui;
         const sprites = Gui.targets.sprites;
         const selected = [...selectedSprites];
@@ -184,7 +184,7 @@ export default async function ({ addon, console, msg }) {
             const sprite = sprites[targetId];
             if (selected.includes(sprite.id)) {
                 vm.deleteSpriteInternal(sprite.id);
-                console.log(`Deleted sprite: ${sprite.name}`);
+                // console.log(`Deleted sprite: ${sprite.name}`);
             }
         }
 
@@ -196,7 +196,7 @@ export default async function ({ addon, console, msg }) {
 
     async function duplicateSelected() {
         if (!spritesContainer) return;
-        console.log("Duplicating selected sprites");
+        // console.log("Duplicating selected sprites");
         const Gui = ReduxStore.getState().scratchGui;
         const sprites = Gui.targets.sprites;
         const selected = [...selectedSprites];
@@ -205,7 +205,7 @@ export default async function ({ addon, console, msg }) {
 
         for (const sprite of spritesToDuplicate) {
             await vm.duplicateSprite(sprite.id);
-            console.log(`Duplicated sprite: ${sprite.name}`);
+            // console.log(`Duplicated sprite: ${sprite.name}`);
         }
 
         updateSelectedText();
@@ -215,7 +215,7 @@ export default async function ({ addon, console, msg }) {
 
     function exportSelected() {
         if (!spritesContainer) return;
-        console.log("Exporting selected sprites");
+        // console.log("Exporting selected sprites");
         const Gui = ReduxStore.getState().scratchGui;
         const sprites = Gui.targets.sprites;
         const selected = [...selectedSprites];
@@ -259,7 +259,7 @@ export default async function ({ addon, console, msg }) {
             vm.exportSprite(sprite.id)
                 .then(content => {
                     downloadBlob(`${sprite.name}.pms`, content);
-                    console.log(`Exported sprite: ${sprite.name}`);
+                    // console.log(`Exported sprite: ${sprite.name}`);
                 })
                 .catch(err => {
                     console.error(`Failed to export ${sprite.name}:`, err);
@@ -281,12 +281,12 @@ export default async function ({ addon, console, msg }) {
             const spriteInfoRowTertiary = document.querySelector('[class*="sprite-info_row-tertiary"]');
             const spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
 
-            console.log("spriteInfoRowTertiary:", spriteInfoRowTertiary);
-            console.log("spritesContainer:", spritesContainer);
+            // console.log("spriteInfoRowTertiary:", spriteInfoRowTertiary);
+            // console.log("spritesContainer:", spritesContainer);
             if (!spriteInfoRowTertiary || !spritesContainer) return;
 
             const spriteInfoGroup = spriteInfoRowTertiary.querySelector('[class^="sprite-info_group"]');
-            console.log("spriteInfoGroup:", spriteInfoGroup);
+            // console.log("spriteInfoGroup:", spriteInfoGroup);
             if (!spriteInfoGroup && !spriteInfoColumn) return;
 
             // Redefine IsSelectingContainer
@@ -302,7 +302,7 @@ export default async function ({ addon, console, msg }) {
                 isSelectingContainer.parentNode.removeChild(isSelectingContainer);
             }
 
-            console.log("isSelectingContainer:", isSelectingContainer);
+            // console.log("isSelectingContainer:", isSelectingContainer);
             if (!isSelectingContainer) return;
 
             if (!spriteInfoGroup && spriteInfoColumn) {
@@ -334,13 +334,13 @@ export default async function ({ addon, console, msg }) {
             highlightSelected();
             updateButtonsVisibility();
             enableSelecting();
-            console.log('Checkbox is checked!');
+            // console.log('Checkbox is checked!');
         } else {
             disableSelecting();
             updateSelectedText();
             highlightSelected();
             updateButtonsVisibility();
-            console.log('Checkbox is unchecked!');
+            // console.log('Checkbox is unchecked!');
         }
     }
 
@@ -373,10 +373,10 @@ export default async function ({ addon, console, msg }) {
             if (sprite.order === order) {
                 if (selectedSprites.has(sprite.id)) {
                     selectedSprites.delete(sprite.id);
-                    console.log(`Unselected sprite: ${sprite.name}`);
+                    // console.log(`Unselected sprite: ${sprite.name}`);
                 } else {
                     selectedSprites.add(sprite.id);
-                    console.log(`Selected sprite: ${sprite.name}`);
+                    // console.log(`Selected sprite: ${sprite.name}`);
                 }
             }
         }
@@ -388,7 +388,7 @@ export default async function ({ addon, console, msg }) {
     let HasWaitedForElement = false;
 
     async function enableSelecting() {
-        console.log("enableSelecting() called");
+        // console.log("enableSelecting() called");
 
         if (!HasWaitedForElement) {
             await addon.tab.waitForElement("div[class^='sprite-selector_items-wrapper']", {
@@ -398,7 +398,7 @@ export default async function ({ addon, console, msg }) {
             });
             HasWaitedForElement = true;
         }
-        console.log("enableSelecting() waited for element");
+        // console.log("enableSelecting() waited for element");
 
         spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
         spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
@@ -407,10 +407,10 @@ export default async function ({ addon, console, msg }) {
         stageHeaderStageSizeGroup = document.querySelector('[class^="stage-header_stage-size-toggle-group"]');
 
         spriteSelectorContainer.insertBefore(container, spritesContainer);
-        console.log("inserted container before sprites container");
+        // console.log("inserted container before sprites container");
 
         if (observer) observer.disconnect();
-        console.log("disconnected observer if it exists");
+        // console.log("disconnected observer if it exists");
 
         observer = new MutationObserver(() => {
             updateButtonsVisibility();
