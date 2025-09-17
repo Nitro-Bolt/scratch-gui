@@ -81,7 +81,7 @@ const CustomAccentComponent = props => (
             alignItems: 'flex-end',
             flexShrink: '0'
         }}>
-            <div
+            {/*<div
                 className={classNames(styles.iconButton)}
                 type={"edit"}
                 onClick={() => props.onEditClicked(props.name)}
@@ -90,7 +90,7 @@ const CustomAccentComponent = props => (
                     src={editIcon}
                     draggable={"false"}
                 />
-            </div>
+            </div>*/}
             <div
                 className={classNames(styles.iconButton)}
                 type={"delete"}
@@ -232,6 +232,7 @@ const CustomAccentModalComponent = function (props) {
                         <input
                             type={"color"}
                             name={"colorInput"}
+                            className={styles.accentIconOuter}
                         />
                     </Box>
                     <Box className={styles.buttonRow}>

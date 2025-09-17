@@ -18,7 +18,8 @@ class CustomAccentModal extends React.Component {
             'handleDeleteClicked',
             'handleCreateAccentClicked'
         ]);
-        this.accents = 0
+        this.accents = 0;
+        this.CUSTOM_ACCENTS_KEY = "saved_custom_accents"
     }
     test () {
         console.log("test")
@@ -49,6 +50,7 @@ class CustomAccentModal extends React.Component {
             }}
         />)
         refreshUI()
+        //localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY) || {}) + SavedAccentTemplate(accentData.name, { primaryColor: accentData.primaryColor })))
     }
     render () {
         const {
