@@ -133,6 +133,18 @@ const CustomAccentModalComponent = function (props) {
         //alert("Deleted accent: " + name);
     }
 
+    /**
+     * @param {string} css CSS color or var(--...)
+     * @returns {string} evaluated CSS
+     */
+    const evaluateCSS = css => {
+        const variableMatch = css.match(/^var\(([\w-]+)\)$/);
+        if (variableMatch) {
+            return document.documentElement.style.getPropertyValue(variableMatch[1]);
+        }
+        return css;
+    };
+
     /*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/
 
     return (
@@ -180,17 +192,71 @@ const CustomAccentModalComponent = function (props) {
                 </Box>
             )}
             {!!isNewAccUIOpen && (
-                <Box className={styles.body}>
-                    <Header>
-                        There's nothing here yet.
-                    </Header>
-                    <div
-                        className={styles.buttonStretchy}
-                        onClick={() => {setIsNewAccUIOpen(false)}}
-                    >
-                        Click here to go back
-                    </div>
-                </Box>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        
+                        const form = e.target;
+                        const formData = new FormData(form);
+                        const formJson = Object.fromEntries(formData.entries());
+
+                        setIsNewAccUIOpen(false);
+                        
+                        props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName, {
+                            name: formJson.nameInput,
+                            primaryColor: formJson.colorInput
+                        })
+                    }}
+                >
+                    <Box className={styles.body}>
+                        {/*<Header>
+                            There's nothing here yet.
+                        </Header>
+                        <div
+                            className={styles.buttonStretchy}
+                            onClick={() => {setIsNewAccUIOpen(false)}}
+                        >
+                            Click here to go back
+                        </div>*/}
+                        <Header>
+                            Name:
+                        </Header>
+                        <input
+                            type={"text"}
+                            className={styles.inputStretchy}
+                            name={"nameInput"}
+                        />
+                        <Header>
+                            Primary Color:
+                        </Header>
+                        <input
+                            type={"color"}
+                            name={"colorInput"}
+                        />
+                    </Box>
+                    <Box className={styles.buttonRow}>
+                        <button
+                            className={styles.cancelButton}
+                            onClick={setIsNewAccUIOpen(false)}
+                        >
+                            <FormattedMessage
+                                defaultMessage="Cancel"
+                                description="Label for button to cancel custom procedure edits"
+                                id="gui.customProcedures.cancel"
+                            />
+                        </button>
+                        <button
+                            className={styles.okButton}
+                            type={"submit"}
+                        >
+                            <FormattedMessage
+                                defaultMessage="OK"
+                                description="Label for button to save new custom procedure"
+                                id="gui.customProcedures.ok"
+                            />
+                        </button>
+                    </Box>
+                </form>
             )}
         </Modal>
     )

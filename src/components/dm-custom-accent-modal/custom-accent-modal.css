@@ -112,6 +112,16 @@
     color: white;
 }
 
+.input-stretchy {
+    font-family: inherit;
+    font-size: 18px;
+    border: 4px solid;
+    padding: 1rem 1rem;
+    margin: 0.5rem 0 0 0;
+    border-radius: 4px;
+    font-family: inherit;
+    font-weight: bold;
+}
 
 .icon-button {
     width: 30px;
@@ -159,4 +169,38 @@
 .gap {
     width: 100%;
     background-color: transparent;
+}
+
+/* Confirmation buttons at the bottom of the modal */
+.button-row {
+    margin-top: 1rem;
+    font-weight: bolder;
+    text-align: right;
+}
+
+.button-row button {
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    background: white;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.button-row button.ok-button {
+    background: $motion-primary;
+    border: $motion-primary;
+    color: white;
+}
+
+[dir="ltr"] .button-row button + button {
+    margin-left: 0.5rem;
+}
+
+[dir="rtl"] .button-row button + button {
+    margin-right: 0.5rem;
+}
+
+.cancel-button {
+    color: black;
 }
