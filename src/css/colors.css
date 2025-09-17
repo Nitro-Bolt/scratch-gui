@@ -171,6 +171,9 @@ body[coloraccent="OOHVERYSCARY"] {
 
     --menu-bar-background-image: none;
 }
+body[coloraccent="custom"] {
+    
+}
 
 $ui-primary: var(--ui-primary, hsla(215, 100%, 95%, 1)); /* #E5F0FF */
 $ui-secondary: var(--ui-secondary, hsla(215, 75%, 95%, 1)); /* #E9F1FC */

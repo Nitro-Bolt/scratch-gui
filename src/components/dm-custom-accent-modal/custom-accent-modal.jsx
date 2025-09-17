@@ -115,6 +115,7 @@ CustomAccentComponent.propTypes = {
 const CustomAccentModalComponent = function (props) {
     const [customAccentComponents, setCustomAccentComponents] = useState([]);
     const [_, setTick] = useState(0);
+    const [isNewAccUIOpen, setIsNewAccUIOpen] = useState(false);
 
     function refreshUI() {
         //setCustomAccentComponents((prev) => [...prev]);
@@ -134,8 +135,6 @@ const CustomAccentModalComponent = function (props) {
 
     /*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/
 
-    let isNewAccUIOpen = false
-
     return (
         <Modal
             className={styles.modalContent}
@@ -152,7 +151,7 @@ const CustomAccentModalComponent = function (props) {
                     </Header>
                     <div
                         className={styles.buttonStretchy}
-                        onClick={() => {isNewAccUIOpen = true; refreshUI()}}
+                        onClick={() => {setIsNewAccUIOpen(true)}}
                     >
                         Create new Accent
                     </div>
@@ -187,7 +186,7 @@ const CustomAccentModalComponent = function (props) {
                     </Header>
                     <div
                         className={styles.buttonStretchy}
-                        onClick={() => {isNewAccUIOpen = false; refreshUI()}}
+                        onClick={() => {setIsNewAccUIOpen(false)}}
                     >
                         Click here to go back
                     </div>
