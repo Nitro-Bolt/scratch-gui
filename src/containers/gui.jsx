@@ -154,6 +154,7 @@ const mapStateToProps = state => {
         loadingStateVisible: state.scratchGui.modals.loadingProject,
         projectId: state.scratchGui.projectState.projectId,
         soundsTabVisible: state.scratchGui.editorTab.activeTabIndex === SOUNDS_TAB_INDEX,
+        variablesTabVisible: state.scratchGui.editorTab.activeTabIndex === VARIABLES_TAB_INDEX,
         filesTabVisible: state.scratchGui.editorTab.activeTabIndex === FILES_TAB_INDEX,
         targetIsStage: (
             state.scratchGui.targets.stage &&

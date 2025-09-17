@@ -5,6 +5,7 @@ import Box from '../box/box.jsx';
 import { defineMessages, injectIntl, intlShape, FormattedMessage } from 'react-intl';
 
 import plusIcon from './icon--plus.svg';
+import dropperIcon from './icon--dropper.svg';
 
 import booleanInputIcon from './icon--boolean-input.svg';
 import textInputIcon from './icon--text-input.svg';
@@ -161,7 +162,7 @@ const BlockColorSection = props => (
                     onChange={props.onBlockColorChange}
                 />
                 <img
-                    src={plusIcon}
+                    src={dropperIcon}
                     className={styles.customPlus}
                 />
             </div>
