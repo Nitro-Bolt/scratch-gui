@@ -16,6 +16,7 @@ import {
     BLOCKS_TAB_INDEX,
     COSTUMES_TAB_INDEX,
     SOUNDS_TAB_INDEX,
+    VARIABLES_TAB_INDEX,
     FILES_TAB_INDEX
 } from '../reducers/editor-tab';
 
@@ -175,6 +176,7 @@ const mapDispatchToProps = dispatch => ({
     onActivateTab: tab => dispatch(activateTab(tab)),
     onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
     onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
+    onActivateVariablesTab: () => dispatch(activateTab(VARIABLES_TAB_INDEX)),
     onActivateFilesTab: () => dispatch(activateTab(FILES_TAB_INDEX)),
     onRequestCloseBackdropLibrary: () => dispatch(closeBackdropLibrary()),
     onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
