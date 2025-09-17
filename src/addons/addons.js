@@ -34,7 +34,7 @@ const addons = [
     'editor-colored-context-menus',
     'editor-stage-left',
     'editor-buttons-reverse-order',
-    'variable-manager',
+    // 'variable-manager',
     'search-sprites',
     'sprite-properties',
     'gamepad',

@@ -94,6 +94,55 @@
     color: $text-primary;
 }
 
+.tab > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tab-disabled {
+    display: none;
+}
+
+.add-tab-button {
+    margin: 8px 0;
+    margin-left: 4px;
+    padding: 4px;
+    font-size: larger;
+
+    background: white;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 4px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    transform: translateY(6px);
+}
+[dir="rtl"] .add-tab-button {
+    margin-left: initial;
+    margin-right: 4px;
+}
+[theme="dark"] .add-tab-button {
+    background: none;
+    border-color: rgba(255,255,255,.15);
+}
+[theme="dark"] .add-tab-button img {
+    filter: invert(1);
+}
+.add-tab-button-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+.tab-addition-item {
+    display: flex;
+    align-items: center;
+}
+.tab-addition-item img {
+    width: 1.375rem;
+}
+
 [dir="ltr"] .tab {
     margin-left: -0.5rem;
 }

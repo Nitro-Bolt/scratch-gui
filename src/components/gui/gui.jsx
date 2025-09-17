@@ -3,6 +3,7 @@ import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
+import Draggable from "react-draggable";
 import {ContextMenuTrigger} from 'react-contextmenu';
 import {BorderedMenuItem, ContextMenu, DangerousMenuItem, MenuItem} from '../context-menu/context-menu.jsx';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
