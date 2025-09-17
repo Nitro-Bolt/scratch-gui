@@ -163,7 +163,7 @@ const CustomAccentModalComponent = function (props) {
                     </Header>
                     <div
                         className={styles.buttonStretchy}
-                        onClick={() => {setIsNewAccUIOpen(true)}}
+                        onClick={() => {setIsNewAccUIOpen(true); console.log("create new accent button opened")}}
                     >
                         Create new Accent
                     </div>
@@ -201,7 +201,7 @@ const CustomAccentModalComponent = function (props) {
                         const formJson = Object.fromEntries(formData.entries());
 
                         setIsNewAccUIOpen(false);
-                        
+
                         props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName, {
                             name: formJson.nameInput,
                             primaryColor: formJson.colorInput
@@ -237,7 +237,7 @@ const CustomAccentModalComponent = function (props) {
                     <Box className={styles.buttonRow}>
                         <button
                             className={styles.cancelButton}
-                            onClick={setIsNewAccUIOpen(false)}
+                            onClick={() => {setIsNewAccUIOpen(false)}}
                         >
                             <FormattedMessage
                                 defaultMessage="Cancel"
