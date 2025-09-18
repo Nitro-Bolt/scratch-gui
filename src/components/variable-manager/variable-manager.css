@@ -1,0 +1,65 @@
+@import "../../css/colors.css";
+@import "../../css/units.css";
+
+.editor-wrapper {
+    display: flex;
+    flex-grow: 1;
+    border: 1px solid $ui-black-transparent;
+    background: $assets-background;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+}
+
+[dir="ltr"] .editor-wrapper {
+    border-top-right-radius: $space;
+    border-bottom-right-radius: $space;
+}
+
+[dir="rtl"] .editor-wrapper {
+    border-top-left-radius: $space;
+    border-bottom-left-radius: $space;
+}
+
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: calc(2 * $space);
+}
+
+.variable-wrapper {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid $ui-black-transparent;
+    background: $assets-background;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+    border-radius: $space;
+    padding: calc(2 * $space);
+    margin-bottom: $space;
+}
+
+.variable-wrapper table {
+  border-radius: 5px;
+  border-collapse: collapse;
+  width: 100%;
+}
+  
+[dir="ltr"] .variable-wrapper td {
+  padding: calc(2 * $space);
+  border: 1px solid $ui-black-transparent;
+  text-align: left;
+}
+
+[dir="rtl"] .variable-wrapper td {
+  padding: calc(2 * $space);
+  border: 1px solid $ui-black-transparent;
+  text-align: right;
+}
+
+.variable-name {
+    word-break: break-word;
+}
+.variable-value {
+    width: 75%;
+}
