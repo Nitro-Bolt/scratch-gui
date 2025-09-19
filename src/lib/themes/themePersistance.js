@@ -71,7 +71,7 @@ const persistTheme = theme => {
  * @param {string} primaryColor the primary color of the custom theme
  */
 const persistThemeCustom = primaryColor => {
-    evaluateCss (css) {
+    function evaluateCss (css) {
         const variableMatch = css.match(/^var\(([\w-]+)\)$/);
         if (variableMatch) {
             return document.documentElement.style.getPropertyValue(variableMatch[1]);
