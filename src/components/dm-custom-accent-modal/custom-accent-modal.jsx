@@ -208,6 +208,7 @@ const CustomAccentModalComponent = function (props) {
                         props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName, {
                             name: formJson.nameInput,
                             primaryColor: formJson.colorInput
+                            primaryColorDark: formJson.colorInput2
                         })
                     }}
                 >
@@ -235,6 +236,14 @@ const CustomAccentModalComponent = function (props) {
                         <input
                             type={"color"}
                             name={"colorInput"}
+                            className={styles.accentIconOuter}
+                        />
+                        <Header>
+                            Primary Color (Dark Mode):
+                        </Header>
+                        <input
+                            type={"color"}
+                            name={"colorInput2"}
                             className={styles.accentIconOuter}
                         />
                     </Box>

@@ -68,9 +68,9 @@ const persistTheme = theme => {
 };
 
 /**
- * @param {string} primaryColor the primary color of the custom theme
+ * @param {any} colors the colors of the custom theme
  */
-const persistThemeCustom = primaryColor => {
+const persistThemeCustom = colors => {
     function evaluateCss (css) {
         const variableMatch = css.match(/^var\(([\w-]+)\)$/);
         if (variableMatch) {
@@ -81,7 +81,8 @@ const persistThemeCustom = primaryColor => {
 
     document.body.setAttribute("coloraccent", "custom")
 
-    document.documentElement.style.setProperty('--motion-primary', evaluateCss(primaryColor))
+    document.documentElement.style.setProperty('--motion-primary', evaluateCss(colors.primaryColor))
+    document.documentElement.style.setProperty('--motion-primary-dark', evaluateCss(colors.primaryColorDark))
 
     window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
 

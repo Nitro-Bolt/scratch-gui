@@ -58,7 +58,10 @@ class CustomAccentModal extends React.Component {
                 this.handleDeleteClicked(name, deleteAccentComponentFromUIwithName);
             }}
         />)
-        persistThemeCustom(accentData.primaryColor)
+        persistThemeCustom({
+            primaryColor: accentData.primaryColor,
+            primaryColorDark: accentData.primaryColorDark
+        })
         refreshUI()
         //localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY) || {}) + SavedAccentTemplate(accentData.name, { primaryColor: accentData.primaryColor }, false)))
     }
