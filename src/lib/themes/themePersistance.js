@@ -67,6 +67,34 @@ const persistTheme = theme => {
     });
 };
 
+/**
+ * @param {string} primaryColor the primary color of the custom theme
+ */
+const persistThemeCustom = primaryColor => {
+    evaluateCss (css) {
+        const variableMatch = css.match(/^var\(([\w-]+)\)$/);
+        if (variableMatch) {
+            return document.documentElement.style.getPropertyValue(variableMatch[1]);
+        }
+        return css;
+    }
+
+    document.body.setAttribute("coloraccent", "custom")
+
+    document.documentElement.style.setProperty('--motion-primary', evaluateCss(primaryColor))
+
+    window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
+
+    document.body.dispatchEvent(recolorEvent);
+
+    let descendants = Array.prototype.slice.call(
+        document.body.querySelectorAll("*")
+    );
+    descendants.forEach(function(descendant) {
+        descendant.dispatchEvent(recolorEvent);
+    });
+};
+
 export {
     detectTheme,
     persistTheme
