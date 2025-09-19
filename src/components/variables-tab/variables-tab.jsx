@@ -16,7 +16,7 @@ const messages = defineMessages({
   },
   noVariables: {
     id: 'gui.variableManager.noVariables',
-    description: 'Label when there is no variables of a type',
+    description: 'Label when there is no variables of any type',
     defaultMessage: 'No Variables'
   }
 })
@@ -26,24 +26,71 @@ class VariableTab extends React.Component {
     super(props)
   }
 
-  variableItem(variable) { 
+  variableItem(data) { 
     return (
-      <tr key={variable.id}>
+      <tr key={data.id}>
         <td className={styles.variableName}>
-          <span>{variable.name}</span>
+          <span>{data.name}</span>
         </td>
         <td className={styles.variableValue}>
-          <span>{variable.value}</span>
+          <span>{data.value}</span>
         </td>
       </tr>
     )
   }
 
-  renderGlobalVariable(data) {
-    const variables = data.filter(varr => varr.type === '' )
+  renderGlobalVariable() {
+    const variables = Object.values(this.props.globalVariables).filter(varr => varr.type === '' )
 
     if (variables.length) { 
       return variables.map(this.variableItem)
+    } else {
+      return <tr><td>
+              <div style={{textAlign: 'center'}}>
+                { this.props.intl.formatMessage(messages.noVariables) }
+              </div>
+            </td></tr>
+    }
+  }
+
+  mapClonesInLocalVariables(clones) {
+    let final = []
+    for (const id in clones) {
+      const clone = clones[id]
+      
+      final.push(
+      <tr key={id}>
+        <td className={styles.variableName}>
+          <span>{this.props.editingTarget.id === id ? this.props.editingTarget.sprite.name : id}</span>
+        </td>
+        <td className={styles.variableValue}>
+          <span>{clone.value}</span>
+        </td>
+      </tr>)
+    }
+    return <table><tbody>
+      { final }
+    </tbody></table>
+  }
+
+  renderLocalVariable() {
+    const variables = Object.values(this.props.editingTarget.variables)
+
+    let final = []
+    if (variables.length) { 
+      for (let i = 0; i < variables.length; i++) {
+        final.push(
+          <tr key={variables[i].id}>
+            <td className={styles.variableName}>
+              <span>{variables[i].name}</span>
+            </td>
+            <td className={styles.variableValue}>
+              { this.mapClonesInLocalVariables(this.props.localVariables[variables[i].id]) }
+            </td>
+          </tr>
+        )
+      }
+      return final
     } else {
       return <tr><td>
               <div style={{textAlign: 'center'}}>
@@ -58,17 +105,17 @@ class VariableTab extends React.Component {
       <div className={styles.editorWrapper}>
         <div className={styles.editorContainer}>
 
-          { /*this.props.isStage ? ' ' : <div className={styles.variableWrapper}>
+          { this.props.editingTarget.isStage ? '' : <div className={styles.variableWrapper}>
             <h3>{ this.props.intl.formatMessage(messages.forThisSprite) }</h3>
             <table>
-              <tbody> { this.renderLocalVariable(localVariables, clonesVariables) } </tbody>
+              <tbody> { this.renderLocalVariable() } </tbody>
             </table>
-          </div> */ }
+          </div> }
 
           <div className={styles.variableWrapper}>
             <h3>{ this.props.intl.formatMessage(messages.forAllSprites)}</h3>
             <table>
-              <tbody>{ this.renderGlobalVariable(Object.values(this.props.globalVariables)) }</tbody>
+              <tbody>{ this.renderGlobalVariable() }</tbody>
             </table>
           </div>
 
@@ -88,7 +135,8 @@ VariableTab.propTypes = {
   }),
   globalVariables: PropTypes.shape({
     [PropTypes.string]: PropTypes.object
-  })
+  }),
+  editingTarget: PropTypes.object,
 }
 
 export default injectIntl(VariableTab);
