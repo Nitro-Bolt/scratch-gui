@@ -19,7 +19,7 @@ class VariableManager extends React.Component {
 
     this.state = {
       localVariables: {},
-      globalVariables: []
+      globalVariables: {}
     }
 
     /* State format
@@ -77,7 +77,7 @@ class VariableManager extends React.Component {
         newVariableState[key] = {}
 
         for (let i = 0; i < this.props.sprite.clones.length; i++) {
-          const newVariable = this.props.sprite.clones[i].variables[key]
+          const newVariable = Object.assign({}, this.props.sprite.clones[i].variables[key])
           const oldVariable = this.state.localVariables[key]
 
           if (!oldVariable) {
@@ -86,7 +86,6 @@ class VariableManager extends React.Component {
             continue
           }
 
-          console.log(newVariableState)
           if (oldVariable[this.props.sprite.clones[i].id].name !== newVariable.name || oldVariable[this.props.sprite.clones[i].id].value !== newVariable.value) {
             didStateChange = true
           }
@@ -111,13 +110,13 @@ class VariableManager extends React.Component {
       
       if (!varToCheck) {
         return this.setState({
-          globalVariables: structuredClone(newVariables)
+          globalVariables: structuredClone(this.props.stage.variables)
         })
       }
 
       if (varToCheck.name !== newVariables[i].name || varToCheck.value !== newVariables[i].value) {
         return this.setState({
-          globalVariables: structuredClone(newVariables)
+          globalVariables: structuredClone(this.props.stage.variables)
         })
       }
     }
@@ -136,7 +135,8 @@ class VariableManager extends React.Component {
       <VariableTab
         localVariables={this.state.localVariables}
         globalVariables={this.state.globalVariables}
-        isStage={this.props.sprite.isStage}
+        editingTarget={this.props.editingTarget}
+        isRtl={this.props.isRtl}
       />
     )
   }
@@ -145,17 +145,21 @@ class VariableManager extends React.Component {
 VariableManager.propTypes = {
   intl: intlShape,
   isRtl: PropTypes.bool,
-  targets: PropTypes.any,
-  stage: PropTypes.any,
+  stage: PropTypes.shape({
+    variables: PropTypes.object
+  }),
+  sprite: PropTypes.shape({
+    clones: PropTypes.array.isRequired
+  }),
+  editingTarget: PropTypes.object,
   vm: PropTypes.instanceOf(VM).isRequired,
-  editingTarget: PropTypes.any
 }
 
 const mapStateToProps = state => ({
     isRtl: state.locales.isRtl,
-    targets: state.scratchGui.targets,
     stage: state.scratchGui.targets.stage,
     sprite: state.scratchGui.vm.editingTarget.sprite,
+    editingTarget: state.scratchGui.vm.editingTarget,
     vm: state.scratchGui.vm,
 });
 

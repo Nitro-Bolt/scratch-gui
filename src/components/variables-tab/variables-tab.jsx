@@ -21,7 +21,7 @@ const messages = defineMessages({
   }
 })
 
-class VariableManager extends React.Component {
+class VariableTab extends React.Component {
   constructor (props) {
     super(props)
   }
@@ -54,10 +54,6 @@ class VariableManager extends React.Component {
   }
 
   render () {
-    const localVariables = Object.values(this.props.localVariables)
-    const clonesVariables = this.props.clonesVariables
-    const globalVariables = Object.values(this.props.globalVariables)
-
     return (
       <div className={styles.editorWrapper}>
         <div className={styles.editorContainer}>
@@ -72,7 +68,7 @@ class VariableManager extends React.Component {
           <div className={styles.variableWrapper}>
             <h3>{ this.props.intl.formatMessage(messages.forAllSprites)}</h3>
             <table>
-              <tbody>{ this.renderGlobalVariable(globalVariables) }</tbody>
+              <tbody>{ this.renderGlobalVariable(Object.values(this.props.globalVariables)) }</tbody>
             </table>
           </div>
 
@@ -82,11 +78,17 @@ class VariableManager extends React.Component {
   }
 }
 
-VariableManager.propTypes = {
+VariableTab.propTypes = {
   intl: intlShape,
   isRtl: PropTypes.bool,
-  localVariables: PropTypes.any,
-  globalVariables: PropTypes.any
+  localVariables: PropTypes.shape({
+    [PropTypes.string]: PropTypes.shape({
+      [PropTypes.string]: PropTypes.object
+    })
+  }),
+  globalVariables: PropTypes.shape({
+    [PropTypes.string]: PropTypes.object
+  })
 }
 
-export default injectIntl(VariableManager);
+export default injectIntl(VariableTab);
