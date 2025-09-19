@@ -45,8 +45,8 @@ class VariableManager extends React.Component {
     this.props.vm.runtime.on('PROJECT_LOADED', this.reload);
     this.props.vm.runtime.on('TOOLBOX_EXTENSIONS_NEED_UPDATE', this.reload);
 
-    this.props.vm.runtime.on('PROJECT_RUN_START', this.clearLocalVariables);
-    this.props.vm.runtime.on('PROJECT_RUN_STOP ', this.clearLocalVariables);
+    this.props.vm.runtime.on('targetWasCreated', this.clearLocalVariables);
+    this.props.vm.runtime.on('targetWasRemoved ', this.clearLocalVariables);
 
     this.reload()
   }
@@ -56,8 +56,8 @@ class VariableManager extends React.Component {
     this.props.vm.runtime.off('PROJECT_LOADED', this.reload);
     this.props.vm.runtime.off('TOOLBOX_EXTENSIONS_NEED_UPDATE', this.reload);
 
-    this.props.vm.runtime.off('PROJECT_RUN_START', this.clearLocalVariables);
-    this.props.vm.runtime.off('PROJECT_RUN_STOP ', this.clearLocalVariables);
+    this.props.vm.runtime.off('targetWasCreated', this.clearLocalVariables);
+    this.props.vm.runtime.off('targetWasRemoved ', this.clearLocalVariables);
   }
 
   clearLocalVariables() {
