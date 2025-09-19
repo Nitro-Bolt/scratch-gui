@@ -29,7 +29,8 @@ const ACCENT_MAP = {
     },
     [ACCENT_RAINBOW]: {
         'motion-primary': '#ff4c4c'
-    }
+    },
+    ["custom"]: {}
 };
 
 const ACCENT_DEFAULT = ACCENT_LIME;

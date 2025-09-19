@@ -55,6 +55,8 @@ const persistTheme = theme => {
     const local = localStorage.getItem(ACCENT_KEY)
     document.body.setAttribute("coloraccent", local)
 
+    if (localStorage) localStorage.setItem("tw:accent:isCustom", false)
+
     window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
 
     document.body.dispatchEvent(recolorEvent);
@@ -83,6 +85,8 @@ const persistThemeCustom = colors => {
 
     document.documentElement.style.setProperty('--motion-primary', evaluateCss(colors.primaryColor))
     document.documentElement.style.setProperty('--motion-primary-dark', evaluateCss(colors.primaryColorDark))
+
+    if (localStorage) localStorage.setItem("tw:accent:isCustom", true)
 
     window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
 
