@@ -97,5 +97,6 @@ const persistThemeCustom = primaryColor => {
 
 export {
     detectTheme,
-    persistTheme
+    persistTheme,
+    persistThemeCustom
 }
