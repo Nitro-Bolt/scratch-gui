@@ -12,7 +12,7 @@ class VariableTab extends React.Component {
     super(props);
 
     bindAll(this, [
-      '_clearLocalVariables',
+      'clearLocalVariables',
       '_reload',
       'reload'
     ]);
@@ -48,11 +48,8 @@ class VariableTab extends React.Component {
     this.props.vm.runtime.on('PROJECT_LOADED', this.reload);
     this.props.vm.runtime.on('TOOLBOX_EXTENSIONS_NEED_UPDATE', this.reload);
 
-    // when project is started o stopped, all clones are deleted
-    // if it happens while the Variable Manager is open, it can create "ghost clones" in localVariables because deleted clones are still present
-    // so we clear it instead
-    this.props.vm.runtime.on('PROJECT_RUN_START', this._clearLocalVariables);
-    this.props.vm.runtime.on('PROJECT_RUN_STOP ', this._clearLocalVariables);
+    this.props.vm.runtime.on('PROJECT_RUN_START', this.clearLocalVariables);
+    this.props.vm.runtime.on('PROJECT_RUN_STOP ', this.clearLocalVariables);
 
     this.reload()
   }
@@ -62,11 +59,11 @@ class VariableTab extends React.Component {
     this.props.vm.runtime.off('PROJECT_LOADED', this.reload);
     this.props.vm.runtime.off('TOOLBOX_EXTENSIONS_NEED_UPDATE', this.reload);
 
-    this.props.vm.runtime.off('PROJECT_RUN_START', this._clearLocalVariables);
-    this.props.vm.runtime.off('PROJECT_RUN_STOP ', this._clearLocalVariables);
+    this.props.vm.runtime.off('PROJECT_RUN_START', this.clearLocalVariables);
+    this.props.vm.runtime.off('PROJECT_RUN_STOP ', this.clearLocalVariables);
   }
 
-  _clearLocalVariables() {
+  clearLocalVariables() {
     this.setState({
       localVariables: {}
     })
@@ -74,49 +71,38 @@ class VariableTab extends React.Component {
   }
 
   _reload() {
-    // Fun Fact: The first item in the `clones` property of a sprite is the RenderedTarget of the sprite itself!
+    // reload local variables
     if (!this.props.sprite.clones[0].isStage) {
+      let didStateChange = false
+      let newVariableState = {}
+
       for (const key in this.props.sprite.clones[0].variables) {
+        newVariableState[key] = {}
+
         for (let i = 0; i < this.props.sprite.clones.length; i++) {
-          // we make a shallow copy because sometimes new variables will be inserted in between if checks which will break this script in ways I, fath11, cannot explain.
-          // when switching sprites, their localVariables will also pollute the current localVariables and allowing us to view local variables from other sprites
-          const newVariable = Object.assign({}, this.props.sprite.clones[i].variables[key])
+          const newVariable = this.props.sprite.clones[i].variables[key]
           const oldVariable = this.state.localVariables[key]
-          let newVariableState = this.state.localVariables
 
           if (!oldVariable) {
-            console.log('creating var 1')
-            newVariableState[key] = {}
+            didStateChange = true
             newVariableState[key][this.props.sprite.clones[i].id] = structuredClone(newVariable)
-
-            this.setState({
-              localVariables: newVariableState
-            })
-            continue;
+            continue
           }
 
-          if (!oldVariable[this.props.sprite.clones[i].id]) {
-            console.log('creating var 2')
-            newVariableState[key][this.props.sprite.clones[i].id] = structuredClone(newVariable)
-
-            this.setState({
-              localVariables: newVariableState
-            })
-            continue;
-          }
-
+          console.log(newVariableState)
           if (oldVariable[this.props.sprite.clones[i].id].name !== newVariable.name || oldVariable[this.props.sprite.clones[i].id].value !== newVariable.value) {
-            console.log('editing var')
-            newVariableState[key][this.props.sprite.clones[i].id] = structuredClone(newVariable)
-
-            this.setState({
-              localVariables: newVariableState
-            })
-            continue;
+            didStateChange = true
           }
+
+          newVariableState[key][this.props.sprite.clones[i].id] = structuredClone(newVariable)
         }
       }
-      console.log(this.state.localVariables)
+
+      if (didStateChange) {
+        this.setState({
+          localVariables: structuredClone(newVariableState)
+        })
+      }
     }
 
     // reload global variables
