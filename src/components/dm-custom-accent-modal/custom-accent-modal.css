@@ -107,6 +107,18 @@
     font-weight: bold;
 }
 
+.change-on-hover {
+    border-color: $ui-tertiary;
+}
+
+.change-on-hover:hover {
+    border-color: $motion-tertiary;
+}
+
+.enabled-accent {
+    border-color: $motion-primary;
+}
+
 [theme="dark"] .div-stretchy {
     background-color: black;
     color: white;

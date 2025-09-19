@@ -17,6 +17,8 @@ import deleteIcon from './delete.svg';
 
 const BufferedInput = BufferedInputHOC(Input);
 
+const CUSTOM_ACCENTS_KEY = "saved_custom_accents";
+
 const messages = defineMessages({
     title: {
         defaultMessage: 'Custom Accents',
@@ -54,7 +56,7 @@ Header.propTypes = {
 
 const CustomAccentComponent = props => (
     <div
-        className={styles.divStretchy}
+        className={classNames(styles.divStretchy, styles.changeOnHover)}
         style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -133,17 +135,18 @@ const CustomAccentModalComponent = function (props) {
         //alert("Deleted accent: " + name);
     }
 
-    /**
-     * @param {string} css CSS color or var(--...)
-     * @returns {string} evaluated CSS
-     */
-    const evaluateCSS = css => {
-        const variableMatch = css.match(/^var\(([\w-]+)\)$/);
-        if (variableMatch) {
-            return document.documentElement.style.getPropertyValue(variableMatch[1]);
+    for (const accentData of JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY) || [])) {
+        if (accentData.name && accentData.colors.primaryColor) {
+            addToUI(<CustomAccentComponent
+                    name={accentData.name}
+                    primaryColor={accentData.colors.primaryColor}
+                    onEditClicked={props.onEditClicked}
+                    onDeleteClicked={(name) => {
+                    props.onDeleteClicked(name, deleteAccentComponentFromUIwithName);
+                }}
+            />)
         }
-        return css;
-    };
+    }
 
     /*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/
 

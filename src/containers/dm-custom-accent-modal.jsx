@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import {closeCustomAccentModal} from '../reducers/modals';
 import CustomAccentModalComponent from '../components/dm-custom-accent-modal/custom-accent-modal.jsx';
 import SavedAccentTemplate from '../components/dm-custom-accent-modal/saved-accent-template.js';
+import { persistTheme } from '../lib/themes/themePersistance.js'
 
 // SavedAccentTemplate("*Name 1*", { primaryColor: "#FF0000" })
 
@@ -14,6 +15,7 @@ class CustomAccentModal extends React.Component {
         super(props);
         bindAll(this, [
             'test',
+            'evaluateCss',
             'handleEditClicked',
             'handleDeleteClicked',
             'handleCreateAccentClicked'
@@ -23,6 +25,13 @@ class CustomAccentModal extends React.Component {
     }
     test () {
         console.log("test")
+    }
+    evaluateCss (css) {
+        const variableMatch = css.match(/^var\(([\w-]+)\)$/);
+        if (variableMatch) {
+            return document.documentElement.style.getPropertyValue(variableMatch[1]);
+        }
+        return css;
     }
     handleEditClicked (name) {
         console.log("edit button clicked")
@@ -50,7 +59,7 @@ class CustomAccentModal extends React.Component {
             }}
         />)
         refreshUI()
-        //localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY) || {}) + SavedAccentTemplate(accentData.name, { primaryColor: accentData.primaryColor })))
+        localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY) || {}) + SavedAccentTemplate(accentData.name, { primaryColor: accentData.primaryColor }, false)))
     }
     render () {
         const {
