@@ -135,7 +135,7 @@ const CustomAccentModalComponent = function (props) {
         //alert("Deleted accent: " + name);
     }
 
-    for (const accentData of JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY) || {})) {
+    /*for (const accentData of JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY) || {})) {
         if (accentData.name && accentData.colors.primaryColor) {
             addToUI(<CustomAccentComponent
                     name={accentData.name}
@@ -146,7 +146,7 @@ const CustomAccentModalComponent = function (props) {
                 }}
             />)
         }
-    }
+    }*/
 
     /*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/
 
