@@ -2,12 +2,12 @@ import React from 'react';
 import bindAll from 'lodash.bindall';
 import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
 import { connect } from 'react-redux';
-import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import VM from 'scratch-vm';
-import VariableManager from '../components/variable-manager/variable-manager.jsx';
+import VariableTab from '../components/variables-tab/variables-tab.jsx';
 import PropTypes from 'prop-types';
 
-class VariableTab extends React.Component {
+class VariableManager extends React.Component {
   constructor (props) {
     super(props);
 
@@ -22,7 +22,7 @@ class VariableTab extends React.Component {
       globalVariables: []
     }
 
-    /*
+    /* State format
     {
       localVariables: {
         [variableId]: {
@@ -38,9 +38,6 @@ class VariableTab extends React.Component {
       }
     }
     */
-
-    console.log(this.props.vm)
-    console.log(this.props.sprite)
   }
 
   componentDidMount() {
@@ -110,7 +107,7 @@ class VariableTab extends React.Component {
     const oldVariables = this.state.globalVariables
 
     for (let i = 0; i < newVariables.length; i++) {
-      const varToCheck = oldVariables.find(varr => varr.id === newVariables[i].id)
+      const varToCheck = oldVariables[newVariables[i].id]
       
       if (!varToCheck) {
         return this.setState({
@@ -130,13 +127,13 @@ class VariableTab extends React.Component {
     try {
         this._reload();
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
   }
 
   render () {
     return (
-      <VariableManager
+      <VariableTab
         localVariables={this.state.localVariables}
         globalVariables={this.state.globalVariables}
         isStage={this.props.sprite.isStage}
@@ -145,7 +142,7 @@ class VariableTab extends React.Component {
   }
 }
 
-VariableTab.propTypes = {
+VariableManager.propTypes = {
   intl: intlShape,
   isRtl: PropTypes.bool,
   targets: PropTypes.any,
@@ -166,5 +163,5 @@ export default errorBoundaryHOC('Variable Manager')(
   injectIntl(connect(
     mapStateToProps,
     //mapDispatchToProps
-  )(VariableTab))
+  )(VariableManager))
 );

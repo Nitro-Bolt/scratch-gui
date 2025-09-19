@@ -1,8 +1,7 @@
 import React from 'react';
-import styles from './variable-manager.css'
+import styles from './variables-tab.css'
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { tablet } from 'bowser';
 
 const messages = defineMessages({
   forThisSprite: {
