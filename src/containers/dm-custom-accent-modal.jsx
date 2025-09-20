@@ -4,6 +4,7 @@ import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import bindAll from 'lodash.bindall';
 import {connect} from 'react-redux';
 import {closeCustomAccentModal} from '../reducers/modals';
+import {setTheme} from '../reducers/theme';
 import CustomAccentModalComponent from '../components/dm-custom-accent-modal/custom-accent-modal.jsx';
 import SavedAccentTemplate from '../components/dm-custom-accent-modal/saved-accent-template.js';
 import { persistThemeCustom, persistTheme } from '../lib/themes/themePersistance.js'
