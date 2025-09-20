@@ -1,8 +1,9 @@
-const savedAccentTemplate = (name, { primaryColor }, enabled) => {
+const savedAccentTemplate = (name, { primaryColor, primaryColorDark }, enabled) => {
     return {
         name: name,
         colors: {
-            primary: primaryColor
+            primary: primaryColor,
+            primaryDark: primaryColorDark
         },
         enabled: enabled
     }

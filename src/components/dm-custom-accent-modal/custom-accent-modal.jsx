@@ -132,6 +132,7 @@ const CustomAccentComponent = props => {
 CustomAccentComponent.propTypes = {
     name: PropTypes.string,
     primaryColor: PropTypes.string,
+    primaryColorDark: PropTypes.string,
     onEditClicked: PropTypes.func.isRequired,
     onDeleteClicked: PropTypes.func.isRequired,
     refreshUI: PropTypes.func.isRequired,
@@ -166,7 +167,8 @@ const CustomAccentModalComponent = function (props) {
             addToUI(
                 <CustomAccentComponent
                     name={accentData.name}
-                    primaryColor={accentData.colors.primaryColor}
+                    primaryColor={accentData.colors.primary}
+                    primaryColorDark={accentData.colors.primaryDark}
                     onEditClicked={props.onEditClicked}
                     onDeleteClicked={(name) => {
                         props.onDeleteClicked(name, deleteAccentComponentFromUIwithName);

@@ -77,7 +77,10 @@ class CustomAccentModal extends React.Component {
         })
         refreshUI()*/
         const tempCustomAccentObj = JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY) || [])
-        tempCustomAccentObj.push(SavedAccentTemplate(accentData.name, { primaryColor: accentData.primaryColor }, false))
+        tempCustomAccentObj.push(SavedAccentTemplate(accentData.name, {
+            primaryColor: accentData.primaryColor,
+            primaryColorDark: accentData.primaryColorDark
+        }, false))
         localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(tempCustomAccentObj))
         //if (localStorage) localStorage.pushArrayItem_INTERNAL(this.CUSTOM_ACCENTS_KEY, accentData);
     }
