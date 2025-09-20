@@ -160,6 +160,8 @@ const CustomAccentModalComponent = function (props) {
     }
 
     const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) || []
+    console.log(CUSTOM_ACCENTS_ARRAY)
+    console.log(CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
 
     for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
         if (accentData.nothing) continue;
