@@ -86,7 +86,7 @@ class CustomAccentModal extends React.Component {
     }
     deactivateAccent (accentData) {
         //localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY_ON)).push(accentData)))
-        onChangeTheme(localStorage.getItem("tw:accent"))
+        onChangeTheme(theme.set(localStorage.getItem("tw:accent")))
         refreshUI()
     }
     render () {
@@ -111,6 +111,7 @@ class CustomAccentModal extends React.Component {
 CustomAccentModal.propTypes = {
     intl: intlShape,
     onClose: PropTypes.func,
+    onChangeTheme: PropTypes.func,
     theme: PropTypes.instanceOf(Theme)
 };
 
