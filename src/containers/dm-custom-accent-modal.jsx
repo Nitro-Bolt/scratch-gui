@@ -29,8 +29,8 @@ class CustomAccentModal extends React.Component {
         this.CUSTOM_ACCENTS_KEY = "tw:accent:customAccents"
         this.CUSTOM_ACCENTS_KEY_ON = "tw:accent:customAccentsOn"
 
-        if (localStorage) localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify([]));
-        if (localStorage) localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify([]));
+        //if (localStorage) localStorage.pushArrayItem_INTERNAL(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify([]));
+        //if (localStorage) localStorage.pushArrayItem_INTERNAL(this.CUSTOM_ACCENTS_KEY, JSON.stringify([]));
     }
     test () {
         console.log("test")
@@ -77,7 +77,7 @@ class CustomAccentModal extends React.Component {
         })
         refreshUI()*/
         //localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY) || {}) + SavedAccentTemplate(accentData.name, { primaryColor: accentData.primaryColor }, false)))
-        if (localStorage) localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY)).push(accentData)));
+        if (localStorage) localStorage.pushArrayItem_INTERNAL(this.CUSTOM_ACCENTS_KEY, accentData);
     }
     activateAccent (accentData, refreshUI) {
         //localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY_ON)).push(accentData)))

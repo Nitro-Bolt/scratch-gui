@@ -17,7 +17,7 @@ import deleteIcon from './delete.svg';
 
 const BufferedInput = BufferedInputHOC(Input);
 
-const CUSTOM_ACCENTS_KEY = "saved_custom_accents";
+const CUSTOM_ACCENTS_KEY = "tw:accent:customAccents";
 
 const messages = defineMessages({
     title: {
@@ -158,18 +158,24 @@ const CustomAccentModalComponent = function (props) {
         //alert("Deleted accent: " + name);
     }
 
-    /*for (const accentData of JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY) || {})) {
+    const CUSTOM_ACCENTS_ARRAY = localStorage.getArray_INTERNAL(CUSTOM_ACCENTS_KEY)
+
+    for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
+        if (accentData.nothing) continue;
         if (accentData.name && accentData.colors.primaryColor) {
-            addToUI(<CustomAccentComponent
+            addToUI(
+                <CustomAccentComponent
                     name={accentData.name}
                     primaryColor={accentData.colors.primaryColor}
                     onEditClicked={props.onEditClicked}
                     onDeleteClicked={(name) => {
-                    props.onDeleteClicked(name, deleteAccentComponentFromUIwithName);
-                }}
-            />)
+                        props.onDeleteClicked(name, deleteAccentComponentFromUIwithName);
+                    }}
+                    refreshUI={refreshUI}
+                />
+            )
         }
-    }*/
+    }
 
     /*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/
 
@@ -270,7 +276,7 @@ const CustomAccentModalComponent = function (props) {
                             className={styles.accentIconOuter}
                         />
                     </Box>
-                    <Box className={classNames(styles.buttonRow, styles.body)}>
+                    <Box className={classNames(styles.buttonRow, styles.buttonsBackground)}>
                         <button
                             className={styles.cancelButton}
                             onClick={() => {setIsNewAccUIOpen(false)}}

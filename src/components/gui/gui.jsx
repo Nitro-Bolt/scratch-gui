@@ -50,6 +50,8 @@ import {resolveStageSize} from '../../lib/screen-utils';
 
 import {isRendererSupported, isBrowserSupported} from '../../lib/tw-environment-support-prober';
 
+import './javascript-extension.js';
+
 import styles from './gui.css';
 import plusIcon from './add-tab.svg';
 import addExtensionIcon from './icon--extensions.svg';

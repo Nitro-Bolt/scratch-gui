@@ -16,6 +16,14 @@
     background: $ui-primary;
 }
 
+.buttons-background {
+    background: $ui-white;
+}
+[theme="dark"] .buttons-background {
+    color: $text-primary;
+    background: $ui-primary;
+}
+
 /* For small screens, such as in the embed */
 @media (max-height: 600px) {
     .modal-content {
