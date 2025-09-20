@@ -26,7 +26,6 @@ class CustomAccentModal extends React.Component {
         this.accents = 0;
         this.CUSTOM_ACCENTS_KEY = "tw:accent:customAccents"
         this.CUSTOM_ACCENTS_KEY_ON = "tw:accent:customAccentsOn"
-        this.refreshUI = () => {console.warn("refreshUI is undefined")}
 
         if (localStorage) localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify([]));
         if (localStorage) localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify([]));
@@ -69,6 +68,7 @@ class CustomAccentModal extends React.Component {
             }}
             onActivated={(accentData) => {this.activateAccent(accentData)}}
             onDeactivated={(accentData) => {this.deactivateAccent(accentData)}}
+            refreshUI={refreshUI}
         />)
         /*persistThemeCustom({
             primaryColor: accentData.primaryColor,
@@ -78,18 +78,18 @@ class CustomAccentModal extends React.Component {
         //localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY) || {}) + SavedAccentTemplate(accentData.name, { primaryColor: accentData.primaryColor }, false)))
         if (localStorage) localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY)).push(accentData)));
     }
-    activateAccent (accentData) {
+    activateAccent (accentData, refreshUI) {
         //localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY_ON)).push(accentData)))
         persistThemeCustom({
             primaryColor: accentData.primaryColor,
             primaryColorDark: accentData.primaryColorDark
         })
-        this.refreshUI()
+        refreshUI()
     }
-    deactivateAccent (accentData) {
+    deactivateAccent (accentData, refreshUI) {
         //localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY_ON)).push(accentData)))
-        onChangeTheme(theme.set(localStorage.getItem("tw:accent")))
-        this.refreshUI()
+        props.onChangeTheme(theme.set(localStorage.getItem("tw:accent")))
+        refreshUI()
     }
     render () {
         const {

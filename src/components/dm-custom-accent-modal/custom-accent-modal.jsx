@@ -59,7 +59,7 @@ const CustomAccentComponent = props => {
     return (
         <div
             className={classNames(styles.divStretchy, 
-                !isEnabled ? styles.changeOnHover : styles.enabledAccent
+                !!isEnabled ? styles.enabledAccent : styles.changeOnHover
             )}
             style={{
                 display: 'flex',
@@ -73,14 +73,14 @@ const CustomAccentComponent = props => {
                         name: props.name,
                         primaryColor: props.primaryColor,
                         primaryColorDark: props.primaryColorDark
-                    })
+                    }, props.refreshUI)
                 } else {
                     setEnabled(true)
                     props.onActivated({
                         name: props.name,
                         primaryColor: props.primaryColor,
                         primaryColorDark: props.primaryColorDark
-                    })
+                    }, props.refreshUI)
                 }
             }}
         >
