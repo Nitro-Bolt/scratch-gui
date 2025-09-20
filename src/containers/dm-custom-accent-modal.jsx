@@ -7,6 +7,7 @@ import {closeCustomAccentModal} from '../reducers/modals';
 import CustomAccentModalComponent from '../components/dm-custom-accent-modal/custom-accent-modal.jsx';
 import SavedAccentTemplate from '../components/dm-custom-accent-modal/saved-accent-template.js';
 import { persistThemeCustom } from '../lib/themes/themePersistance.js'
+import { Theme } from '../lib/themes/index.js'
 
 // SavedAccentTemplate("*Name 1*", { primaryColor: "#FF0000" })
 
