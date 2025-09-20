@@ -134,6 +134,7 @@ CustomAccentComponent.propTypes = {
     primaryColor: PropTypes.string,
     onEditClicked: PropTypes.func.isRequired,
     onDeleteClicked: PropTypes.func.isRequired,
+    refreshUI: PropTypes.func.isRequired,
 };
 
 const CustomAccentModalComponent = function (props) {
