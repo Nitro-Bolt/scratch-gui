@@ -176,10 +176,11 @@ const CustomAccentModalComponent = async function (props) {
                     refreshUI={refreshUI}
                 />
             )
-            const wait = async (ms) => await new Promise(r => setTimeout(r, ms))
-            await wait(150)
+            await new Promise(r => setTimeout(r, 1000))
         }
     }
+
+    await new Promise(r => setTimeout(r, 1000))
 
     /*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/
 
