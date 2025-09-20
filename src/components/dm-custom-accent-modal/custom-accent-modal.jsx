@@ -163,7 +163,7 @@ const CustomAccentModalComponent = function (props) {
 
     for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
         if (accentData.nothing) continue;
-        if (accentData.name && accentData.colors.primaryColor) {
+        if (accentData.name && accentData.colors.primary) {
             addToUI(
                 <CustomAccentComponent
                     name={accentData.name}
