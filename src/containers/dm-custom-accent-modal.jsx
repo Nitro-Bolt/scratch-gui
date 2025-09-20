@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {closeCustomAccentModal} from '../reducers/modals';
 import CustomAccentModalComponent from '../components/dm-custom-accent-modal/custom-accent-modal.jsx';
 import SavedAccentTemplate from '../components/dm-custom-accent-modal/saved-accent-template.js';
-import { persistThemeCustom } from '../lib/themes/themePersistance.js'
+import { persistThemeCustom, persistTheme } from '../lib/themes/themePersistance.js'
 import { Theme } from '../lib/themes/index.js'
 
 // SavedAccentTemplate("*Name 1*", { primaryColor: "#FF0000" })
@@ -26,6 +26,7 @@ class CustomAccentModal extends React.Component {
         this.accents = 0;
         this.CUSTOM_ACCENTS_KEY = "tw:accent:customAccents"
         this.CUSTOM_ACCENTS_KEY_ON = "tw:accent:customAccentsOn"
+        this.refreshUI = () => {console.warn("refreshUI is undefined")}
 
         if (localStorage) localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify([]));
         if (localStorage) localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify([]));
@@ -54,6 +55,7 @@ class CustomAccentModal extends React.Component {
     }
     handleCreateAccentClicked (refreshUI, CustomAccentDIV, addToUI, deleteAccentComponentFromUIwithName, accentData) {
         //alert("create accent button clicked")
+        this.refreshUI = refreshUI
         this.accents += 1
         addToUI(<CustomAccentDIV
             //name={`*Name ${this.accents}*`}
@@ -82,12 +84,12 @@ class CustomAccentModal extends React.Component {
             primaryColor: accentData.primaryColor,
             primaryColorDark: accentData.primaryColorDark
         })
-        refreshUI()
+        this.refreshUI()
     }
     deactivateAccent (accentData) {
         //localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY_ON)).push(accentData)))
         onChangeTheme(theme.set(localStorage.getItem("tw:accent")))
-        refreshUI()
+        this.refreshUI()
     }
     render () {
         const {
