@@ -59,8 +59,7 @@ const CustomAccentComponent = props => {
     return (
         <div
             className={classNames(styles.divStretchy, 
-                [!isEnabled]: styles.changeOnHover,
-                [!!isEnabled]: styles.enabledAccent
+                !isEnabled ? styles.changeOnHover : styles.enabledAccent
             )}
             style={{
                 display: 'flex',
