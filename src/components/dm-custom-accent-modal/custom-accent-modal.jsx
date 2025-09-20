@@ -54,58 +54,81 @@ Header.propTypes = {
     children: PropTypes.node
 };
 
-const CustomAccentComponent = props => (
-    <div
-        className={classNames(styles.divStretchy, styles.changeOnHover)}
-        style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-        }}
-    >
-        <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-        }}>
-            <div
-                className={styles.accentIconOuter}
-                style={{
-                    backgroundColor: props.primaryColor ?? `#000000`
-                }}
-            />
-            <span style={{ lineHeight: '32px' }}>{props.name}</span>
-        </div>
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '6px',
-            alignItems: 'flex-end',
-            flexShrink: '0'
-        }}>
-            {/*<div
-                className={classNames(styles.iconButton)}
-                type={"edit"}
-                onClick={() => props.onEditClicked(props.name)}
-            >
-                <img
-                    src={editIcon}
-                    draggable={"false"}
+const CustomAccentComponent = props => {
+    const [isEnabled, setEnabled] = useState(false);
+    return (
+        <div
+            className={classNames(styles.divStretchy, 
+                [!isEnabled]: styles.changeOnHover,
+                [!!isEnabled]: styles.enabledAccent
+            )}
+            style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+            }}
+            onClick={() => {
+                if (!!isEnabled) {
+                    setEnabled(false)
+                    props.onDeactivated({
+                        name: props.name,
+                        primaryColor: props.primaryColor,
+                        primaryColorDark: props.primaryColorDark
+                    })
+                } else {
+                    setEnabled(true)
+                    props.onActivated({
+                        name: props.name,
+                        primaryColor: props.primaryColor,
+                        primaryColorDark: props.primaryColorDark
+                    })
+                }
+            }}
+        >
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+            }}>
+                <div
+                    className={styles.accentIconOuter}
+                    style={{
+                        backgroundColor: props.primaryColor ?? `#000000`
+                    }}
                 />
-            </div>*/}
-            <div
-                className={classNames(styles.iconButton)}
-                type={"delete"}
-                onClick={() => props.onDeleteClicked(props.name)}
-            >
-                <img
-                    src={deleteIcon}
-                    draggable={"false"}
-                />
+                <span style={{ lineHeight: '32px' }}>{props.name}</span>
+            </div>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+                alignItems: 'flex-end',
+                flexShrink: '0'
+            }}>
+                {/*<div
+                    className={classNames(styles.iconButton)}
+                    type={"edit"}
+                    onClick={() => props.onEditClicked(props.name)}
+                >
+                    <img
+                        src={editIcon}
+                        draggable={"false"}
+                    />
+                </div>*/}
+                <div
+                    className={classNames(styles.iconButton)}
+                    type={"delete"}
+                    onClick={() => props.onDeleteClicked(props.name)}
+                >
+                    <img
+                        src={deleteIcon}
+                        draggable={"false"}
+                    />
+                </div>
             </div>
         </div>
-    </div>
-)
+    );
+}
 
 CustomAccentComponent.propTypes = {
     name: PropTypes.string,
@@ -247,7 +270,7 @@ const CustomAccentModalComponent = function (props) {
                             className={styles.accentIconOuter}
                         />
                     </Box>
-                    <Box className={styles.buttonRow}>
+                    <Box className={classNames(styles.buttonRow, styles.body)}>
                         <button
                             className={styles.cancelButton}
                             onClick={() => {setIsNewAccUIOpen(false)}}

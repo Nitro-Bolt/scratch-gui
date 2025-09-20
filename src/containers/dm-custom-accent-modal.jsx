@@ -18,10 +18,16 @@ class CustomAccentModal extends React.Component {
             'evaluateCss',
             'handleEditClicked',
             'handleDeleteClicked',
-            'handleCreateAccentClicked'
+            'handleCreateAccentClicked',
+            'activateAccent',
+            'deactivateAccent'
         ]);
         this.accents = 0;
-        this.CUSTOM_ACCENTS_KEY = "saved_custom_accents"
+        this.CUSTOM_ACCENTS_KEY = "tw:accent:customAccents"
+        this.CUSTOM_ACCENTS_KEY_ON = "tw:accent:customAccentsOn"
+
+        if (localStorage) localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify([]));
+        if (localStorage) localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify([]));
     }
     test () {
         console.log("test")
@@ -53,17 +59,34 @@ class CustomAccentModal extends React.Component {
             name={accentData.name}
             //primaryColor={"#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}
             primaryColor={accentData.primaryColor}
+            primaryColorDark={accentData.primaryColorDark}
             onEditClicked={this.handleEditClicked}
             onDeleteClicked={(name) => {
                 this.handleDeleteClicked(name, deleteAccentComponentFromUIwithName);
             }}
+            onActivated={(accentData) => {this.activateAccent(accentData)}}
+            onDeactivated={(accentData) => {this.deactivateAccent(accentData)}}
         />)
+        /*persistThemeCustom({
+            primaryColor: accentData.primaryColor,
+            primaryColorDark: accentData.primaryColorDark
+        })
+        refreshUI()*/
+        //localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY) || {}) + SavedAccentTemplate(accentData.name, { primaryColor: accentData.primaryColor }, false)))
+        if (localStorage) localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY)).push(accentData)));
+    }
+    activateAccent (accentData) {
+        //localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY_ON)).push(accentData)))
         persistThemeCustom({
             primaryColor: accentData.primaryColor,
             primaryColorDark: accentData.primaryColorDark
         })
         refreshUI()
-        //localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY) || {}) + SavedAccentTemplate(accentData.name, { primaryColor: accentData.primaryColor }, false)))
+    }
+    deactivateAccent (accentData) {
+        //localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY_ON)).push(accentData)))
+        onChangeTheme(localStorage.getItem("tw:accent"))
+        refreshUI()
     }
     render () {
         const {
@@ -87,13 +110,23 @@ class CustomAccentModal extends React.Component {
 CustomAccentModal.propTypes = {
     intl: intlShape,
     onClose: PropTypes.func,
+    theme: PropTypes.instanceOf(Theme)
 };
 
+const mapStateToProps = state => ({
+    theme: state.scratchGui.theme.theme
+})
+
 const mapDispatchToProps = dispatch => ({
+    onChangeTheme: theme => {
+        dispatch(setTheme(theme));
+        //dispatch(closeSettingsMenu());
+        persistTheme(theme);
+    },
     onClose: () => dispatch(closeCustomAccentModal())
 });
 
 export default injectIntl(connect(
-    (_ => ({})),
+    mapStateToProps,
     mapDispatchToProps
 )(CustomAccentModal));
