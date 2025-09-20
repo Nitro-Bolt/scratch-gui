@@ -68,9 +68,8 @@ class CustomAccentModal extends React.Component {
             onDeleteClicked={(name) => {
                 this.handleDeleteClicked(name, deleteAccentComponentFromUIwithName);
             }}
-            onActivated={(accentData) => {this.activateAccent(accentData)}}
-            onDeactivated={(accentData) => {this.deactivateAccent(accentData)}}
-            refreshUI={refreshUI}
+            onActivated={(accentData, refreshUI) => {this.activateAccent(accentData, refreshUI)}}
+            onDeactivated={(accentData, refreshUI) => {this.deactivateAccent(accentData, refreshUI)}}
         />)
         /*persistThemeCustom({
             primaryColor: accentData.primaryColor,
@@ -90,7 +89,7 @@ class CustomAccentModal extends React.Component {
     }
     deactivateAccent (accentData, refreshUI) {
         //localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY_ON)).push(accentData)))
-        this.props.onChangeTheme(theme.set(localStorage.getItem("tw:accent")))
+        this.props.onChangeTheme(this.props.theme.set(localStorage.getItem("tw:accent")))
         refreshUI()
     }
     render () {
