@@ -138,7 +138,7 @@ CustomAccentComponent.propTypes = {
     refreshUI: PropTypes.func.isRequired,
 };
 
-const CustomAccentModalComponent = function (props) {
+const CustomAccentModalComponent = async function (props) {
     const [customAccentComponents, setCustomAccentComponents] = useState([]);
     const [_, setTick] = useState(0);
     const [isNewAccUIOpen, setIsNewAccUIOpen] = useState(false);
@@ -160,7 +160,7 @@ const CustomAccentModalComponent = function (props) {
     }
 
     const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
-
+    
     for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
         if (accentData.nothing) continue;
         if (accentData.name && accentData.colors.primary) {
@@ -176,6 +176,8 @@ const CustomAccentModalComponent = function (props) {
                     refreshUI={refreshUI}
                 />
             )
+            const wait = async (ms) => await new Promise(r => setTimeout(r, ms))
+            await wait(50)
         }
     }
 
