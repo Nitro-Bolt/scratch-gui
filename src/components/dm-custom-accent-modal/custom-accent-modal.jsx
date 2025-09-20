@@ -158,7 +158,7 @@ const CustomAccentModalComponent = function (props) {
         //alert("Deleted accent: " + name);
     }
 
-    const CUSTOM_ACCENTS_ARRAY = localStorage.getArray_INTERNAL(CUSTOM_ACCENTS_KEY)
+    // const CUSTOM_ACCENTS_ARRAY = localStorage.getArray_INTERNAL(CUSTOM_ACCENTS_KEY)
 
     /*for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
         if (accentData.nothing) continue;
