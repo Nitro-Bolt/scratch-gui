@@ -177,7 +177,7 @@ const CustomAccentModalComponent = async function (props) {
                 />
             )
             const wait = async (ms) => await new Promise(r => setTimeout(r, ms))
-            await wait(50)
+            await wait(150)
         }
     }
 
