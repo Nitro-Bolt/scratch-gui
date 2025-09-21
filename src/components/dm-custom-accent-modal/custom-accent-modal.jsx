@@ -175,17 +175,22 @@ const CustomAccentComponent = props => {
                     className={classNames(styles.iconButton)}
                     type={"delete"}
                     onClick={async () => {
+                        props.onDeleteClicked(props.name)
+                        setEnabled2(false)
+                        props.onDeactivated({
+                            name: props.name,
+                            primaryColor: props.primaryColor,
+                            primaryColorDark: props.primaryColorDark
+                        }, props.refreshUI)
                         while (!upForDeletion) {
                             setUpForDeletion(true)
-                            props.onDeleteClicked(props.name)
-                            setEnabled2(false)
-                            props.onDeactivated({
-                                name: props.name,
-                                primaryColor: props.primaryColor,
-                                primaryColorDark: props.primaryColorDark
-                            }, props.refreshUI)
                             await new Promise(r => setTimeout(r, 150))
                         }
+                        props.onDeactivated({
+                            name: props.name,
+                            primaryColor: props.primaryColor,
+                            primaryColorDark: props.primaryColorDark
+                        }, props.refreshUI)
                     }}
                 >
                     <img
