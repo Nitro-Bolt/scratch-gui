@@ -214,7 +214,7 @@ const CustomAccentModalComponent = function (props) {
         for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
             if (accentData.nothing) continue;
             if (accentData.name == props.name) {
-                const index = accentData.indexOf(accentData);
+                const index = NEW_CUSTOM_ACCENTS_ARRAY.indexOf(accentData);
                 if (index > -1) {
                     NEW_CUSTOM_ACCENTS_ARRAY.splice(index, 1);
                 }
