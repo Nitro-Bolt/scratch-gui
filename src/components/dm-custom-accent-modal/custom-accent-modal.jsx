@@ -175,7 +175,10 @@ const CustomAccentComponent = props => {
                     className={classNames(styles.iconButton)}
                     type={"delete"}
                     onClick={() => {
-                        setUpForDeletion(true)
+                        while (!upForDeletion) {
+                            setUpForDeletion(true)
+                        }
+                        
                         props.onDeleteClicked(props.name)
                         setEnabled2(false)
                         props.onDeactivated({
@@ -237,8 +240,7 @@ const CustomAccentModalComponent = function (props) {
                 }
             }
         }*/
-        if (!NEW_CUSTOM_ACCENTS_ARRAY[0].nothing) NEW_CUSTOM_ACCENTS_ARRAY = NEW_CUSTOM_ACCENTS_ARRAY.filter((child) => child.name !== name)
-        localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify(NEW_CUSTOM_ACCENTS_ARRAY))
+        localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify(NEW_CUSTOM_ACCENTS_ARRAY.filter((child) => child.name !== name)))
         //alert("Deleted accent: " + name);
     }
 
