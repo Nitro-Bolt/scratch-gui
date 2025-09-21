@@ -81,8 +81,8 @@ const CustomAccentComponent = props => {
         }
         localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify(NEW_CUSTOM_ACCENTS_ARRAY))
     }
-
-    /*(async (CUSTOM_ACCENTS_KEY, isEnabled, setEnabled) => {
+    
+    (async (CUSTOM_ACCENTS_KEY, isEnabled, setEnabled) => {
         const wait = async (ms) => {await new Promise(r => setTimeout(r, ms))}
         while (true) {
             let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
@@ -96,7 +96,7 @@ const CustomAccentComponent = props => {
             }
             await wait(100)
         }
-    })(CUSTOM_ACCENTS_KEY, isEnabled, setEnabled)*/
+    })(CUSTOM_ACCENTS_KEY, isEnabled, setEnabled)
     return (
         <div
             className={classNames(styles.divStretchy, 
@@ -158,7 +158,15 @@ const CustomAccentComponent = props => {
                 <div
                     className={classNames(styles.iconButton)}
                     type={"delete"}
-                    onClick={() => props.onDeleteClicked(props.name)}
+                    onClick={() => {
+                        props.onDeleteClicked(props.name)
+                        setEnabled2(false)
+                        props.onDeactivated({
+                            name: props.name,
+                            primaryColor: props.primaryColor,
+                            primaryColorDark: props.primaryColorDark
+                        }, props.refreshUI)
+                    }}
                 >
                     <img
                         src={deleteIcon}
