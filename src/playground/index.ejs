@@ -37,11 +37,18 @@
       </noscript>
       <div id="splash-content">
         <div id="splash-spinner"></div>
+        <p id="splash-debug-error"></p>
      </div>
     </div>
     <script>
       (async function() {
         document.querySelector('#splash-content').style.display = 'block';
+        console.oerror = console.error
+        console.error = function(message) {
+          console.oerror(message)
+          const errorLabel = document.querySelector('#splash-debug-error');
+          if (errorLabel && errorLabel.innerHTML) errorLabel.innerHTML += message;
+        }
         <% if (!htmlWebpackPlugin.options.noTheme) { %>
         try {var localTheme = localStorage.getItem('tw:theme');} catch (e) {}
         if (localTheme ? localTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches) document.querySelector('#splash').setAttribute('splash-theme', 'dark');
