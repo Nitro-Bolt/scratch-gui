@@ -70,34 +70,47 @@ const CustomAccentComponent = props => {
     }, 500)
 
     const setEnabled2 = (value) => {
-        setEnabled(value)
-        let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
-        for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
-            if (accentData.nothing) continue;
-            if (accentData.name == props.name) {
-                accentData.enabled = value
-            } else {
-                accentData.enabled = false
-            }
-        }
-        localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify(NEW_CUSTOM_ACCENTS_ARRAY))
-    }
-    
-    (async (CUSTOM_ACCENTS_KEY, isEnabled, setEnabled) => {
-        const wait = async (ms) => {await new Promise(r => setTimeout(r, ms))}
-        while (true) {
+        if (!!upForDeletion) {
+            setEnabled(false)
+        } else {
+            setEnabled(value)
             let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
             for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
                 if (accentData.nothing) continue;
                 if (accentData.name == props.name) {
-                    if (accentData.enabled !== isEnabled) {
-                        setEnabled(accentData.enabled)
+                    accentData.enabled = value
+                } else {
+                    accentData.enabled = false
+                }
+            }
+            localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify(NEW_CUSTOM_ACCENTS_ARRAY))
+        }
+    }
+
+    const getStateData = () => {
+        return [isEnabled, setEnabled, upForDeletion, setUpForDeletion]
+    }
+    
+    (async (CUSTOM_ACCENTS_KEY, getStateData) => {
+        const wait = async (ms) => {await new Promise(r => setTimeout(r, ms))}
+        while (true) {
+            let isEnabled = getStateData()[0]
+            let setEnabled = getStateData()[1]
+            let upForDeletion = getStateData()[2]
+            if (!upForDeletion) {
+                let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
+                for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
+                    if (accentData.nothing) continue;
+                    if (accentData.name == props.name) {
+                        if (accentData.enabled !== isEnabled) {
+                            setEnabled(accentData.enabled)
+                        }
                     }
                 }
             }
             await wait(100)
         }
-    })(CUSTOM_ACCENTS_KEY, isEnabled, setEnabled)
+    })(CUSTOM_ACCENTS_KEY, getStateData)
     return (
         <div
             className={classNames(styles.divStretchy, 
@@ -215,7 +228,7 @@ const CustomAccentModalComponent = function (props) {
         const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
 
         let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
-        for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
+        /*for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
             if (accentData.nothing) continue;
             if (accentData.name == name) {
                 const index = NEW_CUSTOM_ACCENTS_ARRAY.indexOf(accentData);
@@ -223,7 +236,8 @@ const CustomAccentModalComponent = function (props) {
                     NEW_CUSTOM_ACCENTS_ARRAY.splice(index, 1);
                 }
             }
-        }
+        }*/
+        if (!NEW_CUSTOM_ACCENTS_ARRAY[0].nothing) NEW_CUSTOM_ACCENTS_ARRAY = NEW_CUSTOM_ACCENTS_ARRAY.filter((child) => child.name !== name)
         localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify(NEW_CUSTOM_ACCENTS_ARRAY))
         //alert("Deleted accent: " + name);
     }
