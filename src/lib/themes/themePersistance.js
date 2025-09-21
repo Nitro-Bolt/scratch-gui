@@ -106,13 +106,11 @@ if (localStorage) {
     
     for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
         if (accentData.nothing) continue;
-        if (accentData.name == props.name) {
-            if (accentData.enabled == true) {
-                persistThemeCustom({
-                    primaryColor: accentData.primary,
-                    primaryColorDark: accentData.primaryDark
-                })
-            }
+        if (accentData.enabled == true) {
+            persistThemeCustom({
+                primaryColor: accentData.primary,
+                primaryColorDark: accentData.primaryDark
+            })
         }
     }
 }
