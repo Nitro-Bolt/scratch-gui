@@ -161,7 +161,7 @@ const CustomAccentModalComponent = async function (props) {
 
     const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
     
-    setTimeout(() => {
+    /*setTimeout(() => {
         for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
             if (accentData.nothing) continue;
             if (accentData.name && accentData.colors.primary) {
@@ -180,7 +180,7 @@ const CustomAccentModalComponent = async function (props) {
                 //await new Promise(r => setTimeout(r, 1000))
             }
         }
-    }, 1000)
+    }, 1000)*/
 
     /*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/
 
