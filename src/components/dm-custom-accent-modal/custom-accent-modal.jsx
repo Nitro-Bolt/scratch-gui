@@ -56,6 +56,45 @@ Header.propTypes = {
 
 const CustomAccentComponent = props => {
     const [isEnabled, setEnabled] = useState(false);
+
+    const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
+
+    for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
+        if (accentData.nothing) continue;
+        if (accentData.name == props.name) {
+            if (accentData.enabled == true) setEnabled(true)
+        }
+    }
+
+    const setEnabled2 = (value) => {
+        setEnabled(value)
+        let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
+        for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
+            if (accentData.nothing) continue;
+            if (accentData.name == props.name) {
+                accentData.enabled = value
+            } else {
+                accentData.enabled = false
+            }
+        }
+        localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify(NEW_CUSTOM_ACCENTS_ARRAY))
+    }
+
+    (async (CUSTOM_ACCENTS_KEY, isEnabled, setEnabled) => {
+        const wait = async (ms) => {await new Promise(r => setTimeout(r, ms))}
+        while (true) {
+            let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
+            for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
+                if (accentData.nothing) continue;
+                if (accentData.name == props.name) {
+                    if (accentData.enabled !== isEnabled) {
+                        setEnabled(accentData.enabled)
+                    }
+                }
+            }
+            await wait(100)
+        }
+    })(CUSTOM_ACCENTS_KEY, isEnabled, setEnabled)
     return (
         <div
             className={classNames(styles.divStretchy, 
@@ -68,14 +107,14 @@ const CustomAccentComponent = props => {
             }}
             onClick={() => {
                 if (!!isEnabled) {
-                    setEnabled(false)
+                    setEnabled2(false)
                     props.onDeactivated({
                         name: props.name,
                         primaryColor: props.primaryColor,
                         primaryColorDark: props.primaryColorDark
                     }, props.refreshUI)
                 } else {
-                    setEnabled(true)
+                    setEnabled2(true)
                     props.onActivated({
                         name: props.name,
                         primaryColor: props.primaryColor,
@@ -144,6 +183,7 @@ const CustomAccentModalComponent = function (props) {
     const [customAccentComponents, setCustomAccentComponents] = useState([]);
     const [_, setTick] = useState(0);
     const [isNewAccUIOpen, setIsNewAccUIOpen] = useState(false);
+    const [hasAccentsBeenRendered, setHasAccentsBeenRendered] = useState(false);
 
     function refreshUI() {
         //setCustomAccentComponents((prev) => [...prev]);
@@ -158,6 +198,19 @@ const CustomAccentModalComponent = function (props) {
         setCustomAccentComponents((prev) =>
             prev.filter((child) => child.props.name !== name)
         );
+        const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
+        
+        let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
+        for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
+            if (accentData.nothing) continue;
+            if (accentData.name == props.name) {
+                const index = array.indexOf(accentData);
+                if (index > -1) {
+                    NEW_CUSTOM_ACCENTS_ARRAY.splice(index, 1);
+                }
+            }
+        }
+        localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify(NEW_CUSTOM_ACCENTS_ARRAY))
         //alert("Deleted accent: " + name);
     }
 
@@ -167,29 +220,32 @@ const CustomAccentModalComponent = function (props) {
 
     const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
     
-    setTimeout(() => {
-        for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
-            if (accentData.nothing) continue;
-            if (accentData.name && accentData.colors.primary) {
-                addToUI(
-                    <CustomAccentComponent
-                        name={accentData.name}
-                        primaryColor={accentData.colors.primary}
-                        primaryColorDark={accentData.colors.primaryDark}
-                        onEditClicked={props.onEditClicked}
-                        onDeleteClicked={(name) => {
-                            props.onDeleteClicked(name, deleteAccentComponentFromUIwithName);
-                        }}
-                        onActivated={props.onActivated}
-                        onDeactivated={props.onDeactivated}
-                        refreshUI={refreshUI}
-                    />
-                )
-                //await new Promise(r => setTimeout(r, 1000))
+    if (!hasAccentsBeenRendered) {
+        setTimeout(() => {
+            for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
+                if (accentData.nothing) continue;
+                if (accentData.name && accentData.colors.primary) {
+                    addToUI(
+                        <CustomAccentComponent
+                            name={accentData.name}
+                            primaryColor={accentData.colors.primary}
+                            primaryColorDark={accentData.colors.primaryDark}
+                            onEditClicked={props.onEditClicked}
+                            onDeleteClicked={(name) => {
+                                props.onDeleteClicked(name, deleteAccentComponentFromUIwithName);
+                            }}
+                            onActivated={props.onActivated}
+                            onDeactivated={props.onDeactivated}
+                            refreshUI={refreshUI}
+                        />
+                    )
+                    //await new Promise(r => setTimeout(r, 1000))
+                }
             }
-        }
-        test()
-    }, 1000)
+            test()
+        }, 500)
+        setHasAccentsBeenRendered(true)
+    }
 
     /*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/
 
