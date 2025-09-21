@@ -108,8 +108,8 @@ if (localStorage) {
         if (accentData.nothing) continue;
         if (accentData.enabled == true) {
             persistThemeCustom({
-                primaryColor: accentData.primary,
-                primaryColorDark: accentData.primaryDark
+                primaryColor: accentData.colors.primary,
+                primaryColorDark: accentData.colors.primaryDark
             })
         }
     }
