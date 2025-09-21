@@ -59,12 +59,14 @@ const CustomAccentComponent = props => {
 
     const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
 
-    for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
-        if (accentData.nothing) continue;
-        if (accentData.name == props.name) {
-            if (accentData.enabled == true) setEnabled(true)
+    setTimeout(() => {
+        for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
+            if (accentData.nothing) continue;
+            if (accentData.name == props.name) {
+                if (accentData.enabled == true) setEnabled(true)
+            }
         }
-    }
+    }, 500)
 
     const setEnabled2 = (value) => {
         setEnabled(value)
