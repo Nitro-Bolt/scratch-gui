@@ -21,7 +21,7 @@ const CUSTOM_ACCENTS_KEY = "tw:accent:customAccents";
 
 const messages = defineMessages({
     title: {
-        defaultMessage: 'Custom Accents',
+        defaultMessage: 'Custom Accents (Beta)',
         description: 'Title of the custom accents modal',
         id: 'dm.customAccentModal.title'
     },
@@ -213,7 +213,7 @@ const CustomAccentModalComponent = function (props) {
         let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
         for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
             if (accentData.nothing) continue;
-            if (accentData.name == props.name) {
+            if (accentData.name == name) {
                 const index = NEW_CUSTOM_ACCENTS_ARRAY.indexOf(accentData);
                 if (index > -1) {
                     NEW_CUSTOM_ACCENTS_ARRAY.splice(index, 1);
@@ -252,7 +252,6 @@ const CustomAccentModalComponent = function (props) {
                     //await new Promise(r => setTimeout(r, 1000))
                 }
             }
-            test()
         }, 500)
         setHasAccentsBeenRendered(true)
     }
@@ -271,7 +270,7 @@ const CustomAccentModalComponent = function (props) {
             {!isNewAccUIOpen && (
                 <Box className={styles.body}>
                     <Header>
-                        Custom Accents (This is currently unfinished and being worked on.)
+                        This is still in beta development as there may be bugs that can cause the editor to break
                     </Header>
                     <div
                         className={styles.buttonStretchy}

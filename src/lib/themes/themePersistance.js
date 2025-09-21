@@ -6,6 +6,7 @@ const PREFERS_DARK_QUERY = matchMedia('(prefers-color-scheme: dark)');
 
 const STORAGE_KEY = 'tw:theme';
 const ACCENT_KEY = 'tw:accent';
+const CUSTOM_ACCENTS_KEY = "tw:accent:customAccents";
 
 if (localStorage && localStorage.getItem(ACCENT_KEY) === null) {
     localStorage.setItem(ACCENT_KEY, 'Lime Green')
@@ -99,6 +100,22 @@ const persistThemeCustom = colors => {
         descendant.dispatchEvent(recolorEvent);
     });
 };
+
+if (localStorage) {
+    const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
+    
+    for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
+        if (accentData.nothing) continue;
+        if (accentData.name == props.name) {
+            if (accentData.enabled == true) {
+                persistThemeCustom({
+                    primaryColor: accentData.primary,
+                    primaryColorDark: accentData.primaryDark
+                })
+            }
+        }
+    }
+}
 
 export {
     detectTheme,
