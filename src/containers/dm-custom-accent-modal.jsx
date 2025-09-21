@@ -110,6 +110,8 @@ class CustomAccentModal extends React.Component {
                 onEditClicked={this.handleEditClicked}
                 onDeleteClicked={this.handleDeleteClicked}
                 onCreateAccentClicked={this.handleCreateAccentClicked}
+                onActivated={this.activateAccent}
+                onDeactivated={this.deactivateAccent}
                 {...props}
             />
         );

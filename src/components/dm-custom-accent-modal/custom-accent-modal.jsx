@@ -135,6 +135,8 @@ CustomAccentComponent.propTypes = {
     primaryColorDark: PropTypes.string,
     onEditClicked: PropTypes.func.isRequired,
     onDeleteClicked: PropTypes.func.isRequired,
+    onActivated: PropTypes.func.isRequired,
+    onDeactivated: PropTypes.func.isRequired,
     refreshUI: PropTypes.func.isRequired,
 };
 
@@ -159,6 +161,10 @@ const CustomAccentModalComponent = function (props) {
         //alert("Deleted accent: " + name);
     }
 
+    function test() {
+        setCustomAccentComponents((prev) => {console.log(prev); return prev});
+    }
+
     const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
     
     setTimeout(() => {
@@ -174,12 +180,15 @@ const CustomAccentModalComponent = function (props) {
                         onDeleteClicked={(name) => {
                             props.onDeleteClicked(name, deleteAccentComponentFromUIwithName);
                         }}
+                        onActivated={props.onActivated}
+                        onDeactivated={props.onDeactivated}
                         refreshUI={refreshUI}
                     />
                 )
                 //await new Promise(r => setTimeout(r, 1000))
             }
         }
+        test()
     }, 1000)
 
     /*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/
@@ -315,6 +324,8 @@ CustomAccentModalComponent.propTypes = {
     onEditClicked: PropTypes.func.isRequired,
     onDeleteClicked: PropTypes.func.isRequired,
     onCreateAccentClicked: PropTypes.func.isRequired,
+    onActivated: PropTypes.func.isRequired,
+    onDeactivated: PropTypes.func.isRequired,
 };
 
 export default injectIntl(CustomAccentModalComponent)
