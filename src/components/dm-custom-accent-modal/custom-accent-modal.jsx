@@ -80,7 +80,7 @@ const CustomAccentComponent = props => {
         localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify(NEW_CUSTOM_ACCENTS_ARRAY))
     }
 
-    (async (CUSTOM_ACCENTS_KEY, isEnabled, setEnabled) => {
+    /*(async (CUSTOM_ACCENTS_KEY, isEnabled, setEnabled) => {
         const wait = async (ms) => {await new Promise(r => setTimeout(r, ms))}
         while (true) {
             let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
@@ -94,7 +94,7 @@ const CustomAccentComponent = props => {
             }
             await wait(100)
         }
-    })(CUSTOM_ACCENTS_KEY, isEnabled, setEnabled)
+    })(CUSTOM_ACCENTS_KEY, isEnabled, setEnabled)*/
     return (
         <div
             className={classNames(styles.divStretchy, 
@@ -199,7 +199,7 @@ const CustomAccentModalComponent = function (props) {
             prev.filter((child) => child.props.name !== name)
         );
         const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
-        
+
         let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
         for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
             if (accentData.nothing) continue;
