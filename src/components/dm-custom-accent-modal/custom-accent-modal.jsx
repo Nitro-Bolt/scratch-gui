@@ -210,7 +210,7 @@ const CustomAccentModalComponent = async function (props) {
                     <Gap
                         height="18px"
                     />
-                    <div>{[customAccentComponents]}</div>
+                    {/*<div>{customAccentComponents}</div>*/}
                     {customAccentComponents.length === 0 && <div className={styles.nothingText}>
                         You currently have no saved accents.
                     </div>}
