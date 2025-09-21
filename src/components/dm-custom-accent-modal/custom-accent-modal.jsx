@@ -180,8 +180,6 @@ const CustomAccentModalComponent = async function (props) {
         }
     }
 
-    await new Promise(r => setTimeout(r, 1000))
-
     /*props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName)*/
 
     return (
