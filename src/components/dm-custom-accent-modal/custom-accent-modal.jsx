@@ -138,7 +138,7 @@ CustomAccentComponent.propTypes = {
     refreshUI: PropTypes.func.isRequired,
 };
 
-const CustomAccentModalComponent = async function (props) {
+const CustomAccentModalComponent = function (props) {
     const [customAccentComponents, setCustomAccentComponents] = useState([]);
     const [_, setTick] = useState(0);
     const [isNewAccUIOpen, setIsNewAccUIOpen] = useState(false);
@@ -210,7 +210,7 @@ const CustomAccentModalComponent = async function (props) {
                     <Gap
                         height="18px"
                     />
-                    {/*<div>{customAccentComponents}</div>*/}
+                    <div>{customAccentComponents}</div>
                     {customAccentComponents.length === 0 && <div className={styles.nothingText}>
                         You currently have no saved accents.
                     </div>}
