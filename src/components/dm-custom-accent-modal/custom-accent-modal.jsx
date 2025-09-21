@@ -174,9 +174,10 @@ const CustomAccentComponent = props => {
                 <div
                     className={classNames(styles.iconButton)}
                     type={"delete"}
-                    onClick={() => {
+                    onClick={async () => {
                         while (!upForDeletion) {
                             setUpForDeletion(true)
+                            await new Promise(r => setTimeout(r, 150))
                         }
                         
                         props.onDeleteClicked(props.name)
