@@ -56,6 +56,7 @@ Header.propTypes = {
 
 const CustomAccentComponent = props => {
     const [isEnabled, setEnabled] = useState(false);
+    const [upForDeletion, setUpForDeletion] = useState(false);
 
     const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
 
@@ -108,20 +109,22 @@ const CustomAccentComponent = props => {
                 alignItems: 'center',
             }}
             onClick={() => {
-                if (!!isEnabled) {
-                    setEnabled2(false)
-                    props.onDeactivated({
-                        name: props.name,
-                        primaryColor: props.primaryColor,
-                        primaryColorDark: props.primaryColorDark
-                    }, props.refreshUI)
-                } else {
-                    setEnabled2(true)
-                    props.onActivated({
-                        name: props.name,
-                        primaryColor: props.primaryColor,
-                        primaryColorDark: props.primaryColorDark
-                    }, props.refreshUI)
+                if (!upForDeletion) {
+                    if (!!isEnabled) {
+                        setEnabled2(false)
+                        props.onDeactivated({
+                            name: props.name,
+                            primaryColor: props.primaryColor,
+                            primaryColorDark: props.primaryColorDark
+                        }, props.refreshUI)
+                    } else {
+                        setEnabled2(true)
+                        props.onActivated({
+                            name: props.name,
+                            primaryColor: props.primaryColor,
+                            primaryColorDark: props.primaryColorDark
+                        }, props.refreshUI)
+                    }
                 }
             }}
         >
@@ -159,6 +162,7 @@ const CustomAccentComponent = props => {
                     className={classNames(styles.iconButton)}
                     type={"delete"}
                     onClick={() => {
+                        setUpForDeletion(true)
                         props.onDeleteClicked(props.name)
                         setEnabled2(false)
                         props.onDeactivated({
