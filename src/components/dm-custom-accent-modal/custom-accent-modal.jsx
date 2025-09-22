@@ -262,6 +262,7 @@ const CustomAccentModalComponent = function (props) {
     
     if (!hasAccentsBeenRendered) {
         setTimeout(() => {
+            if (localStorage.getItem("tw:accent:customAccents") == null) localStorage.setItem("tw:accent:customAccents", JSON.stringify([]));
             for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
                 if (accentData.nothing) continue;
                 if (accentData.name && accentData.colors.primary) {
