@@ -665,6 +665,7 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
             </value>
         </block>
         <block id="${targetId}_volume" type="sound_volume"/>
+        <block type="sound_getsoundlength"/>
         ${categorySeparator}
     </category>
     `;
