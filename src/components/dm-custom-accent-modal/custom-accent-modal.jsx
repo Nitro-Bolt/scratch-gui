@@ -225,6 +225,8 @@ const CustomAccentModalComponent = function (props) {
     const [isNewAccUIOpen, setIsNewAccUIOpen] = useState(false);
     const [hasAccentsBeenRendered, setHasAccentsBeenRendered] = useState(false);
 
+    if (localStorage.getItem(CUSTOM_ACCENTS_KEY) == null) localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify([]));
+
     function refreshUI() {
         //setCustomAccentComponents((prev) => [...prev]);
         setTick(t => t + 1);
@@ -262,7 +264,6 @@ const CustomAccentModalComponent = function (props) {
     
     if (!hasAccentsBeenRendered) {
         setTimeout(() => {
-            if (localStorage.getItem("tw:accent:customAccents") == null) localStorage.setItem("tw:accent:customAccents", JSON.stringify([]));
             for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
                 if (accentData.nothing) continue;
                 if (accentData.name && accentData.colors.primary) {
