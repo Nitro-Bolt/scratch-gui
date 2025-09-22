@@ -60,6 +60,11 @@ const CustomAccentComponent = props => {
 
     const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
 
+    const tickEvent = new CustomEvent("TickEvent", {
+        details: {}
+    })
+    window.tickEvent = tickEvent;
+
     setTimeout(() => {
         for (const accentData of (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)) {
             if (accentData.nothing) continue;
@@ -90,27 +95,31 @@ const CustomAccentComponent = props => {
     const getStateData = () => {
         return [isEnabled, setEnabled, upForDeletion, setUpForDeletion]
     }
-    
-    (async (CUSTOM_ACCENTS_KEY, getStateData) => {
-        const wait = async (ms) => {await new Promise(r => setTimeout(r, ms))}
-        while (true) {
-            let isEnabled = getStateData()[0]
-            let setEnabled = getStateData()[1]
-            let upForDeletion = getStateData()[2]
-            if (!upForDeletion) {
-                let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
-                for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
-                    if (accentData.nothing) continue;
-                    if (accentData.name == props.name) {
-                        if (accentData.enabled !== isEnabled) {
-                            setEnabled(accentData.enabled)
-                        }
+
+    document.body.addEventListener("TickEvent", (e) => {
+        let isEnabled = getStateData()[0]
+        let setEnabled = getStateData()[1]
+        let upForDeletion = getStateData()[2]
+        if (!upForDeletion) {
+            let NEW_CUSTOM_ACCENTS_ARRAY = (CUSTOM_ACCENTS_ARRAY == [] ? [{ nothing: true }] : CUSTOM_ACCENTS_ARRAY)
+            for (const accentData of NEW_CUSTOM_ACCENTS_ARRAY) {
+                if (accentData.nothing) continue;
+                if (accentData.name == props.name) {
+                    if (accentData.enabled !== isEnabled) {
+                        setEnabled(accentData.enabled)
                     }
                 }
             }
-            await wait(100)
         }
-    })(CUSTOM_ACCENTS_KEY, getStateData)
+    })
+    
+    (async (tickEvent) => {
+        const wait = async (ms) => {await new Promise(r => setTimeout(r, ms))}
+        while (true) {
+            document.body.dispatchEvent(tickEvent);
+            await wait(200)
+        }
+    })(tickEvent)
     return (
         <div
             className={classNames(styles.divStretchy, 
