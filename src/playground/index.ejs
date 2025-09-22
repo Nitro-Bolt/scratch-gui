@@ -45,7 +45,14 @@
         document.querySelector('#splash-content').style.display = 'block';
         const errorLabel = document.querySelector('#splash-debug-error');
         window.addEventListener('error', function(event) {
-          if (errorLabel) errorLabel.innerHTML += JSON.stringify(event);
+          const errorDetails = {
+            message: event.message,
+            filename: event.filename,
+            lineno: event.lineno,
+            colno: event.colno,
+            error: event.error ? event.error.stack || event.error.toString() : 'No error object'
+          };
+          if (errorLabel) errorLabel.innerHTML += `<pre>${JSON.stringify(errorDetails, null, 2)}</pre>`;
         });
         <% if (!htmlWebpackPlugin.options.noTheme) { %>
         try {var localTheme = localStorage.getItem('tw:theme');} catch (e) {}
