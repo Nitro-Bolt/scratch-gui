@@ -56,6 +56,7 @@
         });
         <% if (!htmlWebpackPlugin.options.noTheme) { %>
         try {var localTheme = localStorage.getItem('tw:theme');} catch (e) {}
+        if (localStorage.getItem("tw:accent:customAccents") == null) localStorage.setItem("tw:accent:customAccents", JSON.stringify([]));
         if (localTheme ? localTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches) document.querySelector('#splash').setAttribute('splash-theme', 'dark');
         try {var accentTheme = localStorage.getItem('tw:accent');} catch (e) {}
         if (accentTheme) document.body.setAttribute("coloraccent", accentTheme || "Lime Green")
