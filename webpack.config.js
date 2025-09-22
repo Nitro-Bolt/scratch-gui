@@ -152,7 +152,7 @@ module.exports = [
                 chunks: 'all',
                 minChunks: 2,
                 minSize: 50000,
-                maxInitialRequests: 5
+                maxInitialRequests: 10
             }
         },
         plugins: base.plugins.concat([
