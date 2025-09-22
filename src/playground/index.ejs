@@ -44,9 +44,8 @@
       (async function() {
         document.querySelector('#splash-content').style.display = 'block';
         const errorLabel = document.querySelector('#splash-debug-error');
-        errorLabel.innerHTML = "does this even appear?"
         window.addEventListener('error', function(event) {
-          if (errorLabel && errorLabel.innerHTML) errorLabel.innerHTML += event;
+          if (errorLabel) errorLabel.innerHTML += JSON.stringify(event);
         });
         <% if (!htmlWebpackPlugin.options.noTheme) { %>
         try {var localTheme = localStorage.getItem('tw:theme');} catch (e) {}
