@@ -87,6 +87,8 @@ const persistThemeCustom = colors => {
     document.documentElement.style.setProperty('--motion-primary', evaluateCss(colors.primaryColor))
     document.documentElement.style.setProperty('--motion-primary-dark', evaluateCss(colors.primaryColorDark))
 
+    document.documentElement.style.setProperty('--paint-motion-primary', evaluateCss(colors.primaryColor))
+
     if (localStorage) localStorage.setItem("tw:accent:isCustom", true)
 
     window.Recolor = {primary: getComputedStyle(document.body).getPropertyValue('--motion-primary')}
