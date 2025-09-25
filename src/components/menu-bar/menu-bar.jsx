@@ -557,7 +557,7 @@ class MenuBar extends React.Component {
                                 <FormattedMessage
                                     defaultMessage="Settings"
                                     description="Text for settings dropdown menu"
-                                    id="tw.menuBar.settings"
+                                    id="gui.menuBar.settings"
                                 />
                             </div>
                             <MenuBarMenu
