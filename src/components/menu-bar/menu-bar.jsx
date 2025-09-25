@@ -28,6 +28,7 @@ import MenuBarHOC from '../../containers/menu-bar-hoc.jsx';
 
 import TWAccentThemeMenu from './tw-theme-accent.jsx';
 import TWGuiThemeMenu from './tw-theme-gui.jsx';
+import LanguageMenu from './language-menu.jsx';
 
 import FramerateChanger from '../../containers/tw-framerate-changer.jsx';
 import ChangeUsername from '../../containers/tw-change-username.jsx';
@@ -460,7 +461,7 @@ class MenuBar extends React.Component {
                                 onClick={this.props.onClickLogo}
                             />
                         </div>
-                        {(this.props.canChangeLanguage) && (<div
+                        {/*{(this.props.canChangeLanguage) && (<div
                             className={classNames(styles.menuBarItem, styles.hoverable, styles.languageMenu)}
                         >
                             <div>
@@ -479,7 +480,7 @@ class MenuBar extends React.Component {
                             </div>
                             <LanguageSelector label={this.props.intl.formatMessage(ariaMessages.language)} />
                         </div>)}
-                        {/* tw: theme toggler */}
+                        {/-* tw: theme toggler *-/}
                         {this.props.onClickTheme && (
                             <div
                                 className={classNames(styles.menuBarItem, styles.hoverable)}
@@ -492,7 +493,7 @@ class MenuBar extends React.Component {
                                     draggable={false}
                                 />
                             </div>
-                        )}
+                        )}*/}
                         {/* tw: display compile errors */}
                         {this.props.compileErrors.length > 0 && <div>
                             <div
@@ -566,6 +567,7 @@ class MenuBar extends React.Component {
                                 onRequestClose={this.props.onRequestCloseSettings}
                             >
                                 <MenuSection>
+                                    {this.props.canChangeLanguage && <LanguageMenu onRequestCloseSettings={this.props.onRequestCloseSettings} />}
                                     <TWGuiThemeMenu
                                         onChangeTheme={this.props.onClickTheme}
                                     />
