@@ -61,7 +61,7 @@ class VariableTab extends React.Component {
       final.push(
       <tr key={id}>
         <td className={styles.variableName}>
-          <span>{this.props.editingTarget.id === id ? this.props.editingTarget.sprite.name : id}</span>
+          <span>{this.props.editingTarget.id === id ? this.props.editingTarget.sprite.name : 'Clone ' + Object.keys(clones).indexOf(id)}</span>
         </td>
         <td className={styles.variableValue}>
           <span>{clone.value}</span>
