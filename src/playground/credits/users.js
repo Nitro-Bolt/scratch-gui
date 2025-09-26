@@ -102,7 +102,7 @@ const addonDevelopers = [
     },
     {
         userId: '9636514',
-        username: 'Tacodude7729'
+        username: 'Tacodiva7729'
     },
     {
         userId: '14792872',

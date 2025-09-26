@@ -9,7 +9,7 @@ const manifest = {
   "credits": [
     {
       "name": "Tacodiva",
-      "link": "https://scratch.mit.edu/users/Tacodude7729/"
+      "link": "https://scratch.mit.edu/users/Tacodiva7729/"
     }
   ],
   "enabledByDefault": false,
