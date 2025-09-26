@@ -74,7 +74,7 @@ class VariableTab extends React.Component {
   }
 
   renderLocalVariable() {
-    const variables = Object.values(this.props.editingTarget.variables)
+    const variables = Object.values(this.props.editingTarget.variables).filter(varr => varr.type === '' )
 
     let final = []
     if (variables.length) { 
