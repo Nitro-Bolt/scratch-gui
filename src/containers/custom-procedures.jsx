@@ -129,6 +129,7 @@ class CustomProcedures extends React.Component {
         this.setState({
             warp: this.mutationRoot.getWarp(),
             returns: this.mutationRoot.getReturns(),
+            isglobal: this.mutationRoot.getGlobal(),
             editing: this.mutationRoot.getEdited(),
             // sometimes color[0] exists but sometimes it doesnt
             // i can blame gsa for this or just do nothing about it :troll:
@@ -202,8 +203,9 @@ class CustomProcedures extends React.Component {
     }
     handleToggleGlobal () {
         if (this.mutationRoot) {
-            const newIsGlobal = !this.state.isglobal
-            this.setState({isglobal: newIsGlobal});
+            const newGlobal = !this.mutationRoot.getGlobal();
+            this.mutationRoot.setGlobal(newGlobal);
+            this.setState({isglobal: newGlobal});
         }
     }
     handleChangeType (value) {
