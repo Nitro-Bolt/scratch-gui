@@ -50,8 +50,7 @@ const manifest = {
       }
     ],
     "tags": [
-      "beta",
-      "new"
+      "beta"
     ],
     "enabledByDefault": false
   };

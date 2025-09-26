@@ -78,11 +78,13 @@ const newAddons = [
     'paint-tool-panel',
     'custom-web-font',
     'expanded-backpack',
-    'editor-create-music',
     'rename-broadcasts',
     'editor-block-chomping',
     'remove-logo',
-    'undo-redo-buttons'
+    'undo-redo-buttons',
+    'toolbox-category-drag',
+    'sounds-newgrounds-button',
+    'toolbox-full-blocks-on-hover'
 ];
 
 // eslint-disable-next-line import/no-commonjs

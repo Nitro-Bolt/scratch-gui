@@ -77,6 +77,9 @@ import _paint_tool_panel from "../addons/paint-tool-panel/_manifest_entry.js";
 import _remove_logo from "../addons/remove-logo/_manifest_entry.js";
 import _undo_redo_buttons from "../addons/undo-redo-buttons/_manifest_entry.js";
 import _reorder_custom_inputs from "../addons/reorder-custom-inputs/_manifest_entry.js";
+import _toolbox_category_drag from "../addons/toolbox-category-drag/_manifest_entry.js";
+import _sounds_newgrounds_button from "../addons/sounds-newgrounds-button/_manifest_entry.js";
+import _toolbox_full_blocks_on_hover from "../addons/toolbox-full-blocks-on-hover/_manifest_entry.js";
 
 export default {
   "cat-blocks": _cat_blocks,
@@ -158,4 +161,7 @@ export default {
   "remove-logo": _remove_logo,
   "undo-redo-buttons": _undo_redo_buttons,
   "reorder-custom-inputs": _reorder_custom_inputs,
+  "toolbox-category-drag": _toolbox_category_drag,
+  "sounds-newgrounds-button": _sounds_newgrounds_button,
+  "toolbox-full-blocks-on-hover": _toolbox_full_blocks_on_hover,
 };

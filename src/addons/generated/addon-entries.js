@@ -79,4 +79,7 @@ export default {
   "remove-logo": () => import(/* webpackChunkName: "addon-entry-paint-tool-panel" */ "../addons/remove-logo/_runtime_entry.js"),
   "undo-redo-buttons": () => import(/* webpackChunkName: "addon-entry-paint-tool-panel" */ "../addons/undo-redo-buttons/_runtime_entry.js"),
   "reorder-custom-inputs": () => import(/* webpackChunkName: "addon-entry-reorder-custom-inputs" */ "../addons/reorder-custom-inputs/_runtime_entry.js"),
+  "toolbox-category-drag": () => import(/* webpackChunkName: "addon-entry-toolbox-category-drag" */ "../addons/toolbox-category-drag/_runtime_entry.js"),
+  "sounds-newgrounds-button": () => import(/* webpackChunkName: "addon-entry-sounds-newgrounds-button" */ "../addons/sounds-newgrounds-button/_runtime_entry.js"),
+  "toolbox-full-blocks-on-hover": () => import(/* webpackChunkName: "addon-entry-toolbox-full-blocks-on-hover" */ "../addons/toolbox-full-blocks-on-hover/_runtime_entry.js"),
 };
