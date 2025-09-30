@@ -82,4 +82,5 @@ export default {
   "toolbox-category-drag": () => import(/* webpackChunkName: "addon-entry-toolbox-category-drag" */ "../addons/toolbox-category-drag/_runtime_entry.js"),
   "sounds-newgrounds-button": () => import(/* webpackChunkName: "addon-entry-sounds-newgrounds-button" */ "../addons/sounds-newgrounds-button/_runtime_entry.js"),
   "toolbox-full-blocks-on-hover": () => import(/* webpackChunkName: "addon-entry-toolbox-full-blocks-on-hover" */ "../addons/toolbox-full-blocks-on-hover/_runtime_entry.js"),
+  "merge-costumes": () => import(/* webpackChunkName: "addon-entry-merge-costumes" */ "../addons/merge-costumes/_runtime_entry.js"),
 };

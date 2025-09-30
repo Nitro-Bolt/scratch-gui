@@ -80,6 +80,7 @@ import _reorder_custom_inputs from "../addons/reorder-custom-inputs/_manifest_en
 import _toolbox_category_drag from "../addons/toolbox-category-drag/_manifest_entry.js";
 import _sounds_newgrounds_button from "../addons/sounds-newgrounds-button/_manifest_entry.js";
 import _toolbox_full_blocks_on_hover from "../addons/toolbox-full-blocks-on-hover/_manifest_entry.js";
+import _merge_costumes from "../addons/merge-costumes/_manifest_entry.js";
 
 export default {
   "cat-blocks": _cat_blocks,
@@ -164,4 +165,5 @@ export default {
   "toolbox-category-drag": _toolbox_category_drag,
   "sounds-newgrounds-button": _sounds_newgrounds_button,
   "toolbox-full-blocks-on-hover": _toolbox_full_blocks_on_hover,
+  "merge-costumes": _merge_costumes,
 };

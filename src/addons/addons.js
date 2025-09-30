@@ -84,7 +84,8 @@ const newAddons = [
     'undo-redo-buttons',
     'toolbox-category-drag',
     'sounds-newgrounds-button',
-    'toolbox-full-blocks-on-hover'
+    'toolbox-full-blocks-on-hover',
+    'merge-costumes'
 ];
 
 // eslint-disable-next-line import/no-commonjs
