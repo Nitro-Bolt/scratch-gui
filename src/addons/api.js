@@ -693,6 +693,31 @@ class Self extends EventTargetShim {
     }
 }
 
+class TempStorage extends EventTargetShim {
+    constructor () {
+        super();
+        this.vars = {}
+    }
+
+    get(id) {
+        return this.vars[id]
+    }
+
+    set(id, val) {
+        this.vars[id] = val
+    }
+
+    remove(id) {
+        delete(this.vars[id])
+    }
+
+    clear() {
+        for (const variable in this.vars){
+            delete(variable)
+        }
+    }
+}
+
 class AddonRunner {
     constructor (id) {
         AddonRunner.instances.push(this);
@@ -714,7 +739,8 @@ class AddonRunner {
             addon: {
                 tab: new Tab(id),
                 settings: new Settings(id, manifest),
-                self: new Self(id, this.getResource.bind(this))
+                self: new Self(id, this.getResource.bind(this)),
+                tempStorage: new TempStorage()
             },
             msg: this.msg.bind(this),
             safeMsg: this.safeMsg.bind(this)

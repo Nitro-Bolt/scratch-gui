@@ -372,23 +372,6 @@ class SpriteInfo extends React.Component {
                                 />
                             </Label>
                         </div>*/}
-                        <div className={classNames(styles.group, styles.largerInput)}>
-                            <Label
-                                secondary
-                                above={labelAbove}
-                                text={volumeLabel}
-                            >
-                                <BufferedInput
-                                    small
-                                    disabled={this.props.disabled}
-                                    label={volumeLabel}
-                                    tabIndex="0"
-                                    type="text"
-                                    value={this.props.disabled ? '' : Math.round(this.props.volume)}
-                                    onSubmit={this.props.onChangeVolume}
-                                />
-                            </Label>
-                        </div>
                     </div>{/*
                     <div className={classNames(styles.group, styles.largerInput)}>
                         <Label
