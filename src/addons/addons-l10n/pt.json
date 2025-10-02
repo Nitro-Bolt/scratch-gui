@@ -184,6 +184,8 @@
     "block-switching/sound_playuntildone": "toque o som até o fim",
     "block-switching/sound_seteffectto": "mude o efeito para",
     "block-switching/sound_setvolumeto": "mude o volume para",
+    "copy-reporter/copy-to-clipboard": "Copiar",
+    "copy-reporter/copy-value": "Copiar valor",
     "blocks2image/error_blocks_not_added": "Adicione blocos à área de trabalho!",
     "blocks2image/export_all_to_PNG": "Exportar tudo como PNG",
     "blocks2image/export_all_to_SVG": "Exportar tudo como SVG",

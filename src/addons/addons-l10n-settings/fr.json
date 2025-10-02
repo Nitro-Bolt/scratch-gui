@@ -317,6 +317,8 @@
     "fullscreen/@settings-name-hideToolbar": "Masquer la bar d'outils en grand écran",
     "hide-stage/@description": "Ajoute un bouton à côté des boutons \"petite scène\" et \"grande scène\" qui cache la scène et la liste des sprites, rendant la zone de code plus grande.",
     "hide-stage/@name": "Cacher la scène et la liste des sprites",
+    "copy-reporter/@description": "Ajoute une option pour copier les valeurs affichées par les moniteurs de variables (à partir du menu contextuel du clic droit) et les bulles des blocs rapporteurs.",
+    "copy-reporter/@name": "Copier la valeur du bloc rapporteur",
     "editor-stepping/@description": "Ajoute un contour bleu sur les blocs qui sont actuellement exécutés dans un projet.",
     "editor-stepping/@name": "Bordure du bloc executé",
     "editor-stepping/@settings-name-highlight-color": "Couleurs de surbrillance"

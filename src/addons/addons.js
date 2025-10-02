@@ -85,7 +85,8 @@ const newAddons = [
     'toolbox-category-drag',
     'sounds-newgrounds-button',
     'toolbox-full-blocks-on-hover',
-    'merge-costumes'
+    'merge-costumes',
+    'copy-reporter'
 ];
 
 // eslint-disable-next-line import/no-commonjs

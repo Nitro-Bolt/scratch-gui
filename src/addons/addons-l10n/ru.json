@@ -214,6 +214,8 @@
     "block-switching/sound_playuntildone": "проигрывать до конца",
     "block-switching/sound_seteffectto": "задать эффект",
     "block-switching/sound_setvolumeto": "задать громкость",
+    "copy-reporter/copy-to-clipboard": "Копировать",
+    "copy-reporter/copy-value": "Копировать значение",
     "blocks2image/error_blocks_not_added": "Добавить блоки на рабочую область!",
     "blocks2image/export_all_to_PNG": "Экспорт всех блоков в формате PNG",
     "blocks2image/export_all_to_SVG": "Экспорт всех блоков в SVG",

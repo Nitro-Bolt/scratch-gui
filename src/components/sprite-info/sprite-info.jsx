@@ -355,6 +355,23 @@ class SpriteInfo extends React.Component {
                                 />
                             </div>
                         </div>
+                        <div className={classNames(styles.group, styles.largerInput)}>
+                            <Label
+                                secondary
+                                above={labelAbove}
+                                text={layerLabel}
+                            >
+                                <BufferedInput
+                                    small
+                                    disabled={this.props.disabled}
+                                    label={layerLabel}
+                                    tabIndex="0"
+                                    type="text"
+                                    value={this.props.disabled ? '' : Math.round(this.props.layer())}
+                                    onSubmit={this.props.onChangeLayer}
+                                />
+                            </Label>
+                        </div>
                     </div>{/*
                     <div className={classNames(styles.group, styles.largerInput)}>
                         <Label
@@ -370,23 +387,6 @@ class SpriteInfo extends React.Component {
                                 type="text"
                                 value={this.props.disabled ? '' : Math.round(this.props.volume)}
                                 onSubmit={this.props.onChangeVolume}
-                            />
-                        </Label>
-                    </div>
-                    <div className={classNames(styles.group, styles.largerInput)}>
-                        <Label
-                            secondary
-                            above={labelAbove}
-                            text={layerLabel}
-                        >
-                            <BufferedInput
-                                small
-                                disabled={this.props.disabled}
-                                label={layerLabel}
-                                tabIndex="0"
-                                type="text"
-                                value={this.props.disabled ? '' : Math.round(this.props.layer)}
-                                onSubmit={this.props.onChangeLayer}
                             />
                         </Label>
                     </div>*/}
@@ -429,10 +429,7 @@ SpriteInfo.propTypes = {
         PropTypes.string,
         PropTypes.number
     ]),
-    layer: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-    ]),
+    layer: PropTypes.func,
     stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
     visible: PropTypes.bool,
     draggable: PropTypes.bool,

@@ -203,6 +203,8 @@
     "block-switching/sound_playuntildone": "start en wacht",
     "block-switching/sound_seteffectto": "maak effect",
     "block-switching/sound_setvolumeto": "zet volume",
+    "copy-reporter/copy-to-clipboard": "Kopiëren",
+    "copy-reporter/copy-value": "waarde kopiëren",
     "blocks2image/error_blocks_not_added": "Voeg blokken toe aan werkplek!",
     "blocks2image/export_all_to_PNG": "Alles exporteren als PNG",
     "blocks2image/export_all_to_SVG": "Alles exporteren als SVG",

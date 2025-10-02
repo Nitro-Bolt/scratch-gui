@@ -81,6 +81,7 @@ import _toolbox_category_drag from "../addons/toolbox-category-drag/_manifest_en
 import _sounds_newgrounds_button from "../addons/sounds-newgrounds-button/_manifest_entry.js";
 import _toolbox_full_blocks_on_hover from "../addons/toolbox-full-blocks-on-hover/_manifest_entry.js";
 import _merge_costumes from "../addons/merge-costumes/_manifest_entry.js";
+import _copy_reporter from "../addons/copy-reporter/_manifest_entry.js";
 
 export default {
   "cat-blocks": _cat_blocks,
@@ -166,4 +167,5 @@ export default {
   "sounds-newgrounds-button": _sounds_newgrounds_button,
   "toolbox-full-blocks-on-hover": _toolbox_full_blocks_on_hover,
   "merge-costumes": _merge_costumes,
+  "copy-reporter": _copy_reporter,
 };

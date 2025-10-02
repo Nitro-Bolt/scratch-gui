@@ -342,6 +342,8 @@
     "fullscreen/@settings-name-hideToolbar": "Eszköztár elrejtése teljes képernyőben",
     "hide-stage/@description": "Egy gombot ad hozzá a \"kicsi színpad\" és \"nagy színpad\" gombok mellé, ami a színpad és a szereplőmező elrejtésével jelentős mértékben megnöveli a kódterületet.",
     "hide-stage/@name": "A Színpad és a Szereplőmező elrejtése",
+    "copy-reporter/@description": "Lehetőséget ad az értékblokkok felugró lufijainak és a változómonitorok értékeinek kimásolására (jobb egeres helyi menüből érhető el)",
+    "copy-reporter/@name": "Értékblokkok értékének másolása",
     "editor-stepping/@description": "Hozzáad egy színes körvonalat azon blokkokhoz, amik éppen futnak egy projektben.",
     "editor-stepping/@name": "Futó blokkok körvonalai",
     "editor-stepping/@settings-name-highlight-color": "Kiemelés színe"

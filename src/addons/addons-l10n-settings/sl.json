@@ -319,6 +319,8 @@
     "fullscreen/@settings-name-hideToolbar": "Skrij orodno vrstico v celozaslonskem načinu",
     "hide-stage/@description": "Zraven gumbov \"manjši oder\" in \"večji oder\" doda gumb, ki skrije oder in seznam figur, kar zelo poveča prostor za kodo.",
     "hide-stage/@name": "Skrij oder in seznam figur",
+    "copy-reporter/@description": "Doda možnost kopiranja vrednosti spremenljivk na odru (v meniju desne miškine tipke) in oblačkov okroglih blokov.",
+    "copy-reporter/@name": "Kopiraj vrednosti okroglih blokov",
     "editor-stepping/@description": "Doda barven okvir blokom, ki se v projektu trenutno izvajajo.",
     "editor-stepping/@name": "Obroba trenutno delujočih blokov",
     "editor-stepping/@settings-name-highlight-color": "Barva okvirja"

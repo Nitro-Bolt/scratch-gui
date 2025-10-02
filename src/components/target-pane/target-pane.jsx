@@ -126,7 +126,10 @@ const spriteShape = PropTypes.shape({
     name: PropTypes.string,
     order: PropTypes.number,
     size: PropTypes.number,
-    layer: PropTypes.number,
+    layer: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.number
+    ]),
     volume: PropTypes.number,
     visibility: PropTypes.bool,
     draggability: PropTypes.bool,

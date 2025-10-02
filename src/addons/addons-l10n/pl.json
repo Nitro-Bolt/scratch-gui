@@ -210,6 +210,8 @@
     "block-switching/sound_playuntildone": "graj aż się skończy",
     "block-switching/sound_seteffectto": "ustaw efekt",
     "block-switching/sound_setvolumeto": "ustaw głośność",
+    "copy-reporter/copy-to-clipboard": "Skopiuj",
+    "copy-reporter/copy-value": "skopiuj wartość",
     "blocks2image/error_blocks_not_added": "Dodaj bloki do przestrzeni roboczej!",
     "blocks2image/export_all_to_PNG": "Eksportuj wszystko jako PNG",
     "blocks2image/export_all_to_SVG": "Eksportuj wszystko jako SVG",

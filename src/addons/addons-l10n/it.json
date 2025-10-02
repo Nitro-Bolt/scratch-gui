@@ -211,6 +211,8 @@
     "block-switching/sound_playuntildone": "riproduci suono e attendi la fine",
     "block-switching/sound_seteffectto": "porta effetto a",
     "block-switching/sound_setvolumeto": "porta volume a",
+    "copy-reporter/copy-to-clipboard": "Copia",
+    "copy-reporter/copy-value": "copia valore",
     "blocks2image/error_blocks_not_added": "Aggiungi i blocchi al tuo workspace!",
     "blocks2image/export_all_to_PNG": "Esporta tutto come PNG",
     "blocks2image/export_all_to_SVG": "Esporta tutto come SVG",

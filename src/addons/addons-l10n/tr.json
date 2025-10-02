@@ -215,6 +215,8 @@
     "block-switching/sound_playuntildone": "bitene kadar çal",
     "block-switching/sound_seteffectto": "efekti ayarla",
     "block-switching/sound_setvolumeto": "sesi ayarla",
+    "copy-reporter/copy-to-clipboard": "Kopyala",
+    "copy-reporter/copy-value": "değeri kopyala",
     "blocks2image/error_blocks_not_added": "Çalışma alanına blok ekleyin!",
     "blocks2image/export_all_to_PNG": "Her şeyi PNG olarak dışa aktar",
     "blocks2image/export_all_to_SVG": "Her şeyi SVG olarak dışa aktar",

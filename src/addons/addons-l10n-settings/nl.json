@@ -342,6 +342,8 @@
     "fullscreen/@settings-name-hideToolbar": "Werkbalk verbergen in volledig scherm",
     "hide-stage/@description": "Voegt een knop naast de knoppen \"speelveld verkleinen\" en \"speelveld vergroten\" toe die het speelveld en spritevenster verbergt, wat het codegebied veel groter maakt.",
     "hide-stage/@name": "Speelveld en spritevenster verbergen",
+    "copy-reporter/@description": "Geeft je de mogelijkheid om waarden die worden weergegeven door variabelemonitoren (in het rechterklikmenu) en waardeballonnen te kopiëren.",
+    "copy-reporter/@name": "Waarden van waardeblokken kopiëren",
     "editor-stepping/@description": "Voegt een gekleurde markering toe aan de blokken die op dit moment worden uitgevoerd in een project.",
     "editor-stepping/@name": "Rand om uitvoerende blokken",
     "editor-stepping/@settings-name-highlight-color": "Markeringskleur"

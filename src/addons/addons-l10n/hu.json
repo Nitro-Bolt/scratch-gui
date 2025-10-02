@@ -215,6 +215,8 @@
     "block-switching/sound_playuntildone": "játszd végig",
     "block-switching/sound_seteffectto": "effekt legyen",
     "block-switching/sound_setvolumeto": "hangerő legyen",
+    "copy-reporter/copy-to-clipboard": "Másolás",
+    "copy-reporter/copy-value": "érték kimásolása",
     "blocks2image/error_blocks_not_added": "Blokk hozzáadása a munkaterülethez!",
     "blocks2image/export_all_to_PNG": "Minden exportálása PNG-ként",
     "blocks2image/export_all_to_SVG": "Minden exportálása SVG-ként",

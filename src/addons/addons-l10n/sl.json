@@ -207,6 +207,8 @@
     "block-switching/sound_playuntildone": "predvajaj do konca",
     "block-switching/sound_seteffectto": "nastavi učinek",
     "block-switching/sound_setvolumeto": "nastavi glasnost",
+    "copy-reporter/copy-to-clipboard": "Kopiraj",
+    "copy-reporter/copy-value": "kopiraj vrednost",
     "blocks2image/error_blocks_not_added": "Dodajte bloke v delovni prostor!",
     "blocks2image/export_all_to_PNG": "Izvozi vse kot PNG",
     "blocks2image/export_all_to_SVG": "Izvozi vse kot SVG",

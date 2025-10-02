@@ -344,6 +344,8 @@
     "fullscreen/@settings-name-hideToolbar": "Titelleiste im Vollbild ausblenden",
     "hide-stage/@description": "Fügt einen Knopf neben dem \"Kleine Bühne\"-Knopf hinzu, mit dem du die Bühne und die Figurenleiste vollständig ausblenden und damit den Codebereich viel größer machen kannst.",
     "hide-stage/@name": "Bühne und Figurenleiste ausblenden",
+    "copy-reporter/@description": "Ergänzt eine Option zum Kopieren der Werte in Variablenanzeigen auf der Bühne (im Rechtsklick-Kontextmenü) und in Sprechblasen von Variablenblöcken.",
+    "copy-reporter/@name": "Variablenwerte kopieren",
     "editor-stepping/@description": "Fügt eine farbige Markierung zu den Blöcken, die gerade in einem Projekt ausgeführt werden, hinzu.",
     "editor-stepping/@name": "Markierung für ausgeführte Blöcke",
     "editor-stepping/@settings-name-highlight-color": "Markierungsfarbe"

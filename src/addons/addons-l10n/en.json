@@ -261,6 +261,8 @@
     "block-switching/event_whenkeypressed": "when key pressed",
     "block-switching/event_whenkeyhit": "when key hit",
     "block-switching/event_whentouchingobject": "when touching object",
+    "copy-reporter/copy-to-clipboard": "Copy",
+    "copy-reporter/copy-value": "copy value",
     "blocks2image/error_blocks_not_added": "Add blocks to workspace!",
     "blocks2image/export_all_to_PNG": "Export all as PNG",
     "blocks2image/export_all_to_SVG": "Export all as SVG",
