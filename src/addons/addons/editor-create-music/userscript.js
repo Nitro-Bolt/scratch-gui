@@ -5,7 +5,7 @@ export default async function ({ addon, console }) {
 
     //variables["dinosaurmod_musicEditor_data"] = defaultEditor
 
-    setDefaultEditor(value) {
+    function setDefaultEditor(value) {
         const defaultEditor = value
         getTempStorage().set("dinosaurmod_musicEditor_data", defaultEditor)// legacy message: node.js.yml doesn't like variables and im new at addons, so this will be used.
         localStorage.setItem("dinosaurmod_musicEditor_data", defaultEditor)// ill keep this so it saves
