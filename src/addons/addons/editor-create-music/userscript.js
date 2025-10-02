@@ -11,8 +11,8 @@ export default async function ({ addon, console }) {
         localStorage.setItem("dinosaurmod_musicEditor_data", defaultEditor)// ill keep this so it saves
     }
 
-    addon.settings.addEventListener("change", (() => {setDefaultEditor(addon.settings.get("defaulteditor"))}));
-    addon.self.addEventListener("disabled", (() => {setDefaultEditor("dinobox")}));
-    addon.self.addEventListener("reenabled", (() => {setDefaultEditor(addon.settings.get("defaulteditor"))}));
+    addon.settings.addEventListener("change", () => {setDefaultEditor(addon.settings.get("defaulteditor"))});
+    addon.self.addEventListener("disabled", () => {setDefaultEditor("dinobox")});
+    addon.self.addEventListener("reenabled", () => {setDefaultEditor(addon.settings.get("defaulteditor"))});
     setDefaultEditor(addon.settings.get("defaulteditor"));
 }
