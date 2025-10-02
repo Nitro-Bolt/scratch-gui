@@ -712,9 +712,10 @@ class TempStorage extends EventTargetShim {
     }
 
     clear() {
-        for (const variable in this.vars){
+        /*for (const variable in this.vars){
             delete(variable)
-        }
+        }*/
+        this.vars = {}
     }
 }
 
