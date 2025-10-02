@@ -355,7 +355,7 @@ class SpriteInfo extends React.Component {
                                 />
                             </div>
                         </div>
-                        <div className={classNames(styles.group, styles.largerInput)}>
+                        {/*<div className={classNames(styles.group, styles.largerInput)}>
                             <Label
                                 secondary
                                 above={labelAbove}
@@ -369,6 +369,23 @@ class SpriteInfo extends React.Component {
                                     type="text"
                                     value={this.props.disabled ? '' : Math.round(typeof this.props.layer === "function" ? this.props.layer() : this.props.layer)}
                                     onSubmit={this.props.onChangeLayer}
+                                />
+                            </Label>
+                        </div>*/}
+                        <div className={classNames(styles.group, styles.largerInput)}>
+                            <Label
+                                secondary
+                                above={labelAbove}
+                                text={volumeLabel}
+                            >
+                                <BufferedInput
+                                    small
+                                    disabled={this.props.disabled}
+                                    label={volumeLabel}
+                                    tabIndex="0"
+                                    type="text"
+                                    value={this.props.disabled ? '' : Math.round(this.props.volume)}
+                                    onSubmit={this.props.onChangeVolume}
                                 />
                             </Label>
                         </div>
