@@ -41,7 +41,7 @@ import {
 import { setRestore } from '../reducers/restore-deletion';
 import { showStandardAlert, closeAlertWithId } from '../reducers/alerts';
 
-import tempStorageClass, { savedTempStorage } from '../addons/addons/editor-create-music/temp-storage.js';
+import savedTempStorage from '../addons/addons/editor-create-music/temp-storage.js';
 
 class SoundTab extends React.Component {
     constructor(props) {
@@ -139,7 +139,7 @@ class SoundTab extends React.Component {
 
     async handleCreateSound() {
         const savedDefaultEditor = localStorage.getItem("dinosaurmod_musicEditor_data") !== null ? localStorage.getItem("dinosaurmod_musicEditor_data") : "dinobox"
-        const defaultEditor = savedTempStorage !== null ? new tempStorageClass(savedTempStorage).tempStorage : savedDefaultEditor //idk what im doing i just hope it works
+        const defaultEditor = savedTempStorage !== null ? savedTempStorage.get("dinosaurmod_musicEditor_data") : savedDefaultEditor //idk what im doing i just hope it works
         switch (String(defaultEditor).toLowerCase()) {
             case 'dinobox':
                 window.open("https://dinobox.vercel.app/?dinosaurmod&", "_blank")
