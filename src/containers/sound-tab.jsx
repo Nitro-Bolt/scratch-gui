@@ -41,7 +41,7 @@ import {
 import { setRestore } from '../reducers/restore-deletion';
 import { showStandardAlert, closeAlertWithId } from '../reducers/alerts';
 
-import savedTempStorage from '../addons/addons/editor-create-music/temp-storage.js';
+import savedTempStorage, { getTempStorage } from '../addons/addons/editor-create-music/temp-storage.js';
 
 class SoundTab extends React.Component {
     constructor(props) {
@@ -57,7 +57,8 @@ class SoundTab extends React.Component {
             'handleFileUploadClick',
             'handleSoundUpload',
             'handleDrop',
-            'setFileInput'
+            'setFileInput',
+            'handle__INTERNAL__createSound__GET_DEFAULT_EDITOR'
         ]);
         this.state = { selectedSoundIndex: 0 };
     }
@@ -80,6 +81,12 @@ class SoundTab extends React.Component {
         } else if (this.state.selectedSoundIndex > target.sounds.length - 1) {
             this.setState({ selectedSoundIndex: Math.max(target.sounds.length - 1, 0) });
         }
+    }
+
+    handle__INTERNAL__createSound__GET_DEFAULT_EDITOR() {
+        const savedDefaultEditor = localStorage.getItem("dinosaurmod_musicEditor_data") !== null ? localStorage.getItem("dinosaurmod_musicEditor_data") : "dinobox"
+        const defaultEditor = savedTempStorage !== null ? getTempStorage().get("dinosaurmod_musicEditor_data") : savedDefaultEditor //idk what im doing i just hope it works
+        return String(defaultEditor).toLowerCase()
     }
 
     handleSelectSound(soundIndex) {
@@ -138,9 +145,7 @@ class SoundTab extends React.Component {
     }
 
     async handleCreateSound() {
-        const savedDefaultEditor = localStorage.getItem("dinosaurmod_musicEditor_data") !== null ? localStorage.getItem("dinosaurmod_musicEditor_data") : "dinobox"
-        const defaultEditor = savedTempStorage !== null ? savedTempStorage.get("dinosaurmod_musicEditor_data") : savedDefaultEditor //idk what im doing i just hope it works
-        switch (String(defaultEditor).toLowerCase()) {
+        switch (this.handle__INTERNAL__createSound__GET_DEFAULT_EDITOR()) {
             case 'dinobox':
                 window.open("https://dinobox.vercel.app/?dinosaurmod&", "_blank")
                 break;

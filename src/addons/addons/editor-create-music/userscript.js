@@ -1,11 +1,18 @@
-import savedTempStorage, { setTempStorage } from './temp-storage.js';
+import { setTempStorage, getTempStorage } from './temp-storage.js';
 
 export default async function ({ addon, console }) {
-    const tempStorage = addon.tempStorage
-    setTempStorage(tempStorage)
+    setTempStorage(addon.tempStorage)
 
-    const defaultEditor = addon.settings.get("defaulteditor")
-    tempStorage.set("dinosaurmod_musicEditor_data", defaultEditor)// legacy message: node.js.yml doesn't like variables and im new at addons, so this will be used.
-    localStorage.setItem("dinosaurmod_musicEditor_data", defaultEditor)// ill keep this so it saves
     //variables["dinosaurmod_musicEditor_data"] = defaultEditor
+
+    setDefaultEditor(value) {
+        const defaultEditor = value
+        getTempStorage().set("dinosaurmod_musicEditor_data", defaultEditor)// legacy message: node.js.yml doesn't like variables and im new at addons, so this will be used.
+        localStorage.setItem("dinosaurmod_musicEditor_data", defaultEditor)// ill keep this so it saves
+    }
+
+    addon.settings.addEventListener("change", (() => {setDefaultEditor(addon.settings.get("defaulteditor"))}));
+    addon.self.addEventListener("disabled", (() => {setDefaultEditor("dinobox")}));
+    addon.self.addEventListener("reenabled", (() => {setDefaultEditor(addon.settings.get("defaulteditor"))}));
+    setDefaultEditor(addon.settings.get("defaulteditor"));
 }
