@@ -72,7 +72,10 @@ class TargetPane extends React.Component {
         this.props.vm.postSpriteInfo({size});
     }
     async handleChangeSpriteVolume (volume) {
-        while (!this.props.vm || !this.props.vm.postSpriteInfo) {
+        while (!this.props.vm) {
+            await new Promise(r => {setTimeout(r, 100)})
+        }
+        while (typeof this.props.vm.postSpriteInfo !== "undefined") {
             await new Promise(r => {setTimeout(r, 100)})
         }
         this.props.vm.postSpriteInfo({volume});
