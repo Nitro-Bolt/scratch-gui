@@ -367,7 +367,7 @@ class SpriteInfo extends React.Component {
                                     label={layerLabel}
                                     tabIndex="0"
                                     type="text"
-                                    value={this.props.disabled ? '' : Math.round(this.props.layer())}
+                                    value={this.props.disabled ? '' : Math.round(typeof this.props.layer === "function" ? this.props.layer() : this.props.layer)}
                                     onSubmit={this.props.onChangeLayer}
                                 />
                             </Label>
@@ -429,7 +429,11 @@ SpriteInfo.propTypes = {
         PropTypes.string,
         PropTypes.number
     ]),
-    layer: PropTypes.func,
+    layer: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.func
+    ]),
     stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
     visible: PropTypes.bool,
     draggable: PropTypes.bool,
