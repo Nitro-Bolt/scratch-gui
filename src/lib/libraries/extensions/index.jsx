@@ -617,25 +617,6 @@ const menuItems = [
         featured: true
     },
     {
-        name: 'JSON',
-        extensionId: 'jgJSON',
-        iconURL: jgJSONExtensionIcon,
-        insetIconURL: PenguinmodThumb,
-        customInsetColor: '#00c3ff',
-        tags: ['penguinmod', 'datamgmt'],
-        description: 'Blocks for handling JSON objects and Arrays.',
-        featured: true
-    },
-    {
-        name: 'Swift JSON',
-        extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/JSON-Array.js',
-        iconURL: 'https://studio.penguinmod.com/static/assets/e48e8bc4ca2913e19da20f085e9adbe9.svg',
-        tags: ['penguinmod', 'datamgmt'],
-        extDeveloper: 'SharkPool',
-        description: 'POTENTIALLY DANGEROUS, but faster extension for handling JSON objects and arrays. Recommended if you are heavily using JSON several times in a project.',
-        featured: true
-    },
-    {
         name: 'Particle Engine',
         extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/Particle-Engine.js',
         iconURL: 'https://studio.penguinmod.com/static/assets/bd055c3853854218f060871e694b16f7.svg',
@@ -848,6 +829,14 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'SharkPool\'s Temporary Variables',
+        extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/Temporary-Variables.js',
+        iconURL: spTempVarsIcon,
+        tags: ['penguinmod', 'datamgmt'],
+        description: 'Create temporary runtime, threaded, sprite & scoped variables.',
+        featured: true
+    },
+    {
         name: 'TurboWarp Temporary Variables',
         extensionId: 'lmsTempVars2',
         iconURL: 'https://studio.penguinmod.com/static/assets/cf21e9b36c0dfd5debc399d6fbf5d2c9.svg',
@@ -855,6 +844,27 @@ const menuItems = [
         description: 'Create disposable runtime or thread variables.',
         insetIconURL: turbowarpIcon,
         credits: 'LilyMakesThings',
+        featured: true
+    },
+    {
+        name: 'JSON',
+        extensionId: 'jgJSON',
+        iconURL: jgJSONExtensionIcon,
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
+        tags: ['penguinmod', 'datamgmt'],
+        description: 'Blocks for handling JSON objects and Arrays.',
+        featured: true
+    },
+    {
+        name: 'Swift JSON',
+        extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/JSON-Array.js',
+        iconURL: 'https://studio.penguinmod.com/static/assets/e48e8bc4ca2913e19da20f085e9adbe9.svg',
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
+        tags: ['penguinmod', 'datamgmt'],
+        extDeveloper: 'SharkPool',
+        description: 'FAST extension for handling JSON objects and arrays efficiently. Recommended if you are heavily using JSON several times in a project.',
         featured: true
     },
     {
@@ -1250,6 +1260,8 @@ const menuItems = [
         tags: ['penguinmod', 'hardware'],
         extensionId: 'sharkpoolPrinting',
         iconURL: 'https://studio.penguinmod.com/static/assets/1a086f192347214d507e8373d05481bd.svg',
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
         description: 'Allows you to show a dialog for printing text, images, and custom HTML to a printer.',
         featured: true
     },
@@ -1353,14 +1365,29 @@ const menuItems = [
         extensionId: 'jwArray',
         iconURL: 'https://studio.penguinmod.com/static/assets/21a46a49b55befa73d6b8352e2795d6f.svg',
         tags: ['penguinmod', 'datamgmt'],
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
         description: 'Store data efficiently in multi-purpose arrays.',
         extDeveloper: 'jwklong',
+        featured: true
+    },
+    {
+        name: 'Objects',
+        extensionId: 'https://extensions.penguinmod.com/extensions/DogeisCut/dogeiscutObject.js',
+        iconURL: 'https://extensions.penguinmod.com/images/DogeisCut/dogeiscutObject.svg',
+        tags: ['penguinmod', 'datamgmt'],
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
+        description: 'Store data efficiently in multi-purpose objects.',
+        extDeveloper: 'DogeisCut',
         featured: true
     },
     {
         name: 'Targets',
         extensionId: 'jwTargets',
         iconURL: 'https://studio.penguinmod.com/static/assets/174cbb7cc72418e5f095e0b734ceed1d.svg',
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
         tags: ['penguinmod'],
         description: 'Direct access to sprites and their clones.',
         extDeveloper: 'jwklong',
@@ -1370,6 +1397,8 @@ const menuItems = [
         name: 'Infinity',
         extensionId: 'jwNum',
         iconURL: 'https://studio.penguinmod.com/static/assets/03562df738acb5b29670d58970eb432f.svg',
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
         tags: ['penguinmod', 'math'],
         description: 'Advanced number type capable of really big numbers.',
         extDeveloper: 'jwklong',
@@ -1380,6 +1409,8 @@ const menuItems = [
         name: 'Color',
         extensionId: 'jwColor',
         iconURL: 'https://studio.penguinmod.com/static/assets/88ab038784badd192df6bd931d7c2e40.svg',
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
         tags: ['penguinmod', 'graphics'],
         description: 'Utilities for anything involving colors.',
         extDeveloper: 'jwklong',
@@ -1389,6 +1420,8 @@ const menuItems = [
         name: 'Vector',
         extensionId: 'jwVector',
         iconURL: 'https://studio.penguinmod.com/static/assets/3b0c388c2cf1462401585224ffe2f077.svg',
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
         tags: ['penguinmod', 'math'],
         description: 'Vector type for calculating with X and Y coordinates.',
         extDeveloper: 'jwklong',
@@ -1398,8 +1431,21 @@ const menuItems = [
         name: 'Lambda',
         extensionId: 'jwLambda',
         iconURL: 'https://studio.penguinmod.com/static/assets/15a7b793110951cfef352478c2d2642d.svg',
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
         tags: ['penguinmod'],
         description: 'Create anonymous functions with arguments and execute them.',
+        extDeveloper: 'jwklong',
+        featured: true
+    },
+    {
+        name: 'Scope',
+        extensionId: 'jwScope',
+        iconURL: 'https://studio.penguinmod.com/static/assets/2c3b7928d26e6a043141e479a494d47e.svg',
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
+        tags: ['penguinmod'],
+        description: 'Temporary variables based on the block stack. (extra blocks included if Array extension is added)',
         extDeveloper: 'jwklong',
         featured: true
     },
