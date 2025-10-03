@@ -831,7 +831,7 @@ const menuItems = [
     {
         name: 'SharkPool\'s Temporary Variables',
         extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/Temporary-Variables.js',
-        iconURL: spTempVarsIcon,
+        iconURL: 'https://studio.penguinmod.com/static/assets/1505a7fe5cdea368a3e32622c3e334f1.svg',
         tags: ['penguinmod', 'datamgmt'],
         description: 'Create temporary runtime, threaded, sprite & scoped variables.',
         featured: true
