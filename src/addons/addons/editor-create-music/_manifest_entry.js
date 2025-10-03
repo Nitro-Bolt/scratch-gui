@@ -15,13 +15,6 @@ const manifest = {
         "url": "userscript.js"
       }
     ],
-    "info": [
-      {
-        "type": "notice",
-        "text": "This Addon is in beta. You have to refresh the page for this addon to work.",
-        "id": "betaNotice"
-      }
-    ],
     "settings": [
       {
         "dynamic": true,
@@ -49,9 +42,7 @@ const manifest = {
         "default": "dinobox"
       }
     ],
-    "tags": [
-      "beta"
-    ],
+    "tags": [],
     "enabledByDefault": false,
     "dynamicDisable": true
   };
