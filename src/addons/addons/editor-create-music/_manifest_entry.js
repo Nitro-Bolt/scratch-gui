@@ -52,7 +52,8 @@ const manifest = {
     "tags": [
       "beta"
     ],
-    "enabledByDefault": false
+    "enabledByDefault": false,
+    "dynamicDisable": true
   };
   export default manifest;
   
