@@ -2,6 +2,17 @@ import OpcodeLabels from './opcode-labels.js';
 
 const isUndefined = a => typeof a === 'undefined';
 
+const circularReplacer = () => {
+    const stack = new Set();
+    return function replacer(_, value) {
+        if (typeof value === "object" && value !== null) {
+            if (stack.has(value)) return Array.isArray(value) ? "[...]" : "{...}";
+            stack.add(value);
+        }
+        return value;
+    };
+};
+
 /**
  * Convert monitors from VM format to what the GUI needs to render.
  * - Convert opcode to a label and a category
@@ -36,7 +47,7 @@ export default function ({id, spriteName, opcode, params, value, vm}) {
     if (typeof value === 'boolean') {
         value = value.toString();
     }
-
+    
     // Lists can contain booleans, which should also be turned to strings
     if (Array.isArray(value)) {
         value = value.slice();
@@ -45,20 +56,28 @@ export default function ({id, spriteName, opcode, params, value, vm}) {
             if (typeof item === 'boolean') {
                 value[i] = item.toString();
             }
-            if (typeof item === 'object' &&
-                typeof (item.toListItem || value.toMonitorContent || item.toReporterContent) === 'function') {
-                value[i].isHTML = true;
+            if (typeof item === 'object' && item !== null) {
+                // check if this is a pure object or custom display
+                if (typeof (item.toListItem || value.toMonitorContent || item.toReporterContent) === 'function') {
+                    value[i].isHTML = true;
+                } else {
+                    value[i] = JSON.stringify(item, circularReplacer());
+                }
             }
         }
     }
 
     let isHTML = false;
-    if (typeof value === 'object' &&
-        typeof (value.toMonitorContent || value.toReporterContent) === 'function') {
-        value = value.toMonitorContent
-            ? value.toMonitorContent()
-            : value.toReporterContent();
-        isHTML = true;
+    if (typeof value === 'object' && value !== null) {
+        // check if this is a pure object or custom display
+        if (typeof (value.toMonitorContent || value.toReporterContent) === 'function') {
+            value = value.toMonitorContent
+              ? value.toMonitorContent() : value.toReporterContent();
+            isHTML = true;
+        } else if (!Array.isArray(value)) {
+            // only applies to objects
+            value = JSON.stringify(value, circularReplacer());
+        }
     }
 
     return {id, label, category, value, isHTML};
