@@ -258,7 +258,6 @@ const menuItems = [
             href: 'https://scratch.mit.edu/projects/editor',
             iconURL: faceSensingIconURL,
             insetIconURL: faceSensingInsetIconURL,
-            customInsetColor: '#FFBF00',
             tags: ['scratch'],
             description: (
                 <FormattedMessage
