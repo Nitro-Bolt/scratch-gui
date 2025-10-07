@@ -11,6 +11,9 @@ import penInsetIconURL from './pen/pen-small.svg';
 import videoSensingIconURL from './videoSensing/video-sensing.png';
 import videoSensingInsetIconURL from './videoSensing/video-sensing-small.svg';
 
+import faceSensingIconURL from './faceSensing/face-sensing.png';
+import faceSensingInsetIconURL from './faceSensing/face-sensing-small.svg';
+
 import text2speechIconURL from './text2speech/text2speech.png';
 import text2speechInsetIconURL from './text2speech/text2speech-small.svg';
 
@@ -243,6 +246,30 @@ const menuItems = [
         ),
         featured: true
     },
+    {
+            name: (
+                <FormattedMessage
+                    defaultMessage="Face Sensing"
+                    description="Name for the 'Face Sensing' extension"
+                    id="gui.extension.facesensing.name"
+                />
+            ),
+            extensionId: 'face',
+            href: 'https://scratch.mit.edu/projects/editor',
+            iconURL: faceSensingIconURL,
+            insetIconURL: faceSensingInsetIconURL,
+            customInsetColor: '#FFBF00',
+            tags: ['scratch'],
+            description: (
+                <FormattedMessage
+                    defaultMessage="Sense faces with the camera."
+                    description="Description for the 'Face Sensing' extension"
+                    id="gui.extension.facesensing.description"
+                />
+            ),
+            featured: true,
+            disabled: true
+        },
     {
         name: (
             <FormattedMessage
