@@ -3,7 +3,7 @@ import HeatmapManager from "./HeatmapManager.js";
 import Profiler from "./Profiler.js";
 import { createTableHeader } from "./ui-components/tableHeader.js";
 import TableRows from "./ui-components/TableRows.js"; // Importing the extended LogView class
-import { updateAllBlocksEvents } from "../../update-all-blocks.js";
+import { updateAllBlocksEvents } from "../update-all-blocks.js";
 import downloadBlob from "../../../../lib/download-blob.js";
 import { isPaused, onPauseChanged, getRunningThread } from "../module.js";
 
