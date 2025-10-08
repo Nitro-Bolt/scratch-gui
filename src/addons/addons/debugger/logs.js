@@ -39,9 +39,8 @@ export default async function createLogsTab({ debug, addon, console, msg }) {
       root.classList.add("sa-debugger-log-internal");
     }
     if (row.type === "custom") {
-      if (row.customData && row.customData.backgroundcolor) document.documentElement.style.setProperty("--custom-background-color", evaluateCss(row.customData.backgroundcolor));
-      if (row.customData && row.customData.textcolor) document.documentElement.style.setProperty("--custom-color", evaluateCss(row.customData.textcolor));
-      if (row.customData && row.customData.bordercolor) document.documentElement.style.setProperty("--custom-border-color", evaluateCss(row.customData.bordercolor));
+      if (row.customData && row.customData.backgroundcolor && root && root.style) root.style.backgroundColor = evaluateCss(row.customData.backgroundcolor);
+      if (row.customData && row.customData.backgroundcolor && root && root.style) root.dataset.backgroundcolor = row.customData.backgroundcolor;
     }
     root.dataset.type = row.type;
 

@@ -290,7 +290,27 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                 </shadow>
             </value>
         </block>
+        <block type="looks_shoutforsecs">
+            <value name="MESSAGE">
+                <shadow type="text">
+                    <field name="TEXT">${hmm}</field>
+                </shadow>
+            </value>
+            <value name="SECS">
+                <shadow type="math_number">
+                    <field name="NUM">2</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="looks_shout">
+            <value name="MESSAGE">
+                <shadow type="text">
+                    <field name="TEXT">${hmm}</field>
+                </shadow>
+            </value>
+        </block>
         <block type="looks_stoptalking"/>
+        <block type="looks_getWhatBubbleIsDisplaying" />
         ${blockSeparator}
         <block type="looks_setFont">
             <value name="font">
@@ -589,7 +609,7 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
             </value>
         </block>
         ${blockSeparator}
-        <block id="${targetId}_sound_pause" type="sound_pause">
+        ${/*<block id="${targetId}_sound_pause" type="sound_pause">
             <value name="SOUND_MENU">
                 <shadow type="sound_sounds_menu">
                     <field name="SOUND_MENU">${soundName}</field>
@@ -611,7 +631,7 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
                     <field name="SOUND_MENU">${soundName}</field>
                 </shadow>
             </value>
-        </block>
+        </block>*/}
         ${blockSeparator}
         <block id="${targetId}_sound_isSoundPlaying" type="sound_isSoundPlaying">
             <value name="SOUND_MENU">
@@ -627,11 +647,11 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
                 </shadow>
             </value>
         </block>
-        <block type="sound_getTimePosition">
+        ${/*<block type="sound_getTimePosition">
             <value name="SOUND_MENU">
                 <shadow type="sound_sounds_menu">${soundName}</shadow>
             </value>
-        </block>
+        </block>*/}
         ${blockSeparator}
         <block type="sound_changeeffectby">
             <value name="VALUE">
