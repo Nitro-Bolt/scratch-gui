@@ -142,9 +142,8 @@ export default async function ({ addon, console, msg }) {
   compilerWarning.className = "sa-debugger-log sa-debugger-compiler-warning";
   compilerWarning.textContent = "The debugger works best when the compiler is disabled.";
   const updateCompilerWarningVisibility = () => {
-    compilerWarning.hidden = !vm.runtime.compilerOptions.enabled;
+    compilerWarning.hidden = true;
   };
-  vm.on("COMPILER_OPTIONS_CHANGED", updateCompilerWarningVisibility);
   updateCompilerWarningVisibility();
 
   let isInterfaceVisible = false;
