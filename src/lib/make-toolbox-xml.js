@@ -4,6 +4,8 @@ const categorySeparator = '<sep gap="36"/>';
 
 const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
 
+const nothing = '<sep gap="0"/>';
+
 const translate = (id, english) => {
     if (LazyScratchBlocks.isLoaded() && LazyScratchBlocks.isLoaded2()) {
         const ScratchBlocks = LazyScratchBlocks.get();
@@ -609,29 +611,7 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
             </value>
         </block>
         ${blockSeparator}
-        ${/*<block id="${targetId}_sound_pause" type="sound_pause">
-            <value name="SOUND_MENU">
-                <shadow type="sound_sounds_menu">
-                    <field name="SOUND_MENU">${soundName}</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="sound_pauseallsounds"/>
-        <block id="${targetId}_sound_resume" type="sound_resume">
-            <value name="SOUND_MENU">
-                <shadow type="sound_sounds_menu">
-                    <field name="SOUND_MENU">${soundName}</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="sound_resumeallsounds"/>
-        <block id="${targetId}_sound_isSoundPaused" type="sound_isSoundPaused">
-            <value name="SOUND_MENU">
-                <shadow type="sound_sounds_menu">
-                    <field name="SOUND_MENU">${soundName}</field>
-                </shadow>
-            </value>
-        </block>*/}
+        ${/*<block id="${targetId}_sound_pause" type="sound_pause"><value name="SOUND_MENU"><shadow type="sound_sounds_menu"><field name="SOUND_MENU">${soundName}</field></shadow></value></block><block type="sound_pauseallsounds"/><block id="${targetId}_sound_resume" type="sound_resume"><value name="SOUND_MENU"><shadow type="sound_sounds_menu"><field name="SOUND_MENU">${soundName}</field></shadow></value></block><block type="sound_resumeallsounds"/><block id="${targetId}_sound_isSoundPaused" type="sound_isSoundPaused"><value name="SOUND_MENU"><shadow type="sound_sounds_menu"><field name="SOUND_MENU">${soundName}</field></shadow></value></block>*/nothing}
         ${blockSeparator}
         <block id="${targetId}_sound_isSoundPlaying" type="sound_isSoundPlaying">
             <value name="SOUND_MENU">
@@ -647,11 +627,7 @@ const sound = function (isInitialSetup, isStage, targetId, soundName) {
                 </shadow>
             </value>
         </block>
-        ${/*<block type="sound_getTimePosition">
-            <value name="SOUND_MENU">
-                <shadow type="sound_sounds_menu">${soundName}</shadow>
-            </value>
-        </block>*/}
+        ${/*<block type="sound_getTimePosition"><value name="SOUND_MENU"><shadow type="sound_sounds_menu">${soundName}</shadow></value></block>*/nothing}
         ${blockSeparator}
         <block type="sound_changeeffectby">
             <value name="VALUE">
