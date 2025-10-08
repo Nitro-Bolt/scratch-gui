@@ -228,9 +228,14 @@ const Tags = ({ manifest }) => (
                 {settingsTranslations.tagBeta}
             </span>
         )}
-        {manifest.tags.includes('new') && (
+        {manifest.tags.includes('new') && !manifest.tags.includes('Settings') && (
             <span className={classNames(styles.tag, styles.tagNew)}>
                 {settingsTranslations.tagNew}
+            </span>
+        )}
+        {manifest.tags.includes('newSettings') && (
+            <span className={classNames(styles.tag, styles.tagNew)}>
+                {settingsTranslations.tagNewSettings}
             </span>
         )}
         {manifest.tags.includes('danger') && (

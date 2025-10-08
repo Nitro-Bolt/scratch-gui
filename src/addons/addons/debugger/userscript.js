@@ -2,6 +2,7 @@ import { isPaused, setPaused, onPauseChanged, setup } from "./module.js";
 import createLogsTab from "./logs.js";
 import createThreadsTab from "./threads.js";
 import createPerformanceTab from "./performance.js";
+import createTimingTab from "./timing/createTimingTab.js";
 import Utils from "../find-bar/blockly/Utils.js";
 
 const removeAllChildren = (element) => {
@@ -14,6 +15,7 @@ export default async function ({ addon, console, msg }) {
   setup(addon.tab.traps.vm);
 
   let logsTab;
+  let timingTab;
   const messagesLoggedBeforeLogsTabLoaded = [];
   const logMessage = (...args) => {
     if (logsTab) {
@@ -61,9 +63,9 @@ export default async function ({ addon, console, msg }) {
       logMessage(content, thread, "error");
     },
   });
-  /*addon.tab.addBlock("\u200B\u200Bcustom log\u200B\u200B %s // background color: %s text color: %s border color: %s", {
+  addon.tab.addBlock("\u200B\u200Bcustom log\u200B\u200B %s // background color: %s text color: %s border color: %s", {
     args: ["content", "color1", "color2", "color3"],
-    displayName: msg("block-error"),
+    displayName: "custom log %s // background color: %s text color: %s border color: %s",
     callback: ({ content, color1, color2, color3 }, thread) => {
       let customData = {
         "backgroundcolor": color1,
@@ -72,7 +74,21 @@ export default async function ({ addon, console, msg }) {
       }
       logMessage(content, thread, "custom", customData);
     },
-  });*/
+  });
+  addon.tab.addBlock("\u200B\u200Bstart timer\u200B\u200B %s", {
+    args: ["content"],
+    displayName: msg("block-start-timer"),
+    callback: ({ content }, thread) => {
+      if (timingTab) timingTab.startTimer(content, thread.target.id, thread.peekStack());
+    },
+  });
+  addon.tab.addBlock("\u200B\u200Bstop timer\u200B\u200B %s", {
+    args: ["content"],
+    displayName: msg("block-stop-timer"),
+    callback: ({ content }) => {
+      if (timingTab) timingTab.stopTimer(content);
+    },
+  });
 
   const vm = addon.tab.traps.vm;
   await new Promise((resolve, reject) => {
@@ -442,6 +458,11 @@ export default async function ({ addon, console, msg }) {
         formatProcedureCode(proccode)
       );
       category = "more";
+    } else if (block.opcode === "control_stop") {
+      // Procedural block - jsonInit not called, so we can't handle it with the fakeBlock approach
+      text = ScratchBlocks.ScratchMsgs.translate("CONTROL_STOP", "stop");
+      category = "control";
+      shape = "stacked";
     } else {
       // Try to call things like https://github.com/LLK/scratch-blocks/blob/0bd1a17e66a779ec5d11f4a00c43784e3ac7a7b8/blocks_vertical/operators.js#L36
       var jsonData;
@@ -455,7 +476,7 @@ export default async function ({ addon, console, msg }) {
         try {
           blockConstructor.init.call(fakeBlock);
         } catch (e) {
-          // ignore
+          console.log(e);
         }
       }
       if (!jsonData) {
@@ -507,7 +528,8 @@ export default async function ({ addon, console, msg }) {
   };
   logsTab = await createLogsTab(api);
   const threadsTab = await createThreadsTab(api);
-  const allTabs = [logsTab, threadsTab];
+  timingTab = await createTimingTab(api);
+  const allTabs = [logsTab, threadsTab, timingTab];
 
   for (const message of messagesLoggedBeforeLogsTabLoaded) {
     logsTab.addLog(...message);
@@ -570,6 +592,7 @@ export default async function ({ addon, console, msg }) {
     if (addon.settings.get("log_clear_greenflag")) {
       logsTab.clearLogs();
     }
+    timingTab.clearTimers();
     if (addon.settings.get("log_greenflag")) {
       logsTab.addLog(msg("log-msg-flag-clicked"), null, "internal");
     }

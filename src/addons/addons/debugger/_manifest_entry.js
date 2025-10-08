@@ -2,7 +2,7 @@
 const manifest = {
   "editorOnly": true,
   "name": "Debugger",
-  "description": "Adds a new \"debugger\" window to the editor. Allows for logging into the \"Logs\" tab of the debugger window using the \"log\", \"warn\" and \"error\" blocks.",
+  "description": "Adds a new \"debugger\" window to the editor. Allows for logging into the \"Logs\" tab of the debugger window using the \"log\", \"warn\" and \"error\" blocks. Allows for timing sections of your code with the \"start timing\" and \"stop timing\" block. Timing results and more are accessible from the \"Timing\" tab.",
   "credits": [
     {
       "name": "Tacodiva",
@@ -19,6 +19,10 @@ const manifest = {
     },
     {
       "name": "retronbv"
+    },
+    {
+      "name": "Chrome_Cat",
+      "link": "https://scratch.mit.edu/users/Chrome_Cat/"
     }
   ],
   "userscripts": [
@@ -66,10 +70,25 @@ const manifest = {
       "id": "log_broadcasts",
       "type": "boolean",
       "default": false
+    },
+    {
+      "name": "Stop previous timing on start timing",
+      "id": "auto_stop_timing",
+      "type": "boolean",
+      "default": false,
+      "description": "Automatically stops the previous timing block when a new one starts—ideal for timing consecutive sections. Only the final block needs an explicit stop."
+    },
+    {
+      "name": "Ratio Time instead of Percentage Time",
+      "id": "show_ratio_time",
+      "type": "boolean",
+      "default": false,
+      "description": "Replaces the percentage column with a ratio of each block’s total time to the smallest block’s total time."
     }
   ],
   "tags": [
-    "beta"
+    "beta",
+    "newSettings"
   ],
   "enabledByDefault": false
 };

@@ -11,7 +11,7 @@ const addons = [
     'hide-flyout',
     'mediarecorder',
     'drag-drop',
-    'debugger',
+    //'debugger',
     'pause',
     'mute-project',
     'vol-slider',
@@ -86,7 +86,8 @@ const newAddons = [
     'sounds-newgrounds-button',
     'toolbox-full-blocks-on-hover',
     'merge-costumes',
-    'copy-reporter'
+    'copy-reporter',
+    'debugger'
 ];
 
 // eslint-disable-next-line import/no-commonjs
