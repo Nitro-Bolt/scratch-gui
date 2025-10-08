@@ -79,7 +79,7 @@ export default async function ({ addon, console, msg }) {
     args: ["content"],
     displayName: msg("block-start-timer"),
     callback: ({ content }, thread) => {
-      if (timingTab) timingTab.startTimer(content, thread.target.id, thread.peekStack());
+      if (timingTab) timingTab.startTimer(content, thread.target.id, thread.peekStack ? thread.peekStack() : thread.thread.peekStack());
     },
   });
   addon.tab.addBlock("\u200B\u200Bstop timer\u200B\u200B %s", {

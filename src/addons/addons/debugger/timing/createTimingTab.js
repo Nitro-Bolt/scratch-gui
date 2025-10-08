@@ -7,6 +7,10 @@ import { updateAllBlocksEvents } from "../update-all-blocks.js";
 import downloadBlob from "../../../../lib/download-blob.js";
 import { isPaused, onPauseChanged, getRunningThread } from "../module.js";
 
+import downloadWhiteIcon from "../icons/download-white.svg";
+import deleteIcon from "../icons/delete.svg";
+import timingIcon from "../icons/timing.svg";
+
 export default async function createTimingTab({ debug, addon, console, msg }) {
   function createContent() {
     const content = Object.assign(document.createElement("div"), {
@@ -184,7 +188,7 @@ export default async function createTimingTab({ debug, addon, console, msg }) {
   function createExportButton() {
     const exportButton = debug.createIconButton({
       text: msg("export"),
-      icon: addon.self.dir + "/icons/download-white.svg",
+      icon: downloadWhiteIcon,
     });
 
     exportButton.element.addEventListener("click", () => {
@@ -222,7 +226,7 @@ export default async function createTimingTab({ debug, addon, console, msg }) {
   function createClearButton() {
     const clearButton = debug.createIconButton({
       text: msg("clear"),
-      icon: addon.self.dir + "/icons/delete.svg",
+      icon: deleteIcon,
     });
 
     clearButton.element.addEventListener("click", () => {
@@ -331,7 +335,7 @@ export default async function createTimingTab({ debug, addon, console, msg }) {
   // create the tab
   const tab = debug.createHeaderTab({
     text: msg("tab-timing"),
-    icon: addon.self.dir + "/icons/timing.svg",
+    icon: timingIcon,
   });
 
   return {
