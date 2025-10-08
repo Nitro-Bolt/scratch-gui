@@ -1,6 +1,14 @@
 import downloadBlob from "../../libraries/common/cs/download-blob.js";
 import LogView from "./log-view.js";
 
+function evaluateCss (css) {
+    const variableMatch = css.match(/^var\(([\w-]+)\)$/);
+    if (variableMatch) {
+        return document.documentElement.style.getPropertyValue(variableMatch[1]);
+    }
+    return css;
+}
+
 export default async function createLogsTab({ debug, addon, console, msg }) {
   const vm = addon.tab.traps.vm;
 
@@ -31,9 +39,9 @@ export default async function createLogsTab({ debug, addon, console, msg }) {
       root.classList.add("sa-debugger-log-internal");
     }
     if (row.type === "custom") {
-      document.documentElement.style.setProperty("--custom-background-color", row.backgroundcolor);
-      document.documentElement.style.setProperty("--custom-color", row.textcolor);
-      document.documentElement.style.setProperty("--custom-border-color", row.bordercolor);
+      document.documentElement.style.setProperty("--custom-background-color", evaluateCss(row.backgroundcolor));
+      document.documentElement.style.setProperty("--custom-color", evaluateCss(row.textcolor));
+      document.documentElement.style.setProperty("--custom-border-color", evaluateCss(row.bordercolor));
     }
     root.dataset.type = row.type;
 
