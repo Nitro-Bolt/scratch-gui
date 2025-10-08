@@ -292,25 +292,6 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                 </shadow>
             </value>
         </block>
-        <block type="looks_shoutforsecs">
-            <value name="MESSAGE">
-                <shadow type="text">
-                    <field name="TEXT">${hmm}</field>
-                </shadow>
-            </value>
-            <value name="SECS">
-                <shadow type="math_number">
-                    <field name="NUM">2</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="looks_shout">
-            <value name="MESSAGE">
-                <shadow type="text">
-                    <field name="TEXT">${hmm}</field>
-                </shadow>
-            </value>
-        </block>
         <block type="looks_stoptalking"/>
         <block type="looks_getWhatBubbleIsDisplaying" />
         ${blockSeparator}
@@ -1682,6 +1663,25 @@ const liveTests = function (isLiveTest, targetId, soundName) {
             <value name="PERCENT">
                 <shadow type="math_number">
                     <field name="NUM">0</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="looks_shoutforsecs">
+            <value name="MESSAGE">
+                <shadow type="text">
+                    <field name="TEXT">${hello}</field>
+                </shadow>
+            </value>
+            <value name="SECS">
+                <shadow type="math_number">
+                    <field name="NUM">2</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="looks_shout">
+            <value name="MESSAGE">
+                <shadow type="text">
+                    <field name="TEXT">${hello}</field>
                 </shadow>
             </value>
         </block>
