@@ -197,6 +197,33 @@ export default async function ({ addon, console, msg }) {
   interfaceContainer.append(interfaceHeader, compilerWarning, tabContentContainer);
   document.body.append(interfaceContainer);
 
+  const createIconButton = ({ text, icon, description }) => {
+    const button = Object.assign(document.createElement("div"), {
+      className: addon.tab.scratchClass("card_shrink-expand-button"),
+      draggable: false,
+    });
+    if (description) {
+      button.title = description;
+    }
+    let imageElement = null;
+    if (icon) {
+      imageElement = Object.assign(document.createElement("img"), {
+        src: icon,
+        draggable: false,
+      });
+      button.appendChild(imageElement);
+    }
+    const textElement = Object.assign(document.createElement("span"), {
+      textContent: text,
+    });
+    button.appendChild(textElement);
+    return {
+      element: button,
+      image: imageElement,
+      text: textElement,
+    };
+  };
+
   const createHeaderButton = ({ text, icon, description }) => {
     const button = Object.assign(document.createElement("div"), {
       className: addon.tab.scratchClass("card_shrink-expand-button"),
@@ -514,6 +541,7 @@ export default async function ({ addon, console, msg }) {
     debug: {
       createHeaderButton,
       createHeaderTab,
+      createIconButton,
       setHasUnreadMessage,
       addAfterStepCallback,
       getBlock,

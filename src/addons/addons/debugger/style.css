@@ -98,6 +98,49 @@
   height: 20px;
 }
 
+.sa-debugger-footer {
+  border-top: 1px solid var(--editorDarkMode-border, rgba(0, 0, 0, 0.15));
+  display: flex;
+  justify-content: center;
+  padding: 8px 15px;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: auto;
+}
+
+.sa-debugger-footer-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sa-debugger-footer-buttons [class*="card_shrink-expand-button"] {
+  background-color: #29beb8;
+  font-weight: bold;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.4rem 0.7rem;
+  padding: 0.3rem 0.6rem;
+  color: white;
+  cursor: pointer;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.sa-debugger-footer-buttons [class*="card_shrink-expand-button"]:hover {
+  background-color: #3aa8a4;
+}
+
+.sa-debugger-footer-buttons img {
+  width: 16px;
+  height: 16px;
+}
+
 .sa-debugger-unpause {
   animation: saDebuggerUnpause 2s infinite alternate;
 }
