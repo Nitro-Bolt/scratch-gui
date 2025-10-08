@@ -1646,6 +1646,7 @@ const myBlocks = function () {
 };
 
 const liveTests = function (isLiveTest, targetId, soundName) {
+    const hello = translate('LOOKS_HELLO', 'Hello, World!');
     return `
     <category name="Live Tests" id="liveTests" colour="#FF0000" secondaryColour="#FF0000">
         <block type="procedures_call">
