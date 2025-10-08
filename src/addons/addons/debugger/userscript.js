@@ -63,9 +63,9 @@ export default async function ({ addon, console, msg }) {
       logMessage(content, thread, "error");
     },
   });
-  addon.tab.addBlock("\u200B\u200Bcustom log\u200B\u200B %s // background color: %s", {
+  addon.tab.addBlock("\u200B\u200Bcustom log\u200B\u200B %s // background color: %m", {
     args: ["content", "color1"],
-    displayName: "custom log %s // background color: %s",
+    displayName: "custom log %s // background color: %m",
     callback: ({ content, color1 }, thread) => {
       let customData = {
         "backgroundcolor": color1

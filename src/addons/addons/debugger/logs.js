@@ -141,7 +141,8 @@ export default async function createLogsTab({ debug, addon, console, msg }) {
     a.type === b.type &&
     a.internal === b.internal &&
     a.blockId === b.blockId &&
-    a.targetId === b.targetId;
+    a.targetId === b.targetId &&
+    a.customData === b.customData;
 
   const addLog = (text, thread, type, customData = null) => {
     const log = {

@@ -236,7 +236,7 @@ const CustomProcedures = props => (
                                     id="gui.customProcedures.numberType"
                                 />
                             </div>
-                        </div>
+                        </div>*/}
                         <div
                             className={styles.optionCard}
                             role="button"
@@ -261,7 +261,7 @@ const CustomProcedures = props => (
                                     id="gui.customProcedures.colorType"
                                 />
                             </div>
-                        </div>*/}
+                        </div>
                         <div
                             className={styles.optionCard}
                             role="button"

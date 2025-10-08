@@ -269,7 +269,7 @@ export default async function createTimingTab({ debug, addon, console, msg }) {
 
   const timingManager = new TimingManager(addon.settings, config, profiler);
   const heatmapManager = new HeatmapManager(
-    () => addon.tab.traps.getWorkspace(),
+    () => addon.tab.traps.getBlockly().getMainWorkspace(),
     tableRows,
     config,
     addon.tab.traps.vm
