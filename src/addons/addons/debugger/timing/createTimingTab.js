@@ -3,8 +3,8 @@ import HeatmapManager from "./HeatmapManager.js";
 import Profiler from "./Profiler.js";
 import { createTableHeader } from "./ui-components/tableHeader.js";
 import TableRows from "./ui-components/TableRows.js"; // Importing the extended LogView class
-import { updateAllBlocksEvents } from "../../../libraries/common/cs/update-all-blocks.js";
-import downloadBlob from "../../../libraries/common/cs/download-blob.js";
+import { updateAllBlocksEvents } from "../../update-all-blocks.js";
+import downloadBlob from "../../../../lib/download-blob.js";
 import { isPaused, onPauseChanged, getRunningThread } from "../module.js";
 
 export default async function createTimingTab({ debug, addon, console, msg }) {
