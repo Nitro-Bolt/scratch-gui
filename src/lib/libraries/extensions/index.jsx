@@ -254,8 +254,7 @@ const menuItems = [
                     id="gui.extension.facesensing.name"
                 />
             ),
-            extensionId: 'face',
-            href: 'https://scratch.mit.edu/projects/editor',
+            extensionId: 'https://extensions.turbowarp.org/lab/face-sensing.js',
             iconURL: faceSensingIconURL,
             insetIconURL: faceSensingInsetIconURL,
             tags: ['scratch'],
@@ -266,8 +265,7 @@ const menuItems = [
                     id="gui.extension.facesensing.description"
                 />
             ),
-            featured: true,
-            disabled: true
+            featured: true
         },
     {
         name: (
