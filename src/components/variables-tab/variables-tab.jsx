@@ -3,16 +3,19 @@ import styles from './variables-tab.css'
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
+import VariableDropdown from './variable-dropdown.jsx';
+import Box from '../box/box.jsx';
+
 const messages = defineMessages({
   forThisSprite: {
     id: 'gui.variableManager.forThisSprite',
     description: 'Label for sprite-specific variables',
-    defaultMessage: 'For this sprite: '
+    defaultMessage: 'For this sprite '
   },
   forAllSprites: {
     id: 'gui.variableManager.forAllSprites',
     description: 'Label for global variables',
-    defaultMessage: 'For all sprites: '
+    defaultMessage: 'For all sprites '
   },
   noVariables: {
     id: 'gui.variableManager.noVariables',
@@ -45,11 +48,9 @@ class VariableTab extends React.Component {
     if (variables.length) { 
       return variables.map(this.variableItem)
     } else {
-      return <tr><td>
-              <div style={{textAlign: 'center'}}>
+      return <div className={ styles.box } style={{textAlign: 'center'}}>
                 { this.props.intl.formatMessage(messages.noVariables) }
               </div>
-            </td></tr>
     }
   }
 
@@ -73,6 +74,17 @@ class VariableTab extends React.Component {
     </tbody></table>
   }
 
+ /*
+ <tr key={variables[i].id}>
+    <td >
+      <span>{variables[i].name}</span>
+    </td>
+    <td className={styles.variableValue}>
+      { this.mapClonesInLocalVariables(this.props.localVariables[variables[i].id]) }
+    </td>
+  </tr>
+ */
+
   renderLocalVariable() {
     const variables = Object.values(this.props.editingTarget.variables).filter(varr => varr.type === '' )
 
@@ -80,23 +92,25 @@ class VariableTab extends React.Component {
     if (variables.length) { 
       for (let i = 0; i < variables.length; i++) {
         final.push(
-          <tr key={variables[i].id}>
-            <td className={styles.variableName}>
-              <span>{variables[i].name}</span>
-            </td>
-            <td className={styles.variableValue}>
-              { this.mapClonesInLocalVariables(this.props.localVariables[variables[i].id]) }
-            </td>
-          </tr>
+          <VariableDropdown
+            headerContent={(
+              <h4 className={styles.variableDropdownHeaderLabel}>{variables[i].name}</h4>
+            )}
+            bodyContent={(
+              <span className={styles.variableValue}>
+                { this.mapClonesInLocalVariables(this.props.localVariables[variables[i].id]) }
+              </span>
+            )}
+          />
         )
       }
-      return final
+      return <div className={ styles.box }>
+                { final }
+              </div>
     } else {
-      return <tr><td>
-              <div style={{textAlign: 'center'}}>
+      return <div className={ styles.box } style={{textAlign: 'center'}}>
                 { this.props.intl.formatMessage(messages.noVariables) }
               </div>
-            </td></tr>
     }
   }
 
@@ -104,21 +118,35 @@ class VariableTab extends React.Component {
     return (
       <div className={styles.editorWrapper}>
         <div className={styles.editorContainer}>
+          <VariableDropdown
+            headerContent={( 
+              <span className={styles.variableDropdownHeaderLabel}>{ this.props.intl.formatMessage(messages.forAllSprites) }</span>
+            )}
+            bodyContent={(
+              <table>
+                <tbody>{ this.renderGlobalVariable() }</tbody>
+              </table>
+            )}
+            style={{
+              order: 0
+            }}
+          />
 
-          { this.props.editingTarget.isStage ? '' : <div className={styles.variableWrapper}>
-            <h3>{ this.props.intl.formatMessage(messages.forThisSprite) }</h3>
-            <table>
-              <tbody> { this.renderLocalVariable() } </tbody>
-            </table>
-          </div> }
-
-          <div className={styles.variableWrapper}>
-            <h3>{ this.props.intl.formatMessage(messages.forAllSprites)}</h3>
-            <table>
-              <tbody>{ this.renderGlobalVariable() }</tbody>
-            </table>
-          </div>
-
+          { this.props.editingTarget.isStage ? '' :
+            <VariableDropdown
+              headerContent={( 
+                <span className={styles.variableDropdownHeaderLabel}>{ this.props.intl.formatMessage(messages.forThisSprite) }</span>
+              )}
+              bodyContent={ 
+                <table>
+                  <tbody>{ this.renderLocalVariable() }</tbody>
+                </table>
+              }
+              style={{
+                order: 1
+              }}
+            />
+          }
         </div>
       </div>
     )
