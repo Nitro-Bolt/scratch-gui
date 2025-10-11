@@ -116,8 +116,8 @@ class VariableTab extends React.Component {
 
   render () {
     return (
-      <div className={styles.editorWrapper}>
-        <div className={styles.editorContainer}>
+      <div className={styles.wrapper}>
+        <div className={styles.container}>
           <VariableDropdown
             headerContent={( 
               <span className={styles.variableDropdownHeaderLabel}>{ this.props.intl.formatMessage(messages.forAllSprites) }</span>
