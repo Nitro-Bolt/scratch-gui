@@ -46,7 +46,11 @@ class VariableTab extends React.Component {
     const variables = Object.values(this.props.globalVariables).filter(varr => varr.type === '' )
 
     if (variables.length) { 
-      return variables.map(this.variableItem)
+      return (
+        <table>
+          <tbody>{ variables.map(this.variableItem) }</tbody>
+        </table>
+      )
     } else {
       return <div className={ styles.box } style={{textAlign: 'center'}}>
                 { this.props.intl.formatMessage(messages.noVariables) }
@@ -61,7 +65,7 @@ class VariableTab extends React.Component {
       
       final.push(
       <tr key={id}>
-        <td className={styles.variableName}>
+        <td className={styles.variableName} style={{cursor: "pointer"}} onClick={() => {this.props.highlightSprite(id)}}>
           <span>{this.props.editingTarget.id === id ? this.props.editingTarget.sprite.name : 'Clone ' + Object.keys(clones).indexOf(id)}</span>
         </td>
         <td className={styles.variableValue}>
@@ -104,9 +108,7 @@ class VariableTab extends React.Component {
           />
         )
       }
-      return <div className={ styles.box }>
-                { final }
-              </div>
+      return final
     } else {
       return <div className={ styles.box } style={{textAlign: 'center'}}>
                 { this.props.intl.formatMessage(messages.noVariables) }
@@ -122,11 +124,7 @@ class VariableTab extends React.Component {
             headerContent={( 
               <span className={styles.variableDropdownHeaderLabel}>{ this.props.intl.formatMessage(messages.forAllSprites) }</span>
             )}
-            bodyContent={(
-              <table>
-                <tbody>{ this.renderGlobalVariable() }</tbody>
-              </table>
-            )}
+            bodyContent={ this.renderGlobalVariable() }
             style={{
               order: 0
             }}
@@ -137,11 +135,7 @@ class VariableTab extends React.Component {
               headerContent={( 
                 <span className={styles.variableDropdownHeaderLabel}>{ this.props.intl.formatMessage(messages.forThisSprite) }</span>
               )}
-              bodyContent={ 
-                <table>
-                  <tbody>{ this.renderLocalVariable() }</tbody>
-                </table>
-              }
+              bodyContent={ this.renderLocalVariable() }
               style={{
                 order: 1
               }}
@@ -165,6 +159,7 @@ VariableTab.propTypes = {
     [PropTypes.string]: PropTypes.object
   }),
   editingTarget: PropTypes.object,
+  highlightSprite: PropTypes.func
 }
 
 export default injectIntl(VariableTab);

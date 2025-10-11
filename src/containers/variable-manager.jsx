@@ -6,6 +6,7 @@ import { injectIntl, intlShape } from 'react-intl';
 import VM from 'scratch-vm';
 import VariableTab from '../components/variables-tab/variables-tab.jsx';
 import PropTypes from 'prop-types';
+import {highlightTarget} from '../reducers/targets';
 
 class VariableManager extends React.Component {
   constructor (props) {
@@ -14,7 +15,8 @@ class VariableManager extends React.Component {
     bindAll(this, [
       'clearLocalVariables',
       '_reload',
-      'reload'
+      'reload',
+      'handleSpriteHighlighting'
     ]);
 
     this.state = {
@@ -130,6 +132,10 @@ class VariableManager extends React.Component {
     }
   }
 
+  handleSpriteHighlighting(id) {
+    this.props.onHighlightTarget(id)
+  }
+
   render () {
     return (
       <VariableTab
@@ -137,6 +143,7 @@ class VariableManager extends React.Component {
         globalVariables={this.state.globalVariables}
         editingTarget={this.props.editingTarget}
         isRtl={this.props.isRtl}
+        highlightSprite={this.handleSpriteHighlighting}
       />
     )
   }
@@ -156,16 +163,22 @@ VariableManager.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    isRtl: state.locales.isRtl,
-    stage: state.scratchGui.targets.stage,
-    sprite: state.scratchGui.vm.editingTarget.sprite,
-    editingTarget: state.scratchGui.vm.editingTarget,
-    vm: state.scratchGui.vm,
+  isRtl: state.locales.isRtl,
+  stage: state.scratchGui.targets.stage,
+  sprite: state.scratchGui.vm.editingTarget.sprite,
+  editingTarget: state.scratchGui.vm.editingTarget,
+  vm: state.scratchGui.vm,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onHighlightTarget: id => {
+    dispatch(highlightTarget(id));
+  }
 });
 
 export default errorBoundaryHOC('Variable Manager')(
   injectIntl(connect(
     mapStateToProps,
-    //mapDispatchToProps
+    mapDispatchToProps
   )(VariableManager))
 );

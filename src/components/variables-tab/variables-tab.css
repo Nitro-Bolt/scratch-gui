@@ -30,9 +30,20 @@
     padding: calc(2 * $space);
 }
 
+.variable-dropdown {
+    border: 2px solid $ui-black-transparent;
+    border-radius: 0.5rem;
+    padding: calc(2 * $space);
+    margin: $space;
+}
+
+.variable-dropdown:hover {
+    border: 2px solid $looks-secondary;
+}
+
 .variable-dropdown table {
   border-radius: 5px;
-  border-collapse: collapse;
+  border-collapse: separate;
   width: 100%;
 }
   
@@ -46,6 +57,10 @@
   padding: calc(2 * $space);
   border: 1px solid $ui-black-transparent;
   text-align: right;
+}
+
+.variable-dropdown td:hover {
+    border: 1px solid $looks-secondary;
 }
 
 .variable-name {
@@ -71,7 +86,6 @@
 }
 
 .variable-dropdown-body {
-    border-left: 1px dashed $ui-black-transparent; 
     padding: calc(2 * $space);
     font-size: 0.75rem;
 }

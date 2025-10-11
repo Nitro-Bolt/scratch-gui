@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styles from './variables-tab.css'
 import expandCaret from './expand-caret.svg';
 import collapseCaret from './collapse-caret.svg'
+import classNames from 'classnames'
 
 class VariableDropdown extends React.Component {
   constructor (props) {
@@ -36,8 +37,6 @@ class VariableDropdown extends React.Component {
               { this.props.bodyContent }
           </div>
         }
-
-        <div className={styles.separator} />
       </div>
     )
   }
