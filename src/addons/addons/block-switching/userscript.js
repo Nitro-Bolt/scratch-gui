@@ -967,6 +967,18 @@ export default async function ({ addon, console, msg }) {
         },
         noopSwitch,
       ];
+      blockSwitches["operator_newLine"] = [
+        {
+          opcode: "operator_tabCharacter",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["sensing_thing_is_number"] = [
+        {
+          opcode: "operator_newLine",
+        },
+        noopSwitch,
+      ];
     }
 
     if (addon.settings.get("sensing")) {
@@ -1091,6 +1103,18 @@ export default async function ({ addon, console, msg }) {
         },
         {
           opcode: "sensing_pausetimer",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["sensing_thing_is_text"] = [
+        {
+          opcode: "sensing_thing_is_number",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["sensing_thing_is_number"] = [
+        {
+          opcode: "sensing_thing_is_text",
         },
         noopSwitch,
       ];
