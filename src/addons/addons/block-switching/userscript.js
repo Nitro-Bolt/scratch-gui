@@ -973,7 +973,7 @@ export default async function ({ addon, console, msg }) {
         },
         noopSwitch,
       ];
-      blockSwitches["sensing_thing_is_number"] = [
+      blockSwitches["operator_tabCharacter"] = [
         {
           opcode: "operator_newLine",
         },
