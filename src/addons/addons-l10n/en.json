@@ -258,7 +258,7 @@
     "block-switching/operator_subtract": "-",
     "block-switching/operator_xor": "xor",
     "block-switching/operator_contains": "contains",
-    "block-switching/operator_strictlyContains": "strictlycontains",
+    "block-switching/operator_strictlyContains": "strictly contains",
     "block-switching/operator_newLine": "new line",
     "block-switching/operator_tabCharacter": "tab character",
     "block-switching/sensing_loudness": "loudness",
