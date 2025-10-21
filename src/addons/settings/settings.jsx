@@ -47,7 +47,8 @@ import tagButtonCss from '../../components/tag-button/tag-button.css';
 import ReduxStore from '../settings-store-redux-store';
 
 //import LibraryComponent from './modified-library.jsx';
-//import addonTags from './addon-tags.js';
+import addonTags from './addon-tags.js';
+import messages from "../../lib/libraries/tag-messages.js"
 
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
@@ -912,6 +913,9 @@ AddonList.propTypes = {
     extended: PropTypes.bool.isRequired
 };
 
+const ALL_TAG = {tag: 'all', intlLabel: messages.allTag};
+const tagListPrefix = [ALL_TAG];
+
 class AddonSettingsComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -1120,15 +1124,19 @@ class AddonSettingsComponent extends React.Component {
                             />
                         </div>
                         <div className={styles.tagWrapper}>
-                             <TagButton
-                                active={this.state.selectedTag === 'all'}
-                                className={classNames(
-                                    styles.tagfilterBarItem,
-                                    tagButtonCss.tagButton
-                                )}
-                                onClick={() => {}/*this.handleTagClick*/}
-                                intlLabel='All'
-                            />
+                            {tagListPrefix.concat(addonTags).map((tagProps, id) => (
+                                <TagButton
+                                    active={this.state.selectedTag === tagProps.tag.toLowerCase()}
+                                    className={classNames(
+                                        styles.tagfilterBarItem,
+                                        tagButtonCss.tagButton,
+                                        //tagProps.className
+                                    )}
+                                    key={`tag-button-${id}`}
+                                    onClick={() => {}/*this.handleTagClick*/}
+                                    {...tagProps}
+                                />
+                            ))}
                         </div>
                     </div>
                     {this.state.dirty && (
