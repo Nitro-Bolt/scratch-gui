@@ -42,7 +42,7 @@ import '../polyfill';
 import '../../lib/normalize.css';
 
 import TagButton from '../../containers/tag-button.jsx';
-import tagButtonCss from '../../components/tag-button.css';
+import tagButtonCss from '../../components/tag-button/tag-button.css';
 
 import ReduxStore from '../settings-store-redux-store';
 
@@ -1123,7 +1123,7 @@ class AddonSettingsComponent extends React.Component {
                              <TagButton
                                 active={this.state.selectedTag === 'all'}
                                 className={classNames(
-                                    styles.filterBarItem,
+                                    styles.tagfilterBarItem,
                                     tagButtonCss.tagButton
                                 )}
                                 onClick={() => {}/*this.handleTagClick*/}
