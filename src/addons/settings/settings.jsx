@@ -1127,6 +1127,7 @@ class AddonSettingsComponent extends React.Component {
                                     tagButtonCss.tagButton
                                 )}
                                 onClick={() => {}/*this.handleTagClick*/}
+                                intlLabel='All'
                             />
                         </div>
                     </div>
