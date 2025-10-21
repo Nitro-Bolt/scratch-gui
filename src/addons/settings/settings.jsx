@@ -41,6 +41,9 @@ import styles from './settings.css';
 import '../polyfill';
 import '../../lib/normalize.css';
 
+import TagButton from '../../containers/tag-button.jsx';
+import tagButtonCss from '../../components/tag-button.css';
+
 import ReduxStore from '../settings-store-redux-store';
 
 //import LibraryComponent from './modified-library.jsx';
@@ -928,7 +931,8 @@ class AddonSettingsComponent extends React.Component {
             dirty: false,
             search: location.hash ? location.hash.substr(1) : '',
             extended: false,
-            ...this.readFullAddonState()
+            ...this.readFullAddonState(),
+            selectedTag: 'all'
         };
         if (Channels.changeChannel) {
             Channels.changeChannel.addEventListener('message', () => {
@@ -1089,6 +1093,16 @@ class AddonSettingsComponent extends React.Component {
             <div className={styles.container}>
                 <div className={styles.header}>
                     <div className={styles.section}>
+                        <a
+                            href="https://discord.gg/NZ9MBMYTZh"
+                            target="_blank"
+                            rel="noreferrer"
+                            className={styles.feedbackButtonOuter}
+                        >
+                            <span className={styles.feedbackButtonInner}>
+                                {settingsTranslations.addonFeedback}
+                            </span>
+                        </a>
                         <div className={styles.searchContainer}>
                             <input
                                 className={styles.searchInput}
@@ -1105,16 +1119,16 @@ class AddonSettingsComponent extends React.Component {
                                 onClick={this.handleClickSearchButton}
                             />
                         </div>
-                        <a
-                            href="https://discord.gg/NZ9MBMYTZh"
-                            target="_blank"
-                            rel="noreferrer"
-                            className={styles.feedbackButtonOuter}
-                        >
-                            <span className={styles.feedbackButtonInner}>
-                                {settingsTranslations.addonFeedback}
-                            </span>
-                        </a>
+                        <div className={styles.tagWrapper}>
+                             <TagButton
+                                active={this.state.selectedTag === 'all'}
+                                className={classNames(
+                                    styles.filterBarItem,
+                                    tagButtonCss.tagButton
+                                )}
+                                onClick={() => {}/*this.handleTagClick*/}
+                            />
+                        </div>
                     </div>
                     {this.state.dirty && (
                         <Dirty

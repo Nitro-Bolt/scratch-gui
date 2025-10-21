@@ -835,3 +835,7 @@ a:active, a:focus {
     align-items: center;
     justify-content: center;
 }
+
+.filter-bar-item {
+    margin-right: .75rem;
+}
