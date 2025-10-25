@@ -17,7 +17,7 @@ export default async function ({ addon, console, msg }) {
     const selectedSprites = new Set()
 
     const vm = addon.tab.traps.vm;
-    const Sprites = new SpritesClass()
+    const Sprites = new SpritesClass(ReduxStore)
 
     function createIconButton(title, iconSVG, onClick) {
         const button = document.createElement("button");
@@ -469,7 +469,7 @@ export default async function ({ addon, console, msg }) {
         (ctx) => {
             const Gui = Sprites.getScratchGui(ReduxStore);
             const targets = Gui.targets;
-            const currentTargetID = vm.editingTarget.id;
+            const currentTargetID = Sprites.getSpriteFromName(targets, Sprites.getSpriteFromIndex(ctx.index).name).id;
             selectedSprites.add(currentTargetID)
             updateSelectedText();
             highlightSelected();
@@ -479,11 +479,11 @@ export default async function ({ addon, console, msg }) {
             types: ["sprite"],
             position: "assetContextMenuAfterExport",
             order: 3,
-            label: "Select Sprite",
+            label: "select sprite",
             condition: (ctx) => {
                 const Gui = Sprites.getScratchGui(ReduxStore);
                 const targets = Gui.targets;
-                const currentTargetID = vm.editingTarget.id;
+                const currentTargetID = Sprites.getSpriteFromName(targets, Sprites.getSpriteFromIndex(ctx.index).name);
 
                 return isSelectingChecked && !selectedSprites.has(currentTargetID)
             },
@@ -493,8 +493,8 @@ export default async function ({ addon, console, msg }) {
         (ctx) => {
             const Gui = Sprites.getScratchGui(ReduxStore);
             const targets = Gui.targets;
-            const currentTargetID = vm.editingTarget.id;
-            selectedSprites.remove(currentTargetID)
+            const currentTargetID = Sprites.getSpriteFromName(targets, Sprites.getSpriteFromIndex(ctx.index).name).id;
+            selectedSprites.delete(currentTargetID)
             updateSelectedText();
             highlightSelected();
             runIsChecked();
@@ -503,11 +503,11 @@ export default async function ({ addon, console, msg }) {
             types: ["sprite"],
             position: "assetContextMenuAfterExport",
             order: 4,
-            label: "Deselect Sprite",
+            label: "deselect sprite",
             condition: (ctx) => {
                 const Gui = Sprites.getScratchGui(ReduxStore);
                 const targets = Gui.targets;
-                const currentTargetID = vm.editingTarget.id;
+                const currentTargetID = Sprites.getSpriteFromName(targets, Sprites.getSpriteFromIndex(ctx.index).name);
 
                 return isSelectingChecked && selectedSprites.has(currentTargetID)
             },
