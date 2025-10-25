@@ -1083,9 +1083,13 @@ class AddonSettingsComponent extends React.Component {
     handleTagClick(tag) {
         const index = this.state.selectedTags.indexOf(tag);
         if (!index > -1) {
-            this.state.selectedTags.splice(index, 1);
+            this.setState({
+                selectedTags: this.state.selectedTags.splice(index, 1);
+            });
         } else {
-            this.state.selectedTags.push(tag)
+            this.setState({
+                selectedTags: this.state.selectedTags.push(tag)
+            });
         }
     }
     
@@ -1130,7 +1134,7 @@ class AddonSettingsComponent extends React.Component {
                             />
                         </div>
                         <div className={styles.tagWrapper}>
-                            {tagListPrefix.concat(addonTags).map((tagProps, id) => (
+                            {addonTags.map((tagProps, id) => (
                                 <TagButton
                                     active={this.state.selectedTags.indexOf(tagProps.tag.toLowerCase()) > -1}
                                     className={classNames(
