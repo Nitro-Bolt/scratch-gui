@@ -909,7 +909,7 @@ class AddonList extends React.Component {
                 const checks = tags.map((tag) => {
                     return !!addonTags.includes(tag)
                 });
-                return !!checks.includes(false)
+                return !checks.includes(false)
             })
             if (newAddons.length === 0) {
                 return (
