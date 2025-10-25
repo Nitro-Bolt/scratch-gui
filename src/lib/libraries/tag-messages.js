@@ -256,4 +256,14 @@ export default defineMessages({
         description: 'Tag for filtering a library by beta.',
         id: 'gui.libraryTags.beta'
     },
+    new: {
+        defaultMessage: 'New',
+        description: 'Tag for filtering a library by new.',
+        id: 'gui.libraryTags.new'
+    },
+    dangerous: {
+        defaultMessage: 'Dangerous',
+        description: 'Tag for filtering a library by dangerous.',
+        id: 'gui.libraryTags.dangerous'
+    },
 });

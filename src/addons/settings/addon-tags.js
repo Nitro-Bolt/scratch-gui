@@ -7,4 +7,7 @@ export default [
     { tag: 'theme', intlLabel: messages.theme },
     { tag: 'recommended', intlLabel: messages.recommended },
     { tag: 'beta', intlLabel: messages.beta },
+    //{ tag: 'divider2', intlLabel: messages.scratch, type: 'divider' },
+    { tag: 'new', intlLabel: messages.new },
+    { tag: 'dangerous', intlLabel: messages.dangerous },
 ];
