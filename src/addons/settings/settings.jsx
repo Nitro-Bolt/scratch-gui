@@ -47,7 +47,6 @@ import ReduxStore from '../settings-store-redux-store';
 
 //import LibraryComponent from './modified-library.jsx';
 import addonTags from './addon-tags.js';
-import messages from "../../lib/libraries/tag-messages.js"
 
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
@@ -912,8 +911,7 @@ AddonList.propTypes = {
     extended: PropTypes.bool.isRequired
 };
 
-const ALL_TAG = {tag: 'all', intlLabel: messages.all};
-const tagListPrefix = [ALL_TAG];
+const tagListPrefix = [];
 
 class AddonSettingsComponent extends React.Component {
     constructor(props) {
