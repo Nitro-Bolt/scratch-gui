@@ -12,7 +12,7 @@ const TagButtonComponent = ({
     iconClassName,
     className,
     useCustomClassName,
-    deleteThisButton
+    deleteThisButton,
     tag, // eslint-disable-line no-unused-vars
     intlLabel,
     ...props
