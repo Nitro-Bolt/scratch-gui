@@ -1135,7 +1135,11 @@ class AddonSettingsComponent extends React.Component {
                                     key={`tag-button-${id}`}
                                     onClick={() => {}/*this.handleTagClick*/}
                                     tag={tagProps.tag}
-                                    intlLabel={tagProps.intlLabel}
+                                    intlLabel={{
+                                        defaultMessage: tagProps.intlLabel.defaultMessage,
+                                        description: tagProps.intlLabel.description,
+                                        id: tagProps.intlLabel.id
+                                    }}
                                 />
                             ))}
                         </div>
