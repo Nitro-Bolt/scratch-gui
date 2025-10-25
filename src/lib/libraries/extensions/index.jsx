@@ -1899,12 +1899,21 @@ if (IsLocal || IsLiveTests) {
             description: 'Legacy extension that was eventually merged into the default toolbox.',
             featured: true
         },
-        {
+        /*{
             name: 'XML',
             extensionId: 'jwXml',
             iconURL: 'https://studio.penguinmod.com/static/assets/73077ae1577fa8af2e8544e19e447491.png',
             tags: ['penguinmod', 'datamgmt'],
             description: 'Enables the creation and getting of XML data. Not yet able to modify data.',
+            extDeveloper: 'jwklong',
+            featured: true
+        },*/
+        {
+            name: 'XML',
+            extensionId: 'jwXML',
+            iconURL: 'https://studio.penguinmod.com/static/assets/664da05abbdb25fc499645258e587890.svg',
+            tags: ['penguinmod', 'datamgmt'],
+            description: 'Creating, parsing and modifying XML data.',
             extDeveloper: 'jwklong',
             featured: true
         },

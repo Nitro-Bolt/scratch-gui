@@ -118,11 +118,15 @@ export default function (vm) {
         const next = ScratchBlocks.ScratchMsgs.translate('LOOKS_NEXTCOSTUME_MENU', 'next costume');
         const previous = ScratchBlocks.ScratchMsgs.translate('LOOKS_PREVIOUSCOSTUME_MENU', 'previous costume');
         const random = ScratchBlocks.ScratchMsgs.translate('LOOKS_RANDOMCOSTUME_MENU', 'random costume');
+        const first = ScratchBlocks.ScratchMsgs.translate('LOOKS_FIRSTCOSTUME_MENU', 'first costume');
+        const last = ScratchBlocks.ScratchMsgs.translate('LOOKS_LASTCOSTUME_MENU', 'last costume');
         if (vm.editingTarget && vm.editingTarget.getCostumes().length > 0) {
             return vm.editingTarget.getCostumes().map(costume => [costume.name, costume.name])
                 .concat([[next, 'next costume'],
                     [previous, 'previous costume'],
-                    [random, 'random costume']]);
+                    [random, 'random costume'],
+                    [first, 'first costume'],
+                    [last, 'last costume']]);
         }
         return [['', '']];
     };
@@ -131,11 +135,15 @@ export default function (vm) {
         const next = ScratchBlocks.ScratchMsgs.translate('LOOKS_NEXTBACKDROP', 'next backdrop');
         const previous = ScratchBlocks.ScratchMsgs.translate('LOOKS_PREVIOUSBACKDROP', 'previous backdrop');
         const random = ScratchBlocks.ScratchMsgs.translate('LOOKS_RANDOMBACKDROP', 'random backdrop');
+        const first = ScratchBlocks.ScratchMsgs.translate('LOOKS_FIRSTBACKDROP', 'first backdrop');
+        const last = ScratchBlocks.ScratchMsgs.translate('LOOKS_LASTBACKDROP', 'last backdrop');
         if (vm.runtime.targets[0] && vm.runtime.targets[0].getCostumes().length > 0) {
             return vm.runtime.targets[0].getCostumes().map(costume => [costume.name, costume.name])
                 .concat([[next, 'next backdrop'],
                     [previous, 'previous backdrop'],
-                    [random, 'random backdrop']]);
+                    [random, 'random backdrop'],
+                    [first, 'first backdrop'],
+                    [last, 'last backdrop']]);
         }
         return [['', '']];
     };
