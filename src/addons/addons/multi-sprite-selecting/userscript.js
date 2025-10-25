@@ -465,7 +465,7 @@ export default async function ({ addon, console, msg }) {
         }
     }
 
-    addon.tab.createEditorContextMenu(
+    /*addon.tab.createEditorContextMenu(
         (ctx) => {
             const Gui = Sprites.getScratchGui(ReduxStore);
             const targets = Gui.targets;
@@ -512,7 +512,7 @@ export default async function ({ addon, console, msg }) {
                 return isSelectingChecked && selectedSprites.has(currentTargetID)
             },
         }
-    );
+    );*/
 
     while (true) {
         await addon.tab.waitForElement("div[class*='sprite-info_row-tertiary']", {
