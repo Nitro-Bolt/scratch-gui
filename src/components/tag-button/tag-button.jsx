@@ -19,8 +19,8 @@ const TagButtonComponent = ({
     <Button
         className={classNames(
             {
-                [styles.tagButton]: useCustomClassName,
-            }
+                [styles.tagButton]: !useCustomClassName,
+            },
             className, {
                 [styles.active]: active
             }
