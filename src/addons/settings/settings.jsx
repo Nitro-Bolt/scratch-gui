@@ -913,7 +913,7 @@ AddonList.propTypes = {
     extended: PropTypes.bool.isRequired
 };
 
-const ALL_TAG = {tag: 'all', intlLabel: messages.allTag};
+const ALL_TAG = {tag: 'all', intlLabel: messages.all};
 const tagListPrefix = [ALL_TAG];
 
 class AddonSettingsComponent extends React.Component {
@@ -1124,22 +1124,19 @@ class AddonSettingsComponent extends React.Component {
                             />
                         </div>
                         <div className={styles.tagWrapper}>
-                            {tagListPrefix.concat(addonTags).map((tagProps, id) => {
-                                console.log(tagProps)
-                                return (
-                                    <TagButton
-                                        active={this.state.selectedTag === tagProps.tag.toLowerCase()}
-                                        className={classNames(
-                                            styles.tagfilterBarItem,
-                                            tagButtonCss.tagButton,
-                                            //tagProps.className
-                                        )}
-                                        key={`tag-button-${id}`}
-                                        onClick={() => {}/*this.handleTagClick*/}
-                                        {...tagProps}
-                                    />
-                                )
-                            })}
+                            {tagListPrefix.concat(addonTags).map((tagProps, id) => (
+                                <TagButton
+                                    active={this.state.selectedTag === tagProps.tag.toLowerCase()}
+                                    className={classNames(
+                                        styles.tagfilterBarItem,
+                                        tagButtonCss.tagButton,
+                                        //tagProps.className
+                                    )}
+                                    key={`tag-button-${id}`}
+                                    onClick={() => {}/*this.handleTagClick*/}
+                                    {...tagProps}
+                                />
+                            ))}
                         </div>
                     </div>
                     {this.state.dirty && (
