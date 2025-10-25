@@ -32,7 +32,7 @@ export default async ({ addon, console, msg }) => {
   );
   addon.tab.createEditorContextMenu(
     (ctx) => {
-      addon.tab.traps.vm.reorderTarget(ctx.index + 1, getTrueTargets(addon.tab.traps.vm.runtime.targets).length - 1);
+      addon.tab.traps.vm.reorderTarget(ctx.index + 1, Infinity);
       queueMicrotask(() => {
         addon.tab.traps.vm.emitTargetsUpdate();
         addon.tab.traps.vm.runtime.emitProjectChanged();
