@@ -1084,7 +1084,7 @@ class AddonSettingsComponent extends React.Component {
         const index = this.state.selectedTags.indexOf(tag);
         if (!index > -1) {
             this.setState({
-                selectedTags: this.state.selectedTags.splice(index, 1);
+                selectedTags: this.state.selectedTags.splice(index, 1)
             });
         } else {
             this.setState({
