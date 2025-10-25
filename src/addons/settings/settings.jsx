@@ -874,9 +874,6 @@ class AddonList extends React.Component {
             const addons = this.search.search(this.props.search)
                 .slice(0, 20)
                 .map(({ index }) => this.props.addons[index]);
-            console.log(addons)
-            console.log(this.props.addons)
-            console.log(this.search.search(this.props.search))
             let newAddons
             if (tags.length === 0) {
                 newAddons = addons
@@ -904,11 +901,9 @@ class AddonList extends React.Component {
                     />
                 </div>
             );
-        } else if (this.props.tags) {
+        } else if (this.props.tags.length !== 0) {
             let tags = this.props.tags;
-            const addons = this.search.search("")
-                .slice(0, 20)
-                .map(({ index }) => this.props.addons[index]);
+            const addons = this.props.addons;
             let newAddons = addons.filter((addon) => {
                 const addonTags = addon.manifest.tags;
                 const checks = tags.map((tag) => {
