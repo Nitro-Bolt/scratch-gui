@@ -41,7 +41,7 @@ class Search {
         this.items = texts.map(parseTexts);
     }
 
-    search (query, tags) {
+    search (query) {
         const terms = splitToWords(query);
         const result = [];
         const processItem = item => {

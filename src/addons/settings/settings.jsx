@@ -871,9 +871,10 @@ class AddonList extends React.Component {
             if (this.props.tags) {
                 tags = this.props.tags;
             }
-            const addons = this.search.search(this.props.search, tags)
+            const addons = this.search.search(this.props.search)
                 .slice(0, 20)
                 .map(({ index }) => this.props.addons[index]);
+            console.log(addons)
             if (addons.length === 0) {
                 return (
                     <div className={styles.noResults}>
@@ -969,9 +970,9 @@ class AddonSettingsComponent extends React.Component {
             }
             result[id] = addonState;
         }
-        console.log("AddonState: ", result)
-        console.log("Supported Addons: ", Object.entries(supportedAddons))
-        console.log("Unsupported Addons?: ", Object.entries(unsupportedAddons))
+        //console.log("AddonState: ", result)
+        //console.log("Supported Addons: ", Object.entries(supportedAddons))
+        //console.log("Unsupported Addons?: ", Object.entries(unsupportedAddons))
         return result;
     }
     handleSettingStoreChanged(e) {
