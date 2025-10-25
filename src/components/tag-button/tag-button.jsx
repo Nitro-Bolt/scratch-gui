@@ -11,13 +11,16 @@ const TagButtonComponent = ({
     active,
     iconClassName,
     className,
+    useCustomClassName,
     tag, // eslint-disable-line no-unused-vars
     intlLabel,
     ...props
 }) => (
     <Button
         className={classNames(
-            styles.tagButton,
+            {
+                [styles.tagButton]: useCustomClassName,
+            }
             className, {
                 [styles.active]: active
             }
@@ -37,6 +40,7 @@ const TagButtonComponent = ({
 TagButtonComponent.propTypes = {
     ...Button.propTypes,
     active: PropTypes.bool,
+    useCustomClassName: PropTypes.bool,
     intlLabel: PropTypes.oneOfType([
         PropTypes.shape({
             defaultMessage: PropTypes.string,
