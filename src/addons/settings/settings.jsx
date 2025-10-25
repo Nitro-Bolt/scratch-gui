@@ -1184,6 +1184,9 @@ class AddonSettingsComponent extends React.Component {
                                         styles.tagButton,
                                         //tagProps.className
                                     )}
+                                    style={{
+                                        background: this.state.selectedTags.indexOf(tagProps.tag.toLowerCase()) > -1 ? "#ff8c1a" : tagProps.color ?? "#80f41a"
+                                    }}
                                     deleteThisButton={tagProps.tag.toLowerCase() == 'delete'}
                                     key={`tag-button-${id}`}
                                     onClick={() => {this.handleTagClick(tagProps.tag.toLowerCase())}}
