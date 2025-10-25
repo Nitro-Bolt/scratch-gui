@@ -845,9 +845,9 @@ a:active, a:focus {
     padding: .375rem .625rem;
     margin-bottom: 6px;
     background: $motion-primary;
-    border-radius: 1rem;
+    border-radius: .625rem;
     color: $ui-white;
-    height: $library-filter-bar-height;
+    height: 32px;
 }
 
 .tag-button-icon {
