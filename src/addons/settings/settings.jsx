@@ -1086,10 +1086,12 @@ class AddonSettingsComponent extends React.Component {
             this.setState({
                 selectedTags: this.state.selectedTags.splice(index, 1)
             });
+            console.log(this.state.selectedTags)
         } else {
             this.setState({
                 selectedTags: this.state.selectedTags.push(tag)
             });
+            console.log(this.state.selectedTags)
         }
     }
     
