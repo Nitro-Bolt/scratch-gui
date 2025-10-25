@@ -826,6 +826,7 @@ a:active, a:focus {
     flex-wrap: wrap;
     height: $library-filter-bar-height;
     overflow: hidden;
+    gap: 8px;
 }
 
 .spinner-wrapper {
