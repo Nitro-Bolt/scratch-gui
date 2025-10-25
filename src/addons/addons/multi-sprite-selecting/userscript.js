@@ -469,7 +469,7 @@ export default async function ({ addon, console, msg }) {
         (ctx) => {
             const Gui = Sprites.getScratchGui(ReduxStore);
             const targets = Gui.targets;
-            const currentTargetID = Sprites.getSpriteFromName(targets, Sprites.getSpriteFromIndex(ctx.index).name).id;
+            const currentTargetID = Sprites.getSpriteFromName(targets, Sprites.getSpriteFromIndex(ctx.index + 1).name).id;
             selectedSprites.add(currentTargetID)
             updateSelectedText();
             highlightSelected();
@@ -483,7 +483,7 @@ export default async function ({ addon, console, msg }) {
             condition: (ctx) => {
                 const Gui = Sprites.getScratchGui(ReduxStore);
                 const targets = Gui.targets;
-                const currentTargetID = Sprites.getSpriteFromName(targets, Sprites.getSpriteFromIndex(ctx.index).name);
+                const currentTargetID = Sprites.getSpriteFromName(targets, Sprites.getSpriteFromIndex(ctx.index + 1).name);
 
                 return isSelectingChecked && !selectedSprites.has(currentTargetID)
             },
