@@ -120,5 +120,6 @@ if (localStorage) {
 export {
     detectTheme,
     persistTheme,
-    persistThemeCustom
+    persistThemeCustom,
+    ACCENT_KEY
 }

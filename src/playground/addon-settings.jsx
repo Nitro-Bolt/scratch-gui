@@ -23,6 +23,7 @@ import Settings from '../addons/settings/settings.jsx';
 import appTarget from './app-target';
 
 import {LANGUAGE_KEY} from '../lib/detect-locale.js';
+import {ACCENT_KEY} from '../lib/themes/themePersistance.js';
 
 import entries from '../addons/generated/l10n-entries.js';
 import settings_entries from '../addons/generated/l10n-settings-entries.js';
@@ -104,12 +105,18 @@ const waitForStore = setInterval(() => {
         }
 
         let previousThemeValue = null;
+        let previousAccentValue = null;
 
         setInterval(() => {
             const themeValue = getInitialDarkMode() ? 'dark' : 'light';
             if (themeValue !== previousThemeValue) {
                 document.body.setAttribute("theme", themeValue)
                 previousThemeValue = themeValue;
+            }
+            const accentValue = localStorage.getItem(ACCENT_KEY)
+            if (accentValue !== previousAccentValue) {
+                document.body.setAttribute("coloraccent", accentValue)
+                previousAccentValue = accentValue;
             }
         }, 50);
 
