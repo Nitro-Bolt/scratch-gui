@@ -847,7 +847,7 @@ a:active, a:focus {
     background: $motion-primary;
     border-radius: .625rem;
     color: $ui-white;
-    height: 32px;
+    height: 28px;
 }
 
 .tag-button-icon {
