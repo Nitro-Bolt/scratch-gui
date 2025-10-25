@@ -476,7 +476,7 @@ export default async function ({ addon, console, msg }) {
             runIsChecked();
         },
         {
-            ["sprite"],
+            types: ["sprite"],
             position: "assetContextMenuAfterExport",
             order: 3,
             label: "Select Sprite",
@@ -500,7 +500,7 @@ export default async function ({ addon, console, msg }) {
             runIsChecked();
         },
         {
-            ["sprite"],
+            types: ["sprite"],
             position: "assetContextMenuAfterExport",
             order: 4,
             label: "Deselect Sprite",
