@@ -925,6 +925,7 @@ class AddonSettingsComponent extends React.Component {
         this.handleSearch = this.handleSearch.bind(this);
         this.handleClickSearchButton = this.handleClickSearchButton.bind(this);
         this.handleClickVersion = this.handleClickVersion.bind(this);
+        this.handleClickVersion = this.handleClickVersion.bind(this);
         this.searchRef = this.searchRef.bind(this);
         this.searchBar = null;
         this.state = {
@@ -933,7 +934,7 @@ class AddonSettingsComponent extends React.Component {
             search: location.hash ? location.hash.substr(1) : '',
             extended: false,
             ...this.readFullAddonState(),
-            selectedTag: 'all'
+            selectedTags: []
         };
         if (Channels.changeChannel) {
             Channels.changeChannel.addEventListener('message', () => {
@@ -1079,6 +1080,14 @@ class AddonSettingsComponent extends React.Component {
             e.preventDefault();
         }
     }
+    handleTagClick(tag) {
+        const index = this.state.selectedTags.indexOf(tag);
+        if (!index > -1) {
+            this.state.selectedTags.splice(index, 1);
+        } else {
+            this.state.selectedTags.push(tag)
+        }
+    }
     
     render() {
         const addonState = Object.entries(supportedAddons).map(([id, manifest]) => ({
@@ -1123,14 +1132,14 @@ class AddonSettingsComponent extends React.Component {
                         <div className={styles.tagWrapper}>
                             {tagListPrefix.concat(addonTags).map((tagProps, id) => (
                                 <TagButton
-                                    active={this.state.selectedTag === tagProps.tag.toLowerCase()}
+                                    active={this.state.selectedTags.indexOf(tagProps.tag.toLowerCase()) > -1}
                                     className={classNames(
                                         styles.tagfilterBarItem,
                                         styles.tagButton,
                                         //tagProps.className
                                     )}
                                     key={`tag-button-${id}`}
-                                    onClick={() => {}/*this.handleTagClick*/}
+                                    onClick={() => {this.handleTagClick(tagProps.tag.toLowerCase())}}
                                     useCustomClassName={true}
                                     {...tagProps}
                                 />
