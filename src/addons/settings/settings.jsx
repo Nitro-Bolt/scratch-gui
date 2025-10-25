@@ -911,8 +911,6 @@ AddonList.propTypes = {
     extended: PropTypes.bool.isRequired
 };
 
-const tagListPrefix = [];
-
 class AddonSettingsComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -1084,10 +1082,14 @@ class AddonSettingsComponent extends React.Component {
         const index = this.state.selectedTags.indexOf(tag);
         if (index > -1) {
             this.state.selectedTags.splice(index, 1)
-            console.log(this.state.selectedTags)
+            this.setState({
+                selectedTags: this.state.selectedTags
+            });
         } else {
             this.state.selectedTags.push(tag)
-            console.log(this.state.selectedTags)
+            this.setState({
+                selectedTags: this.state.selectedTags
+            });
         }
     }
     
