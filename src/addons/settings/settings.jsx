@@ -867,7 +867,11 @@ class AddonList extends React.Component {
     }
     render() {
         if (this.props.search) {
-            const addons = this.search.search(this.props.search)
+            let tags = null;
+            if (this.props.tags) {
+                tags = this.props.tags;
+            }
+            const addons = this.search.search(this.props.search, tags)
                 .slice(0, 20)
                 .map(({ index }) => this.props.addons[index]);
             if (addons.length === 0) {
@@ -908,6 +912,7 @@ AddonList.propTypes = {
         manifest: PropTypes.shape({}).isRequired
     })).isRequired,
     search: PropTypes.string.isRequired,
+    tags: PropTypes.array.isRequired,
     extended: PropTypes.bool.isRequired
 };
 
@@ -1178,6 +1183,7 @@ class AddonSettingsComponent extends React.Component {
                             <AddonList
                                 addons={addonState}
                                 search={this.state.search}
+                                tags={this.state.selectedTags}
                                 extended={this.state.extended}
                             />
                             <div className={styles.footerButtons}>
