@@ -874,8 +874,18 @@ class AddonList extends React.Component {
             const addons = this.search.search(this.props.search)
                 .slice(0, 20)
                 .map(({ index }) => this.props.addons[index]);
-            console.log(addons)
-            if (addons.length === 0) {
+            if (tags == null) {
+                newAddons = addons
+            } else {
+                newAddons = addons.filter((addon) => {
+                    const addonTags = addon.manifest.tags;
+                    const checks = tags.map((tag) => {
+                        return !!addonTags.includes(tag)
+                    });
+                    return !!checks.includes(false)
+                })
+            }
+            if (newAddons.length === 0) {
                 return (
                     <div className={styles.noResults}>
                         {settingsTranslations.noResults}
@@ -885,7 +895,34 @@ class AddonList extends React.Component {
             return (
                 <div>
                     <InternalAddonList
-                        addons={addons}
+                        addons={newAddons}
+                        extended={this.props.extended}
+                    />
+                </div>
+            );
+        } else if (this.props.tags) {
+            let tags = this.props.tags;
+            const addons = this.search.search("")
+                .slice(0, 20)
+                .map(({ index }) => this.props.addons[index]);
+            let newAddons = addons.filter((addon) => {
+                const addonTags = addon.manifest.tags;
+                const checks = tags.map((tag) => {
+                    return !!addonTags.includes(tag)
+                });
+                return !!checks.includes(false)
+            })
+            if (newAddons.length === 0) {
+                return (
+                    <div className={styles.noResults}>
+                        {settingsTranslations.noResults}
+                    </div>
+                );
+            }
+            return (
+                <div>
+                    <InternalAddonList
+                        addons={newAddons}
                         extended={this.props.extended}
                     />
                 </div>
