@@ -42,7 +42,6 @@ import '../polyfill';
 import '../../lib/normalize.css';
 
 import TagButton from '../../containers/tag-button.jsx';
-import tagButtonCss from '../../components/tag-button/tag-button.css';
 
 import ReduxStore from '../settings-store-redux-store';
 
@@ -1129,7 +1128,7 @@ class AddonSettingsComponent extends React.Component {
                                     active={this.state.selectedTag === tagProps.tag.toLowerCase()}
                                     className={classNames(
                                         styles.tagfilterBarItem,
-                                        tagButtonCss.tagButton,
+                                        styles.tagButton,
                                         //tagProps.className
                                     )}
                                     key={`tag-button-${id}`}

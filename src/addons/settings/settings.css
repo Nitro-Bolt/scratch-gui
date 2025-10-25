@@ -839,3 +839,21 @@ a:active, a:focus {
 .tag-filter-bar-item {
     margin-right: .75rem;
 }
+
+.tag-button {
+    padding: .375rem .625rem;
+    margin-bottom: 6px;
+    background: $motion-primary;
+    border-radius: 1rem;
+    color: $ui-white;
+    height: $library-filter-bar-height;
+}
+
+.tag-button-icon {
+    max-width: 1rem;
+    max-height: 1rem;
+}
+
+.active {
+    background: $data-primary;
+}
