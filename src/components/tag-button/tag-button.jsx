@@ -12,6 +12,7 @@ const TagButtonComponent = ({
     iconClassName,
     className,
     useCustomClassName,
+    deleteThisButton
     tag, // eslint-disable-line no-unused-vars
     intlLabel,
     ...props
@@ -20,6 +21,7 @@ const TagButtonComponent = ({
         className={classNames(
             {
                 [styles.tagButton]: !useCustomClassName,
+                [styles.hidden]: deleteThisButton,
             },
             className, {
                 [styles.active]: active
@@ -41,6 +43,7 @@ TagButtonComponent.propTypes = {
     ...Button.propTypes,
     active: PropTypes.bool,
     useCustomClassName: PropTypes.bool,
+    deleteThisButton: PropTypes.bool,
     intlLabel: PropTypes.oneOfType([
         PropTypes.shape({
             defaultMessage: PropTypes.string,

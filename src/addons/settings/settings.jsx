@@ -1142,6 +1142,7 @@ class AddonSettingsComponent extends React.Component {
                                         styles.tagButton,
                                         //tagProps.className
                                     )}
+                                    deleteThisButton={tagProps.tag.toLowerCase() == 'delete'}
                                     key={`tag-button-${id}`}
                                     onClick={() => {this.handleTagClick(tagProps.tag.toLowerCase())}}
                                     useCustomClassName={true}

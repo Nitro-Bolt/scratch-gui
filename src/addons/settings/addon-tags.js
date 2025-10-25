@@ -1,5 +1,6 @@
 import messages from "../../lib/libraries/tag-messages.js"
 export default [
+    { tag: 'delete', intlLabel: '' },
     { tag: 'dinosaurmod', intlLabel: messages.dinosaurmod },
     { tag: 'penguinmod', intlLabel: messages.penguinmod },
     //{ tag: 'divider1', intlLabel: messages.scratch, type: 'divider' },
