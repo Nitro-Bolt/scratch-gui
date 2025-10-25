@@ -1124,24 +1124,22 @@ class AddonSettingsComponent extends React.Component {
                             />
                         </div>
                         <div className={styles.tagWrapper}>
-                            {tagListPrefix.concat(addonTags).map((tagProps, id) => (
-                                <TagButton
-                                    active={this.state.selectedTag === tagProps.tag.toLowerCase()}
-                                    className={classNames(
-                                        styles.tagfilterBarItem,
-                                        tagButtonCss.tagButton,
-                                        //tagProps.className
-                                    )}
-                                    key={`tag-button-${id}`}
-                                    onClick={() => {}/*this.handleTagClick*/}
-                                    tag={tagProps.tag}
-                                    intlLabel={{
-                                        defaultMessage: tagProps.intlLabel.defaultMessage,
-                                        description: tagProps.intlLabel.description,
-                                        id: tagProps.intlLabel.id
-                                    }}
-                                />
-                            ))}
+                            {tagListPrefix.concat(addonTags).map((tagProps, id) => {
+                                console.log(tagProps)
+                                return (
+                                    <TagButton
+                                        active={this.state.selectedTag === tagProps.tag.toLowerCase()}
+                                        className={classNames(
+                                            styles.tagfilterBarItem,
+                                            tagButtonCss.tagButton,
+                                            //tagProps.className
+                                        )}
+                                        key={`tag-button-${id}`}
+                                        onClick={() => {}/*this.handleTagClick*/}
+                                        {...tagProps}
+                                    />
+                                )
+                            })}
                         </div>
                     </div>
                     {this.state.dirty && (
