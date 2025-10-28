@@ -5,7 +5,8 @@ const manifest = {
   "name": "Customizable block shape",
   "description": "Adjust the padding, corner radius, and notch height of blocks.",
   "tags": [
-    "theme"
+    "theme",
+    "newSettings"
   ],
   "credits": [
     {
@@ -63,6 +64,15 @@ const manifest = {
       "default": 100, // 100
       "max": 150
     }
+    {
+      "dynamic": true,
+      "name": "Block icon size (0-200%)",
+      "id": "iconSize",
+      "type": "integer",
+      "min": 0,
+      "default": 100,
+      "max": 200
+    },
   ],
   "presets": [
     {

@@ -83,6 +83,7 @@ import _sounds_newgrounds_button from "../addons/sounds-newgrounds-button/_manif
 import _toolbox_full_blocks_on_hover from "../addons/toolbox-full-blocks-on-hover/_manifest_entry.js";
 import _merge_costumes from "../addons/merge-costumes/_manifest_entry.js";
 import _copy_reporter from "../addons/copy-reporter/_manifest_entry.js";
+import _block_pins from "../addons/block-pins/_manifest_entry.js";
 
 export default {
   "cat-blocks": _cat_blocks,
@@ -170,4 +171,5 @@ export default {
   "toolbox-full-blocks-on-hover": _toolbox_full_blocks_on_hover,
   "merge-costumes": _merge_costumes,
   "copy-reporter": _copy_reporter,
+  "block-pins": _block_pins,
 };

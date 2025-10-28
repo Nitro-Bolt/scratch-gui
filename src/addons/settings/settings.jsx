@@ -122,7 +122,7 @@ const groupAddons = () => {
     const manifests = Object.values(supportedAddons);
     for (let index = 0; index < manifests.length; index++) {
         const manifest = manifests[index];
-        if (manifest.tags.includes('new')) {
+        if (manifest.tags.includes('new') || manifest.tags.includes('newSettings')) {
             groups.new.addons.push(index);
         } else if (manifest.tags.includes('danger') || manifest.noCompiler) {
             groups.danger.addons.push(index);

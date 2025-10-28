@@ -9,5 +9,6 @@ export default [
     { tag: 'beta', intlLabel: messages.beta, color: '#fd662b' },
     //{ tag: 'divider2', intlLabel: messages.scratch, type: 'divider' },
     { tag: 'new', intlLabel: messages.new, color: '#b117f8' },
+    { tag: 'newSettings', intlLabel: messages.newSettings, color: '#b117f8' },
     { tag: 'danger', intlLabel: messages.dangerous, color: '#fd2b2b' },
 ];

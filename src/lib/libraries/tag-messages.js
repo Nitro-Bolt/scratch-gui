@@ -266,4 +266,9 @@ export default defineMessages({
         description: 'Tag for filtering a library by dangerous.',
         id: 'gui.libraryTags.dangerous'
     },
+    newSettings: {
+        defaultMessage: 'New Settings',
+        description: 'Tag for filtering a library by new settings.',
+        id: 'gui.libraryTags.newSettings'
+    },
 });
