@@ -122,7 +122,7 @@ const groupAddons = () => {
     const manifests = Object.values(supportedAddons);
     for (let index = 0; index < manifests.length; index++) {
         const manifest = manifests[index];
-        if (manifest.tags.includes('new') || manifest.tags.includes('newSettings')) {
+        if (manifest.tags.includes('new') || manifest.tags.includes('newsettings')) {
             groups.new.addons.push(index);
         } else if (manifest.tags.includes('danger') || manifest.noCompiler) {
             groups.danger.addons.push(index);
@@ -235,7 +235,7 @@ const Tags = ({ manifest }) => (
                 {settingsTranslations.tagNew}
             </span>
         )}
-        {manifest.tags.includes('newSettings') && (
+        {manifest.tags.includes('newsettings') && (
             <span className={classNames(styles.tag, styles.tagNew)}>
                 {settingsTranslations.tagNewSettings}
             </span>

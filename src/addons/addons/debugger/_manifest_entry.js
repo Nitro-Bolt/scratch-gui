@@ -88,7 +88,7 @@ const manifest = {
   ],
   "tags": [
     "beta",
-    "newSettings"
+    "newsettings"
   ],
   "enabledByDefault": false
 };

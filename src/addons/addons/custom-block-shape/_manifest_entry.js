@@ -6,7 +6,7 @@ const manifest = {
   "description": "Adjust the padding, corner radius, and notch height of blocks.",
   "tags": [
     "theme",
-    "newSettings"
+    "newsettings"
   ],
   "credits": [
     {
