@@ -63,7 +63,7 @@ const manifest = {
       "min": 0,
       "default": 100, // 100
       "max": 150
-    }
+    },
     {
       "dynamic": true,
       "name": "Block icon size (0-200%)",
