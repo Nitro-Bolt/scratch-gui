@@ -2,53 +2,59 @@ import React from 'react';
 import bindAll from 'lodash.bindall';
 import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
 import { connect } from 'react-redux';
-import { injectIntl, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import VM from 'scratch-vm';
 import VariableTab from '../components/variables-tab/variables-tab.jsx';
 import PropTypes from 'prop-types';
-import {highlightTarget} from '../reducers/targets';
+import { highlightTarget } from '../reducers/targets';
 
 class VariableManager extends React.Component {
   constructor (props) {
     super(props);
-
+    
     bindAll(this, [
-      'clearLocalVariables',
-      '_reload',
       'reload',
-      'handleSpriteHighlighting'
+      '_reloadGlobalVariable',
+      '_reloadLocalVariable',
+      '_handleSpriteHighlighting',
+      '_forceReloadLocalVariable'
     ]);
 
     this.state = {
-      localVariables: {},
-      globalVariables: {}
+      globalVariables: {},
+      clones: []
     }
 
     /* State format
     {
-      localVariables: {
-        [variableId]: {
-          [cloneId]: Variable Object,
-          ...
-        },
+      globalVariable: {
+        [id]: Variable Object,
         ...
       },
-
-      globalVariable: {
-        [variableId]: Variable Object,
+      clones: [
+        {
+          id: String,
+          variables: {
+            [id]: Variable Object,
+            ...
+          }
+        },
         ...
-      }
+      ]
     }
     */
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.editingTarget.id !== this.props.editingTarget.id) {
+      this._forceReloadLocalVariable();
+    }
   }
 
   componentDidMount() {
     this.props.vm.runtime.on('RUNTIME_STEP_START', this.reload);
     this.props.vm.runtime.on('PROJECT_LOADED', this.reload);
     this.props.vm.runtime.on('TOOLBOX_EXTENSIONS_NEED_UPDATE', this.reload);
-
-    this.props.vm.runtime.on('targetWasCreated', this.clearLocalVariables);
-    this.props.vm.runtime.on('targetWasRemoved ', this.clearLocalVariables);
 
     this.reload()
   }
@@ -57,128 +63,151 @@ class VariableManager extends React.Component {
     this.props.vm.runtime.off('RUNTIME_STEP_START', this.reload);
     this.props.vm.runtime.off('PROJECT_LOADED', this.reload);
     this.props.vm.runtime.off('TOOLBOX_EXTENSIONS_NEED_UPDATE', this.reload);
-
-    this.props.vm.runtime.off('targetWasCreated', this.clearLocalVariables);
-    this.props.vm.runtime.off('targetWasRemoved ', this.clearLocalVariables);
   }
 
-  clearLocalVariables() {
-    this.setState({
-      localVariables: {}
-    })
-    this.reload()
-  }
-
-  _reload() {
-    // reload local variables
-    if (!this.props.sprite.clones[0].isStage) {
-      let didStateChange = false
-      let newVariableState = {}
-
-      for (const key in this.props.sprite.clones[0].variables) {
-        newVariableState[key] = {}
-
-        for (let i = 0; i < this.props.sprite.clones.length; i++) {
-          const newVariable = Object.assign({}, this.props.sprite.clones[i].variables[key])
-          const oldVariable = this.state.localVariables[key]
-
-          if (!oldVariable) {
-            didStateChange = true
-            newVariableState[key][this.props.sprite.clones[i].id] = structuredClone(newVariable)
-            continue
-          }
-
-          if (oldVariable[this.props.sprite.clones[i].id].name !== newVariable.name || oldVariable[this.props.sprite.clones[i].id].value !== newVariable.value) {
-            didStateChange = true
-          }
-
-          newVariableState[key][this.props.sprite.clones[i].id] = structuredClone(newVariable)
-        }
-      }
-
-      if (didStateChange) {
-        this.setState({
-          localVariables: structuredClone(newVariableState)
-        })
-      }
-    }
-
-    // reload global variables
-    const newVariables = Object.values(this.props.stage.variables)
+  _reloadGlobalVariable() {
+    const stage = this.props.stage
+    if(!stage) return
+    const newVariables = Object.values(stage.variables)
     const oldVariables = this.state.globalVariables
 
-    for (let i = 0; i < newVariables.length; i++) {
-      const varToCheck = oldVariables[newVariables[i].id]
+    for (const id in newVariables) {
+      const varToCheck = oldVariables[id]
       
       if (!varToCheck) {
         return this.setState({
-          globalVariables: structuredClone(this.props.stage.variables)
+          globalVariables: structuredClone(stage.variables)
         })
       }
 
-      if (varToCheck.name !== newVariables[i].name || varToCheck.value !== newVariables[i].value) {
+      if (varToCheck.name !== newVariables[id].name || varToCheck.value !== newVariables[id].value) {
         return this.setState({
-          globalVariables: structuredClone(this.props.stage.variables)
+          globalVariables: structuredClone(stage.variables)
         })
       }
     }
+  }
+
+  _reloadLocalVariable() {
+    const clones = this.props.sprite.clones.map(({id, variables}, i) => (
+      {
+        id: id,
+        variables: variables
+      }
+    ))
+
+    for (let i = 0; i < clones.length; i++) {
+      const newVariables = clones[i].variables
+      const oldClones = this.state.clones[i]
+      const oldVariables = oldClones?.variables
+
+      if (!oldClones || !oldVariables) {
+        return this.setState({
+            clones: structuredClone(clones)
+          })
+      }
+
+      for (const id in newVariables) {
+        const varToCheck = oldVariables[id]
+        
+        if (!varToCheck) {
+          return this.setState({
+            clones: structuredClone(clones)
+          })
+        }
+
+        if (varToCheck.name !== newVariables[id].name || varToCheck.value !== newVariables[id].value) {
+          return this.setState({
+            clones: structuredClone(clones)
+          })
+        }
+      }
+    }
+  }
+
+  _forceReloadLocalVariable() {
+    const clones = this.props.sprite.clones.map(({id, variables}, i) => (
+      {
+        id: id,
+        variables: variables
+      }
+    ))
+
+    this.setState({
+      clones: structuredClone(clones)
+    })
   }
 
   reload() {
     try {
-        this._reload();
+      this._reloadGlobalVariable();
+      this._reloadLocalVariable();
     } catch (e) {
         console.error(e);
     }
   }
 
-  handleSpriteHighlighting(id) {
-    this.props.onHighlightTarget(id)
+  _handleSpriteHighlighting(id) {
+    this.props.dispatchHighlightTarget(id)
   }
 
   render () {
+    // The `clones` object needs to be formatted because it have a lot of other useless propeties that should not be copied to State
+    // But on first load, the formating won't run so we need to pass the `clones` object directly
+    // IDK why `globalVariables` aren't affected by this and IDC, it works
+    const isClonesFormatted = this.state.clones.length > 0
     return (
       <VariableTab
-        localVariables={this.state.localVariables}
-        globalVariables={this.state.globalVariables}
-        editingTarget={this.props.editingTarget}
         isRtl={this.props.isRtl}
-        highlightSprite={this.handleSpriteHighlighting}
+        globalVariables={this.state.globalVariables}
+        clones={isClonesFormatted ? this.state.clones : this.props.editingTarget.sprite.clones}
+        handleSpriteHighlighting={this._handleSpriteHighlighting}
+        intl={this.props.intl}
+        isStage={this.props.editingTarget.isStage}
       />
     )
   }
 }
 
 VariableManager.propTypes = {
+  editingTarget: PropTypes.shape({
+    [PropTypes.string]: PropTypes.shape({
+      id: PropTypes.string,
+      variables: PropTypes.shape({
+        [PropTypes.string]: PropTypes.shape({
+          id: PropTypes.string,
+          value: PropTypes.string
+        }),
+      }),
+    }),
+  }),
+  stage: PropTypes.shape({
+    variables: PropTypes.shape({
+      [PropTypes.string]: PropTypes.shape({
+        id: PropTypes.string,
+        value: PropTypes.string
+      }),
+    }),
+  }),
   intl: intlShape,
   isRtl: PropTypes.bool,
-  stage: PropTypes.shape({
-    variables: PropTypes.object
-  }),
-  sprite: PropTypes.shape({
-    clones: PropTypes.array.isRequired
-  }),
-  editingTarget: PropTypes.object,
   vm: PropTypes.instanceOf(VM).isRequired,
 }
 
 const mapStateToProps = state => ({
   isRtl: state.locales.isRtl,
   stage: state.scratchGui.targets.stage,
-  sprite: state.scratchGui.vm.editingTarget.sprite,
   editingTarget: state.scratchGui.vm.editingTarget,
-  vm: state.scratchGui.vm,
+  sprite: state.scratchGui.vm.editingTarget.sprite,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onHighlightTarget: id => {
-    dispatch(highlightTarget(id));
-  }
+  dispatchHighlightTarget: id => dispatch(highlightTarget(id))
 });
 
 export default errorBoundaryHOC('Variable Manager')(
-  injectIntl(connect(
+  connect(
     mapStateToProps,
     mapDispatchToProps
-  )(VariableManager))
+  )(VariableManager)
 );

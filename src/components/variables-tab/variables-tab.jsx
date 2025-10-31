@@ -1,10 +1,8 @@
 import React from 'react';
 import styles from './variables-tab.css'
-import { defineMessages, intlShape, injectIntl } from 'react-intl';
-import PropTypes from 'prop-types';
-
-import VariableDropdown from './variable-dropdown.jsx';
-import Box from '../box/box.jsx';
+import { defineMessages, injectIntl } from 'react-intl';
+import dropdownCaret from './dropdown-caret.svg';
+import classNames from 'classnames';
 
 const messages = defineMessages({
   forThisSprite: {
@@ -21,145 +19,174 @@ const messages = defineMessages({
     id: 'gui.variableManager.noVariables',
     description: 'Label when there is no variables of any type',
     defaultMessage: 'No Variables'
+  },
+  original: {
+    id: 'gui.variableManager.original',
+    description: 'Label for the original sprite.',
+    defaultMessage: 'Original'
+  },
+  clone: {
+    id: 'gui.variableManager.clone',
+    description: 'Label for a clone followed by a space. Will be used like: "Clone 1", "Clone 2", etc...',
+    defaultMessage: 'Clone '
   }
 })
 
-class VariableTab extends React.Component {
-  constructor (props) {
-    super(props)
-  }
+function _noVariablesItem(intl) {
+  return (
+    <div className={ styles.box }>
+      { intl.formatMessage(messages.noVariables) }
+    </div>
+  )
+}
 
-  variableItem(data) { 
-    return (
-      <tr key={data.id}>
+function _isList(varr) {
+  return varr.type === 'list';
+}
+
+function Variables({variables, intl}) {
+  let final = []
+  for (const id in variables) {
+    const currentVar = variables[id]
+    
+    final.push(
+      <tr key={id}>
         <td className={styles.variableName}>
-          <span>{data.name}</span>
+          <input value={currentVar.name}/>
         </td>
         <td className={styles.variableValue}>
-          <span>{data.value}</span>
+          <input value={_isList(currentVar) ? 'List not supported yet' : currentVar.value}/>
         </td>
       </tr>
     )
   }
 
-  renderGlobalVariable() {
-    const variables = Object.values(this.props.globalVariables).filter(varr => varr.type === '' )
-
-    if (variables.length) { 
-      return (
-        <table>
-          <tbody>{ variables.map(this.variableItem) }</tbody>
-        </table>
-      )
-    } else {
-      return <div className={ styles.box } style={{textAlign: 'center'}}>
-                { this.props.intl.formatMessage(messages.noVariables) }
-              </div>
-    }
-  }
-
-  mapClonesInLocalVariables(clones) {
-    let final = []
-    for (const id in clones) {
-      const clone = clones[id]
-      
-      final.push(
-      <tr key={id}>
-        <td className={styles.variableName} style={{cursor: "pointer"}} onClick={() => {this.props.highlightSprite(id)}}>
-          <span>{this.props.editingTarget.id === id ? this.props.editingTarget.sprite.name : 'Clone ' + Object.keys(clones).indexOf(id)}</span>
-        </td>
-        <td className={styles.variableValue}>
-          <span>{clone.value}</span>
-        </td>
-      </tr>)
-    }
-    return <table><tbody>
-      { final }
-    </tbody></table>
-  }
-
- /*
- <tr key={variables[i].id}>
-    <td >
-      <span>{variables[i].name}</span>
-    </td>
-    <td className={styles.variableValue}>
-      { this.mapClonesInLocalVariables(this.props.localVariables[variables[i].id]) }
-    </td>
-  </tr>
- */
-
-  renderLocalVariable() {
-    const variables = Object.values(this.props.editingTarget.variables).filter(varr => varr.type === '' )
-
-    let final = []
-    if (variables.length) { 
-      for (let i = 0; i < variables.length; i++) {
-        final.push(
-          <VariableDropdown
-            headerContent={(
-              <h4 className={styles.variableDropdownHeaderLabel}>{variables[i].name}</h4>
-            )}
-            bodyContent={(
-              <span className={styles.variableValue}>
-                { this.mapClonesInLocalVariables(this.props.localVariables[variables[i].id]) }
-              </span>
-            )}
-          />
-        )
-      }
-      return final
-    } else {
-      return <div className={ styles.box } style={{textAlign: 'center'}}>
-                { this.props.intl.formatMessage(messages.noVariables) }
-              </div>
-    }
-  }
-
-  render () {
-    return (
-      <div className={styles.wrapper}>
-        <div className={styles.container}>
-          <VariableDropdown
-            headerContent={( 
-              <span className={styles.variableDropdownHeaderLabel}>{ this.props.intl.formatMessage(messages.forAllSprites) }</span>
-            )}
-            bodyContent={ this.renderGlobalVariable() }
-            style={{
-              order: 0
-            }}
-          />
-
-          { this.props.editingTarget.isStage ? '' :
-            <VariableDropdown
-              headerContent={( 
-                <span className={styles.variableDropdownHeaderLabel}>{ this.props.intl.formatMessage(messages.forThisSprite) }</span>
-              )}
-              bodyContent={ this.renderLocalVariable() }
-              style={{
-                order: 1
-              }}
-            />
-          }
-        </div>
-      </div>
-    )
-  }
+  if (final.length > 0) return (
+    <table>
+      <tbody>{ final }</tbody>
+    </table>
+  )
+  return _noVariablesItem(intl)
 }
 
-VariableTab.propTypes = {
-  intl: intlShape,
-  isRtl: PropTypes.bool,
-  localVariables: PropTypes.shape({
-    [PropTypes.string]: PropTypes.shape({
-      [PropTypes.string]: PropTypes.object
-    })
-  }),
-  globalVariables: PropTypes.shape({
-    [PropTypes.string]: PropTypes.object
-  }),
-  editingTarget: PropTypes.object,
-  highlightSprite: PropTypes.func
+function LocalVariables({clones, handleSpriteHighlighting, intl}) {
+  const [selectedClone, setSelectedClone] = React.useState(0)
+
+  const variables = clones[selectedClone]?.variables
+  return (
+    <div className={styles.localVariablesSelector}>
+
+      <div className={styles.clonesSelectorItemsWrapper}>
+        { clones.map(({ id }, i) => (
+          <div 
+            className={classNames(styles.clonesSelectorItem, {
+              [styles.isSelected]: selectedClone === i
+            })}
+            onClick={() => { 
+              handleSpriteHighlighting(id)
+              setSelectedClone(i)
+            }}
+          >
+            <span className={styles.variableName}>
+              { i === 0 ? intl.formatMessage(messages.original) : intl.formatMessage(messages.clone) +  i} <br/>
+              <sub>{ '(' + id + ')' }</sub>
+            </span>
+          </div>
+        )) }
+      </div>
+
+      {
+        !variables || Object.keys(variables).length > 0
+        ? <div className={styles.localVariablesList}>
+            <Variables 
+              variables={variables}
+              intl={intl}
+            />
+          </div>
+        : _noVariablesItem(intl)
+      }
+
+    </div>
+  )
+}
+
+// The CSS to make the dropdown look good is beyond me
+// Someone please please fix my CSS
+function VariableDropdown({ label, style, children }) {
+  //const [isCollapsed, setIsCollapsed] = React.useState(false)
+
+  return (
+    <div 
+      className={ styles.variableDropdown }
+      style={ style }
+    >
+      <div 
+        className={ styles.variableDropdownHeader }
+        //onClick={ () => setIsCollapsed(isCollapsed => !isCollapsed) }
+      >
+        {/*<img
+          src={dropdownCaret}
+          draggable={false}
+          width={8}
+          height={5}
+          style={{
+            transform: `rotate(${isCollapsed ? -90 : 0}deg)`
+          }}
+        />*/}
+        <span className={styles.variableDropdownHeaderLabel}>{ label }</span>
+      </div>
+
+      { //isCollapsed ? '' :  
+        <div className={ styles.variableDropdownBody }>
+            { children }
+        </div>
+      }
+
+    </div>
+  )
+};
+
+function VariableTab({
+  intl,
+  isRtl,
+  globalVariables,
+  clones,
+  handleSpriteHighlighting,
+  isStage
+}) {
+
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
+        <VariableDropdown 
+          label={ intl.formatMessage(messages.forAllSprites) }
+          style={{
+            minHeight: `${isStage ? '100' : '30'}%`
+          }}
+        >
+          <Variables 
+            variables={globalVariables}
+            intl={intl}
+          />
+        </VariableDropdown>
+        
+        {isStage ? '' : 
+          <VariableDropdown 
+            label={ intl.formatMessage(messages.forThisSprite) }
+            style={{
+              minHeight: '70%'
+            }}
+          >
+            <LocalVariables
+              clones={clones}
+              handleSpriteHighlighting={handleSpriteHighlighting}
+              intl={intl}
+            />
+          </VariableDropdown> 
+        }
+      </div>
+    </div>
+  )
 }
 
 export default injectIntl(VariableTab);
