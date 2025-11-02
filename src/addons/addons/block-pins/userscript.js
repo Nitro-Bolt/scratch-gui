@@ -266,6 +266,7 @@ export default async function({ addon }) {
         // 1 second is a good buffer
         populateCategory();
         const toolbox = Blockly.mainWorkspace.getToolbox();
+        if (!toolbox) return;
         toolbox.populate_(toolbox.workspace_.options.languageTree);
       }, 1000);
     }
@@ -280,10 +281,12 @@ export default async function({ addon }) {
   if (!autoLoadExtPins) vm.runtime.on("EXTENSION_ADDED", () => {
     populateInit = 2;
   });
-  vm.runtime.on("EXTENSION_REMOVED", () => queueMicrotask(() => {
-    updatePinCategory();
+  vm.runtime.on("EXTENSION_REMOVED", (extId) => {
+    // remove blocks in the removed extension from pins
+    pins = pins.filter((t) => !t.startsWith(extId));
+
     populateInit = 2;
-  }));
+  });
   addon.self.addEventListener("disabled", () => {
     localStorage.removeItem("ADDONS_BLOCK-PINS");
   });

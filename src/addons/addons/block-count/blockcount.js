@@ -5,10 +5,8 @@ export default async function ({ addon, console, msg }) {
   let counterElement;
 
   const getBlockCount = () => {
-    let allBlockCount = 0; // number of blocks in project
-    let thisBlockCount = 0; // number of blocks in this sprite
-
-    const targetBlocks = vm.runtime.targets.map((target) => {
+    let blockCount = 0;
+    const targetBlocks = vm.runtime.targets.filter(v => v.isOriginal).map((target) => {
       return [
         target.id,
         Object.values(target.blocks._blocks)
@@ -17,42 +15,46 @@ export default async function ({ addon, console, msg }) {
     });
 
     // project block count
-    for (const info of targetBlocks) allBlockCount += info[1];
+    for (const info of targetBlocks) blockCount += info[1];
+    return blockCount;
+  };
 
-    // this sprite's block count
-    const thisTargetID = vm.editingTarget?.id;
-    const thisWS = targetBlocks.find((i) => i[0] === thisTargetID);
-    if (thisWS) thisBlockCount += thisWS[1];
-
-    return [thisBlockCount, allBlockCount];
+  const updateText = () => {
+    const count = getBlockCount();
+    counterElement.innerText = count + (count === 1 ? " block" : " blocks");
   };
 
   const addCounter = () => {
+    let shouldReApply = false;
     ReduxStore.subscribe(() => {
-      if (!counterElement) {
+      if (!counterElement || shouldReApply) {
         // init counter
         const topBar = document.querySelector("div[class^='menu-bar_main-menu']");
         if (!topBar) return;
 
+        if (shouldReApply) {
+          queueMicrotask(() => {
+            topBar.appendChild(counterElement);
+          });
+          return;
+        }
+
         counterElement = topBar.appendChild(document.createElement("span"));
         counterElement.style.order = 1;
         counterElement.style.padding = "9px";
-        counterElement.innerText = "0 blocks";
-
+        counterElement.innerText = "";
+        updateText();
         addLiveBlockCount();
       } else {
         // hide display if not in editor
         const state = ReduxStore.getState().scratchGui;
-        counterElement.style.display = state.mode.isPlayerOnly ? "none" : "";
+        if (state.mode.isPlayerOnly) {
+          // GUI will remove the counter automatically, add it back.
+          shouldReApply = true;
+        }
       }
     });
   }
-
-  const updateText = () => {
-    const counts = getBlockCount();
-    if (counts[0] === counts[1]) counterElement.innerText = counts[1] + (counts[1] > 1 ? " blocks" : " block");
-    else counterElement.innerText = `${counts[0]} / ${counts[1]} blocks`;
-  };
 
   const addLiveBlockCount = () => {
     let lastWorkspaceID;
@@ -66,11 +68,11 @@ export default async function ({ addon, console, msg }) {
         const now = Date.now();
         if (
           counterElement &&
-          now > lastUpdateTime && // dont update the count multiple times in a second
+          now > lastUpdateTime + 150 && // dont update the count multiple times in a second
           (event.type === events.DELETE || event.type === events.CREATE)
         ) {
           lastUpdateTime = now;
-          updateText();
+          setTimeout(updateText, 200);
         }
       };
 
