@@ -86,7 +86,7 @@
     "scratch-audio": "github:Dinosaurmod/dinosaurmod-audio#develop",
     "scratch-blocks": "github:Dinosaurmod/Dinosaurmod-Blocks#develop-builds",
     "scratch-paint": "github:Dinosaurmod/Dinosaurmod-Paint#develop",
-    "scratch-render": "github:PenguinMod/PenguinMod-Render#develop",
+    "scratch-render": "github:Dinosaurmod/Dinosaurmod-Render#develop",
     "scratch-render-fonts": "1.0.0-prerelease.20210401210003",
     "scratch-storage": "github:PenguinMod/PenguinMod-Storage#develop",
     "scratch-svg-renderer": "github:TurboWarp/scratch-svg-renderer#develop",
