@@ -72,7 +72,15 @@ export default async function ({ addon }) {
             try {
                 categoryOrdering = JSON.parse(storedOrder);
                 setTimeout(forceRefreshToolbox, 100);
-            } catch { }
+            } catch {
+                // Blockly might not be availiable, wait until it is
+                vm.once("workspaceUpdate", () => {
+                    try {
+                        categoryOrdering = JSON.parse(storedOrder);
+                        setTimeout(forceRefreshToolbox, 100);
+                    } catch {}
+                });
+            }
         }
     });
     
@@ -133,7 +141,7 @@ export default async function ({ addon }) {
         toolbox.position();
     }
     
-    function initDragDroper(clickEvent) {
+    function initDragDroper(clickEvent, blocklyToolboxDiv) {
         const draggedCat = clickEvent.target.closest(`div[class="scratchCategoryMenuRow"]`);
         if (!draggedCat) return;
         
@@ -226,14 +234,29 @@ export default async function ({ addon }) {
         document.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseup", onMouseUp);
     }
-    
-    /* Check for Long (500ms) Presses to not confuse with Selecting Categories */
-    const blocklyToolboxDiv = document.querySelector(`div[class*="blocklyToolboxDiv"`);
-    blocklyToolboxDiv.addEventListener("mousedown", (e) => {
-        const longPressTimer = setTimeout(() => initDragDroper(e), 500);
-        const cancel = () => clearTimeout(longPressTimer);
-        
-        document.addEventListener("mouseup", cancel, { once: true });
-        document.addEventListener("mouseleave", cancel, { once: true });
+
+    function activateBlocklyListener() {
+        /* Check for Long (500ms) Presses to not confuse with Selecting Categories */
+        const blocklyToolboxDiv = document.querySelector(`div[class*="blocklyToolboxDiv"`);
+        if (!blocklyToolboxDiv) return;
+        blocklyToolboxDiv.addEventListener("mousedown", (e) => {
+            const longPressTimer = setTimeout(() => initDragDroper(e, blocklyToolboxDiv), 500);
+            const cancel = () => clearTimeout(longPressTimer);
+
+            document.addEventListener("mouseup", cancel, { once: true });
+            document.addEventListener("mouseleave", cancel, { once: true });
+        });
+    }
+
+    let wasInEditor, inEditor;
+    ReduxStore.subscribe(() => {
+        const state = ReduxStore.getState().scratchGui;
+
+        wasInEditor = inEditor;
+        inEditor = !state.mode.isPlayerOnly;
+        if (inEditor && !wasInEditor) {
+            wasInEditor = inEditor;
+            queueMicrotask(activateBlocklyListener);
+        }
     });
 }

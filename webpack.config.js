@@ -8,7 +8,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var TWGenerateServiceWorkerPlugin = require('./src/playground/generate-service-worker-plugin');
 var defaultsdeep = require('lodash.defaultsdeep');
 //var GhPagesWebpackPlugin = require('gh-pages-webpack-plugin');
-
+var {EDITOR_TITLE, FULLSCREEN_TITLE, PLAYGROUND_TITLE, PLAYER_TITLE, EMBED_TITLE, ADDONS_TITLE, CREDITS_TITLE} = require('./src/lib/app_titles.js');
 
 
 // PostCss
@@ -168,35 +168,35 @@ module.exports = [
                 chunks: ['editor'],
                 template: 'src/playground/index.ejs',
                 filename: 'editor.html',
-                title: 'DinosaurMod - A mod of Penguinmod',
+                title: EDITOR_TITLE,
                 ...htmlWebpackPluginCommon
             }),
             new HtmlWebpackPlugin({
                 chunks: ['playground'],
                 template: 'src/playground/index.ejs',
                 filename: 'playground.html',
-                title: 'DinosaurMod - A mod of Penguinmod',
+                title: PLAYGROUND_TITLE,
                 ...htmlWebpackPluginCommon
             }),
             new HtmlWebpackPlugin({
                 chunks: ['player'],
                 template: 'src/playground/index.ejs',
                 filename: 'index.html',
-                title: 'DinosaurMod - A mod of Penguinmod',
+                title: PLAYER_TITLE,
                 ...htmlWebpackPluginCommon
             }),
             new HtmlWebpackPlugin({
                 chunks: ['fullscreen'],
                 template: 'src/playground/index.ejs',
                 filename: 'fullscreen.html',
-                title: 'DinosaurMod - A mod of Penguinmod',
+                title: FULLSCREEN_TITLE,
                 ...htmlWebpackPluginCommon
             }),
             new HtmlWebpackPlugin({
                 chunks: ['embed'],
                 template: 'src/playground/index.ejs',
                 filename: 'embed.html',
-                title: 'Embedded Project - DinosaurMod',
+                title: EMBED_TITLE,
                 noTheme: true,
                 ...htmlWebpackPluginCommon
             }),
@@ -204,14 +204,14 @@ module.exports = [
                 chunks: ['addon-settings'],
                 template: 'src/playground/simple.ejs',
                 filename: 'addons.html',
-                title: 'Addon Settings - Dinosaurmod',
+                title: ADDONS_TITLE,
                 ...htmlWebpackPluginCommon
             }),
             new HtmlWebpackPlugin({
                 chunks: ['credits'],
                 template: 'src/playground/simple.ejs',
                 filename: 'credits.html',
-                title: 'DinosaurMod, PenguinMod & TurboWarp Credits',
+                title: CREDITS_TITLE,
                 noSplash: true,
                 ...htmlWebpackPluginCommon
             }),

@@ -221,7 +221,7 @@ export default async function ({ addon, msg, console }) {
 
       let topBlocks = this.workspace.getTopBlocks();
       let labelBlocks = Object.values(this.workspace.blockDB_)
-        .filter(b => b.type.startsWith("jwProto_"));
+        .filter(b => b.type.startsWith("jwProto_") || b.type.startsWith("lmscomments_"));
 
       /**
        * @param cls
@@ -300,7 +300,9 @@ export default async function ({ addon, msg, console }) {
         }
 
         // fall through
-        if (root.type.startsWith("jwProto_")) continue;
+        if (root.type.startsWith("jwProto_") || root.type.startsWith("lmscomments_")) {
+            continue;
+        }
 
         if (root.startHat_) {
           // custom, unrecognized hat
@@ -311,14 +313,11 @@ export default async function ({ addon, msg, console }) {
           continue;
         }
 
-        if (!root.outputConnection) {
-          // orphan block stack
-          addBlock(
-            "customStack", getDescFromField(root, true), root,
-            { color: root.colour_ }
-          );
-          continue;
-        }
+        // orphan block stack/reporter
+        addBlock(
+          root.outputConnection ? "customOutput" : "customStack",
+          getDescFromField(root, true), root, { color: root.colour_ }
+        );
       }
 
       let map = this.workspace.getVariableMap();
@@ -348,7 +347,7 @@ export default async function ({ addon, msg, console }) {
       const clsOrder = {
         flag: 0, receive: 1, event: 2, customHat: 3,
         define: 4, var: 5, VAR: 6, list: 7, LIST: 8,
-        label: 9, customStack: 10
+        label: 9, customStack: 10, customOutput: 11
       };
 
       myBlocks.sort((a, b) => {

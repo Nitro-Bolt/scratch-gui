@@ -64,6 +64,7 @@ import customExtensionIcon from './custom/custom.svg';
 import penguinmodLibraryExtensionIcon from './penguinmod/library.svg';
 
 import turboBuilderIcon from './penguinmod/turbobuilder.png';
+import turboBuilderDevIcon from './penguinmod/turbobuilder-dev.png';
 
 import filesExtensionIcon from './penguinmod/extensions/files.png';
 import filesOldExtensionIcon from './penguinmod/extensions/files_old.png';
@@ -1407,6 +1408,15 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'XML',
+        extensionId: 'jwXML',
+        iconURL: 'https://studio.penguinmod.com/static/assets/664da05abbdb25fc499645258e587890.svg',
+        tags: ['penguinmod', 'datamgmt'],
+        description: 'Creating, parsing and modifying XML data.',
+        extDeveloper: 'jwklong',
+        featured: true
+    },
+    {
         name: 'Targets',
         extensionId: 'jwTargets',
         iconURL: 'https://studio.penguinmod.com/static/assets/174cbb7cc72418e5f095e0b734ceed1d.svg',
@@ -1753,7 +1763,7 @@ const menuItems = [
         name: 'TurboBuilder - Dev Branch',
         href: 'https://dev-turbobuilder.vercel.app/',
         extensionId: 'special_turboBuilderDev',
-        iconURL: 'https://studio.penguinmod.com/static/assets/78d464ee4e15000ce44b841ff2f4c518.png',
+        iconURL: turboBuilderDevIcon,
         description: 'Publicly available developer branch, with the latest features.',
         credits: 'Started by JeremyGamer13, continued by jwklong',
         tags: ['extcreate'],
@@ -1908,15 +1918,6 @@ if (IsLocal || IsLiveTests) {
             extDeveloper: 'jwklong',
             featured: true
         },*/
-        {
-            name: 'XML',
-            extensionId: 'jwXML',
-            iconURL: 'https://studio.penguinmod.com/static/assets/664da05abbdb25fc499645258e587890.svg',
-            tags: ['penguinmod', 'datamgmt'],
-            description: 'Creating, parsing and modifying XML data.',
-            extDeveloper: 'jwklong',
-            featured: true
-        },
         {
             name: 'TurboBuilder Extension',
             extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/legacy-extensions/turbobuilder.js',

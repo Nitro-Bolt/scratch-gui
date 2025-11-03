@@ -47,6 +47,8 @@ import runAddons from '../addons/entry';
 import styles from './interface.css';
 import restore from './restore.js';
 
+import {APP_NAME} from '../lib/brand.js'
+
 const urlparams = new URLSearchParams(location.search);
 const restoring = urlparams.get('restore');
 const restoreHandler = urlparams.get('handler');
@@ -273,9 +275,9 @@ class Interface extends React.Component {
     }
     handleUpdateProjectTitle(title, isDefault) {
         if (isDefault || !title) {
-            document.title = `DinosaurMod - ${this.props.intl.formatMessage(messages.defaultTitle)}`;
+            document.title = `${APP_NAME} - ${this.props.intl.formatMessage(messages.defaultTitle)}`;
         } else {
-            document.title = `${title} - DinosaurMod`;
+            document.title = `${title} - ${APP_NAME}`;
         }
     }
     copyProjectLink (id) {
