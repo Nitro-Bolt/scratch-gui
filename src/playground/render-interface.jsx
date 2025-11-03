@@ -173,6 +173,10 @@ const Footer = () => (
                     </a>
                 </div>
                 <div className={styles.footerSection}>
+                    <a href="https://dinosaurmod.github.io/Dinosaurmod-Packager">
+                        {/* Do not translate */}
+                        {'DinosaurMod Packager'}
+                    </a>
                     <a href="https://studio.penguinmod.com/PenguinMod-Packager">
                         {/* Do not translate */}
                         {'PenguinMod Packager'}
