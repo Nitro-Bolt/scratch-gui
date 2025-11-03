@@ -1411,6 +1411,8 @@ const menuItems = [
         name: 'XML',
         extensionId: 'jwXML',
         iconURL: 'https://studio.penguinmod.com/static/assets/664da05abbdb25fc499645258e587890.svg',
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
         tags: ['penguinmod', 'datamgmt'],
         description: 'Creating, parsing and modifying XML data.',
         extDeveloper: 'jwklong',

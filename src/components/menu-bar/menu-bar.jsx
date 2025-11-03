@@ -85,6 +85,8 @@ import aboutIcon from './icon--about.svg';
 import errorIcon from './tw-error.svg';
 import themeIcon from './tw-moon.svg';
 
+import { downloadLogs } from '../../lib/pm-log-capture.js';
+
 import scratchLogo from './scratch-logo.svg';
 
 import sharedMessages from '../../lib/shared-messages';
@@ -212,6 +214,7 @@ class MenuBar extends React.Component {
             'handleClickPackager',
             'handleClickRestorePoints',
             'handleClickSeeCommunity',
+            'handleClickDownloadLogs',
             'handleClickShare',
             'handleKeyPress',
             'handleLanguageMouseUp',
@@ -397,6 +400,7 @@ class MenuBar extends React.Component {
             this.props.onRequestCloseAbout();
         };
     }
+    handleClickDownloadLogs() { downloadLogs(); }
     render () {
         const saveNowMessage = (
             <FormattedMessage
@@ -696,6 +700,24 @@ class MenuBar extends React.Component {
                                             </React.Fragment>
                                         )}</SB3Downloader>
                                     </MenuSection>
+                                    {this.props.isDirectoryPickerSupported && (
+                                        <MenuSection>
+                                            <MenuItem
+                                                onClick={this.props.onStartFolderUpload}
+                                            >
+                                                {"Load from a folder"}
+                                            </MenuItem>
+                                            <SB3Downloader>{(_className, downloadProject, extended) => (
+                                                <React.Fragment>
+                                                    <MenuItem
+                                                        onClick={this.getSaveToComputerHandler(extended.saveAsFolder)}
+                                                    >
+                                                        {"Export project to folder"}
+                                                    </MenuItem>
+                                                </React.Fragment>
+                                            )}</SB3Downloader>
+                                        </MenuSection>
+                                    )}
                                     {this.props.onClickPackager && (
                                         <MenuSection>
                                             <MenuItem
@@ -831,6 +853,9 @@ class MenuBar extends React.Component {
                                             description="Menu bar item for advanced settings"
                                             id="tw.menuBar.moreSettings"
                                         />
+                                    </MenuItem>
+                                    <MenuItem onClick={this.handleClickDownloadLogs}>
+                                        Download Logs
                                     </MenuItem>
                                 </MenuSection>
                             </MenuBarMenu>
@@ -970,6 +995,7 @@ MenuBar.propTypes = {
     settingsMenuOpen: PropTypes.bool,
     handleSaveProject: PropTypes.func,
     intl: intlShape,
+    isDirectoryPickerSupported: PropTypes.bool,
     isPlayerOnly: PropTypes.bool,
     isRtl: PropTypes.bool,
     isShared: PropTypes.bool,
@@ -1022,6 +1048,7 @@ MenuBar.propTypes = {
     onSeeCommunity: PropTypes.func,
     onShare: PropTypes.func,
     onStartSelectingFileUpload: PropTypes.func,
+    onStartFolderUpload: PropTypes.func,
     onToggleLoginOpen: PropTypes.func,
     projectId: PropTypes.string,
     projectTitle: PropTypes.string,

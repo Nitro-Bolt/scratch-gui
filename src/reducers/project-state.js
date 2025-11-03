@@ -414,6 +414,8 @@ const onFetchedProjectData = (projectData, loadingState) => {
 
 const onLoadedProject = (loadingState, canSave, success) => {
     switch (loadingState) {
+        // Truthfully I don't know why this is even passed into here, but it seems to mean "loading has finished, we are showing the project now"
+    case LoadingState.SHOWING_WITHOUT_ID:
     case LoadingState.LOADING_VM_WITH_ID:
         if (success) {
             return {type: DONE_LOADING_VM_WITH_ID};

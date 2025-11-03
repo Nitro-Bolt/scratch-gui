@@ -76,8 +76,18 @@ const showOpenFilePicker = async () => {
     return handle;
 };
 
+const showDirectoryPicker = async (optId, optStartIn) => {
+    const handle = await window.showDirectoryPicker({
+        id: optId || "pm-directory-picker",
+        mode: "readwrite",
+        startIn: optStartIn || "documents",
+    });
+    return handle;
+};
+
 export default {
     available,
     showOpenFilePicker,
-    showSaveFilePicker
+    showSaveFilePicker,
+    showDirectoryPicker
 };

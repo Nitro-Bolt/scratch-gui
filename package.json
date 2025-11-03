@@ -46,6 +46,7 @@
     "intl": "1.2.5",
     "intl-messageformat": "^2.2.0",
     "js-base64": "2.4.9",
+    "jszip": "^3.10.1",
     "keymirror": "0.1.1",
     "localforage": "^1.10.0",
     "lodash.bindall": "4.4.0",

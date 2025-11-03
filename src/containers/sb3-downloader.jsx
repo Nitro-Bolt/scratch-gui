@@ -69,7 +69,8 @@ class SB3Downloader extends React.Component {
             'downloadProject',
             'saveAsNew',
             'saveToLastFile',
-            'saveToLastFileOrNew'
+            'saveToLastFileOrNew',
+            'saveAsFolder'
         ]);
     }
     startedSaving () {
@@ -101,6 +102,26 @@ class SB3Downloader extends React.Component {
             await this.saveToHandle(handle);
             this.props.onSetFileHandle(handle);
             const title = getProjectTitleFromFilename(handle.name);
+            if (title) {
+                this.props.onSetProjectTitle(title);
+            }
+        } catch (e) {
+            this.handleSaveError(e);
+        }
+    }
+    async saveAsFolder() {
+        if (!this.props.canSaveProject) {
+            return;
+        }
+        try {
+            const handle = await FileSystemAPI.showDirectoryPicker("pm-project-folder", "documents");
+
+            this.startedSaving();
+            const jsZip = this.props.saveProjectZip();
+            this.extractJSZipToHandle(jsZip, handle);
+            this.finishedSaving();
+
+            const title = handle.name;
             if (title) {
                 this.props.onSetProjectTitle(title);
             }
@@ -226,6 +247,30 @@ class SB3Downloader extends React.Component {
                 });
         });
     }
+    async extractJSZipToHandle (zip, handle) {
+        // Not sure how memory management works but im hoping this is fine 
+        for (const [relativePath, zipEntry] of Object.entries(zip.files)) {
+            // files will be able to make directories
+            if (zipEntry.dir) continue;
+
+            const pathParts = relativePath.split("/");
+            const fileName = pathParts.pop();
+
+            // NOTE: Right now there's no reason to preserve directories, but the future save file format will use them.
+            // See here for more info: https://docs.penguinmod.com/save-format/
+            // make a directory for each file within one
+            let currentDir = handle;
+            for (const part of pathParts) {
+                currentDir = await currentDir.getDirectoryHandle(part, { create: true });
+            }
+
+            const fileHandle = await currentDir.getFileHandle(fileName, { create: true });
+            const writable = await fileHandle.createWritable();
+            const content = await zipEntry.async("arraybuffer");
+            await writable.write(content);
+            await writable.close();
+        }
+    }
     handleSaveError (e) {
         // AbortError can happen when someone cancels the file selector dialog
         if (e && e.name === 'AbortError') {
@@ -247,7 +292,8 @@ class SB3Downloader extends React.Component {
                 saveAsNew: this.saveAsNew,
                 saveToLastFile: this.saveToLastFile,
                 saveToLastFileOrNew: this.saveToLastFileOrNew,
-                smartSave: this.saveToLastFileOrNew
+                smartSave: this.saveToLastFileOrNew,
+                saveAsFolder: this.saveAsFolder
             } : {
                 available: false,
                 smartSave: this.downloadProject
@@ -274,6 +320,7 @@ SB3Downloader.propTypes = {
     projectFilename: PropTypes.string,
     saveProjectSb3: PropTypes.func,
     saveProjectSb3Stream: PropTypes.func,
+    saveProjectZip: PropTypes.func,
     canSaveProject: PropTypes.bool,
     onSetFileHandle: PropTypes.func,
     onSetProjectTitle: PropTypes.func,
@@ -290,6 +337,8 @@ const mapStateToProps = state => ({
     fileHandle: state.scratchGui.tw.fileHandle,
     saveProjectSb3: state.scratchGui.vm.saveProjectSb3.bind(state.scratchGui.vm),
     saveProjectSb3Stream: state.scratchGui.vm.saveProjectSb3Stream.bind(state.scratchGui.vm),
+    // TODO: Is there a good reason to keep saveProjectZip private now that we use JSZip?
+    saveProjectZip: state.scratchGui.vm._saveProjectZip.bind(state.scratchGui.vm),
     canSaveProject: getIsShowingProject(state.scratchGui.projectState.loadingState),
     projectFilename: getProjectFilename(state.scratchGui.projectTitle, projectTitleInitialState)
 });
