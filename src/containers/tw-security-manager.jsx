@@ -36,6 +36,7 @@ const isTrustedExtension = url => (
     url.startsWith('https://electramod-extensions-gallery.vercel.app/') ||
     url.startsWith('https://pen-group.github.io/') || // Pen-Group / ObviousAlexC
     url.startsWith('https://dinosaurmod.github.io/extensions/') ||
+    url.startsWith('https://raw.githubusercontent.com/Dinosaurmod/extensions/refs/heads/main/src/extensions') ||
 
     // For development.
     url.startsWith('http://localhost:8000') ||
