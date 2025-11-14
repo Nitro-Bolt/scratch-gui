@@ -642,13 +642,14 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
         <block type="operator_not"/>
         ${blockSeparator}
         ${isInitialSetup ? '' : `
-            <block type="operator_join">
-                <value name="STRING1">
+            <block type="operator_join_extendable">
+                <field name="STRINGS">2</field>
+                <value name="STRINGS_0_STRING">
                     <shadow type="text">
                         <field name="TEXT">${apple} </field>
                     </shadow>
                 </value>
-                <value name="STRING2">
+                <value name="STRINGS_1_STRING">
                     <shadow type="text">
                         <field name="TEXT">${banana}</field>
                     </shadow>
