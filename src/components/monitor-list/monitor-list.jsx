@@ -5,7 +5,7 @@ import Monitor from '../../containers/monitor.jsx';
 import PropTypes from 'prop-types';
 import {OrderedMap} from 'immutable';
 import {stageSizeToTransform} from '../../lib/screen-utils';
-import {sanitizeVariableType} from '../../lib/nb-sanitize.js';
+import {sanitizeVariableType} from '../../lib/tw-sanitize.js';
 
 import styles from './monitor-list.css';
 
