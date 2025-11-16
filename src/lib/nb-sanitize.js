@@ -1,24 +1,32 @@
+const circularReplacer = () => {
+  const seen = new WeakSet();
+  return (_, value) => {
+    if (typeof value === 'object' && value !== null) {
+      if (seen.has(value)) {
+        return Array.isArray(value) ? '[...]' : '{...}';
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
+
 const sanitize = (input) => {
-  if (typeof input === "object") {
-    return JSON.stringify(input);
+  if (typeof input === "object" && input !== null) {
+    return JSON.stringify(input, circularReplacer());
   } else {
     return input;
   }
-}
+};
 
 const sanitizeVariableType = (input, type) => {
   if (type === "list") {
-      const sanitizedList = [];
-      for (const item of input) {
-        sanitizedList.push(sanitize(item));
-      }
-      return sanitizedList;
+    return input.map(item => sanitize(item));
   } else {
-      return sanitize(input);
+    return sanitize(input);
   }
-}
+};
 
 module.exports = {
-  sanitize,
   sanitizeVariableType
-}
+};
