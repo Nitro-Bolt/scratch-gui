@@ -125,13 +125,6 @@ const Footer = () => (
                             id="tw.footer.credits"
                         />
                     </a>
-                    <a href="https://github.com/sponsors/GarboMuffin">
-                        <FormattedMessage
-                            defaultMessage="Donate"
-                            description="Donation link in footer"
-                            id="tw.footer.donate"
-                        />
-                    </a>
                 </div>
                 <div className={styles.footerSection}>
                     <a href="https://desktop.turbowarp.org/">
