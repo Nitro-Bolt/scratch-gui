@@ -32,7 +32,7 @@ export default function ({id, spriteName, opcode, params, value, vm}) {
         value = Number(value.toFixed(6));
     }
 
-    // Turn the value to a string, for handle boolean values
+    // Turn the value to a string, to handle boolean values
     if (typeof value === 'boolean') {
         value = value.toString();
     }

@@ -4,10 +4,12 @@
 
 .page-wrapper {
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .body-wrapper {
-    height: calc(100% - $menu-bar-height);
+    flex-grow: 1;
     background-color: $ui-primary;
 }
 

@@ -22,6 +22,15 @@ const formatError = error => {
     return `${message}\n\n---\n\nURL: ${location.href}\nUser-Agent: ${navigator.userAgent}`;
 };
 
+const errorMatches = (error, regex) => regex.test(`${error}`);
+
+const isZipCorruptionWithSignatureIntact = error => (
+    errorMatches(error, /Corrupted zip|uncompressed data size mismatch/) &&
+    !errorMatches(error, /Corrupted zip: can't find zip signature/)
+);
+
+const isJSONValidationError = error => errorMatches(error, /validationError/);
+
 const InvalidProjectModal = props => (
     <Modal
         className={styles.modalContent}
@@ -47,7 +56,33 @@ const InvalidProjectModal = props => (
                 value={formatError(props.error)}
             />
 
-            {formatError(props.error).includes('validationError') && (
+            {isZipCorruptionWithSignatureIntact(props.error) ? (
+                <p>
+                    <FormattedMessage
+                        // eslint-disable-next-line max-len
+                        defaultMessage="This error often means that the file was corrupted, possibly due to a faulty storage device, power outage, or unplugging a USB drive without ejecting. Try {usingSb3fix} as it can fix this type of error."
+                        // eslint-disable-next-line max-len
+                        description="Part of modal that appears when a project could not be loaded. {usingSb3fix} becomes a link 'using sb3fix to recover your project'. sb3fix refers to https://turbowarp.github.io/sb3fix/"
+                        id="tw.invalidProject.zipCorruption"
+                        values={{
+                            usingSb3fix: (
+                                <a
+                                    href="https://turbowarp.github.io/sb3fix/?platform=turbowarp"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <FormattedMessage
+                                        defaultMessage="using sb3fix to recover your project"
+                                        // eslint-disable-next-line max-len
+                                        description="Part of modal that appears when a project could not be loaded. Used in context 'Try using sb3fix to recover your project as it can fix this type of error'. sb3fix referes to https://turbowarp.github.io/sb3fix/"
+                                        id="tw.invalidProject.sb3fix"
+                                    />
+                                </a>
+                            )
+                        }}
+                    />
+                </p>
+            ) : isJSONValidationError(props.error) ? (
                 <p>
                     <FormattedMessage
                         // eslint-disable-next-line max-len
@@ -73,7 +108,7 @@ const InvalidProjectModal = props => (
                         }}
                     />
                 </p>
-            )}
+            ) : null}
 
             <p>
                 <FormattedMessage
