@@ -240,7 +240,7 @@ class AudioEffects {
                     ({input, output} = new VolumeEffect(this.audioContext, this.options.volume,
                         this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
                 }
-                if (options.bitcrush !== null && options.freqcrush !== null) {
+                /*if (options.bitcrush !== null && options.freqcrush !== null) {
                     ({ input, output } = new BitCrushEffect(
                         this.audioContext,
                         this.adjustedTrimStartSeconds,
@@ -248,7 +248,7 @@ class AudioEffects {
                         options.bitcrush,
                         options.freqcrush
                     ));
-                }
+                }*/
                 break;
         }
 
