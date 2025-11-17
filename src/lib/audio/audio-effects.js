@@ -92,8 +92,11 @@ class AudioEffects {
             // Need to use webkitOfflineAudioContext, which doesn't support all sample rates.
             // Resample by adjusting sample count to make room and set offline context to desired sample rate.
             const sampleScale = 44100 / audioContextSampleRate;
-            this.audioContext = new window.webkitOfflineAudioContext(1, audioContextSampleCount, 44100);
+            this.audioContext = new window.webkitOfflineAudioContext(1, sampleScale * audioContextSampleCount, 44100);
         }
+
+        // All effects not seen below use the original buffer because it is not modified.
+        this.buffer = buffer;
 
         // For the reverse effect we need to manually reverse the data into a new audio buffer
         // to prevent overwriting the original, so that the undo stack works correctly.
@@ -237,7 +240,7 @@ class AudioEffects {
                     ({input, output} = new VolumeEffect(this.audioContext, this.options.volume,
                         this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
                 }
-                if (options.bitcrush !== null || options.freqcrush !== null) {
+                if (options.bitcrush !== null && options.freqcrush !== null) {
                     ({ input, output } = new BitCrushEffect(
                         this.audioContext,
                         this.adjustedTrimStartSeconds,
@@ -263,7 +266,6 @@ class AudioEffects {
         this.audioContext.oncomplete = ({renderedBuffer}) => {
             done(renderedBuffer, this.adjustedTrimStart, this.adjustedTrimEnd);
         };
-
     }
 }
 

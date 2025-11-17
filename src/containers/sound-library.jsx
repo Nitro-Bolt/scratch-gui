@@ -24,7 +24,7 @@ const messages = defineMessages({
     }
 });
 
-const PM_LIBRARY_API = "https://penguinmod-objectlibraries.vercel.app/";
+const PM_LIBRARY_API = "https://library.penguinmod.com/";
 const DM_LIBRARY_API = "https://dinosaurmod-object-libraries.vercel.app/";
 
 // @todo need to use this hack to avoid library using md5 for image
