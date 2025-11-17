@@ -35,7 +35,6 @@ import fadeInIcon from './icon--fade-in.svg';
 import muteIcon from './icon--mute.svg';
 import reverbIcon from './icon--reverb.svg';
 import bitcrushIcon from './icon--bit-crush.png';
-import formatIcon from './icon--format.png';
 
 import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
 import copyIcon from '!../../lib/tw-recolor/build!./icon--copy.svg';
