@@ -35,6 +35,7 @@ import fadeInIcon from './icon--fade-in.svg';
 import muteIcon from './icon--mute.svg';
 import reverbIcon from './icon--reverb.svg';
 import bitcrushIcon from './icon--bit-crush.png';
+import formatIcon from './icon--format.png';
 
 import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
 import copyIcon from '!../../lib/tw-recolor/build!./icon--copy.svg';
@@ -409,6 +410,12 @@ const SoundEditor = props => (
                 />
                 <IconButton
                     className={styles.effectButton}
+                    img={formatIcon}
+                    title={"Format"}
+                    onClick={props.onFormatSound}
+                />
+                <IconButton
+                    className={styles.effectButton}
                     img={reverbIcon}
                     title={"Reverb"}
                     onClick={props.onReverb}
@@ -513,6 +520,7 @@ SoundEditor.propTypes = {
     onBitCrush: PropTypes.func.isRequired,
     onFaster: PropTypes.func.isRequired,
     onModifySound: PropTypes.func.isRequired,
+    onFormatSound: PropTypes.func.isRequired,
     onLouder: PropTypes.func.isRequired,
     onMute: PropTypes.func.isRequired,
     onPaste: PropTypes.func.isRequired,
