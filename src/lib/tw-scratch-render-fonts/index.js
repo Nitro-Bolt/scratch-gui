@@ -8,6 +8,9 @@ const Curly = require('./Griffy-Regular.ttf');
 const Pixel = require('./Grand9K-Pixel.ttf');
 // const Scratch = require('./Scratch.tff');
 
+/* Turbowarp Fonts */
+const Mopeds = require('./ScratchSavers_b2.woff2');
+
 /* PenguinMod Fonts */
 const Branches = require('./Xtraflexidisc.otf');
 const Technological = require('./MonospaceBold.ttf');
@@ -42,6 +45,7 @@ const fontSource = {
     'Archivo Black': ArchivoBlack,
     'Fredoka': Fredoka,
     'Impact': Impact,
+    'Mopeds': Mopeds
 };
 
 const fontData = {};
