@@ -9,7 +9,7 @@ const Pixel = require('./Grand9K-Pixel.ttf');
 // const Scratch = require('./Scratch.tff');
 
 /* Turbowarp Fonts */
-const Mopeds = require('./ScratchSavers_b2.woff2');
+const Mopeds = require('./ScratchSavers_b2.ttf');
 
 /* PenguinMod Fonts */
 const Branches = require('./Xtraflexidisc.otf');
