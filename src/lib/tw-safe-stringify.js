@@ -27,6 +27,4 @@ const sanitizeVariableType = (input, type) => {
   }
 };
 
-module.exports = {
-  sanitizeVariableType
-};
+export { sanitizeVariableType };

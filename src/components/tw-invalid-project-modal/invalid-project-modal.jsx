@@ -25,8 +25,7 @@ const formatError = error => {
 const errorMatches = (error, regex) => regex.test(`${error}`);
 
 const isZipCorruptionWithSignatureIntact = error => (
-    errorMatches(error, /Corrupted zip|uncompressed data size mismatch/) &&
-    !errorMatches(error, /Corrupted zip: can't find zip signature/)
+    errorMatches(error, /Corrupted zip|uncompressed data size mismatch/)
 );
 
 const isJSONValidationError = error => errorMatches(error, /validationError/);
