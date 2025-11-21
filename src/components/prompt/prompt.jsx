@@ -43,12 +43,12 @@ const messages = defineMessages({
 
 const Packager = () => (
     <a
-        href="https://packager.turbowarp.org"
+        href="https://nitro-bolt.github.io/packager"
         target="_blank"
         rel="noopener noreferrer"
     >
         {/* Should not be translated */}
-        {'TurboWarp Packager'}
+        {'NitroBolt Packager'}
     </a>
 );
 
