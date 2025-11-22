@@ -386,3 +386,17 @@ $fade-out-distance: 15px;
     /* if the user-specified background color can't be understood by the browser, default to white */
     background-color: white;
 }
+
+body[theme="light"] .blocklyScrollbarHandle {
+    fill: #cecdce;
+}
+body[theme="light"] .blocklyScrollbarHandle:hover {
+    fill: #edebed;
+}
+
+body[theme="dark"] .blocklyScrollbarHandle {
+    fill: #666;
+}
+body[theme="dark"] .blocklyScrollbarHandle:hover {
+    fill: #888;
+}
