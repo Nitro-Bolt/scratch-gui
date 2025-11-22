@@ -387,16 +387,20 @@ $fade-out-distance: 15px;
     background-color: white;
 }
 
-body[theme="light"] .blocklyScrollbarHandle {
+body[theme="light"] .blocklyScrollbarVertical g rect,
+body[theme="light"] .blocklyScrollbarHorizontal g rect {
     fill: #cecdce;
 }
-body[theme="light"] .blocklyScrollbarHandle:hover {
+body[theme="light"] .blocklyScrollbarVertical:hover g rect,
+body[theme="light"] .blocklyScrollbarHorizontal:hover g rect {
     fill: #edebed;
 }
 
-body[theme="dark"] .blocklyScrollbarHandle {
+body[theme="dark"] .blocklyScrollbarVertical g rect,
+body[theme="dark"] .blocklyScrollbarHorizontal g rect {
     fill: #666;
 }
-body[theme="dark"] .blocklyScrollbarHandle:hover {
+body[theme="dark"] .blocklyScrollbarVertical:hover g rect,
+body[theme="dark"] .blocklyScrollbarHorizontal:hover g rect {
     fill: #888;
 }
