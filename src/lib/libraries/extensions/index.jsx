@@ -1929,6 +1929,16 @@ if (IsLocal || IsLiveTests) {
             featured: true
         },*/
         {
+            name: 'Functions and Tests',
+            extensionId: 'https://raw.githubusercontent.com/Dinosaurmod/extensions/refs/heads/main/src/extensions/jasmine.js',
+            iconURL: defaultExtensionIcon,
+            description: 'No description yet.',
+            featured: true,
+            disabled: true,
+            inspiredExt: 'Jasmine (JS Framework)',
+            extDeveloper: 'MrIncredibleMaker'
+        },
+        {
             name: 'TurboBuilder Extension',
             extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/legacy-extensions/turbobuilder.js',
             iconURL: turboBuilderIcon,
