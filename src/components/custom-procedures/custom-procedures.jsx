@@ -213,7 +213,7 @@ const CustomProcedures = props => (
                                 />
                             </div>
                         </div>
-                        {/*<div
+                        <div
                             className={styles.optionCard}
                             role="button"
                             tabIndex="0"
@@ -238,7 +238,7 @@ const CustomProcedures = props => (
                                 />
                             </div>
                         </div>
-                        <div
+                        {/*<div
                             className={styles.optionCard}
                             role="button"
                             tabIndex="0"

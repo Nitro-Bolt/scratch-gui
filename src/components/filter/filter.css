@@ -152,7 +152,7 @@
     overflow: hidden;
     height: $library-filter-bar-height;
     width: $library-filter-bar-height;
-    margin: 0.625rem;
+    margin: 0.5rem;
 
     border-radius: 50%;
     cursor: pointer;

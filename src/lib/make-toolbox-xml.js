@@ -759,17 +759,11 @@ const control = function (isInitialSetup, isStage) {
             </value>
         </block>
         ${blockSeparator}
-        <block type="control_if"/>
-        <block type="control_if_else"/>
-        <block id="wait_until" type="control_wait_until"/>
-        <block id="repeat_until" type="control_repeat_until"/>
-        <block id="while" type="control_while"/>
-        <block id="for_each" type="control_for_each">
-            <value name="VALUE">
-                <shadow type="math_whole_number">
-                    <field name="NUM">10</field>
-                </shadow>
-            </value>
+        <block type="control_expandableIf">
+            <mutation branches="1" ends-in-else="false"></mutation>
+        </block>
+        <block type="control_expandableIf">
+            <mutation branches="2" ends-in-else="true"></mutation>
         </block>
         <block type="control_if_return_else_return">
             <value name="boolean"></value>
@@ -781,6 +775,17 @@ const control = function (isInitialSetup, isStage) {
             <value name="TEXT2">
                 <shadow type="text">
                     <field name="TEXT">bar</field>
+                </shadow>
+            </value>
+        </block>
+        ${blockSeparator}
+        <block id="wait_until" type="control_wait_until"/>
+        <block id="repeat_until" type="control_repeat_until"/>
+        <block id="while" type="control_while"/>
+        <block id="for_each" type="control_for_each">
+            <value name="VALUE">
+                <shadow type="math_whole_number">
+                    <field name="NUM">10</field>
                 </shadow>
             </value>
         </block>
@@ -1305,15 +1310,58 @@ const operators = function (isInitialSetup) {
                 </shadow>
             </value>
         </block>
+        <block type="operator_expandableCompare">
+        <mutation inputcount="2" menuvalues=""></mutation>
+            <value name="INPUT1">
+                <shadow type="text"><field name="TEXT"></field></shadow>
+            </value>
+            <value name="INPUT2">
+                <shadow type="text"><field name="TEXT"></field></shadow>
+            </value>
+        </block>
         ${blockSeparator}
         <block type="operator_trueBoolean"></block>
         <block type="operator_falseBoolean"></block>
         <block type="operator_randomBoolean"></block>
         ${blockSeparator}
-        <block type="operator_and"/>
-        <block type="operator_or"/>
-        <block type="operator_xor"/>
-        <block type="operator_not"/>
+        <block type="operator_and">
+            <value name="OPERAND1">
+                <shadow type="checkbox" />
+            </value>
+            <value name="OPERAND2">
+                <shadow type="checkbox" />
+            </value>
+        </block>
+        <block type="operator_or">
+            <value name="OPERAND1">
+                <shadow type="checkbox" />
+            </value>
+            <value name="OPERAND2">
+                <shadow type="checkbox" />
+            </value>
+        </block>
+        <block type="operator_xor">
+            <value name="OPERAND1">
+                <shadow type="checkbox" />
+            </value>
+            <value name="OPERAND2">
+                <shadow type="checkbox" />
+            </value>
+        </block>
+        <block type="operator_not">
+            <value name="OPERAND">
+                <shadow type="checkbox" />
+            </value>
+        </block>
+        <block type="operator_expandableBool">
+            <mutation inputcount="2" menuvalues=""></mutation>
+            <value name="BOOL1">
+                <shadow type="checkbox"><field name="CHECKBOX"></field></shadow>
+            </value>
+            <value name="BOOL2">
+                <shadow type="checkbox"><field name="CHECKBOX"></field></shadow>
+            </value>
+        </block>
         ${blockSeparator}
         ${isInitialSetup ? '' : `
             <block type="operator_newLine"></block>
