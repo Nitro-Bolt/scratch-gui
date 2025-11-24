@@ -655,7 +655,9 @@ const events = function (isInitialSetup, isStage) {
         <block type="event_whenstopclicked"/>
         <block type="event_always"></block>
         <block type="event_whenanything">
-            <value name="ANYTHING"></value>
+            <value name="ANYTHING">
+                <shadow type="checkbox" />
+            </value>
         </block>
         <block type="event_whenkeypressed"></block>
         <block type="event_whenkeyhit"></block>
@@ -721,6 +723,9 @@ const control = function (isInitialSetup, isStage) {
                     <field name="NUM">1</field>
                 </shadow>
             </value>
+            <value name="CONDITION">
+                <shadow type="checkbox" />
+            </value>
         </block>
         ${blockSeparator}
         <block type="control_repeat">
@@ -761,12 +766,20 @@ const control = function (isInitialSetup, isStage) {
         ${blockSeparator}
         <block type="control_expandableIf">
             <mutation branches="1" ends-in-else="false"></mutation>
+            <value name="BOOL1">
+                <shadow type="checkbox"></shadow>
+            </value>
         </block>
         <block type="control_expandableIf">
             <mutation branches="2" ends-in-else="true"></mutation>
+            <value name="BOOL1">
+                <shadow type="checkbox"></shadow>
+            </value>
         </block>
         <block type="control_if_return_else_return">
-            <value name="boolean"></value>
+            <value name="boolean">
+                <shadow type="checkbox" />
+            </value>
             <value name="TEXT1">
                 <shadow type="text">
                     <field name="TEXT">foo</field>
@@ -779,9 +792,21 @@ const control = function (isInitialSetup, isStage) {
             </value>
         </block>
         ${blockSeparator}
-        <block id="wait_until" type="control_wait_until"/>
-        <block id="repeat_until" type="control_repeat_until"/>
-        <block id="while" type="control_while"/>
+        <block id="wait_until" type="control_wait_until">
+            <value name="CONDITION">
+                <shadow type="checkbox" />
+            </value>
+        </block>
+        <block id="repeat_until" type="control_repeat_until">
+            <value name="CONDITION">
+                <shadow type="checkbox" />
+            </value>
+        </block>
+        <block id="while" type="control_while">
+            <value name="CONDITION">
+                <shadow type="checkbox" />
+            </value>
+        </block>
         <block id="for_each" type="control_for_each">
             <value name="VALUE">
                 <shadow type="math_whole_number">
