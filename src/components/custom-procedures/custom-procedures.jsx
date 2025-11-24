@@ -308,7 +308,6 @@ const CustomProcedures = props => (
                             </div>
                             <div className={styles.optionDescription}>
                                 <FormattedMessage
-                                    defaultMessage="command"
                                     defaultMessage="branch"
                                     description="Description of the command input type"
                                     id="gui.customProcedures.commandType"

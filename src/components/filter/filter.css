@@ -139,3 +139,33 @@
 [dir="rtl"] .filter-input::placeholder {
     padding: 0 0.25rem 0 0;
 }
+
+.aa-icon-wrapper {
+    opacity: 1;
+    position: absolute;
+    top: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+    height: $library-filter-bar-height;
+    width: $library-filter-bar-height;
+    margin: 0.625rem;
+
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+[dir="ltr"] .aa-icon-wrapper {
+    right: 0;
+}
+
+[dir="rtl"] .aa-icon-wrapper {
+    left: 0;
+}
+
+.aa-icon {
+    transform: translateX(0);
+}

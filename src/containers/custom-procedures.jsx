@@ -222,7 +222,7 @@ class CustomProcedures extends React.Component {
     }
     handleChangeType (value) {
         if (this.mutationRoot) {
-            const newType = value
+            const newType = value;
             this.mutationRoot.setType(newType);
             this.setState({type: newType});
         }
