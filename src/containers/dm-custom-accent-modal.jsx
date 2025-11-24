@@ -9,6 +9,7 @@ import CustomAccentModalComponent from '../components/dm-custom-accent-modal/cus
 import SavedAccentTemplate from '../components/dm-custom-accent-modal/saved-accent-template.js';
 import { persistThemeCustom, persistTheme } from '../lib/themes/themePersistance.js'
 import { Theme } from '../lib/themes/index.js'
+import downloadBlob from '../lib/download-blob.js'
 
 // SavedAccentTemplate("*Name 1*", { primaryColor: "#FF0000" })
 
@@ -22,7 +23,9 @@ class CustomAccentModal extends React.Component {
             'handleDeleteClicked',
             'handleCreateAccentClicked',
             'activateAccent',
-            'deactivateAccent'
+            'deactivateAccent',
+            'handleExportAccents',
+            'handleImportAccents'
         ]);
         this.props = props
         this.accents = 0;
@@ -97,6 +100,54 @@ class CustomAccentModal extends React.Component {
         this.props.onChangeTheme(this.props.theme.set(localStorage.getItem("tw:accent")))
         refreshUI()
     }
+    handleExportAccents() {
+        let savedAccents = localStorage.getItem(this.CUSTOM_ACCENTS_KEY)
+        let accents = JSON.parse(savedAccents) == 1 ? [] : JSON.parse(savedAccents)
+        let blob = new Blob([JSON.stringify(accents)])
+        downloadBlob('custom-accents.json', blob)
+    }
+    async handleImportAccents(refreshUI) {
+        async function readFile(file) {
+            return await file.text();
+        }
+
+        let result;
+
+        const pickerOpts = {
+            types: [
+                {
+                    description: "JSON",
+                    accept: {
+                        "json/*": [".json"],
+                    },
+                },
+            ],
+            excludeAcceptAllOption: true,
+            multiple: false,
+        };
+
+        async function getFile() {
+            const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
+            return await fileHandle.getFile();
+        }
+        
+        getFile()
+            .then(readFile)
+            .then((e) => {
+                result = e;
+            })
+            .catch((e) => {
+                console.error(e)
+                result = 4040000000000000000
+            });
+
+        if (result === 4040000000000000000) return;
+
+        const parsedResult = JSON.parse(result) == 1 ? [] : JSON.parse(result)
+        localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(parsedResult))
+
+        refreshUI()
+    }
     render () {
         const {
             /* eslint-disable no-unused-vars */
@@ -112,6 +163,8 @@ class CustomAccentModal extends React.Component {
                 onCreateAccentClicked={this.handleCreateAccentClicked}
                 onActivated={this.activateAccent}
                 onDeactivated={this.deactivateAccent}
+                onExportAccents={this.handleExportAccents}
+                onImportAccents={this.handleImportAccents}
                 {...props}
             />
         );

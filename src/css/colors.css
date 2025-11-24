@@ -2,6 +2,7 @@ body[coloraccent="Lime Green"] {
     --motion-primary: hsla(92, 91%, 53%, 1); /* #00c3ff */
     --motion-tertiary: hsla(92, 80%, 43%, 1); /* #007bc7 */
     --motion-transparent: hsla(92, 92%, 53%, 0.35); /* 35% transparent version of motion-primary */
+    --motion-light-transparent: hsla(92, 80%, 43%, 0.15); /* 15% transparent version of motion-primary */
 
     --paint-motion-primary: hsla(92, 91%, 53%, 1); /* #00c3ff */
     --paint-motion-tertiary: hsla(92, 80%, 43%, 1); /* #007bc7 */
@@ -27,6 +28,7 @@ body[coloraccent="Light Blue"] {
     --motion-primary: hsla(194, 100%, 50%, 1);
     --motion-tertiary: hsla(203, 100%, 39%, 1);
     --motion-transparent: hsla(203, 100%, 39%, 0.35);
+    --motion-light-transparent: hsla(203, 100%, 39%, 0.15);
 
     --paint-motion-primary: hsla(194, 100%, 50%, 1);
     --paint-motion-tertiary: hsla(203, 100%, 39%, 1);
@@ -50,6 +52,7 @@ body[coloraccent="Red"] {
     --motion-primary: #ff4c4c;
     --motion-tertiary: #cc3333;
     --motion-transparent: #ff4c4c57;
+    --motion-light-transparent: #cc333326;
 
     --paint-motion-primary: #ff4c4c;
     --paint-motion-tertiary: #cc3333;
@@ -73,6 +76,7 @@ body[coloraccent="Blue"] {
     --motion-primary: hsla(215, 100%, 65%, 1);
     --motion-tertiary: hsla(215, 60%, 50%, 1);
     --motion-transparent: hsla(215, 100%, 65%, 0.35);
+    --motion-light-transparent: hsla(215, 60%, 50%, 0.15);
 
     --paint-motion-primary: hsla(215, 100%, 65%, 1);
     --paint-motion-tertiary: hsla(215, 60%, 50%, 1);
@@ -96,6 +100,7 @@ body[coloraccent="Corrupted Blue"] {
     --motion-primary: #625e97;
     --motion-tertiary: hsla(203, 100%, 17%, 1);
     --motion-transparent: hsla(215, 100%, 11%, 0.35);
+    --motion-light-transparent: hsla(203, 100%, 17%, 0.15);
 
     --paint-motion-primary: #625e97;
     --paint-motion-tertiary: hsla(203, 100%, 17%, 1);
@@ -119,6 +124,7 @@ body[coloraccent="Scratch"] {
     --motion-primary: hsla(260, 60%, 60%, 1);
     --motion-tertiary: hsla(260, 42%, 51%, 1);
     --motion-transparent: hsla(260, 60%, 60%, 0.35);
+    --motion-light-transparent: hsla(260, 42%, 51%, 0.15);
 
     --paint-motion-primary: hsla(260, 60%, 60%, 1);
     --paint-motion-tertiary: hsla(260, 42%, 51%, 1);
@@ -142,6 +148,7 @@ body[coloraccent="Magenta"] {
     --motion-primary: hsla(289, 100%, 54%, 1);
     --motion-tertiary: hsla(289, 100%, 39%, 1);
     --motion-transparent: hsla(289, 100%, 54%, 0.35);
+    --motion-light-transparent: hsla(289, 100%, 39%, 0.15);
 
     --paint-motion-primary: hsla(289, 100%, 54%, 1);
     --paint-motion-tertiary: hsla(289, 100%, 39%, 1);
@@ -165,6 +172,7 @@ body[coloraccent="Rainbow"] {
     --motion-primary: #ff4c4c;
     --motion-tertiary: #cc3333;
     --motion-transparent: #ff4c4c57;
+    --motion-light-transparent: #cc333326;
 
     --paint-motion-primary: #ff4c4c;
     --paint-motion-tertiary: #cc3333;
@@ -188,6 +196,7 @@ body[coloraccent="OOHVERYSCARY"] {
     --motion-primary: #ff0000;
     --motion-tertiary: #d60000;
     --motion-transparent: #ff000057;
+    --motion-light-transparent: #d6000026;
 
     --paint-motion-primary: #ff0000;
     --paint-motion-tertiary: #d60000;
@@ -231,7 +240,7 @@ $text-primary-transparent: hsla(225, 15%, 40%, 0.75);
 $motion-primary: var(--motion-primary, hsla(92, 91%, 53%, 1)); /* #00c3ff */
 $motion-tertiary: var(--motion-tertiary, hsla(92, 80%, 43%, 1)); /* #007bc7 */
 $motion-transparent: var(--motion-transparent, hsla(92, 92%, 53%, 0.35)); /* 35% transparent version of motion-primary */
-$motion-light-transparent: hsla(92, 80%, 43%, 0.15); /* 15% transparent version of motion-primary */
+$motion-light-transparent: var(--motion-light-transparent, hsla(92, 80%, 43%, 0.15)); /* 15% transparent version of motion-primary */
 
 /* opt-in theme overrides */
 $motion-primary-dark: var(--motion-primary-dark, hsla(84, 100%, 41%, 1)); /*top bar color when in dark mode*/ /*when it doesn't work. change back: hsla(92, 91%, 53%, 1)*/

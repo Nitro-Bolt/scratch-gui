@@ -19,8 +19,6 @@ const FilterComponent = props => {
         inputClassName
     } = props;
 
-    let isCaseSensitive = false;
-
     return (
         <div
             className={classNames(className, styles.filter, {
@@ -37,7 +35,7 @@ const FilterComponent = props => {
                 placeholder={placeholderText}
                 type="text"
                 value={filterQuery}
-                onChange={() => {onChange(isCaseSensitive)}}
+                onChange={onChange}
             />
             {/*<button
                 className={styles.aaIconWrapper}

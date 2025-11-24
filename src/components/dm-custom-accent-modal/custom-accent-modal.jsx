@@ -13,6 +13,8 @@ import styles from './custom-accent-modal.css';
 import editIcon from './edit.svg';
 import deleteIcon from './delete.svg';
 
+import {isUnsupported} from './unsupported-browsers.js';
+
 /* eslint-disable react/no-multi-comp */
 
 const BufferedInput = BufferedInputHOC(Input);
@@ -332,6 +334,37 @@ const CustomAccentModalComponent = function (props) {
                         onEditClicked={props.onEditClicked}
                         onDeleteClicked={props.onDeleteClicked}
                     />*/}
+                    {isUnsupported ? (
+                        <div className={styles.nothingText}>
+                            Your browser does not support the 'showOpenFilePicker' function, which is required to import Accents.
+                        </div>
+                    ) : (
+                            <div
+                                style={{gap: "8px"}}
+                            >
+                                <button
+                                    onClick={props.onExportAccents}
+                                    className={styles.button}
+                                >
+                                    <FormattedMessage
+                                        defaultMessage="Export Accents"
+                                        description="Button in custom accents modal"
+                                        id="dm.customAccentsModal.exportAccents"
+                                    />
+                                </button>
+                                <button
+                                    onClick={() => {props.onImportAccents(refreshUI)}}
+                                    className={styles.button}
+                                >
+                                    <FormattedMessage
+                                        defaultMessage="Import Accents"
+                                        description="Button in custom accents modal"
+                                        id="dm.customAccentsModal.importAccents"
+                                    />
+                                </button>
+                            </div>
+                        )
+                    }
                 </Box>
             )}
             {!!isNewAccUIOpen && (
@@ -423,6 +456,8 @@ CustomAccentModalComponent.propTypes = {
     onCreateAccentClicked: PropTypes.func.isRequired,
     onActivated: PropTypes.func.isRequired,
     onDeactivated: PropTypes.func.isRequired,
+    onExportAccents: PropTypes.func.isRequired,
+    onImportAccents: PropTypes.func.isRequired,
 };
 
 export default injectIntl(CustomAccentModalComponent)
