@@ -39,7 +39,7 @@ const FilterComponent = props => {
                 value={filterQuery}
                 onChange={() => {onChange(isCaseSensitive)}}
             />
-            <button
+            {/*<button
                 className={styles.aaIconWrapper}
                 onClick={() => {isCaseSensitive = !isCaseSensitive}}
             >
@@ -48,7 +48,7 @@ const FilterComponent = props => {
                     src={caseSensitiveIcon}
                     draggable={false}
                 />
-            </button>
+            </button>*/}
             <div
                 className={styles.xIconWrapper}
                 onClick={onClear}
