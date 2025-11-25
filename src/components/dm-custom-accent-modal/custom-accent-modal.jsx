@@ -340,7 +340,10 @@ const CustomAccentModalComponent = function (props) {
                         </div>
                     ) : (
                             <div
-                                style={{gap: "8px"}}
+                                style={{
+                                    display: "flex",
+                                    gap: "8px"
+                                }}
                             >
                                 <button
                                     onClick={props.onExportAccents}
