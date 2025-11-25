@@ -134,18 +134,12 @@ class CustomAccentModal extends React.Component {
         getFile()
             .then(readFile)
             .then((e) => {
-                result = e;
+                const parsedResult = JSON.parse(e) == 1 ? [] : JSON.parse(e)
+                localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(parsedResult))
             })
             .catch((e) => {
                 console.error(e)
-                result = 4040000000000000000
             });
-
-        if (result === 4040000000000000000) return;
-
-        const parsedResult = JSON.parse(result) == 1 ? [] : JSON.parse(result)
-        localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(parsedResult))
-
         refreshUI()
     }
     render () {
