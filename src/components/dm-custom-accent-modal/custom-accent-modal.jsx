@@ -334,7 +334,7 @@ const CustomAccentModalComponent = function (props) {
                         onEditClicked={props.onEditClicked}
                         onDeleteClicked={props.onDeleteClicked}
                     />*/}
-                    {isUnsupported ? (
+                    {isUnsupported() ? (
                         <div className={styles.nothingText}>
                             Your browser does not support the 'showOpenFilePicker' function, which is required to import Accents.
                         </div>
