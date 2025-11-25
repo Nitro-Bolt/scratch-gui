@@ -231,7 +231,8 @@ const CustomAccentModalComponent = function (props) {
 
     function refreshUI() {
         //setCustomAccentComponents((prev) => [...prev]);
-        setTick(t => t + 1);
+       setTick(t => t + 1);
+       setTick(t => t - 1);
     }
 
     function addToUI(node) {
