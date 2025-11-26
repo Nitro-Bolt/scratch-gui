@@ -36,7 +36,7 @@ import muteIcon from './icon--mute.svg';
 import reverbIcon from './icon--reverb.svg';
 import bitcrushIcon from './icon--bit-crush.png';
 import higherPitchIcon from './icon--higher-pitch.svg';
-import lowerPitchIcon from './icon--lower-pitch.png';
+import lowerPitchIcon from './icon--lower-pitch.svg';
 
 import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
 import copyIcon from '!../../lib/tw-recolor/build!./icon--copy.svg';
