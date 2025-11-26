@@ -234,11 +234,11 @@ class AudioEffects {
                     this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
                 break;
             case effectTypes.LOWPITCH:
-                this.source.detune.setValueAtTime(-10, this.adjustedTrimStartSeconds);
+                this.source.detune.setValueAtTime(-30, this.adjustedTrimStartSeconds);
                 this.source.detune.setValueAtTime(0, this.adjustedTrimEndSeconds);
                 break;
             case effectTypes.HIGHPITCH:
-                this.source.detune.setValueAtTime(10, this.adjustedTrimStartSeconds);
+                this.source.detune.setValueAtTime(30, this.adjustedTrimStartSeconds);
                 this.source.detune.setValueAtTime(0, this.adjustedTrimEndSeconds);
                 break;
             default:
