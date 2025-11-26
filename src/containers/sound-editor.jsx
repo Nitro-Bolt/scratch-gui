@@ -938,6 +938,8 @@ class SoundEditor extends React.Component {
                 onHighPass={this.effectFactory(effectTypes.HIGHPASS)}
                 onReverb={this.effectFactory(effectTypes.REVERB)}
                 onBitCrush={this.handleBitCrushMenu}
+                onHigherPitch={this.effectFactory(effectTypes.HIGHPITCH)}
+                onLowerPitch={this.effectFactory(effectTypes.LOWPITCH)}
                 onSetTrim={this.handleUpdateTrim}
                 onSlower={this.effectFactory(effectTypes.SLOWER)}
                 onSofter={this.effectFactory(effectTypes.SOFTER)}

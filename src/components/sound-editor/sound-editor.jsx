@@ -35,6 +35,8 @@ import fadeInIcon from './icon--fade-in.svg';
 import muteIcon from './icon--mute.svg';
 import reverbIcon from './icon--reverb.svg';
 import bitcrushIcon from './icon--bit-crush.png';
+import higherPitchIcon from './icon--higher-pitch.svg';
+import lowerPitchIcon from './icon--lower-pitch.png';
 
 import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
 import copyIcon from '!../../lib/tw-recolor/build!./icon--copy.svg';
@@ -425,6 +427,18 @@ const SoundEditor = props => (
                     title={"Bit-Crush"}
                     onClick={props.onBitCrush}
                 />*/}
+                <IconButton
+                    className={styles.effectButton}
+                    img={higherPitchIcon}
+                    title={"Higher Pitch"}
+                    onClick={props.onHigherPitch}
+                />
+                <IconButton
+                    className={styles.effectButton}
+                    img={lowerPitchIcon}
+                    title={"Lower Pitch"}
+                    onClick={props.onLowerPitch}
+                />
             </div>
         </div>
         <div className={styles.infoRow}>
@@ -517,6 +531,8 @@ SoundEditor.propTypes = {
     onFadeOut: PropTypes.func.isRequired,
     onReverb: PropTypes.func.isRequired,
     onBitCrush: PropTypes.func.isRequired,
+    onHigherPitch: PropTypes.func.isRequired,
+    onLowerPitch: PropTypes.func.isRequired,
     onFaster: PropTypes.func.isRequired,
     onModifySound: PropTypes.func.isRequired,
     onFormatSound: PropTypes.func.isRequired,

@@ -365,7 +365,6 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                 </value>
             </block>
             <block type="looks_nextcostume"/>
-            <block type="looks_previouscostume"/>
             <block type="looks_getinputofcostume">
                 <value name="INPUT">
                     <shadow type="looks_getinput_menu"/>
@@ -391,7 +390,6 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                 </value>
             </block>
             <block type="looks_nextbackdrop"/>
-            <block type="looks_previousbackdrop"/>
             ${blockSeparator}
             <block type="looks_changesizeby">
                 <value name="CHANGE">

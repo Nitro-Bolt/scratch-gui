@@ -21,7 +21,9 @@ const effectTypes = {
     MUTE: 'mute',
     LOWPASS: 'low pass',
     HIGHPASS: 'high pass',
-    REVERB: 'reverb'
+    REVERB: 'reverb',
+    LOWPITCH: 'lower pitch',
+    HIGHPITCH: 'higher pitch',
 };
 
 const centsToFrequency = (cents) => {
@@ -230,6 +232,14 @@ class AudioEffects {
             case effectTypes.REVERB:
                 ({input, output} = new ReverbEffect(this.audioContext,
                     this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+                break;
+            case effectTypes.LOWPITCH:
+                this.source.detune.setValueAtTime(-10, this.adjustedTrimStartSeconds);
+                this.source.detune.setValueAtTime(0, this.adjustedTrimEndSeconds);
+                break;
+            case effectTypes.HIGHPITCH:
+                this.source.detune.setValueAtTime(10, this.adjustedTrimStartSeconds);
+                this.source.detune.setValueAtTime(0, this.adjustedTrimEndSeconds);
                 break;
             default:
                 if (Object.prototype.hasOwnProperty.call(this.options, "pitch")) {
