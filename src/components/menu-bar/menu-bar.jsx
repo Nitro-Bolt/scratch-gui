@@ -457,9 +457,7 @@ class MenuBar extends React.Component {
                     <div className={classNames(styles.menuBarItem)}>
                             <img
                                 alt="DinosaurMod"
-                                className={classNames(styles.scratchLogo, {
-                                    [styles.clickable]: typeof this.props.onClickLogo !== 'undefined'
-                                })}
+                                className={classNames(styles.scratchLogo, styles.clickable)}
                                 id={(window.location.pathname).includes("editor.html") ? "gui-editor-logo" : "gui-main-logo"}
                                 draggable={false}
                                 src={this.props.logo}
