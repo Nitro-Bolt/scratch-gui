@@ -213,6 +213,7 @@ class LibraryItemComponent extends React.PureComponent {
                         this.props.twDeveloper ||
                         this.props.inspiredExt ||
                         this.props.eventSubmittor ||
+                        this.props.extraLabels ||
                         this.props.credits
                         ? (
                             <div className={styles.featuredExtensionMetadata}>
