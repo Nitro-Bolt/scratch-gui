@@ -1,3 +1,4 @@
-img[class^='menu-bar_scratch-logo'] {
+img[id='gui-main-logo'],
+img[id='gui-editor-logo'] {
     display: none;
 }
