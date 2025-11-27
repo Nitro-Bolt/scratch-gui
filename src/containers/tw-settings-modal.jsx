@@ -70,7 +70,7 @@ class UsernameModal extends React.Component {
         });
     }
     handleEnableDangerousOptimizationsChange (e) {
-        console.log(e.target.checked);
+        //console.log(e.target.checked);
         this.props.vm.setRuntimeOptions({
             dangerousOptimizations: e.target.checked
         });

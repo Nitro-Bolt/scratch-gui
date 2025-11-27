@@ -77,8 +77,8 @@ class TargetPane extends React.Component {
     handleChangeSpriteLayer (layer) {
         const target = this.props.editingTarget;
         const currentLayer = target.getLayerOrder();
-        console.log(currentLayer)
-        console.log(target)
+        //console.log(currentLayer)
+        //console.log(target)
         if (!target.goForwardLayers) return;
         target.goForwardLayers(layer - currentLayer);
     }

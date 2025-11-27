@@ -451,6 +451,7 @@ class LibraryComponent extends React.Component {
                                     twDeveloper={dataItem.twDeveloper}
                                     inspiredExt={dataItem.inspiredExt}
                                     eventSubmittor={dataItem.eventSubmittor}
+                                    extraLabels={dataItem.extraLabels}
                                     customInsetColor={dataItem.customInsetColor}
                                     description={dataItem.description}
                                     disabled={dataItem.disabled}
