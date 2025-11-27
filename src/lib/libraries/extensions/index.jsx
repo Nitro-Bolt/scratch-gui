@@ -192,13 +192,13 @@ const menuItems = [
                 id="gui.extension.music.description"
             />
         ),
-        featured: true,
         extraLabels: [
             {
                 name: "Modified by",
                 value: "DinosaurMod"
             }
-        ]
+        ],
+        featured: true
     },
     {
         name: (
@@ -219,13 +219,13 @@ const menuItems = [
                 id="gui.extension.pen.description"
             />
         ),
-        featured: true,
         extraLabels: [
             {
                 name: "Modified by",
                 value: "PenguinMod"
             }
-        ]
+        ],
+        featured: true
     },
     {
         name: 'Animated Text',
