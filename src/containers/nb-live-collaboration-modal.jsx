@@ -52,6 +52,7 @@ class NBLiveCollaborationModal extends React.Component {
         connectionManager.on(connectionManager.Event.JOINLOCK, this.handleConnectionLock);
         connectionManager.on(connectionManager.Event.JOINUNLOCK, this.handleConnectionUnlock);
         connectionManager.on(connectionManager.Event.USERNAMEUPDATE, this.handleUsernameUpdate);
+        connectionManager.on(connectionManager.Event.HOSTDISCONNECT, this.handleRoomChange);
     }
 
     componentWillUnmount () {
@@ -60,6 +61,7 @@ class NBLiveCollaborationModal extends React.Component {
         connectionManager.off(connectionManager.Event.JOINLOCK, this.handleConnectionLock);
         connectionManager.off(connectionManager.Event.JOINUNLOCK, this.handleConnectionUnlock);
         connectionManager.off(connectionManager.Event.USERNAMEUPDATE, this.handleUsernameUpdate);
+        connectionManager.off(connectionManager.Event.HOSTDISCONNECT, this.handleRoomChange);
     }
 
     handleConnectionLock() { this.setState({connectionLocked: true}); console.log("connection lock") }
