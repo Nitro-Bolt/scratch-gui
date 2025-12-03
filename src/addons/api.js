@@ -550,7 +550,7 @@ class Tab extends EventTargetShim {
 
     // not really THAT necessary but whatever
     getDefaultBlockColorFromString (str) {
-        if (typeof str !== 'string' && !'toLowerCase' in str) return;
+        if (typeof str !== 'string') return;
         let newStr = str.toLowerCase();
 
         if (newStr.includes("motion")) {

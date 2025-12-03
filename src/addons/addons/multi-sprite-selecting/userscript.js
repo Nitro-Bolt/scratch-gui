@@ -50,7 +50,7 @@ export default async function ({ addon, console, msg }) {
     const container = document.createElement("div");
     container.className = "sa-sprite-selecting-container"
     container.style.display = "flex";
-    container.style.gap = "8px";
+    container.style.gap = "4px";
     container.appendChild(selectAllButton);
     container.appendChild(deselectAllButton);
     container.appendChild(deleteButton);
