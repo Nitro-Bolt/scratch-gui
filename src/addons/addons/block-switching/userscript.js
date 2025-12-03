@@ -296,10 +296,10 @@ export default async function ({ addon, console, msg }) {
         noopSwitch,
       ];
       blockSwitches["looks_show"] = [
-        noopSwitch,
         {
           opcode: "looks_hide",
         },
+        noopSwitch,
       ];
       blockSwitches["looks_hide"] = [
         {
