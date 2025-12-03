@@ -228,6 +228,8 @@
     "block-switching/looks_sayHeight": "bubble height",
     "block-switching/looks_changeVisibilityOfSpriteShow": "show sprite",
     "block-switching/looks_changeVisibilityOfSpriteHide": "hide sprite",
+    "block-switching/looks_getcostumelength": "# of costumes",
+    "block-switching/looks_getbackdroplength": "# of backdrops",
     "block-switching/motion_changexby": "change x",
     "block-switching/motion_changeyby": "change y",
     "block-switching/motion_changebyxy": "change by x y",

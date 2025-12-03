@@ -293,6 +293,11 @@ const messages = defineMessages({
         description: 'Label for the days since 2000 monitor when shown on the stage',
         id: 'gui.opcodeLabels.dayssince2000'
     },
+    sensing_loggedin: {
+        defaultMessage: 'logged in?',
+        description: 'Label for the logged in monitor when shown on the stage',
+        id: 'pm.opcodeLabels.loggedin'
+    },
 
     // Control
     control_get_counter: {
