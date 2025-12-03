@@ -106,6 +106,18 @@ export default async function ({ addon, console, msg }) {
         },
         noopSwitch,
       ];
+      blockSwitches["motion_movesteps"] = [
+        {
+          opcode: "motion_moveupdownsteps",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["motion_moveupdownsteps"] = [
+        {
+          opcode: "motion_movesteps",
+        },
+        noopSwitch,
+      ];
       blockSwitches["motion_gotoxy"] = [
         noopSwitch,
         {
@@ -295,6 +307,18 @@ export default async function ({ addon, console, msg }) {
         },
         noopSwitch,
       ];
+      blockSwitches["looks_changeVisibilityOfSpriteShow"] = [
+        {
+          opcode: "looks_changeVisibilityOfSpriteHide",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["looks_changeVisibilityOfSpriteHide"] = [
+        {
+          opcode: "looks_changeVisibilityOfSpriteShow",
+        },
+        noopSwitch,
+      ];
       blockSwitches["looks_showallsprites"] = [
         noopSwitch,
         {
@@ -462,6 +486,18 @@ export default async function ({ addon, console, msg }) {
         },
         noopSwitch,
       ];
+      blockSwitches["looks_getcostumelength"] = [
+        {
+          opcode: "looks_getbackdroplength",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["looks_getbackdroplength"] = [
+        {
+          opcode: "looks_getcostumelength",
+        },
+        noopSwitch,
+      ];
     }
 
     if (addon.settings.get("sound")) {
@@ -624,6 +660,20 @@ export default async function ({ addon, console, msg }) {
         {
           opcode: "control_wait",
           splitInputs: ["CONDITION"],
+        },
+        noopSwitch,
+      ];
+      blockSwitches["control_repeat"] = [
+        {
+          opcode: "control_repeatForSeconds",
+          remapShadowType: { TIMES: "math_positive_number" },
+        },
+        noopSwitch,
+      ];
+      blockSwitches["control_repeatForSeconds"] = [
+        {
+          opcode: "control_repeat",
+          remapShadowType: { TIMES: "math_whole_number" },
         },
         noopSwitch,
       ];
@@ -979,6 +1029,18 @@ export default async function ({ addon, console, msg }) {
         },
         noopSwitch,
       ];
+      blockSwitches["operator_toUpperLowerCase"] = [
+        {
+          opcode: "operator_isUpperLowerCase",
+        },
+        noopSwitch,
+      ];
+      blockSwitches["operator_isUpperLowerCase"] = [
+        {
+          opcode: "operator_toUpperLowerCase",
+        },
+        noopSwitch,
+      ];
     }
 
     if (addon.settings.get("sensing")) {
@@ -1009,6 +1071,56 @@ export default async function ({ addon, console, msg }) {
       blockSwitches["sensing_touchingobject"] = [
         {
           opcode: "event_whentouchingobject",
+        },
+        {
+          opcode: "sensing_objecttouchingobject",
+          createInputs: {
+            FULLTOUCHINGOBJECTMENU: {
+              shadowType: "sensing_fulltouchingobjectmenu",
+            },
+            SPRITETOUCHINGOBJECTMENU: {
+              shadowType: "sensing_touchingobjectmenusprites",
+            },
+          },
+        },
+        {
+          opcode: "sensing_objecttouchingclonesprite",
+          createInputs: {
+            FULLTOUCHINGOBJECTMENU: {
+              shadowType: "sensing_fulltouchingobjectmenu",
+            },
+            SPRITETOUCHINGOBJECTMENU: {
+              shadowType: "sensing_touchingobjectmenusprites",
+            },
+          },
+        },
+        noopSwitch,
+      ];
+      blockSwitches["sensing_objecttouchingobject"] = [
+        {
+          opcode: "sensing_objecttouchingclonesprite",
+        },
+        {
+          opcode: "sensing_touchingobject",
+          createInputs: {
+            TOUCHINGOBJECTMENU: {
+              shadowType: "sensing_touchingobjectmenu",
+            },
+          },
+        },
+        noopSwitch,
+      ];
+      blockSwitches["sensing_objecttouchingclonesprite"] = [
+        {
+          opcode: "sensing_objecttouchingobject",
+        },
+        {
+          opcode: "sensing_touchingobject",
+          createInputs: {
+            TOUCHINGOBJECTMENU: {
+              shadowType: "sensing_touchingobjectmenu",
+            },
+          },
         },
         noopSwitch,
       ];
@@ -1666,6 +1778,7 @@ export default async function ({ addon, console, msg }) {
             text,
             callback: menuCallbackFactory(block, opcodeData),
             separator: i === 0,
+            color: addon.tab.getDefaultBlockColorFromString(opcodeData.opcode) ?? null
           });
         });
 

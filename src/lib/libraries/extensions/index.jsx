@@ -355,6 +355,12 @@ const menuItems = [
                 id="gui.extension.translate.description"
             />
         ),
+        extraLabels: [
+            {
+                name: "Modified by",
+                value: "DinosaurMod"
+            }
+        ],
         featured: true,
         internetConnectionRequired: true
     },

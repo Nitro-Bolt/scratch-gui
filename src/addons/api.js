@@ -548,6 +548,32 @@ class Tab extends EventTargetShim {
         Object.assign(addonBlockColor, newColor);
     }
 
+    // not really THAT necessary but whatever
+    getDefaultBlockColorFromString (str) {
+        if (typeof str !== 'string' && !'toLowerCase' in str) return;
+        let newStr = str.toLowerCase();
+
+        if (newStr.includes("motion")) {
+            return '#4C97FF';
+        } else if (newStr.includes("looks")) {
+            return '#9966FF';
+        } else if (newStr.includes("sound")) {
+            return '#CF63CF';
+        } else if (newStr.includes("event")) {
+            return '#FFBF00';
+        } else if (newStr.includes("control")) {
+            return '#FFAB19';
+        } else if (newStr.includes("sensing")) {
+            return '#5CB1D6';
+        } else if (newStr.includes("operator")) {
+            return '#59BF59';
+        } else if (newStr.includes("data")) {
+            return '#FF8C1A';
+        } else {
+            return;
+        }
+    }
+
     createBlockContextMenu (callback, {workspace = false, blocks = false, flyout = false, comments = false} = {}) {
         contextMenuCallbacks.push({addonId: this._id, callback, workspace, blocks, flyout, comments});
         contextMenuCallbacks.sort((b, a) => (
