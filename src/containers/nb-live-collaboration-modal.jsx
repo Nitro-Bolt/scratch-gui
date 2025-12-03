@@ -64,10 +64,12 @@ class NBLiveCollaborationModal extends React.Component {
         connectionManager.off(connectionManager.Event.HOSTDISCONNECT, this.handleRoomChange);
     }
 
-    handleConnectionLock() { this.setState({connectionLocked: true}); console.log("connection lock") }
-    handleConnectionUnlock() { this.setState({connectionLocked: false}); console.log("connection unlock") }
+    handleConnectionLock () { this.setState({connectionLocked: true}); console.log('connection lock'); }
+    handleConnectionUnlock () {
+        this.setState({connectionLocked: false}); console.log('connection unlock');
+    }
 
-    handlePeersUpdate (peers) {
+    handlePeersUpdate () {
         this.setState({users: connectionManager.users});
     }
 
@@ -75,12 +77,12 @@ class NBLiveCollaborationModal extends React.Component {
         this.setState({users: connectionManager.users});
     }
 
-    handleRoomChange (room) {
+    handleRoomChange () {
         this.setState({connected: connectionManager.connected});
     }
 
-    handlePacket(data, peer) {
-        console.log("Received data from peer", data, peer);
+    handlePacket (data, peer) {
+        console.log('Received data from peer', data, peer);
     }
 
     handleClose () {
@@ -97,11 +99,11 @@ class NBLiveCollaborationModal extends React.Component {
 
     handlePacketSend () {
         connectionManager.sendToAll({
-            type: "PACKET",
+            type: 'PACKET',
             payload: this.state.packetInput
         });
 
-        this.setState({packetInput: ""})
+        this.setState({packetInput: ''});
     }
 
     handleJoinRoom () {
@@ -110,7 +112,7 @@ class NBLiveCollaborationModal extends React.Component {
     }
 
     handleCreateRoom () {
-        console.log("trying to create room")
+        console.log('trying to create room;');
         connectionManager.createRoom();
         this.setState({connected: true, isHost: true});
     }
@@ -164,7 +166,7 @@ class NBLiveCollaborationModal extends React.Component {
     }
 
     kickUsers (users) {
-        users.forEach((user) => {
+        users.forEach(user => {
             connectionManager.kickPeer(user);
         });
         this.props.onClose();

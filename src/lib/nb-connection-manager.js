@@ -330,7 +330,7 @@ class NBConnectionManager extends EventEmitter {
     this.connected = true;
     this.host = null;
 
-    this.roomId = this.peerId
+    this.roomId = this.peerId;
     
     this._setRoomInUrl(this.peerId);
 
@@ -373,7 +373,7 @@ class NBConnectionManager extends EventEmitter {
    * @param {*} packet The data to send to the peer
    */
   sendToList (peerIds, packet) {
-    peerIds.forEach((id) => this.connections[id].send(packet))
+    peerIds.forEach(id => this.connections[id].send(packet));
   }
 
   /**
@@ -460,9 +460,8 @@ class NBConnectionManager extends EventEmitter {
   kickPeer (peer) {
     if (this.isHost && this.connected) {
       if (Object.prototype.hasOwnProperty.call(this.connections, peer)) {
-        const candidates = Object.keys(this.connections).filter((id ) => id !== peer)
-        console.log(candidates)
-        this.sendToList(Object.keys(this.connections).filter((id) => id !== peer), 
+
+        this.sendToList(Object.keys(this.connections).filter(id => id !== peer),
         {
           type: this.PacketType.KICK,
           payload: peer
@@ -692,7 +691,7 @@ class NBConnectionManager extends EventEmitter {
             username: this.username
           });
 
-          this.emit(this.Event.PEERUPGRADE, peer, peer.username)
+          this.emit(this.Event.PEERUPGRADE, peer, peer.username);
         } else return console.error('Client attempted to authenticate with the incorrect key', peer, packet);
         
         break;
@@ -733,7 +732,8 @@ class NBConnectionManager extends EventEmitter {
         if (peer !== this.host) return console.error('Peer impersonating host!', peer, packet);
         if (typeof packet?.payload !== 'string') return console.error('Received malformed packet', packet);
         if (!Object.prototype.hasOwnProperty.call(this.connections, packet.payload)) {
-          return console.warn('Failed to kicked non existent peer(this should probably happen!)', peer, packet, this.connections); 
+          return console.warn('Failed to kicked non existent peer(this should probably happen!)',
+            peer, packet, this.connections);
           // peers automatically disconnect from a room when they are no longer connected to the host
           // because of this, it's likely when the host kicks a peer that if they are using a vanilla
           // client that it will have already disconnected from the other peers.
