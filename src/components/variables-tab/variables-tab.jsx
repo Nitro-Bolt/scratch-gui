@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 import React from 'react';
 import styles from './variables-tab.css';
-import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
@@ -39,15 +39,13 @@ const messages = defineMessages({
  * @returns {HTMLElement} The "No Variables" message.
  */
 const _noVariablesItem = intl => (
-    <div className={styles.box}>
-        {intl.formatMessage(messages.noVariables)}
-    </div>
+    <div className={styles.box}>{intl.formatMessage(messages.noVariables)}</div>
 );
 
-const _isList = varr => (varr.type === 'list');
+const _isList = varr => varr.type === 'list';
 
 /* eslint-disable react/prop-types */
-const Variables = ({ variables, intl }) => {
+const Variables = ({variables, intl}) => {
     const final = [];
     for (const id in variables) {
         const currentVar = variables[id];
@@ -83,14 +81,14 @@ const Variables = ({ variables, intl }) => {
  * @param {Function} param1 Ran once when a clone is selected.
  * @returns {HTMLElement} Display of every variables in the selected clone.
  */
-const LocalVariables = ({ clones, onHighlightSprite, intl }) => {
+const LocalVariables = ({clones, onHighlightSprite, intl}) => {
     const [selectedClone, setSelectedClone] = React.useState(0);
     const variables = clones[selectedClone]?.variables;
 
     return (
         <div className={styles.localVariablesSelector}>
             <div className={styles.clonesSelectorItemsWrapper}>
-                {clones.map(({ id }, i) => (
+                {clones.map(({id}, i) => (
                     <div
                         className={classNames(styles.clonesSelectorItem, {
                             [styles.isSelected]: selectedClone === i
@@ -103,8 +101,10 @@ const LocalVariables = ({ clones, onHighlightSprite, intl }) => {
                         key={id}
                     >
                         <span className={styles.variableName}>
-                            {i === 0 ? intl.formatMessage(messages.original) : intl.formatMessage(messages.clone) + i}
-                            {' '}
+                            {i === 0 ?
+                                intl.formatMessage(messages.original) :
+                                intl.formatMessage(messages.clone) + i
+                            }{' '}
                             <br />
                             <sub>{`(${id})`}</sub>
                         </span>
@@ -126,13 +126,13 @@ const LocalVariables = ({ clones, onHighlightSprite, intl }) => {
     );
 };
 
-const VariableDropdown = function ({ label, style, children }) {
+const VariableDropdown = function ({label, style, children}) {
     return (
         <div
             className={styles.variableDropdown}
             style={style}
         >
-            <div className={styles.variableDropdownHeader} >
+            <div className={styles.variableDropdownHeader}>
                 <span className={styles.variableDropdownHeaderLabel}>
                     {label}
                 </span>
