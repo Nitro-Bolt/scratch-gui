@@ -261,6 +261,28 @@ const CustomAccentModalComponent = function (props) {
     function test() {
         setCustomAccentComponents((prev) => {console.log(prev); return prev});
     }
+    function reloadComponents(newData) {
+        setCustomAccentComponents([])
+
+        newData.forEach((item) => {
+            addToUI(
+                <CustomAccentDIV
+                    //name={`*Name ${this.accents}*`}
+                    name={item.name}
+                    //primaryColor={"#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}
+                    primaryColor={item.colors.primary}
+                    primaryColorDark={item.colors.primaryDark}
+                    onEditClicked={props.onEditClicked}
+                    onDeleteClicked={(name) => {
+                        props.onDeleteClicked(name, deleteAccentComponentFromUIwithName);
+                    }}
+                    onActivated={props.onActivated}
+                    onDeactivated={props.onDeactivated}
+                    refreshUI={refreshUI}
+                />
+            )
+        })
+    }
 
     const CUSTOM_ACCENTS_ARRAY = JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY)) == 1 ? [] : JSON.parse(localStorage.getItem(CUSTOM_ACCENTS_KEY))
     
@@ -356,7 +378,7 @@ const CustomAccentModalComponent = function (props) {
                                     />
                                 </button>
                                 <button
-                                    onClick={() => {props.onImportAccents(refreshUI)}}
+                                    onClick={() => {props.onImportAccents(reloadComponents)}}
                                     className={styles.button}
                                 >
                                     <FormattedMessage

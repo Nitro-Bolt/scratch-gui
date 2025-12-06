@@ -106,7 +106,7 @@ class CustomAccentModal extends React.Component {
         let blob = new Blob([JSON.stringify(accents)])
         downloadBlob('custom-accents.json', blob)
     }
-    async handleImportAccents(refreshUI) {
+    async handleImportAccents(reloadComponents) {
         async function readFile(file) {
             return await file.text();
         }
@@ -140,7 +140,7 @@ class CustomAccentModal extends React.Component {
             .catch((e) => {
                 console.error(e)
             });
-        refreshUI()
+        reloadComponents(parsedResult)
     }
     render () {
         const {
