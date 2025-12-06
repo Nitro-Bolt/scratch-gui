@@ -266,7 +266,7 @@ const CustomAccentModalComponent = function (props) {
 
         newData.forEach((item) => {
             addToUI(
-                <CustomAccentDIV
+                <CustomAccentComponent
                     //name={`*Name ${this.accents}*`}
                     name={item.name}
                     //primaryColor={"#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}
