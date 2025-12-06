@@ -93,12 +93,10 @@ class CustomAccentModal extends React.Component {
             primaryColor: accentData.primaryColor,
             primaryColorDark: accentData.primaryColorDark
         })
-        refreshUI()
     }
     deactivateAccent (accentData, refreshUI) {
         //localStorage.setItem(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify(JSON.parse(localStorage.getItem(this.CUSTOM_ACCENTS_KEY_ON)).push(accentData)))
         this.props.onChangeTheme(this.props.theme.set(localStorage.getItem("tw:accent")))
-        refreshUI()
     }
     handleExportAccents() {
         let savedAccents = localStorage.getItem(this.CUSTOM_ACCENTS_KEY)
@@ -136,11 +134,11 @@ class CustomAccentModal extends React.Component {
             .then((e) => {
                 const parsedResult = JSON.parse(e) == 1 ? [] : JSON.parse(e)
                 localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify(parsedResult))
+                reloadComponents(parsedResult)
             })
             .catch((e) => {
                 console.error(e)
             });
-        reloadComponents(parsedResult)
     }
     render () {
         const {
