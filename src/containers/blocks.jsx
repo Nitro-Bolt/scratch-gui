@@ -475,7 +475,8 @@ class Blocks extends React.Component {
             payload: {
                 type: {
                     isBlockly: true,
-                    type: e.type
+                    type: e.type,
+                    sprite: this.props.vm.editingTarget.sprite.name
                 },
                 data: e.toJson()
             }
@@ -512,7 +513,16 @@ class Blocks extends React.Component {
                 this.workspace.removeChangeListener(this.sendBlocklyEvent)
                 //this.ScratchBlocks.Events.fire(this.jsonToEvent(data.data));
                 const e = this.ScratchBlocks.Events.fromJson(data.data, this.workspace)//this.jsonToEvent(data.data)
-                e.run(true);
+                const editingSpriteName = this.props.vm.editingTarget.sprite.name;
+                if (data.type.sprite === editingSpriteName) {
+                    e.run(true);
+                } else {
+                    if (data.type.sprite === 'Stage') {
+                        this.props.vm.runtime.getTargetForStage().blocks.blocklyListen(e);
+                    } else {
+                        this.props.vm.runtime.getSpriteTargetByName(data.type.sprite).blocks.blocklyListen(e);
+                    }
+                }
                 this.ScratchBlocks.Events.fireNow_() // hickity hackity
                 //this.ScratchBlocks.Events.enable()
                 this.workspace.addChangeListener(this.sendBlocklyEvent)
