@@ -476,7 +476,12 @@ class Blocks extends React.Component {
                 type: {
                     isBlockly: true,
                     type: e.type,
-                    sprite: this.props.vm.editingTarget.sprite.name
+                    sprite: this.props.vm.editingTarget.sprite.name,
+                    refreshToolbox: (
+                        e.xml?.getAttribute('type') === 'procedures_definition' ||
+                        e.oldXml?.getAttribute('type') === 'procedures_definition' ||
+                        e.element === 'mutation'
+                    )
                 },
                 data: e.toJson()
             }
@@ -523,6 +528,10 @@ class Blocks extends React.Component {
                         this.props.vm.runtime.getSpriteTargetByName(data.type.sprite).blocks.blocklyListen(e);
                     }
                 }
+                if (data.type.refreshToolbox) {
+                    this.workspace.getToolbox().refreshSelection();
+                }
+
                 this.ScratchBlocks.Events.fireNow_() // hickity hackity
                 //this.ScratchBlocks.Events.enable()
                 this.workspace.addChangeListener(this.sendBlocklyEvent)
