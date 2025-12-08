@@ -5,9 +5,11 @@ import Monitor from '../../containers/monitor.jsx';
 import PropTypes from 'prop-types';
 import {OrderedMap} from 'immutable';
 import {stageSizeToTransform} from '../../lib/screen-utils';
+import {sanitizeVariableType} from '../../lib/tw-safe-stringify.js';
 
 import styles from './monitor-list.css';
 
+let different = 0;
 const MonitorList = props => (
     <Box
         // Use static `monitor-overlay` class for bounds of draggables
@@ -36,7 +38,7 @@ const MonitorList = props => (
                         params={monitorData.params}
                         spriteName={monitorData.spriteName}
                         targetId={monitorData.targetId}
-                        value={monitorData.value}
+                        value={sanitizeVariableType(monitorData.value, monitorData.mode)}
                         width={monitorData.width}
                         x={monitorData.x}
                         y={monitorData.y}
