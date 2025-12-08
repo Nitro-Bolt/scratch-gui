@@ -34,15 +34,63 @@ const messages = defineMessages({
     }
 });
 
-/**
- * @param {Intl} intl For formating.
- * @returns {HTMLElement} The "No Variables" message.
- */
 const _noVariablesItem = intl => (
     <div className={styles.box}>{intl.formatMessage(messages.noVariables)}</div>
 );
 
-const _isList = varr => varr.type === 'list';
+const VariableDropdown = function ({label, style, children}) {
+    return (
+        <div
+            className={styles.variableDropdown}
+            style={style}
+        >
+            <div className={styles.variableDropdownHeader}>
+                <span className={styles.variableDropdownHeaderLabel}>
+                    {label}
+                </span>
+            </div>
+
+            {<div className={styles.variableDropdownBody}>{children}</div>}
+        </div>
+    );
+};
+
+
+const variableItem = variable => (
+    <tr key={variable.id}>
+        <td className={styles.variableName}>
+            <input value={variable.name} />
+        </td>
+        <td className={styles.variableValue}>
+            <input
+                value={variable.value}
+            />
+        </td>
+    </tr>
+);
+
+const listItem = variable => (
+    <tr key={variable.id}>
+        <td
+            colSpan={2}
+            className={styles.variableName}
+        >
+            <input value={variable.name} />
+            {variable.value.map((item, index) => (
+                <div
+                    className={styles.listItem}
+                    key={index}
+                >
+                    <span> {index + 1}. </span>
+                    <input
+                        className={styles.variableValue}
+                        value={item}
+                    />
+                </div>
+            ))}
+        </td>
+    </tr>
+);
 
 /* eslint-disable react/prop-types */
 const Variables = ({variables, intl}) => {
@@ -50,20 +98,13 @@ const Variables = ({variables, intl}) => {
     for (const id in variables) {
         const currentVar = variables[id];
 
-        final.push(
-            <tr key={id}>
-                <td className={styles.variableName}>
-                    <input value={currentVar.name} />
-                </td>
-                <td className={styles.variableValue}>
-                    <input
-                        value={
-                            _isList(currentVar) ? 'List not supported yet' : currentVar.value
-                        }
-                    />
-                </td>
-            </tr>
-        );
+        switch (currentVar.type) {
+            case 'list':
+                final.push(listItem(currentVar));
+                break;
+            default:
+                final.push(variableItem(currentVar));
+        }
     }
 
     if (final.length > 0) {
@@ -122,23 +163,6 @@ const LocalVariables = ({clones, onHighlightSprite, intl}) => {
             ) : (
                 _noVariablesItem(intl)
             )}
-        </div>
-    );
-};
-
-const VariableDropdown = function ({label, style, children}) {
-    return (
-        <div
-            className={styles.variableDropdown}
-            style={style}
-        >
-            <div className={styles.variableDropdownHeader}>
-                <span className={styles.variableDropdownHeaderLabel}>
-                    {label}
-                </span>
-            </div>
-
-            {<div className={styles.variableDropdownBody}>{children}</div>}
         </div>
     );
 };
