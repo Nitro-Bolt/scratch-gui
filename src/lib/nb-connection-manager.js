@@ -344,6 +344,13 @@ class NBConnectionManager extends EventEmitter {
   }
 
   /**
+   * Leaves the current room that the client is in. Just calls this.close().
+   */
+  leaveRoom () {
+    this.close(false);
+  }
+
+  /**
    * Set the username of this client
    * @param {string} username The username to use
    */
