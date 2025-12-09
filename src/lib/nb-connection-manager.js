@@ -306,7 +306,7 @@ class NBConnectionManager extends EventEmitter {
 
       promiseResolution(true);
     });
-    
+
     return new Promise(resolve => {
       promiseResolution = resolve; // this is super freaky
     });
@@ -331,7 +331,7 @@ class NBConnectionManager extends EventEmitter {
     this.host = null;
 
     this.roomId = this.peerId;
-    
+
     this._setRoomInUrl(this.peerId);
 
     this.connectionLocked = false;
@@ -405,7 +405,7 @@ class NBConnectionManager extends EventEmitter {
       this.emit(this.Event.ROOMLEAVE, this.roomId, this.host);
       this.emit(this.Event.CONNECTIONSUPDATE, Object.values(this.connections));
     }
-    
+
     if (this.isHost) {
       this.sendToAll({
         type: this.PacketType.ROOMCLOSED
@@ -428,8 +428,6 @@ class NBConnectionManager extends EventEmitter {
 
     this.peer?.destroy();
     this.peer = null;
-
-    
   }
 
   /**
@@ -473,7 +471,7 @@ class NBConnectionManager extends EventEmitter {
           type: this.PacketType.KICK,
           payload: peer
         });
-        
+
         this._killPeer(this.connections[peer]);
       }
     }
@@ -545,7 +543,7 @@ class NBConnectionManager extends EventEmitter {
       this.emit(this.Event.PEERCONNECT, peer);
     }
   }
-  
+
   /**
    * Handle the disconnection of a given peer
    * @param {CollaborationPeer} peer The peer to handle the disconnection of
@@ -658,7 +656,7 @@ class NBConnectionManager extends EventEmitter {
 
       case (this.PacketType.AUTHKEY): {
         if (this.host !== peer) return console.error('Client impersonating host!', peer, packet);
-        
+
         if (typeof packet?.key !== 'string') return console.error('Received malformed packet', packet);
         if (typeof packet?.id !== 'string') return console.error('Received malformed packet', packet);
 
@@ -682,7 +680,6 @@ class NBConnectionManager extends EventEmitter {
           return console.error('Client attempted to authenticate but a key was not yet received!', peer, packet);
           // todo: maybe add a listener for a packet here just in case it's the next packet received
         }
-        
 
         if (this.authKeys[peer.peer] === packet.key) {
           peer.authenticated = true;
@@ -700,7 +697,7 @@ class NBConnectionManager extends EventEmitter {
 
           this.emit(this.Event.PEERUPGRADE, peer, peer.username);
         } else return console.error('Client attempted to authenticate with the incorrect key', peer, packet);
-        
+
         break;
       }
 
@@ -745,10 +742,10 @@ class NBConnectionManager extends EventEmitter {
           // because of this, it's likely when the host kicks a peer that if they are using a vanilla
           // client that it will have already disconnected from the other peers.
         }
-        
+
         this.emit(this.Event.PEERKICK, this.connections[packet.payload]);
         this._killPeer(this.connections[packet.payload]);
-        
+
         break;
       }
 
