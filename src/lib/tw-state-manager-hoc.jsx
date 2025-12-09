@@ -363,7 +363,7 @@ const TWStateManager = function (WrappedComponent) {
             }
 
             if (urlParams.has('room')) {
-                const roomID = +urlParams.get('room');
+                const roomID = urlParams.get('room');
                 connectionManager.init(localStorage.getItem('tw:username'));
                 connectionManager.joinRoom(roomID);
             }

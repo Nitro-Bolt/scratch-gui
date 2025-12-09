@@ -144,7 +144,13 @@ class Blocks extends React.Component {
         this.toolboxUpdateQueue = [];
     }
     componentDidMount () {
-        connectionManager.init(localStorage.getItem('tw:username'))
+        connectionManager.on('ROOMCHANGE', room => {
+            if (room) {
+                this.attachConnectionMananger();
+            } else {
+                this.detachConnectionManager();
+            }
+        });
         this.ScratchBlocks = VMScratchBlocks(this.props.vm, this.props.useCatBlocks);
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -361,9 +367,6 @@ class Blocks extends React.Component {
     }
 
     attachVM () {
-        this.workspace.addChangeListener(this.sendBlocklyEvent);
-        this.connectionManager.on(this.connectionManager.Event.PACKET, this.handlePacket);
-        this.connectionManager.on(this.connectionManager.Event.PEERUPGRADE, peer => { if (this.connectionManager.isHost) this.handleConnection(peer) });
         this.workspace.addChangeListener(this.props.vm.blockListener);
         this.flyoutWorkspace = this.workspace
             .getFlyout()
@@ -400,6 +403,17 @@ class Blocks extends React.Component {
         this.props.vm.removeListener('PERIPHERAL_CONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.removeListener('PERIPHERAL_DISCONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.removeListener('CREATE_UNSANDBOXED_EXTENSION_API', this.onExtensionAPI);
+    }
+
+    attachConnectionMananger () {
+        this.connectionManager.on(this.connectionManager.Event.PACKET, this.handlePacket);
+        this.connectionManager.on(this.connectionManager.Event.PEERUPGRADE, peer => { if (this.connectionManager.isHost) this.handleConnection(peer) });
+        this.workspace.addChangeListener(this.sendBlocklyEvent);
+    }
+    detachConnectionManager () {
+        this.connectionManager.off(this.connectionManager.Event.PACKET, this.handlePacket);
+        this.connectionManager.off(this.connectionManager.Event.PEERUPGRADE, peer => { if (this.connectionManager.isHost) this.handleConnection(peer) });
+        this.workspace.removeChangeListener(this.sendBlocklyEvent);
     }
 
     onExtensionAPI(Scratch) {

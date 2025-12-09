@@ -47,6 +47,10 @@ class NBLiveCollaborationModal extends React.Component {
     }
 
     componentDidMount () {
+        if (!connectionManager.initialized) {
+            connectionManager.init(localStorage.getItem('tw:username'));
+        }
+
         connectionManager.on(connectionManager.Event.CONNECTIONSUPDATE, this.handlePeersUpdate);
         connectionManager.on(connectionManager.Event.ROOMCHANGE, this.handleRoomChange);
         connectionManager.on(connectionManager.Event.JOINLOCK, this.handleConnectionLock);
