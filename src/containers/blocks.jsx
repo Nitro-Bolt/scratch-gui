@@ -482,6 +482,8 @@ class Blocks extends React.Component {
         this.eventIgnoreList.splice(this.eventFired(e), 1)
     }
     sendBlocklyEvent(e) {
+        if (['ui', 'endDrag', 'dragOutside'].includes(e.type)) return;
+
         console.log("Sending blockly event ", e)
         
         if (this.connectionManager.connected) this.connectionManager.sendToAll({
