@@ -214,6 +214,16 @@ const LiveCollaborationModal = props =>
                         )}
                     </>
                 )}
+                <Box className={styles.warning}>
+                    <p>
+                        Since anyone can set their username to anything, impersonation is possible.
+                    </p>
+                    <br />
+                    <p>
+                        Because of the nature of how Live Collaboration works, anyone you connect to can have access to your IP address.
+                        Only connect to users you trust.
+                    </p>
+                </Box>
             </Box>
         </Modal>
     );
