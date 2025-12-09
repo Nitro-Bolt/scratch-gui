@@ -367,6 +367,18 @@ class Blocks extends React.Component {
     }
 
     attachVM () {
+        this.props.vm.on('PROJECT_MUTATION', (data) => {
+            if (!this.connectionManager || !this.connectionManager.connected) return;
+            this.connectionManager.sendToAll({
+                type: this.connectionManager.PacketType.PACKET,
+                payload: {
+                    type: 'sync',
+                    fn: data.fn,
+                    args: data.args
+                }
+            });
+        });
+
         this.workspace.addChangeListener(this.props.vm.blockListener);
         this.flyoutWorkspace = this.workspace
             .getFlyout()
@@ -485,7 +497,7 @@ class Blocks extends React.Component {
         if (['ui', 'endDrag', 'dragOutside'].includes(e.type)) return;
 
         console.log("Sending blockly event ", e)
-        
+
         if (this.connectionManager.connected) this.connectionManager.sendToAll({
             type: "PACKET",
             payload: {
@@ -506,24 +518,43 @@ class Blocks extends React.Component {
     }
     handlePacket(data) { // data is packet.payload
         if (typeof data.type !== "object") {
-            if (typeof data?.type !== "string") return console.error("Received malformed packet")
+            if (typeof data?.type !== "string") return console.error("Received malformed packet");
             switch (data.type) {
                 case "project": {
-                    console.log("received project", data)
-                    if (typeof data.zip !== "object") return console.error("received malformed project", data)
-                    if (typeof data.json !== "string") return console.error("received malformed project", data)
+                    console.log("received project", data);
+                    if (typeof data.zip !== "object") return console.error("received malformed project", data);
+                    if (typeof data.json !== "string") return console.error("received malformed project", data);
 
                     const zip = new JSZip()
                     zip.loadAsync(data.zip).then((zip) => {
-                        console.log("loaded zip")
-                        const json = JSON.parse(data.json)
-                        json.projectVersion = 3 // this is wrong and i should not be doing it but i'm too lazy to fix it
+                        console.log("loaded zip");
+                        const json = JSON.parse(data.json);
+                        json.projectVersion = 3; // this is wrong and i should not be doing it but i'm too lazy to fix it
                         // todo: fix it
-                        console.log("json:", json)
-                        this.props.vm.deserializeProject(json, zip).then(() => console.log("project loaded"))
+                        console.log("json:", json);
+                        this.props.vm.deserializeProject(json, zip).then(() => console.log("project loaded"));
                     })
-                    
-                    break
+
+                    break;
+                }
+                case "sync": {
+                    console.log("Received sync data", data);
+
+                    if (typeof data.fn !== "string") return console.error("received malformed data");
+                    if (!Array.isArray(data.args)) return console.error("received malformed data");
+
+                    const fn = this.props.vm[data.fn];
+                    if (typeof fn !== "function") {
+                        return console.error("Unknown VM mutation:", data.fn);
+                    }
+
+                    try {
+                        fn.apply(this.props.vm, [...data.args, false]);
+                    } catch (e) {
+                        console.error("Failed to apply mutation", e);
+                    }
+
+                    break;
                 }
             }
         }
@@ -555,7 +586,7 @@ class Blocks extends React.Component {
             }
             else {
                 console.error("Received packet not from blockly", data);
-            }            
+            }
         }
 
     }
