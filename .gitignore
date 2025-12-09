@@ -26,6 +26,3 @@ npm-*
 
 # for act
 .secrets
-
-# editor configs
-.zed
