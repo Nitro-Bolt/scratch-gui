@@ -1,6 +1,7 @@
 export default {
     SOUND: 'SOUND',
     COSTUME: 'COSTUME',
+    ASSET: 'ASSET',
     SPRITE: 'SPRITE',
     CODE: 'CODE',
 

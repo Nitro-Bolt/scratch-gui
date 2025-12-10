@@ -235,6 +235,36 @@ const soundUpload = function (fileData, fileType, storage, handleSound, handleEr
     handleSound(vmSound);
 };
 
+/**
+ * Handles loading a generic asset (not costume or sound).
+ * @param {ArrayBuffer} fileData The asset data to load
+ * @param {string} fileType The MIME type of this file
+ * @param {VM} vm The Scratch VM instance
+ * @param {Function} handleAsset The function to execute on the asset object(s) returned after
+ * caching this asset in storage - should add the asset to the VM and handle UI flow
+ * @param {Function} handleError The function to execute if there is an error parsing the asset
+ */
+const assetUpload = function (fileData, fileType, vm, handleAsset, handleError = () => {}) {
+    const storage = vm.runtime.storage;
+    // Use a generic asset type; you may want to define your own AssetType in storage
+    const assetType = storage.AssetType.Project; // Or a custom type if you have one
+    // Try to extract file extension from MIME type
+    let dataFormat = '';
+    if (fileType && fileType.includes('/')) {
+        dataFormat = fileType.split('/')[1];
+    } else {
+        dataFormat = 'bin';
+    }
+    // Create the asset
+    const vmAsset = createVMAsset(
+        storage,
+        assetType,
+        dataFormat,
+        new Uint8Array(fileData)
+    );
+    handleAsset([vmAsset]);
+};
+
 const spriteUpload = function (fileData, fileType, spriteName, vm, handleSprite, handleError = () => {}) {
     switch (fileType) {
     case '':
@@ -292,5 +322,6 @@ export {
     handleFileUpload,
     costumeUpload,
     soundUpload,
+    assetUpload,
     spriteUpload
 };
