@@ -4,6 +4,7 @@ import styles from './variables-tab.css';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import dropdownCaret from './dropdown-caret.svg';
 
 const messages = defineMessages({
     forThisSprite: {
@@ -38,58 +39,69 @@ const _noVariablesItem = intl => (
     <div className={styles.box}>{intl.formatMessage(messages.noVariables)}</div>
 );
 
-const VariableDropdown = function ({label, style, children}) {
-    return (
-        <div
-            className={styles.variableDropdown}
-            style={style}
-        >
-            <div className={styles.variableDropdownHeader}>
-                <span className={styles.variableDropdownHeaderLabel}>
-                    {label}
-                </span>
-            </div>
-
-            {<div className={styles.variableDropdownBody}>{children}</div>}
-        </div>
-    );
-};
-
+const _dropdownCaretElement = isCollapsed => (
+    <img
+        src={dropdownCaret}
+        draggable={false}
+        width={8}
+        height={5}
+        style={{
+            transform: `rotate(${isCollapsed ? -90 : 0}deg)`
+        }}
+    />
+);
 
 const variableItem = variable => (
-    <tr key={variable.id}>
-        <td className={styles.variableName}>
-            <input value={variable.name} />
-        </td>
-        <td className={styles.variableValue}>
-            <input
-                value={variable.value}
-            />
-        </td>
-    </tr>
+    <div className={styles.variableItem}>
+        <input
+            value={variable.name}
+            className={styles.variableItemName}
+        />
+        <input
+            value={variable.value}
+            className={styles.variableItemValue}
+        />
+    </div>
 );
 
 const listItem = variable => (
-    <tr key={variable.id}>
-        <td
-            colSpan={2}
-            className={styles.variableName}
-        >
-            <input value={variable.name} />
-            {variable.value.map((item, index) => (
-                <div
-                    className={styles.listItem}
-                    key={index}
-                >
-                    <span> {index + 1}. </span>
-                    <input
-                        className={styles.variableValue}
-                        value={item}
-                    />
-                </div>
-            ))}
-        </td>
-    </tr>
+    <div
+        className={styles.variableItem}
+        style={{
+            display: 'grid',
+            gridTemplateRows: 'auto auto',
+            gridTemplateColumns: 'auto'
+        }}
+    >
+        <input
+            value={variable.name}
+            className={styles.variableItemName}
+            style={{borderRadius: '2em'}}
+        />
+        <div style={{padding: 0, border: 'none', maxHeight: '25rem'}}>
+            <table>
+                <tbody>
+                    {variable.value.map((item, index) => (
+                        <tr key={index}>
+                            <td
+                                style={{
+                                    backgroundColor: 'var(--ui-secondary)'
+                                }}
+                            >
+                                <span>{index + 1}</span>
+                            </td>
+                            <td>
+                                <input
+                                    className={styles.variableValue}
+                                    value={item}
+                                />
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    </div>
 );
 
 /* eslint-disable react/prop-types */
@@ -99,20 +111,16 @@ const Variables = ({variables, intl}) => {
         const currentVar = variables[id];
 
         switch (currentVar.type) {
-            case 'list':
-                final.push(listItem(currentVar));
-                break;
-            default:
-                final.push(variableItem(currentVar));
+        case 'list':
+            final.push(listItem(currentVar));
+            break;
+        default:
+            final.push(variableItem(currentVar));
         }
     }
 
     if (final.length > 0) {
-        return (
-            <table>
-                <tbody>{final}</tbody>
-            </table>
-        );
+        return final;
     }
     return _noVariablesItem(intl);
 };
@@ -144,8 +152,7 @@ const LocalVariables = ({clones, onHighlightSprite, intl}) => {
                         <span className={styles.variableName}>
                             {i === 0 ?
                                 intl.formatMessage(messages.original) :
-                                intl.formatMessage(messages.clone) + i
-                            }{' '}
+                                intl.formatMessage(messages.clone) + i}{' '}
                             <br />
                             <sub>{`(${id})`}</sub>
                         </span>
@@ -166,6 +173,33 @@ const LocalVariables = ({clones, onHighlightSprite, intl}) => {
         </div>
     );
 };
+
+const VariableDropdown = function ({label, children}) {
+    const [isCollapsed, setIsCollapsed] = React.useState(false);
+
+    return (
+        <div
+            className={classNames(styles.variableDropdown, {
+                [styles.variableDropdownCollapsed]: isCollapsed
+            })}
+        >
+            <div
+                className={styles.variableDropdownHeader}
+                // eslint-disable-next-line react/jsx-no-bind
+                onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+                {_dropdownCaretElement(isCollapsed)}
+                <span>{label}</span>
+            </div>
+            {isCollapsed ? (
+                ''
+            ) : (
+                <div className={styles.variableDropdownBody}>{children}</div>
+            )}
+        </div>
+    );
+};
+
 /* eslint-enable react/prop-types */
 
 const VariableTab = props => (
@@ -173,9 +207,6 @@ const VariableTab = props => (
         <div className={styles.container}>
             <VariableDropdown
                 label={props.intl.formatMessage(messages.forAllSprites)}
-                style={{
-                    minHeight: `${props.isStage ? '100' : '30'}%`
-                }}
             >
                 <Variables
                     variables={props.globalVariables}
@@ -188,9 +219,6 @@ const VariableTab = props => (
             ) : (
                 <VariableDropdown
                     label={props.intl.formatMessage(messages.forThisSprite)}
-                    style={{
-                        minHeight: '70%'
-                    }}
                 >
                     <LocalVariables
                         clones={props.clones}
