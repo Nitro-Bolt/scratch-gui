@@ -68,16 +68,43 @@ class VariableManager extends React.Component {
         );
     }
 
+    _checkEquality (value1, value2) {
+        if (!(value1 instanceof Array) || !(value2 instanceof Array)) {
+            return value1 === value2;
+        }
+        if (value1.length !== value2.length) return false;
+
+        for (let i = 0; i < value1.length; i++) {
+            if (value1[i] instanceof Array && value2[i] instanceof Array) {
+                return this._checkEquality(value1[i], value2[i]);
+            }
+            if (value1[i] !== value2[i]) return false;
+        }
+        return true;
+    }
+
     _reloadGlobalVariable () {
         const stage = this.props.stage;
         if (!stage) return;
-        const newVariables = Object.values(stage.variables);
+        const newVariables = stage.variables;
         const oldVariables = this.state.globalVariables;
+
+        if (oldVariables.length !== newVariables.length) {
+            console.log(
+                'GlobalVariable reloading due to mismatch amount of variables'
+            );
+            return this.setState({
+                globalVariables: structuredClone(stage.variables)
+            });
+        }
 
         for (const id in newVariables) {
             const varToCheck = oldVariables[id];
 
             if (!varToCheck) {
+                console.log(
+                    'GlobalVariable reloading due to previously non-existent variable (may be inaccurate, idk why)'
+                );
                 return this.setState({
                     globalVariables: structuredClone(stage.variables)
                 });
@@ -85,8 +112,11 @@ class VariableManager extends React.Component {
 
             if (
                 varToCheck.name !== newVariables[id].name ||
-                varToCheck.value !== newVariables[id].value
+                !this._checkEquality(varToCheck.value, newVariables[id].value)
             ) {
+                console.log(
+                    'GlobalVariable reloading due to mismatch variable name and/or value'
+                );
                 return this.setState({
                     globalVariables: structuredClone(stage.variables)
                 });
@@ -100,12 +130,33 @@ class VariableManager extends React.Component {
             variables: variables
         }));
 
+        if (this.state.clones.length !== clones.length) {
+            console.log(
+                'LocalVariable reloading due to mismatch amount of clones'
+            );
+            return this.setState({
+                clones: structuredClone(clones)
+            });
+        }
+
         for (let i = 0; i < clones.length; i++) {
             const newVariables = clones[i].variables;
             const oldClones = this.state.clones[i];
             const oldVariables = oldClones?.variables;
 
             if (!oldClones || !oldVariables) {
+                console.log(
+                    'LocalVariable reloading due to previously non-existent variable'
+                );
+                return this.setState({
+                    clones: structuredClone(clones)
+                });
+            }
+
+            if (oldVariables.length !== newVariables.length) {
+                console.log(
+                    'LocalVariable reloading due to previously non-existent variable'
+                );
                 return this.setState({
                     clones: structuredClone(clones)
                 });
@@ -115,6 +166,9 @@ class VariableManager extends React.Component {
                 const varToCheck = oldVariables[id];
 
                 if (!varToCheck) {
+                    console.log(
+                        'LocalVariable reloading due to previously non-existent variable'
+                    );
                     return this.setState({
                         clones: structuredClone(clones)
                     });
@@ -122,8 +176,14 @@ class VariableManager extends React.Component {
 
                 if (
                     varToCheck.name !== newVariables[id].name ||
-                    varToCheck.value !== newVariables[id].value
+                    !this._checkEquality(
+                        varToCheck.value,
+                        newVariables[id].value
+                    )
                 ) {
+                    console.log(
+                        'LocalVariable reloading due to mismatch variable name and/or value'
+                    );
                     return this.setState({
                         clones: structuredClone(clones)
                     });
@@ -157,7 +217,7 @@ class VariableManager extends React.Component {
     }
 
     render () {
-        // The `clones` object needs to be formatted
+        // The `clones` array needs to be formatted
         // because it have a lot of other useless propeties that should not be copied to State
         // But on first load, the formating won't run so we need to pass the `clones` object directly
         // IDK why `globalVariables` aren't affected by this and IDC, it works
