@@ -405,6 +405,8 @@ export default async function ({ addon, console, msg }) {
         }
         // console.log("enableSelecting() waited for element");
 
+        // sa-search-sprites-container // i'm trying something
+
         spritesContainer = document.querySelector('[class^="sprite-selector_items-wrapper"]');
         spriteSelectorContainer = document.querySelector('[class^="sprite-selector_scroll-wrapper"]');
         spriteDeleteButton = document.querySelectorAll('[class^="delete-button_delete-button"]');
