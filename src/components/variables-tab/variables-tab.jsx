@@ -53,53 +53,33 @@ const _dropdownCaretElement = isCollapsed => (
 
 const variableItem = variable => (
     <div className={styles.variableItem}>
-        <input
-            value={variable.name}
-            className={styles.variableItemName}
-        />
-        <input
-            value={variable.value}
-            className={styles.variableItemValue}
-        />
+        <input value={variable.name} />
+        <input value={variable.value} />
     </div>
 );
 
 const listItem = variable => (
     <div
-        className={styles.variableItem}
         style={{
-            display: 'grid',
-            gridTemplateRows: 'auto auto',
-            gridTemplateColumns: 'auto'
+            border: '1px solid var(--ui-black-transparent)',
+            padding: '0.5rem',
+            marginBottom: '0.5rem',
+            borderLeftWidth: '2px'
         }}
     >
-        <input
-            value={variable.name}
-            className={styles.variableItemName}
-            style={{borderRadius: '2em'}}
-        />
-        <div style={{padding: 0, border: 'none', maxHeight: '25rem'}}>
-            <table>
-                <tbody>
-                    {variable.value.map((item, index) => (
-                        <tr key={index}>
-                            <td
-                                style={{
-                                    backgroundColor: 'var(--ui-secondary)'
-                                }}
-                            >
-                                <span>{index + 1}</span>
-                            </td>
-                            <td>
-                                <input
-                                    className={styles.variableValue}
-                                    value={item}
-                                />
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div
+            className={styles.variableItem}
+            style={{
+                gridTemplateRows: 'auto auto',
+                gridTemplateColumns: 'auto'
+            }}
+        >
+            <input value={variable.name} />
+            <textarea
+                rows="5"
+                name={`variableItem-listItem-${variable.id}`}
+                value={variable.value.join('\n')}
+            />
         </div>
     </div>
 );
@@ -154,7 +134,7 @@ const LocalVariables = ({clones, onHighlightSprite, intl}) => {
                                 intl.formatMessage(messages.original) :
                                 intl.formatMessage(messages.clone) + i}{' '}
                             <br />
-                            <sub>{`(${id})`}</sub>
+                            <sub>{id}</sub>
                         </span>
                     </div>
                 ))}
