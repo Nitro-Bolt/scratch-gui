@@ -27,7 +27,7 @@ class VariableManager extends React.Component {
 
         /* State format
         {
-          globalVariable: {
+          globalVariables: {
             [id]: Variable Object,
             ...
           },
@@ -216,6 +216,10 @@ class VariableManager extends React.Component {
         this.props.dispatchHighlightTarget(id);
     }
 
+    handleNameChange (event, variable) {
+        console.log(event.target.value, variable);
+    }
+
     render () {
         // The `clones` array needs to be formatted
         // because it have a lot of other useless propeties that should not be copied to State
@@ -232,6 +236,7 @@ class VariableManager extends React.Component {
                         this.props.editingTarget.sprite.clones
                 }
                 handleSpriteHighlighting={this._handleSpriteHighlighting}
+                onNameChange={this.handleNameChange}
                 intl={this.props.intl}
                 isStage={this.props.editingTarget.isStage}
             />
