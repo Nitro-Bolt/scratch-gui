@@ -51,7 +51,7 @@ const _dropdownCaretElement = isCollapsed => (
 
 /* eslint-disable react/prop-types */
 const Variables = ({
-    variables, intl, editingVariable, handleInputChange, handleKeyDown, handleSubmitEditedVariable
+    variables, optCloneId, intl, editingVariable, handleInputChange, handleKeyDown, handleSubmitEditedVariable
 }) => {
     const final = [];
     for (const id in variables) {
@@ -67,15 +67,15 @@ const Variables = ({
 
         const valueHandlers = {
             onChange: e => handleInputChange(e, 'value', currentVar),
-            onKeyDown: e => handleKeyDown(e, 'value', currentVar),
-            onBlur: e => handleSubmitEditedVariable(e, currentVar)
+            onKeyDown: e => handleKeyDown(e, 'value', currentVar, optCloneId),
+            onBlur: e => handleSubmitEditedVariable(e, currentVar, optCloneId)
 
         };
 
         const nameHandlers = {
             onChange: e => handleInputChange(e, 'name', currentVar),
-            onKeyDown: e => handleKeyDown(e, 'name', currentVar),
-            onBlur: e => handleSubmitEditedVariable(e, currentVar)
+            onKeyDown: e => handleKeyDown(e, 'name', currentVar, optCloneId),
+            onBlur: e => handleSubmitEditedVariable(e, currentVar, optCloneId)
 
         };
         switch (currentVar.type) {
@@ -239,6 +239,7 @@ const VariableTab = props => {
                     variables={
                         <Variables
                             variables={getSelectedClone(props.clones, selectedClone, setSelectedClone).variables}
+                            optCloneId={props.clones[selectedClone].id}
                             intl={props.intl}
                             editingVariable={props.editingVariable}
                             handleInputChange={props.handleInputChange}

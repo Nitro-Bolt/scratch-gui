@@ -233,14 +233,14 @@ class VariableManager extends React.Component {
         console.log(event.target.value, variable);
     }
 
-    onKeyDown (event, inputType, variable) {
+    onKeyDown (event, inputType, variable, optTargetId) {
         console.log(event.key);
         if (
             event.key === 'Enter' && (variable.type === '' || inputType === 'name' || event.shiftKey)
-        ) this.onSubmitEditedVariable(event, variable);
+        ) this.onSubmitEditedVariable(event, variable, optTargetId);
     }
 
-    onSubmitEditedVariable (event, variable) {
+    onSubmitEditedVariable (event, variable, optTargetId) {
         event.preventDefault();
         const vm = this.props.vm;
         const workspace = Blockly.getMainWorkspace();
@@ -252,9 +252,10 @@ class VariableManager extends React.Component {
         if (!variableId) return;
         if (variableId !== variable.id) return;
 
-        const target = vm.runtime.targets.find(t => t.variables[variableId]);
+        const target = optTargetId ?
+            vm.runtime.targets.find(t => t.id === optTargetId) :
+            vm.runtime.targets.find(t => t.variables[variableId]);
         if (!target) return;
-
 
         switch (this.state.editingVariable.type) {
         // https://github.com/PenguinMod/penguinmod.github.io/blob/8feeec6ba93a3e1e5e4004c9354440c099c115fb/src/containers/variables-tab.jsx#L162
