@@ -16,13 +16,18 @@ class VariableManager extends React.Component {
             'reload',
             '_reloadGlobalVariable',
             '_reloadLocalVariable',
-            '_handleSpriteHighlighting',
-            '_forceReloadLocalVariable'
+            '_forceReloadLocalVariable',
+            '_checkEquality',
+            'onHighlightTarget',
+            'onInputChange',
+            'onKeyDown',
+            'onSubmitEditedVariable'
         ]);
 
         this.state = {
             globalVariables: {},
-            clones: []
+            clones: [],
+            editingVariable: {}
         };
 
         /* State format
@@ -40,7 +45,8 @@ class VariableManager extends React.Component {
               }
             },
             ...
-          ]
+          ],
+          editingVariable: Variable Object
         }
         */
     }
@@ -212,12 +218,94 @@ class VariableManager extends React.Component {
         }
     }
 
-    _handleSpriteHighlighting (id) {
+    onHighlightTarget (id) {
         this.props.dispatchHighlightTarget(id);
     }
 
-    handleNameChange (event, variable) {
+    onInputChange (event, inputType, variable) {
+        this.setState({
+            editingVariable: {
+                id: variable.id,
+                type: inputType,
+                value: event.target.value
+            }
+        });
         console.log(event.target.value, variable);
+    }
+
+    onKeyDown (event, inputType, variable) {
+        console.log(event.key);
+        if (
+            event.key === 'Enter' && (variable.type === '' || inputType === 'name' || event.shiftKey)
+        ) this.onSubmitEditedVariable(event, variable);
+    }
+
+    onSubmitEditedVariable (event, variable) {
+        event.preventDefault();
+        const vm = this.props.vm;
+        const workspace = Blockly.getMainWorkspace();
+
+        const editingVariable = this.state.editingVariable;
+        if (Object.keys(editingVariable).length === 0) return;
+
+        const variableId = this.state.editingVariable.id;
+        if (!variableId) return;
+        if (variableId !== variable.id) return;
+
+        const target = vm.runtime.targets.find(t => t.variables[variableId]);
+        if (!target) return;
+
+
+        switch (this.state.editingVariable.type) {
+        // https://github.com/PenguinMod/penguinmod.github.io/blob/8feeec6ba93a3e1e5e4004c9354440c099c115fb/src/containers/variables-tab.jsx#L162
+        case 'name': {
+            let newName = editingVariable.value;
+            if (!newName.trim()) break; // Check if it's empty
+
+            const CLOUD_SYMBOL = '☁';
+            const CLOUD_PREFIX = `${CLOUD_SYMBOL} `;
+            if (variable.isCloud) {
+                if (newName.startsWith(CLOUD_SYMBOL) && !newName.startsWith(CLOUD_PREFIX)) {
+                    // There isn't a space between the cloud symbol and the name, so add one.
+                    newName = `${newName.substring(0, 1)} ${newName.substring(1)}`;
+                } else {
+                    newName = CLOUD_PREFIX + newName;
+                }
+            }
+
+            let nameAlreadyUsed = false;
+            if (target.isStage) {
+            // Global variables must not conflict with any global variables or local variables in any sprite.
+                const existingNames = vm.runtime.getAllVarNamesOfType(variable.type);
+                nameAlreadyUsed = existingNames.includes(newName);
+            } else {
+            // Local variables must not conflict with any global variables or local variables in this sprite.
+                nameAlreadyUsed = !!workspace.getVariable(newName, variable.type);
+            }
+            if (nameAlreadyUsed) return;
+
+            workspace.renameVariableById(variable.id, newName);
+            break;
+        }
+        case 'value': {
+            const newValue = editingVariable.value;
+
+            if (variable.type === 'list') {
+                const makeSureNotEmpty = newValue === '' ? [] : newValue.split('\n');
+                vm.setVariableValue(target.id, variableId, makeSureNotEmpty);
+            } else {
+                vm.setVariableValue(target.id, variableId, newValue);
+            }
+            break;
+        }
+        }
+
+        this.setState({
+            editingVariable: {}
+        });
+
+        this.reload();
+        event.target.blur();
     }
 
     render () {
@@ -233,10 +321,13 @@ class VariableManager extends React.Component {
                 clones={
                     isClonesFormatted ?
                         this.state.clones :
-                        this.props.editingTarget.sprite.clones
+                        this.props.sprite.clones
                 }
-                handleSpriteHighlighting={this._handleSpriteHighlighting}
-                onNameChange={this.handleNameChange}
+                editingVariable={this.state.editingVariable}
+                handleSpriteHighlighting={this.onHighlightTarget}
+                handleInputChange={this.onInputChange}
+                handleKeyDown={this.onKeyDown}
+                handleSubmitEditedVariable={this.onSubmitEditedVariable}
                 intl={this.props.intl}
                 isStage={this.props.editingTarget.isStage}
             />
@@ -245,32 +336,30 @@ class VariableManager extends React.Component {
 }
 
 VariableManager.propTypes = {
-    editingTarget: {
-        [PropTypes.string]: {
-            id: PropTypes.string,
-            variables: PropTypes.shape({
-                [PropTypes.string]: PropTypes.shape({
-                    id: PropTypes.string,
-                    value: PropTypes.string
-                })
-            }),
-            isStage: PropTypes.bool
-        }
-    },
-    stage: {
-        variables: {
+    editingTarget: PropTypes.shape({
+        id: PropTypes.string,
+        variables: PropTypes.shape({
             [PropTypes.string]: PropTypes.shape({
                 id: PropTypes.string,
                 value: PropTypes.string
             })
-        }
-    },
+        }),
+        isStage: PropTypes.bool
+    }),
+    stage: PropTypes.shape({
+        variables: PropTypes.shape({
+            [PropTypes.string]: PropTypes.shape({
+                id: PropTypes.string,
+                value: PropTypes.string
+            })
+        })
+    }),
     intl: intlShape,
     isRtl: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired,
-    sprite: {
+    sprite: PropTypes.shape({
         clones: PropTypes.array
-    },
+    }),
     dispatchHighlightTarget: PropTypes.func
 };
 

@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-handler-names */
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable require-jsdoc */
 import React from 'react';
 import styles from './variables-tab.css';
@@ -48,15 +50,39 @@ const _dropdownCaretElement = isCollapsed => (
 );
 
 /* eslint-disable react/prop-types */
-const Variables = ({variables, intl, onNameChange}) => {
+const Variables = ({
+    variables, intl, editingVariable, handleInputChange, handleKeyDown, handleSubmitEditedVariable
+}) => {
     const final = [];
     for (const id in variables) {
         const currentVar = variables[id];
+        const isEditingCurrentVar = editingVariable.id === currentVar.id;
 
+        const currentVarName = isEditingCurrentVar && editingVariable.type === 'name' ?
+            editingVariable.value :
+            currentVar.name;
+        const currentVarValue = isEditingCurrentVar && editingVariable.type === 'value' ?
+            editingVariable.value :
+            currentVar.value;
+
+        const valueHandlers = {
+            onChange: e => handleInputChange(e, 'value', currentVar),
+            onKeyDown: e => handleKeyDown(e, 'value', currentVar),
+            onBlur: e => handleSubmitEditedVariable(e, currentVar)
+
+        };
+
+        const nameHandlers = {
+            onChange: e => handleInputChange(e, 'name', currentVar),
+            onKeyDown: e => handleKeyDown(e, 'name', currentVar),
+            onBlur: e => handleSubmitEditedVariable(e, currentVar)
+
+        };
         switch (currentVar.type) {
         case 'list':
             final.push(
                 <div
+                    key={id}
                     style={{
                         border: '1px solid var(--ui-black-transparent)',
                         padding: '0.5rem',
@@ -72,12 +98,17 @@ const Variables = ({variables, intl, onNameChange}) => {
                         }}
                     >
                         <input
-                            value={currentVar.name}
-                            onChange={e => onNameChange(e, currentVar)}
+                            value={currentVarName}
+                            onChange={nameHandlers.onChange}
+                            onKeyDown={nameHandlers.onKeyDown}
+                            onBlur={nameHandlers.onBlur}
                         />
                         <textarea
                             rows="5"
-                            value={currentVar.value.join('\n')}
+                            value={isEditingCurrentVar ? currentVarValue : currentVarValue.join('\n')}
+                            onChange={valueHandlers.onChange}
+                            onKeyDown={valueHandlers.onKeyDown}
+                            onBlur={valueHandlers.onBlur}
                         />
                     </div>
                 </div>
@@ -85,12 +116,22 @@ const Variables = ({variables, intl, onNameChange}) => {
             break;
         default:
             final.push(
-                <div className={styles.variableItem}>
+                <div
+                    className={styles.variableItem}
+                    key={id}
+                >
                     <input
-                        value={currentVar.name}
-                        onChange={e => onNameChange(e, currentVar)}
+                        value={currentVarName}
+                        onChange={nameHandlers.onChange}
+                        onKeyDown={nameHandlers.onKeyDown}
+                        onBlur={nameHandlers.onBlur}
                     />
-                    <input value={currentVar.value} />
+                    <input
+                        value={currentVarValue}
+                        onChange={valueHandlers.onChange}
+                        onKeyDown={valueHandlers.onKeyDown}
+                        onBlur={valueHandlers.onBlur}
+                    />
                 </div>
             );
         }
@@ -114,7 +155,6 @@ const VariableDropdown = function ({label, children}) {
         >
             <div
                 className={styles.variableDropdownHeader}
-                // eslint-disable-next-line react/jsx-no-bind
                 onClick={() => setIsCollapsed(!isCollapsed)}
             >
                 {_dropdownCaretElement(isCollapsed)}
@@ -143,6 +183,14 @@ const LocalVariables = ({isStage, label, clones, variables}) => (
         </VariableDropdown>
     )
 );
+
+const getSelectedClone = (clones, selectedClone, setSelectedClone) => {
+    if (clones[selectedClone]) {
+        return clones[selectedClone];
+    }
+    setSelectedClone(0);
+    return clones[0];
+};
 /* eslint-enable react/prop-types */
 
 const VariableTab = props => {
@@ -157,7 +205,10 @@ const VariableTab = props => {
                     <Variables
                         variables={props.globalVariables}
                         intl={props.intl}
-                        onNameChange={props.onNameChange}
+                        editingVariable={props.editingVariable}
+                        handleInputChange={props.handleInputChange}
+                        handleKeyDown={props.handleKeyDown}
+                        handleSubmitEditedVariable={props.handleSubmitEditedVariable}
                     />
                 </VariableDropdown>
 
@@ -187,9 +238,12 @@ const VariableTab = props => {
                     ))}
                     variables={
                         <Variables
-                            variables={props.clones[selectedClone].variables}
+                            variables={getSelectedClone(props.clones, selectedClone, setSelectedClone).variables}
                             intl={props.intl}
-                            onNameChange={props.onNameChange}
+                            editingVariable={props.editingVariable}
+                            handleInputChange={props.handleInputChange}
+                            handleKeyDown={props.handleKeyDown}
+                            handleSubmitEditedVariable={props.handleSubmitEditedVariable}
                         />
                     }
                 />
@@ -203,8 +257,11 @@ VariableTab.propTypes = {
     isStage: PropTypes.bool,
     globalVariables: PropTypes.object,
     clones: PropTypes.array,
+    editingVariable: PropTypes.object,
     handleSpriteHighlighting: PropTypes.func,
-    onNameChange: PropTypes.func
+    handleInputChange: PropTypes.func,
+    handleKeyDown: PropTypes.func,
+    handleSubmitEditedVariable: PropTypes.func
 };
 
 export default injectIntl(VariableTab);
