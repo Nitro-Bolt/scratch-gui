@@ -13,7 +13,7 @@ import Blocks from '../../containers/blocks.jsx';
 import CostumeTab from '../../containers/costume-tab.jsx';
 import TargetPane from '../../containers/target-pane.jsx';
 import SoundTab from '../../containers/sound-tab.jsx';
-import VariableManager from '../../containers/variable-manager.jsx'
+import VariableManager from '../../containers/variable-manager.jsx';
 import StageWrapper from '../../containers/stage-wrapper.jsx';
 import Loader from '../loader/loader.jsx';
 import Box from '../box/box.jsx';
@@ -51,6 +51,7 @@ import addExtensionIcon from './icon--extensions.svg';
 import codeIcon from '!../../lib/tw-recolor/build!./icon--code.svg';
 import costumesIcon from '!../../lib/tw-recolor/build!./icon--costumes.svg';
 import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
+import variablesIcon from '!../../lib/tw-recolor/build!./icon--variables.svg';
 
 const messages = defineMessages({
     addExtension: {
@@ -396,7 +397,7 @@ const GUIComponent = props => {
                                     >
                                         <img
                                             draggable={false}
-                                            src={soundsIcon()}
+                                            src={variablesIcon()}
                                         />
                                         <FormattedMessage
                                             defaultMessage="Variables"
