@@ -49,6 +49,8 @@ const _dropdownCaretElement = isCollapsed => (
     />
 );
 
+const stringify = value => (value instanceof Array || value instanceof Object ? JSON.stringify(value) : value);
+
 /* eslint-disable react/prop-types */
 const Variables = ({
     variables, optCloneId, optNameReadonly = false, intl, editingVariable, handleInputChange, handleKeyDown, handleSubmitEditedVariable
@@ -106,7 +108,9 @@ const Variables = ({
                         />
                         <textarea
                             rows="5"
-                            value={currentVarValue instanceof Array ? currentVarValue.join('\n') : currentVarValue}
+                            value={
+                                currentVarValue.map(i => (stringify(i))).join('\n')
+                            }
                             onChange={valueHandlers.onChange}
                             onKeyDown={valueHandlers.onKeyDown}
                             onBlur={valueHandlers.onBlur}
@@ -129,7 +133,7 @@ const Variables = ({
                         readOnly={optNameReadonly}
                     />
                     <input
-                        value={currentVarValue}
+                        value={stringify(currentVarValue)}
                         onChange={valueHandlers.onChange}
                         onKeyDown={valueHandlers.onKeyDown}
                         onBlur={valueHandlers.onBlur}
