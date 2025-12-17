@@ -79,6 +79,10 @@
     outline: 1px solid var(--ui-black-transparent);
     transition: 0.25s ease-out;
 
+    &:read-only {
+        background: var(--ui-white);
+    }
+
     &:focus {
         box-shadow: 0px 0px 0px 4px var(--looks-transparent);
         outline: 1px solid var(--looks-secondary);

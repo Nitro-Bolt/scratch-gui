@@ -51,7 +51,7 @@ const _dropdownCaretElement = isCollapsed => (
 
 /* eslint-disable react/prop-types */
 const Variables = ({
-    variables, optCloneId, intl, editingVariable, handleInputChange, handleKeyDown, handleSubmitEditedVariable
+    variables, optCloneId, optNameReadonly = false, intl, editingVariable, handleInputChange, handleKeyDown, handleSubmitEditedVariable
 }) => {
     const final = [];
     for (const id in variables) {
@@ -102,6 +102,7 @@ const Variables = ({
                             onChange={nameHandlers.onChange}
                             onKeyDown={nameHandlers.onKeyDown}
                             onBlur={nameHandlers.onBlur}
+                            readOnly={optNameReadonly}
                         />
                         <textarea
                             rows="5"
@@ -125,6 +126,7 @@ const Variables = ({
                         onChange={nameHandlers.onChange}
                         onKeyDown={nameHandlers.onKeyDown}
                         onBlur={nameHandlers.onBlur}
+                        readOnly={optNameReadonly}
                     />
                     <input
                         value={currentVarValue}
@@ -240,6 +242,7 @@ const VariableTab = props => {
                         <Variables
                             variables={getSelectedClone(props.clones, selectedClone, setSelectedClone).variables}
                             optCloneId={props.clones[selectedClone].id}
+                            optNameReadonly={props.clones.length > 1}
                             intl={props.intl}
                             editingVariable={props.editingVariable}
                             handleInputChange={props.handleInputChange}
