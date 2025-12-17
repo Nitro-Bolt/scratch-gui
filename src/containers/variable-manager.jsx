@@ -279,7 +279,6 @@ class VariableManager extends React.Component {
             editingVariable: {}
         });
 
-        this.reload();
         event.target.blur();
     }
 
