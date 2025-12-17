@@ -106,7 +106,7 @@ const Variables = ({
                         />
                         <textarea
                             rows="5"
-                            value={isEditingCurrentVar ? currentVarValue : currentVarValue.join('\n')}
+                            value={currentVarValue instanceof Array ? currentVarValue.join('\n') : currentVarValue}
                             onChange={valueHandlers.onChange}
                             onKeyDown={valueHandlers.onKeyDown}
                             onBlur={valueHandlers.onBlur}
