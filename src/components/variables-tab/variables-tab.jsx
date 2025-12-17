@@ -197,6 +197,7 @@ const getSelectedClone = (clones, selectedClone, setSelectedClone) => {
 
 const VariableTab = props => {
     const [selectedClone, setSelectedClone] = React.useState(0);
+    const selectedCloneObject = getSelectedClone(props.clones, selectedClone, setSelectedClone);
 
     return (
         <div className={styles.wrapper}>
@@ -240,8 +241,8 @@ const VariableTab = props => {
                     ))}
                     variables={
                         <Variables
-                            variables={getSelectedClone(props.clones, selectedClone, setSelectedClone).variables}
-                            optCloneId={props.clones[selectedClone].id}
+                            variables={selectedCloneObject.variables}
+                            optCloneId={selectedCloneObject.id}
                             optNameReadonly={props.clones.length > 1}
                             intl={props.intl}
                             editingVariable={props.editingVariable}
