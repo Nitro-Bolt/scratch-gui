@@ -374,7 +374,8 @@ class Blocks extends React.Component {
                 payload: {
                     type: 'sync',
                     fn: data.fn,
-                    args: data.args
+                    args: data.args,
+                    ...(data.sprite ? ({ sprite: data.sprite }) : ({}))
                 }
             });
         });
@@ -540,8 +541,7 @@ class Blocks extends React.Component {
                 case "sync": {
                     console.log("Received sync data", data);
 
-                    if (typeof data.fn !== "string") return console.error("received malformed data");
-                    if (!Array.isArray(data.args)) return console.error("received malformed data");
+                    if (typeof data.fn !== "string" || !Array.isArray(data.args)) return console.error("received malformed data");
 
                     const fn = this.props.vm[data.fn];
                     if (typeof fn !== "function") {
@@ -549,7 +549,9 @@ class Blocks extends React.Component {
                     }
 
                     try {
-                        fn.apply(this.props.vm, [...data.args, false]);
+                        fn.apply(this.props.vm, data.sprite ?
+                            [...data.args, false, this.props.vm.runtime.getSpriteTargetByName(data.sprite)] :
+                            [...data.args, false]);
                     } catch (e) {
                         console.error("Failed to apply mutation", e);
                     }
