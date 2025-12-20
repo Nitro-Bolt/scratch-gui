@@ -60,7 +60,7 @@ export default {
   "hide-delete-button": () => import(/* webpackChunkName: "addon-entry-hide-delete-button" */ "../addons/hide-delete-button/_runtime_entry.js"),
   "no-script-bumping": () => import(/* webpackChunkName: "addon-entry-no-script-bumping" */ "../addons/no-script-bumping/_runtime_entry.js"),
   "disable-stage-drag-select": () => import(/* webpackChunkName: "addon-entry-disable-stage-drag-select" */ "../addons/disable-stage-drag-select/_runtime_entry.js"),
-  "move-to-top-bottom": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/move-to-top-bottom/_runtime_entry.js"),
+  //"move-to-top-bottom": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/move-to-top-bottom/_runtime_entry.js"),
   //"move-to-top-layer": () => import(/* webpackChunkName: "addon-entry-move-to-top-layer" */ "../addons/move-to-top-layer/_runtime_entry.js"),
   "disable-paste-offset": () => import(/* webpackChunkName: "addon-entry-disable-paste-offset" */ "../addons/disable-paste-offset/_runtime_entry.js"),
   "block-duplicate": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/block-duplicate/_runtime_entry.js"),

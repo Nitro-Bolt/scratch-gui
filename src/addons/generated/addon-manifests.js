@@ -59,7 +59,7 @@ import _editor_extra_keys from "../addons/editor-extra-keys/_manifest_entry.js";
 import _hide_delete_button from "../addons/hide-delete-button/_manifest_entry.js";
 import _no_script_bumping from "../addons/no-script-bumping/_manifest_entry.js";
 import _disable_stage_drag_select from "../addons/disable-stage-drag-select/_manifest_entry.js";
-import _move_to_top_bottom from "../addons/move-to-top-bottom/_manifest_entry.js";
+//import _move_to_top_bottom from "../addons/move-to-top-bottom/_manifest_entry.js";
 //import _move_to_top_layer from "../addons/move-to-top-layer/_manifest_entry.js";
 import _disable_paste_offset from "../addons/disable-paste-offset/_manifest_entry.js";
 import _block_duplicate from "../addons/block-duplicate/_manifest_entry.js";
@@ -140,7 +140,7 @@ export default {
   "hide-delete-button": _hide_delete_button,
   "no-script-bumping": _no_script_bumping,
   "disable-stage-drag-select": _disable_stage_drag_select,
-  "move-to-top-bottom": _move_to_top_bottom,
+  //"move-to-top-bottom": _move_to_top_bottom,
   //"move-to-top-layer": _move_to_top_layer,
   "disable-paste-offset": _disable_paste_offset,
   "block-duplicate": _block_duplicate,
