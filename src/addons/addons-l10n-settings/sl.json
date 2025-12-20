@@ -334,8 +334,6 @@
     "move-to-top-bottom/@description": "V meni desne miškine tipke za videze in zvoke doda možnosti, ki predmet premakneta na vrh ali na dno seznama.",
     "move-to-top-bottom/@info-developer-tools": "Ta funkcija je bila prej del dodatka \"orodje za razvijalce\", vendar smo jo premaknili sem.",
     "move-to-top-bottom/@name": "Premakni videz na vrh ali na dno",
-    "move-to-top-layer/@description": "Shift+kliknite figuro na seznamu figur, da jo premaknite na sprednjo (zgornjo) plast odra.",
-    "move-to-top-layer/@name": "Premakni figuro na sprednjo plast",
     "disable-paste-offset/@description": "V urejevalniku videzov kopiranih predmetov ne premakne, ampak jih prilepi na njihovem prejšnjem položaju.",
     "disable-paste-offset/@info-vanilla": "To lahko naredite tudi brez tega dodatka. Kliknite predmet, medtem ko držite tipko Alt.",
     "disable-paste-offset/@name": "Ne premakni prilepljenih predmetov",

@@ -86,8 +86,9 @@ class SpriteSelectorItem extends React.PureComponent {
     }
     handleClick (e) {
         e.preventDefault();
+        const shouldGoToFront = e.shiftKey;
         if (!this.noClick) {
-            this.props.onClick(this.props.id);
+            this.props.onClick(this.props.id, shouldGoToFront);
         }
     }
     handleDelete (e) {

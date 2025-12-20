@@ -254,7 +254,6 @@
     "editor-extra-keys/enter-key": "enter",
     "move-to-top-bottom/bottom": "move to bottom",
     "move-to-top-bottom/top": "move to top",
-    "move-to-top-layer/move-to-front-layer": "move to front layer",
     "rename-broadcasts/RENAME_BROADCAST": "Rename message",
     "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Rename Message",
     "rename-broadcasts/RENAME_BROADCAST_TITLE": "Rename all \"{name}\" messages to:",

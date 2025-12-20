@@ -333,8 +333,6 @@
     "move-to-top-bottom/@description": "コスチュームや音を一覧の一番上や一番下に移動する右クリックメニュー項目を追加する。",
     "move-to-top-bottom/@info-developer-tools": "このアドオンは以前「開発者ツール」の一部でしたが、移動しました。",
     "move-to-top-bottom/@name": "コスチュームを一番上や一番下に移動",
-    "move-to-top-layer/@description": "スプライトペイン内のスプライトをShift+クリックしてステージの最前面に移動させる。",
-    "move-to-top-layer/@name": "スプライトを最前面に移動",
     "disable-paste-offset/@description": "コスチュームエディター上に張り付けるとき、元の場所からずらさずに張り付ける。",
     "disable-paste-offset/@info-vanilla": "ブロックをAlt+クリックすると、アドオンなしでもこの動作を行えます。",
     "disable-paste-offset/@name": "貼り付けたコスチュームの移動を防止",

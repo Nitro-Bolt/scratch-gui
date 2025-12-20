@@ -288,7 +288,6 @@
     "move-to-top-bottom/@description": "Hozzáad egy opctiót a jobb katt index menüjéhez a jelmezek és hangok mozgatására a lista legtetejére vagy legaljára.",
     "move-to-top-bottom/@info-developer-tools": "Ez a bővítmény korábban a \"Fejlesztői eszközök\" bővítmény része volt, de mostanra át lett helyezve ide.",
     "move-to-top-bottom/@name": "Jelmez áthelyezése legfelülre vagy legalulra",
-    "move-to-top-layer/@name": "Szereplő legelőre küldése",
     "disable-paste-offset/@description": "A bemásolt elemeket az eredeti helyükre kerülnek, nem tolódnak el a jelmez szerkesztőben.",
     "disable-paste-offset/@info-vanilla": "Ez a viselkedés elérhető ezen kiegészítő nélkül is Alt+Kattintással az elemre",
     "disable-paste-offset/@name": "Ne helyezd át a bemásolt elemeket",

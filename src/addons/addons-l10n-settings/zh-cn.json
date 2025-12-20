@@ -335,8 +335,6 @@
     "move-to-top-bottom/@description": "在造型和音频页的右键菜单中添加移到列表顶部或底部的选项。",
     "move-to-top-bottom/@info-developer-tools": "此插件曾是“开发者工具”的一部分，后来移到了这里。",
     "move-to-top-bottom/@name": "把造型移到顶部或底部",
-    "move-to-top-layer/@description": "Shift+单击角色栏中的角色，将其移动到舞台的前面(顶层)。",
-    "move-to-top-layer/@name": "将角色移到最前面",
     "disable-paste-offset/@description": "在同一个造型中复制粘贴形状时在原始位置粘贴，不向右下偏移",
     "disable-paste-offset/@info-vanilla": "也可以通过Alt+单击物体实现原地复制，无需插件。",
     "disable-paste-offset/@name": "粘贴形状时不偏移",

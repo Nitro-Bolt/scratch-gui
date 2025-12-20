@@ -330,8 +330,6 @@
     "move-to-top-bottom/@description": "Kostümleri ve sesleri, listenin en üstüne ya da en altına taşımak için sağ tıklama bağlam menüsüne seçenekler ekler.",
     "move-to-top-bottom/@info-developer-tools": "Bu eklenti öncesinde \"geliştirici araçları\" eklentisinin bir parçasıydı ancak artık buraya taşındı.",
     "move-to-top-bottom/@name": "Kostümü yukarı veya aşağı taşı",
-    "move-to-top-layer/@description": "Kukla bölmesindeki bir kuklayı sahnenin en üstüne (en üst katmana) taşımak için Shift+Tıklama yapın.",
-    "move-to-top-layer/@name": "Kuklayı ön katmana götür",
     "disable-paste-offset/@description": "Çoğaltılan ögeleri kostüm düzenleyicide hafifçe kaydırmak yerine orijinal konumlarına yapıştırın.",
     "disable-paste-offset/@info-vanilla": "Bu davranış bu eklenti olmadan da ögeye Alt+Tıklamayla gerçekleştirilebilir.",
     "disable-paste-offset/@name": "Yapıştırılan ögeleri kenara kaydırmama",
