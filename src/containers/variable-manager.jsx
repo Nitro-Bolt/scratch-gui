@@ -75,13 +75,13 @@ class VariableManager extends React.Component {
     }
 
     _checkEquality (value1, value2) {
-        if (!(value1 instanceof Array) || !(value2 instanceof Array)) {
+        if (!Array.isArray(value1) || !Array.isArray(value2)) {
             return value1 === value2;
         }
         if (value1.length !== value2.length) return false;
 
         for (let i = 0; i < value1.length; i++) {
-            if (value1[i] instanceof Array && value2[i] instanceof Array) {
+            if (Array.isArray(value1[i]) && Array.isArray(value2[i])) {
                 return this._checkEquality(value1[i], value2[i]);
             }
             if (value1[i] !== value2[i]) return false;
