@@ -30,25 +30,6 @@ class VariableManager extends React.Component {
             editingVariable: {}
         };
 
-        /* State format
-        {
-          globalVariables: {
-            [id]: Variable Object,
-            ...
-          },
-          clones: [
-            {
-              id: String,
-              variables: {
-                [id]: Variable Object,
-                ...
-              }
-            },
-            ...
-          ],
-          editingVariable: Variable Object
-        }
-        */
     }
 
     componentDidMount () {
@@ -325,7 +306,8 @@ VariableManager.propTypes = {
             [PropTypes.string]: PropTypes.shape({
                 id: PropTypes.string,
                 value: PropTypes.string
-            })
+            }),
+            length: PropTypes.number
         })
     }),
     intl: intlShape,

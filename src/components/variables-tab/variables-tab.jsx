@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-handler-names */
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable require-jsdoc */
 import React from 'react';
 import styles from './variables-tab.css';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
@@ -49,9 +46,9 @@ const _dropdownCaretElement = isCollapsed => (
     />
 );
 
+// TODO: Replace with tw-safe-stringify
 const stringify = value => (Array.isArray(value) || typeof value === 'object' ? JSON.stringify(value) : value);
 
-/* eslint-disable react/prop-types */
 const Variables = ({
     variables, optCloneId, optNameReadonly = false, intl, editingVariable, handleInputChange, handleKeyDown, handleSubmitEditedVariable
 }) => {
@@ -197,7 +194,6 @@ const getSelectedClone = (clones, selectedClone, setSelectedClone) => {
     setSelectedClone(0);
     return clones[0];
 };
-/* eslint-enable react/prop-types */
 
 const VariableTab = props => {
     const [selectedClone, setSelectedClone] = React.useState(0);
@@ -227,7 +223,6 @@ const VariableTab = props => {
                             className={classNames(styles.clonesSelectorItem, {
                                 [styles.isSelected]: selectedClone === i
                             })}
-                            // eslint-disable-next-line react/jsx-no-bind
                             onClick={() => {
                                 props.handleSpriteHighlighting(id);
                                 setSelectedClone(i);
@@ -264,9 +259,28 @@ const VariableTab = props => {
 VariableTab.propTypes = {
     intl: intlShape,
     isStage: PropTypes.bool,
-    globalVariables: PropTypes.object,
-    clones: PropTypes.array,
-    editingVariable: PropTypes.object,
+    globalVariables: PropTypes.shape({
+        [PropTypes.string]: PropTypes.shape({
+            name: PropTypes.string,
+            id: PropTypes.string,
+            value: PropTypes.any
+        })
+    }),
+    clones: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string, // Clone id
+            variables: PropTypes.shape({
+                name: PropTypes.string,
+                id: PropTypes.string,
+                value: PropTypes.any
+            })
+        })
+    ),
+    editingVariable: PropTypes.shape({
+        id: PropTypes.string,
+        type: PropTypes.oneOf(['name', 'value']),
+        value: PropTypes.string
+    }),
     handleSpriteHighlighting: PropTypes.func,
     handleInputChange: PropTypes.func,
     handleKeyDown: PropTypes.func,
