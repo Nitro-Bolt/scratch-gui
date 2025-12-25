@@ -505,7 +505,8 @@ class Blocks extends React.Component {
                 type: {
                     isBlockly: true,
                     type: e.type,
-                    sprite: this.props.vm.editingTarget.sprite.name,
+                    sprite: this.props.vm.editingTarget.isStage ?
+                        '_stage_' : this.props.vm.editingTarget.sprite.name,
                     refreshToolbox: (
                         e.xml?.getAttribute('type') === 'procedures_definition' ||
                         e.oldXml?.getAttribute('type') === 'procedures_definition' ||
@@ -550,7 +551,12 @@ class Blocks extends React.Component {
 
                     try {
                         fn.apply(this.props.vm, data.sprite ?
-                            [...data.args, false, this.props.vm.runtime.getSpriteTargetByName(data.sprite)] :
+                            [...data.args,
+                                false,
+                                data.sprite === '_stage_' ?
+                                    this.props.vm.runtime.getTargetForStage() :
+                                    this.props.vm.runtime.getSpriteTargetByName(data.sprite)
+                            ] :
                             [...data.args, false]);
                     } catch (e) {
                         console.error("Failed to apply mutation", e);
@@ -571,7 +577,7 @@ class Blocks extends React.Component {
                 if (data.type.sprite === editingSpriteName) {
                     e.run(true);
                 } else {
-                    if (data.type.sprite === 'Stage') {
+                    if (data.type.sprite === '_stage_') {
                         this.props.vm.runtime.getTargetForStage().blocks.blocklyListen(e);
                     } else {
                         this.props.vm.runtime.getSpriteTargetByName(data.type.sprite).blocks.blocklyListen(e);
