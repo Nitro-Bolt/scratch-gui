@@ -11325,6 +11325,26 @@
         "rotationCenterY": 80
     },
     {
+         "name": "Woody",
+         "tags": [
+             "animal",
+             "animals",
+             "dog",
+             "pet",
+             "domestic",
+             "white",
+             "brown",
+             "sitting",
+             "laying down"
+         ],
+         "bitmapResolution": 1,
+         "dataFormat": "png",
+         "rotationCenterX": 0,
+         "rotationCenterY": 0,
+         "fromPenguinModLibrary": true,
+         "libraryFilePage": "images/user/Woody.png"
+    },
+    {
         "name": "Zebra-a",
         "tags": [
             "animals",

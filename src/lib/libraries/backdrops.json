@@ -203,6 +203,20 @@
         "rotationCenterY": 360
     },
     {
+        "name": "Calm Afternoon",
+        "tags": [
+            "outdoors",
+            "lights",
+            "purple"
+        ],
+        "bitmapResolution": 2,
+        "dataFormat": "png",
+        "rotationCenterX": 480,
+        "rotationCenterY": 360,
+        "fromPenguinModLibrary": true,
+        "libraryFilePage": "images/user/backdrops/calm_afternoon.png"
+    },
+    {
         "name": "Calm Night",
         "tags": [
             "outdoors",
@@ -291,6 +305,19 @@
         "rotationCenterY": 360
     },
     {
+        "name": "Checkers",
+        "tags": [
+            "patterns",
+            "grid"
+        ],
+        "bitmapResolution": 1,
+        "dataFormat": "svg",
+        "rotationCenterX": 0,
+        "rotationCenterY": 0,
+        "fromPenguinModLibrary": true,
+        "libraryFilePage": "images/user/backdrops/Checkers.svg"
+    },
+    {
         "name": "Circles",
         "tags": [
             "patterns"
@@ -349,9 +376,9 @@
         "name": "Desert",
         "tags": [
             "desert",
-            " landscape",
-            " outdoors",
-            " cacti"
+            "landscape",
+            "outdoors",
+            "cacti"
         ],
         "assetId": "d98a9526a34890cf4bad11b5409eae2a",
         "bitmapResolution": 2,
@@ -372,6 +399,22 @@
         "rotationCenterY": 360,
         "fromPenguinModLibrary": true,
         "libraryFilePage": "images/user/backdrops/ducks.png"
+    },
+    {
+        "name": "Earth in Space",
+        "tags": [
+            "space",
+            "planet",
+            "stars",
+            "nasa",
+            "new"
+        ],
+        "bitmapResolution": 2,
+        "dataFormat": "png",
+        "rotationCenterX": 480,
+        "rotationCenterY": 360,
+        "fromPenguinModLibrary": true,
+        "libraryFilePage": "images/user/backdrops/earth_space.png"
     },
     {
         "name": "Farm",
@@ -446,8 +489,8 @@
         "name": "Garden-rock",
         "tags": [
             "outdoors",
-            " garden",
-            " park"
+            "garden",
+            "park"
         ],
         "assetId": "4f66053598bea0905e1559ab9d5a6e31",
         "bitmapResolution": 2,
@@ -772,6 +815,20 @@
         "rotationCenterY": 180
     },
     {
+        "name": "River Landscape",
+        "tags": [
+            "outdoors",
+            "river",
+            "landscape"
+        ],
+        "bitmapResolution": 2,
+        "dataFormat": "png",
+        "rotationCenterX": 480,
+        "rotationCenterY": 360,
+        "fromPenguinModLibrary": true,
+        "libraryFilePage": "images/user/backdrops/river_landscape.png"
+    },
+    {
         "name": "Room 1",
         "tags": [
             "indoors",
@@ -922,6 +979,23 @@
         "md5ext": "32b2316fd375faa18088f6c57ebb1c8d.png",
         "rotationCenterX": 480,
         "rotationCenterY": 360
+    },
+    {
+        "name": "Space Galaxies",
+        "tags": [
+            "space",
+            "stars",
+            "hubble",
+            "galaxy",
+            "nasa",
+            "new"
+        ],
+        "bitmapResolution": 2,
+        "dataFormat": "png",
+        "rotationCenterX": 480,
+        "rotationCenterY": 360,
+        "fromPenguinModLibrary": true,
+        "libraryFilePage": "images/user/backdrops/space.png"
     },
     {
         "name": "Spaceship",
