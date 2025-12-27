@@ -374,6 +374,14 @@ const CustomStageSize = ({
                     </button>
                     <button
                         className={styles.customStageSizeButton}
+                        data-selected={stageWidth === 576 && stageHeight === 360}
+                        data-widescreen={true}
+                        onClick={() => onStagePresetUsed(3)}
+                    >
+                        8:5
+                    </button>
+                    <button
+                        className={styles.customStageSizeButton}
                         data-selected={stageWidth === 640 && stageHeight === 360}
                         data-widescreen={true}
                         onClick={() => onStagePresetUsed(1)}

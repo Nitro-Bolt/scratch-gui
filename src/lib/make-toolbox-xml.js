@@ -1298,18 +1298,6 @@ const operators = function (isInitialSetup) {
                 </shadow>
             </value>
         </block>
-        <block type="operator_notequal">
-            <value name="OPERAND1">
-                <shadow type="text">
-                    <field name="TEXT"/>
-                </shadow>
-            </value>
-            <value name="OPERAND2">
-                <shadow type="text">
-                    <field name="TEXT">50</field>
-                </shadow>
-            </value>
-        </block>
         <block type="operator_strictlyEquals">
             <value name="A">
                 <shadow type="text">
