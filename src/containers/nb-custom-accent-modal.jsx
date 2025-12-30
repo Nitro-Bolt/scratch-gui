@@ -9,7 +9,7 @@ import CustomAccentModalComponent from '../components/nb-custom-accent-modal/cus
 class NBCustomAccentModal extends React.Component {
     constructor (props) {
         super(props);
-        bindAll(this, []);
+        bindAll(this, ['handleClose']);
         this.state = {
             multiSelect: false,
             draggable: true,
