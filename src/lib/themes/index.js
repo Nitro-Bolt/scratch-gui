@@ -84,7 +84,8 @@ class Theme {
         /** @readonly */
         this.id = ++themeObjectsCreated;
         /** @readonly */
-        this.accent = Object.prototype.hasOwnProperty.call(ACCENT_MAP, accent) ? accent : ACCENT_DEFAULT;
+        this.accent = Object.prototype.hasOwnProperty.call(ACCENT_MAP, accent) ||
+            Object.prototype.hasOwnProperty.call(accent, 'primaryColor') ? accent : ACCENT_DEFAULT;
         /** @readonly */
         this.gui = Object.prototype.hasOwnProperty.call(GUI_MAP, gui) ? gui : GUI_DEFAULT;
         /** @readonly */
@@ -113,7 +114,13 @@ class Theme {
     getGuiColors () {
         return defaultsDeep(
             {},
-            ACCENT_MAP[this.accent].guiColors,
+            Object.hasOwn(this.accent, 'primaryColor') ?
+                ACCENT_MAP[ACCENT_CUSTOM].getGuiColors(
+                    this.accent.primaryColor,
+                    this.accent.secondaryColor,
+                    this.accent.isGradient
+                ) :
+                ACCENT_MAP[this.accent].guiColors,
             GUI_MAP[this.gui].guiColors,
             guiLight.guiColors
         );
@@ -122,7 +129,7 @@ class Theme {
     getBlockColors () {
         return defaultsDeep(
             {},
-            ACCENT_MAP[this.accent].blockColors,
+            ACCENT_MAP[Object.hasOwn(this.accent, 'primaryColor') ? ACCENT_CUSTOM : this.accent].blockColors,
             GUI_MAP[this.gui].blockColors,
             BLOCKS_MAP[this.blocks].colors
         );

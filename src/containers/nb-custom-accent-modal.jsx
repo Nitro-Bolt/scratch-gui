@@ -1,3 +1,4 @@
+import {ACCENT_CUSTOM, Theme} from '../lib/themes/index.js';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
@@ -13,6 +14,8 @@ class NBCustomAccentModal extends React.Component {
         bindAll(this, [
             'handleChangeGradient',
             'handleClose',
+            'handleChangePrimaryColor',
+            'handleChangeSecondaryColor',
             'handleOk'
         ]);
         this.state = {
@@ -27,13 +30,25 @@ class NBCustomAccentModal extends React.Component {
             isGradient: e.target.checked
         });
     }
-
+    
     handleClose () {
         this.props.onClose();
     }
     
+    handleChangePrimaryColor (e) {
+        this.setState({
+            primaryColor: e.target.value
+        });
+    }
+    
+    handleChangeSecondaryColor (e) {
+        this.setState({
+            secondaryColor: e.target.value
+        });
+    }
+    
     handleOk () {
-        setTheme()
+        this.props.onOk(this.props.theme, this.state.primaryColor, this.state.secondaryColor, this.state.isGradient);
         this.props.onClose();
     }
 
@@ -43,6 +58,8 @@ class NBCustomAccentModal extends React.Component {
                 isGradient={this.state.isGradient}
                 onClose={this.handleClose}
                 onChangeGradient={this.handleChangeGradient}
+                onChangePrimaryColor={this.handleChangePrimaryColor}
+                onChangeSecondaryColor={this.handleChangeSecondaryColor}
                 onOk={this.handleOk}
                 primaryColor={this.state.primaryColor}
                 secondaryColor={this.state.secondaryColor}
@@ -54,15 +71,23 @@ class NBCustomAccentModal extends React.Component {
 NBCustomAccentModal.propTypes = {
     // eslint-disable-next-line react/no-unused-prop-types
     intl: intlShape,
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    onOk: PropTypes.func.isRequired,
+    theme: PropTypes.instanceOf(Theme)
 };
 
 const mapStateToProps = state => ({
+    theme: state.scratchGui.theme.theme,
     vm: state.scratchGui.vm
 });
 
 const mapDispatchToProps = dispatch => ({
-    onClose: () => dispatch(closeCustomAccentModal())
+    onClose: () => dispatch(closeCustomAccentModal()),
+    onOk: (theme, primaryColor, secondaryColor, isGradient) => dispatch(setTheme(theme.set('accent', {
+        primaryColor,
+        secondaryColor,
+        isGradient
+    })))
 });
 
 export default connect(

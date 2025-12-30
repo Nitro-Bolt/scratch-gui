@@ -121,7 +121,7 @@ const AccentThemeMenu = ({
             className={styles.option}
             onClick={onOpen}
         >
-            <ColorIcon id={theme.accent} />
+            <ColorIcon id={Object.hasOwn(theme.accent, 'primaryColor') ? ACCENT_CUSTOM : theme.accent} />
             <span className={styles.submenuLabel}>
                 <FormattedMessage
                     defaultMessage="Accent"
@@ -140,7 +140,7 @@ const AccentThemeMenu = ({
                 <AccentMenuItem
                     key={item}
                     id={item}
-                    isSelected={theme.accent === item}
+                    isSelected={(Object.hasOwn(theme.accent, 'primaryColor') ? ACCENT_CUSTOM : theme.accent) === item}
                     // eslint-disable-next-line react/jsx-no-bind
                     onClick={item === ACCENT_CUSTOM ? onClickCustomAccent :
                         () => onChangeTheme(theme.set('accent', item))}

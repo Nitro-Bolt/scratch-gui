@@ -107,8 +107,8 @@ CustomAccentModal.propTypes = {
     onChangeSecondaryColor: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
-    primaryColor: PropTypes.bool.isRequired,
-    secondaryColor: PropTypes.bool.isRequired
+    primaryColor: PropTypes.string.isRequired,
+    secondaryColor: PropTypes.string.isRequired
 };
 
 export default injectIntl(CustomAccentModal);
