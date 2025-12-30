@@ -63,13 +63,19 @@ const ColorIcon = props => (
             draggable={false}
             // Image is decorative
             alt=""
+            style={{
+                // menu-bar-background is var(...), don't want to evaluate with the current values
+                backgroundColor: props.id === ACCENT_CUSTOM ? 'var(--looks-secondary)' :
+                    ACCENT_MAP[props.id].guiColors['looks-secondary']
+            }}
         />
     ) : (
         <div
             className={styles.accentIconOuter}
             style={{
                 // menu-bar-background is var(...), don't want to evaluate with the current values
-                backgroundColor: ACCENT_MAP[props.id].guiColors['looks-secondary'],
+                backgroundColor: props.id === ACCENT_CUSTOM ? 'var(--looks-secondary)' :
+                    ACCENT_MAP[props.id].guiColors['looks-secondary'],
                 backgroundImage: ACCENT_MAP[props.id].guiColors['menu-bar-background-image']
             }}
         />
