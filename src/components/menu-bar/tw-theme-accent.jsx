@@ -5,9 +5,12 @@ import {FormattedMessage, defineMessages} from 'react-intl';
 import {connect} from 'react-redux';
 
 import check from './check.svg';
+import customIcon from './nb-accent-custom.svg';
 import dropdownCaret from './dropdown-caret.svg';
+import {openCustomAccentModal} from '../../reducers/modals.js';
 import {MenuItem, Submenu} from '../menu/menu.jsx';
-import {ACCENT_ORANGE, ACCENT_BLUE, ACCENT_MAP, ACCENT_PURPLE, ACCENT_RED, ACCENT_RAINBOW, Theme} from '../../lib/themes/index.js';
+import {ACCENT_ORANGE, ACCENT_BLUE, ACCENT_MAP, ACCENT_PURPLE,
+    ACCENT_RED, ACCENT_RAINBOW, ACCENT_CUSTOM, Theme} from '../../lib/themes/index.js';
 import {openAccentMenu, accentMenuOpen, closeSettingsMenu} from '../../reducers/menus.js';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
@@ -39,11 +42,17 @@ const options = defineMessages({
         defaultMessage: 'Rainbow',
         description: 'Name of color scheme that uses a rainbow.',
         id: 'tw.accent.rainbow'
+    },
+    [ACCENT_CUSTOM]: {
+        defaultMessage: 'Custom',
+        description: 'Name of color scheme that is defined by the user.',
+        id: 'tw.accent.custom'
     }
 });
 
 const icons = {
-    [ACCENT_RAINBOW]: rainbowIcon
+    [ACCENT_RAINBOW]: rainbowIcon,
+    [ACCENT_CUSTOM]: customIcon
 };
 
 const ColorIcon = props => (
@@ -96,6 +105,7 @@ AccentMenuItem.propTypes = {
 const AccentThemeMenu = ({
     isOpen,
     isRtl,
+    onClickCustomAccent,
     onChangeTheme,
     onOpen,
     theme
@@ -126,7 +136,8 @@ const AccentThemeMenu = ({
                     id={item}
                     isSelected={theme.accent === item}
                     // eslint-disable-next-line react/jsx-no-bind
-                    onClick={() => onChangeTheme(theme.set('accent', item))}
+                    onClick={item === ACCENT_CUSTOM ? onClickCustomAccent :
+                        () => onChangeTheme(theme.set('accent', item))}
                 />
             ))}
         </Submenu>
@@ -136,6 +147,7 @@ const AccentThemeMenu = ({
 AccentThemeMenu.propTypes = {
     isOpen: PropTypes.bool,
     isRtl: PropTypes.bool,
+    onClickCustomAccent: PropTypes.func,
     onChangeTheme: PropTypes.func,
     onOpen: PropTypes.func,
     theme: PropTypes.instanceOf(Theme)
@@ -148,6 +160,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    onClickCustomAccent: () => {
+        dispatch(openCustomAccentModal());
+        dispatch(closeSettingsMenu());
+    },
     onChangeTheme: theme => {
         dispatch(setTheme(theme));
         dispatch(closeSettingsMenu());
