@@ -575,6 +575,10 @@ class Blocks extends React.Component {
                 const e = this.ScratchBlocks.Events.fromJson(data.data, this.workspace)//this.jsonToEvent(data.data)
                 const editingSpriteName = this.props.vm.editingTarget.sprite.name;
                 if (data.type.sprite === editingSpriteName) {
+                    // Make a "sliding" animation for when blocks are being moved
+                    if (e.type === 'move') {
+                        this.workspace.getBlockById(e.blockId).getSvgRoot().style.transition = 'transform 0.5s';
+                    }
                     e.run(true);
                 } else {
                     if (data.type.sprite === '_stage_') {
