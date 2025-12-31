@@ -281,6 +281,11 @@ label span {
     gap: 0.5rem;
 }
 
+.download-option {
+    background-image: url("./icon--file-download.svg");
+    background-size: 90%;
+}
+
 .edit-option {
     background-image: url("../menu-bar/icon--settings.svg");
 }

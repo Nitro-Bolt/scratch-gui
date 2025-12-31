@@ -5,6 +5,7 @@ import Modal from '../../containers/modal.jsx';
 import styles from './custom-accent-modal.css';
 import Box from '../box/box.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
+import FileInput from './file-input.jsx';
 
 const messages = defineMessages({
     title: {
@@ -307,6 +308,23 @@ const CustomAccentModal = props => {
                                 </div>
                                 <div>
                                     <button
+                                        className={styles.downloadOption}
+                                        // eslint-disable-next-line react/jsx-no-bind
+                                        onClick={() => {
+                                            const url = URL.createObjectURL(new Blob([JSON.stringify(value)], {
+                                                type: 'application/json'
+                                            }));
+                                            const element = document.createElement('a');
+                                            element.style.display = 'none';
+                                            element.href = url;
+                                            element.download = `${value.name}.json`;
+                                            document.body.append(element);
+                                            element.click();
+                                            document.body.removeChild(element);
+                                            URL.revokeObjectURL(url);
+                                        }}
+                                    />
+                                    <button
                                         className={styles.editOption}
                                         // eslint-disable-next-line react/jsx-no-bind
                                         onClick={() => {
@@ -336,6 +354,33 @@ const CustomAccentModal = props => {
                                 </div>
                             </div>
                         ))}
+                        <FileInput
+                            accept="application/json"
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onChange={async files => {
+                                let accentsJSON = JSON.parse(localStorage.getItem('nb:custom-accents'));
+                                for (const file of files) {
+                                    let isValid = true;
+                                    let data;
+                                    try {
+                                        data = JSON.parse(await file.text());
+                                    } catch {
+                                        isValid = false;
+                                    }
+                                    // eslint-disable-next-line max-len
+                                    if (isValid && !((data.gradient === null || (data.gradient && data.gradient.colors instanceof Array && ['number', 'string'].includes(typeof data.gradient.direction))) && typeof data.primaryColor === 'string' && typeof data.secondaryColor === 'string' && typeof data.tertiaryColor === 'string' && typeof data.name === 'string' && typeof data.isGradient === 'boolean')) isValid = false;
+                                    if (!isValid) {
+                                        console.log('not valid');
+                                        continue;
+                                    }
+                                    accentsJSON = accentsJSON.filter(value => value.name !== data.name);
+                                    accentsJSON.push(data);
+                                    props.loadAccentIntoCreate(data);
+                                }
+                                localStorage.setItem('nb:custom-accents', JSON.stringify(accentsJSON));
+                                props.onSwitchToCreate();
+                            }}
+                        />
                     </Box>
                 }
             </Box>
