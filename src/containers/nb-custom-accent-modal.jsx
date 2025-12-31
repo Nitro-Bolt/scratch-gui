@@ -1,4 +1,4 @@
-import {ACCENT_CUSTOM, Theme} from '../lib/themes/index.js';
+import {Theme} from '../lib/themes/index.js';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
