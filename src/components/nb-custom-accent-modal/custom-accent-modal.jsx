@@ -14,6 +14,15 @@ const messages = defineMessages({
     }
 });
 
+export const gradientColorsToCSS = gradientColors => {
+    let buffer = 'linear-gradient(90deg';
+    for (const color of gradientColors) {
+        buffer += `, ${color.color} ${color.position}%`;
+    }
+    buffer += ')';
+    return buffer;
+};
+
 const CustomAccentModal = props => {
     if (!localStorage.getItem('nb:custom-accents')) localStorage.setItem('nb:custom-accents', '[]');
     /**
@@ -162,6 +171,59 @@ const CustomAccentModal = props => {
                                 />
                             </label>
                         </p>
+                        {props.isGradient && (
+                            <Box
+                                className={styles.cardBox}
+                            >
+                                <Box
+                                    className={styles.card}
+                                    style={{
+                                        height: '3.5rem',
+                                        backgroundImage: gradientColorsToCSS(props.gradientColors)
+                                    }}
+                                />
+                                {props.gradientColors.map((value, index) => (
+                                    <Box
+                                        className={styles.card}
+                                        key={index}
+                                    >
+                                        <input
+                                            style={{backgroundColor: value.color}}
+                                            type="color"
+                                            value={value.color}
+                                            className={styles.colorPicker}
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onChange={e => props.onChangeGradientColorColor(e, index)}
+                                        />
+                                        <input
+                                            type="number"
+                                            min={0}
+                                            max={100}
+                                            value={value.position}
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onChange={e => props.onChangeGradientColorPosition(e, index)}
+                                        />
+                                        <div
+                                            style={{
+                                                flexGrow: 1
+                                            }}
+                                        >
+                                            <button
+                                                className={styles.deleteOption}
+                                                // eslint-disable-next-line react/jsx-no-bind
+                                                onClick={() => props.onDeleteGradientColor(index)}
+                                            />
+                                        </div>
+                                    </Box>
+                                ))}
+                                <button
+                                    className={styles.button}
+                                    onClick={props.onAddGradientColor}
+                                >
+                                    {'Add color'}
+                                </button>
+                            </Box>
+                        )}
                         <Box className={styles.buttonRow}>
                             <button
                                 className={styles.cancelButton}
@@ -187,7 +249,7 @@ const CustomAccentModal = props => {
                     </Box> :
                     // Manage tab
                     <Box
-                        className={styles.accentCardBox}
+                        className={styles.cardBox}
                     >
                         {themes.length === 0 && <p>
                             <FormattedMessage
@@ -198,7 +260,7 @@ const CustomAccentModal = props => {
                         </p>}
                         {themes.sort((a, b) => a.name > b.name).map((value, index) => (
                             <div
-                                className={styles.accentCard}
+                                className={styles.card}
                                 key={index}
                             >
                                 <div
@@ -263,16 +325,21 @@ const CustomAccentModal = props => {
 };
 
 CustomAccentModal.propTypes = {
+    gradientColors: PropTypes.array,
     intl: intlShape,
     isGradient: PropTypes.bool.isRequired,
     loadAccentIntoCreate: PropTypes.func.isRequired,
     name: PropTypes.string,
+    onAddGradientColor: PropTypes.func.isRequired,
     onChangeGradient: PropTypes.func.isRequired,
+    onChangeGradientColorColor: PropTypes.func.isRequired,
+    onChangeGradientColorPosition: PropTypes.func.isRequired,
     onChangeName: PropTypes.func.isRequired,
     onChangePrimaryColor: PropTypes.func.isRequired,
     onChangeSecondaryColor: PropTypes.func.isRequired,
     onChangeTertiaryColor: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
+    onDeleteGradientColor: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     onSwitchToCreate: PropTypes.func.isRequired,
     onSwitchToManage: PropTypes.func.isRequired,

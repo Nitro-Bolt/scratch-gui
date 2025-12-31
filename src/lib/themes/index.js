@@ -119,7 +119,7 @@ class Theme {
                     this.accent.primaryColor,
                     this.accent.secondaryColor,
                     this.accent.tertiaryColor,
-                    this.accent.isGradient
+                    this.accent.gradient
                 ) :
                 ACCENT_MAP[this.accent].guiColors,
             GUI_MAP[this.gui].guiColors,

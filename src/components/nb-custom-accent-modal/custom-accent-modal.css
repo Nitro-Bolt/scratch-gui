@@ -9,6 +9,8 @@
 .body {
     background: $ui-white;
     padding: 1.5rem 2.25rem;
+    max-height: calc(100vh - 100px - 3.125rem);
+    overflow: auto;
 }
 
 .body p,
@@ -236,13 +238,13 @@ label span {
     gap: 1rem;
 }
 
-.accent-card-box {
+.card-box {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.accent-card {
+.card {
     background: $ui-white;
     border: 2px solid $ui-black-transparent;
     border-radius: $space;
@@ -255,7 +257,7 @@ label span {
     border-radius: 50% !important;
 }
 
-.accent-card > div > * {
+.card > div > * {
     appearance: none;
     width: 20px;
     height: 20px;
@@ -265,14 +267,16 @@ label span {
     border-radius: 4px;
     outline: none;
     transition: all 0.2s;
+    margin: auto;
+    margin-right: 0;
 }
 
-.accent-card > div > button:hover {
+.card > div > button:hover {
     border: 1px solid $looks-secondary;
     box-shadow: 0px 0px 0px 4px $looks-transparent;
 }
 
-.accent-card > div {
+.card > div {
     display: flex;
     gap: 0.5rem;
 }
@@ -287,4 +291,22 @@ label span {
 
 .name {
     flex-grow: 1;
+}
+
+.button {
+    font-family: inherit;
+    font-size: 14px;
+    background-color: $looks-secondary;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+}
+
+.button:active, .button:focus-within {
+    box-shadow: 0 0 0 3px $looks-transparent;
 }

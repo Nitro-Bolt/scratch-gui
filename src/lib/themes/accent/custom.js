@@ -1,4 +1,4 @@
-const getGuiColors = (primaryColor, secondaryColor, tertiaryColor, isGradient) => ({
+const getGuiColors = (primaryColor, secondaryColor, tertiaryColor, gradient) => ({
     'motion-primary': `${primaryColor}`,
     'motion-primary-transparent': `${primaryColor}e6`,
     'motion-tertiary': `${secondaryColor}`,
@@ -15,10 +15,7 @@ const getGuiColors = (primaryColor, secondaryColor, tertiaryColor, isGradient) =
 
     'drop-highlight': `${primaryColor}`,
 
-    'menu-bar-background-image': isGradient ?
-        // eslint-disable-next-line max-len
-        `linear-gradient(90deg, ${`${primaryColor}`} 0%, ${`${secondaryColor}`} 100%)` :
-        'none'
+    'menu-bar-background-image': `${gradient}`
 });
 
 const blockColors = {
