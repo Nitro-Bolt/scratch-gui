@@ -141,10 +141,7 @@ label {
     display: flex;
     flex-direction: row;
     align-items: center;
-}
-
-label span {
-    margin: 3px;
+    gap: 0.5rem;
 }
 
 .color-option {
