@@ -65,8 +65,7 @@ const ColorIcon = props => (
             alt=""
             style={{
                 // menu-bar-background is var(...), don't want to evaluate with the current values
-                backgroundColor: props.id === ACCENT_CUSTOM ? 'var(--looks-secondary)' :
-                    ACCENT_MAP[props.id].guiColors['looks-secondary']
+                backgroundColor: props.id === ACCENT_CUSTOM ? 'var(--looks-secondary)' : 'transparent'
             }}
         />
     ) : (
