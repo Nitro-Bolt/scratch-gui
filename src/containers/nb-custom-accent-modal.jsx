@@ -18,6 +18,7 @@ class NBCustomAccentModal extends React.Component {
             'handleChangeGradient',
             'handleChangeGradientColorColor',
             'handleChangeGradientColorPosition',
+            'handleChangeGradientDirection',
             'handleChangeName',
             'handleChangePrimaryColor',
             'handleChangeSecondaryColor',
@@ -88,6 +89,12 @@ class NBCustomAccentModal extends React.Component {
         this.setState({
             gradientColors: colors
         });
+    }
+
+    handleChangeGradientDirection (e) {
+        this.setState({
+            gradientDirection: e.target.value
+        })
     }
 
     handleChangeName (e) {
@@ -185,6 +192,7 @@ class NBCustomAccentModal extends React.Component {
                 onChangeGradient={this.handleChangeGradient}
                 onChangeGradientColorColor={this.handleChangeGradientColorColor}
                 onChangeGradientColorPosition={this.handleChangeGradientColorPosition}
+                onChangeGradientDirection={this.handleChangeGradientDirection}
                 onChangeName={this.handleChangeName}
                 onChangePrimaryColor={this.handleChangePrimaryColor}
                 onChangeSecondaryColor={this.handleChangeSecondaryColor}

@@ -175,6 +175,20 @@ const CustomAccentModal = props => {
                             <Box
                                 className={styles.cardBox}
                             >
+                                <label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        max={360}
+                                        value={props.gradientDirection}
+                                        onChange={props.onChangeGradientDirection}
+                                    />
+                                    <FormattedMessage
+                                        defaultMessage="degrees"
+                                        description="Label for degrees"
+                                        id="nb.customAccent.headerGradientDegrees"
+                                    />
+                                </label>
                                 <Box
                                     className={styles.card}
                                     style={{
@@ -221,7 +235,11 @@ const CustomAccentModal = props => {
                                     className={styles.button}
                                     onClick={props.onAddGradientColor}
                                 >
-                                    {'Add color'}
+                                    <FormattedMessage
+                                        defaultMessage="Add color"
+                                        description="Label for button to add a color"
+                                        id="nb.customAccent.headerGradientAddColor"
+                                    />
                                 </button>
                             </Box>
                         )}
@@ -336,6 +354,7 @@ CustomAccentModal.propTypes = {
     onChangeGradient: PropTypes.func.isRequired,
     onChangeGradientColorColor: PropTypes.func.isRequired,
     onChangeGradientColorPosition: PropTypes.func.isRequired,
+    onChangeGradientDirection: PropTypes.func.isRequired,
     onChangeName: PropTypes.func.isRequired,
     onChangePrimaryColor: PropTypes.func.isRequired,
     onChangeSecondaryColor: PropTypes.func.isRequired,
