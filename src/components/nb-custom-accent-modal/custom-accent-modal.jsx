@@ -345,7 +345,7 @@ const CustomAccentModal = props => {
 
 CustomAccentModal.propTypes = {
     gradientColors: PropTypes.array,
-    gradientDirection: PropTypes.number,
+    gradientDirection: PropTypes.string,
     intl: intlShape,
     isGradient: PropTypes.bool.isRequired,
     loadAccentIntoCreate: PropTypes.func.isRequired,

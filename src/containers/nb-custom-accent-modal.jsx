@@ -42,7 +42,7 @@ class NBCustomAccentModal extends React.Component {
                     position: 100
                 }
             ],
-            gradientDirection: 90,
+            gradientDirection: '90',
             name: '',
             primaryColor: '#855cd6',
             secondaryColor: '#714eb7',
@@ -94,7 +94,7 @@ class NBCustomAccentModal extends React.Component {
     handleChangeGradientDirection (e) {
         this.setState({
             gradientDirection: e.target.value
-        })
+        });
     }
 
     handleChangeName (e) {
@@ -180,7 +180,7 @@ class NBCustomAccentModal extends React.Component {
                     position: 100
                 }
             ],
-            gradientDirection: accent.gradient?.direction ?? 90,
+            gradientDirection: accent.gradient?.direction ?? '90',
             name: accent.name,
             primaryColor: accent.primaryColor,
             secondaryColor: accent.secondaryColor,
