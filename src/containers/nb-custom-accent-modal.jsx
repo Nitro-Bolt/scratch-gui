@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {intlShape} from 'react-intl';
 import bindAll from 'lodash.bindall';
 import {closeCustomAccentModal} from '../reducers/modals.js';
-import CustomAccentModalComponent, { gradientColorsToCSS } from '../components/nb-custom-accent-modal/custom-accent-modal.jsx';
+import CustomAccentModalComponent from '../components/nb-custom-accent-modal/custom-accent-modal.jsx';
 import {setTheme} from '../reducers/theme.js';
 import {persistTheme} from '../lib/themes/themePersistance.js';
 
@@ -41,6 +41,7 @@ class NBCustomAccentModal extends React.Component {
                     position: 100
                 }
             ],
+            gradientDirection: 90,
             name: '',
             primaryColor: '#855cd6',
             secondaryColor: '#714eb7',
@@ -123,7 +124,11 @@ class NBCustomAccentModal extends React.Component {
     handleOk () {
         if (this.state.name.trim().length === 0) return;
         const accent = {
-            gradient: this.state.isGradient ? gradientColorsToCSS(this.state.gradientColors) : null,
+            gradient: this.state.isGradient ? {
+                colors: this.state.gradientColors,
+                direction: this.state.gradientDirection
+            } : null,
+            isGradient: this.state.isGradient,
             name: this.state.name,
             primaryColor: this.state.primaryColor,
             secondaryColor: this.state.secondaryColor,
@@ -157,7 +162,9 @@ class NBCustomAccentModal extends React.Component {
 
     loadAccentIntoCreate (accent) {
         this.setState({
-            gradient: accent.gradient,
+            isGradient: accent.isGradient,
+            gradientColors: accent.gradient.colors,
+            gradientDirection: accent.gradient.direction,
             name: accent.name,
             primaryColor: accent.primaryColor,
             secondaryColor: accent.secondaryColor,
@@ -169,6 +176,7 @@ class NBCustomAccentModal extends React.Component {
         return (
             <CustomAccentModalComponent
                 gradientColors={this.state.gradientColors}
+                gradientDirection={this.state.gradientDirection}
                 isGradient={this.state.isGradient}
                 loadAccentIntoCreate={this.loadAccentIntoCreate}
                 name={this.state.name}

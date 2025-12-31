@@ -14,9 +14,9 @@ const messages = defineMessages({
     }
 });
 
-export const gradientColorsToCSS = gradientColors => {
-    let buffer = 'linear-gradient(90deg';
-    for (const color of gradientColors) {
+const gradientColorsToCSS = (colors, direction) => {
+    let buffer = `linear-gradient(${direction}deg`;
+    for (const color of colors) {
         buffer += `, ${color.color} ${color.position}%`;
     }
     buffer += ')';
@@ -179,7 +179,8 @@ const CustomAccentModal = props => {
                                     className={styles.card}
                                     style={{
                                         height: '3.5rem',
-                                        backgroundImage: gradientColorsToCSS(props.gradientColors)
+                                        backgroundImage: gradientColorsToCSS(props.gradientColors,
+                                            props.gradientDirection)
                                     }}
                                 />
                                 {props.gradientColors.map((value, index) => (
@@ -326,6 +327,7 @@ const CustomAccentModal = props => {
 
 CustomAccentModal.propTypes = {
     gradientColors: PropTypes.array,
+    gradientDirection: PropTypes.number,
     intl: intlShape,
     isGradient: PropTypes.bool.isRequired,
     loadAccentIntoCreate: PropTypes.func.isRequired,
