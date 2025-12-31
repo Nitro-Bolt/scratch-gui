@@ -17,6 +17,15 @@ import rainbowIcon from './tw-accent-rainbow.svg';
 import styles from './settings-menu.css';
 import settingsIcon from '../menu-bar/icon--settings.svg';
 
+const gradientColorsToCSS = (colors, direction) => {
+    let buffer = `linear-gradient(${direction}deg`;
+    for (const color of colors) {
+        buffer += `, ${color.color} ${color.position}%`;
+    }
+    buffer += ')';
+    return buffer;
+};
+
 const options = defineMessages({
     [ACCENT_ORANGE]: {
         defaultMessage: 'Orange',
@@ -65,7 +74,9 @@ const ColorIcon = props => (
                 // menu-bar-background is var(...), don't want to evaluate with the current values
                 backgroundColor: props.id === ACCENT_CUSTOM ? 'var(--looks-secondary)' :
                     ACCENT_MAP[props.id].guiColors['looks-secondary'],
-                backgroundImage: props.id === ACCENT_CUSTOM ? 'none' :
+                backgroundImage: props.id === ACCENT_CUSTOM ? props.isGradient && props.gradient ?
+                    gradientColorsToCSS(props.gradient.colors, props.gradient.direction) :
+                    'none' :
                     ACCENT_MAP[props.id].guiColors['menu-bar-background-image']
             }}
         />
@@ -73,7 +84,9 @@ const ColorIcon = props => (
 );
 
 ColorIcon.propTypes = {
-    id: PropTypes.string
+    id: PropTypes.string,
+    isGradient: PropTypes.bool,
+    gradient: PropTypes.any
 };
 
 const AccentMenuItem = props => (
@@ -118,7 +131,11 @@ const AccentThemeMenu = ({
                 className={styles.option}
                 onClick={onOpen}
             >
-                <ColorIcon id={Object.hasOwn(theme.accent, 'primaryColor') ? ACCENT_CUSTOM : theme.accent} />
+                <ColorIcon
+                    id={Object.hasOwn(theme.accent, 'primaryColor') ? ACCENT_CUSTOM : theme.accent}
+                    isGradient={theme.accent?.isGradient}
+                    gradient={theme.accent?.gradient}
+                />
                 <span className={styles.submenuLabel}>
                     <FormattedMessage
                         defaultMessage="Accent"
@@ -160,11 +177,14 @@ const AccentThemeMenu = ({
                                     height={12}
                                     src={check}
                                     draggable={false}
-                                />
+                                />{console.log(value.gradient)}
                                 <div
                                     className={styles.accentIconOuter}
                                     style={{
-                                        backgroundColor: value.primaryColor
+                                        backgroundColor: value.primaryColor,
+                                        backgroundImage: value.isGradient && value.gradient ?
+                                            gradientColorsToCSS(value.gradient.colors, value.gradient.direction) :
+                                            'none'
                                     }}
                                 />
                                 {value.name}
