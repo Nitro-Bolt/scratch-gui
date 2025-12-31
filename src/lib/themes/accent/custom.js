@@ -1,4 +1,4 @@
-const getGuiColors = (primaryColor, secondaryColor, isGradient) => ({
+const getGuiColors = (primaryColor, secondaryColor, tertiaryColor, isGradient) => ({
     'motion-primary': `${primaryColor}`,
     'motion-primary-transparent': `${primaryColor}e6`,
     'motion-tertiary': `${secondaryColor}`,
@@ -8,12 +8,12 @@ const getGuiColors = (primaryColor, secondaryColor, isGradient) => ({
     'looks-light-transparent': `${primaryColor}26`,
     'looks-secondary-dark': `${secondaryColor}`,
 
-    'extensions-primary': `${secondaryColor}`,
-    'extensions-tertiary': `${primaryColor}`,
-    'extensions-transparent': `${primaryColor}6e`,
+    'extensions-primary': `${tertiaryColor}`,
+    'extensions-tertiary': `${tertiaryColor}`,
+    'extensions-transparent': `${tertiaryColor}6e`,
     'extensions-light': 'hsla(10, 57%, 85%, 1)',
 
-    'drop-highlight': '#ff9d8a',
+    'drop-highlight': `${primaryColor}`,
 
     'menu-bar-background-image': isGradient ?
         // eslint-disable-next-line max-len

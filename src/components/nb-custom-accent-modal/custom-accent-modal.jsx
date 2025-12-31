@@ -28,8 +28,8 @@ const CustomAccentModal = props => (
                 >
                     <div className={styles.optionTitle}>
                         <FormattedMessage
-                            defaultMessage="Primary color"
-                            description="Label for color picker"
+                            defaultMessage="Primary"
+                            description="Title for color picker"
                             id="nb.customAccent.primaryTitle"
                         />
                     </div>
@@ -40,14 +40,21 @@ const CustomAccentModal = props => (
                         className={styles.colorPicker}
                         onChange={props.onChangePrimaryColor}
                     />
+                    <p>
+                        <FormattedMessage
+                            defaultMessage="For most UI components"
+                            description="Label for color picker"
+                            id="nb.customAccent.primaryLabel"
+                        />
+                    </p>
                 </div>
                 <div
                     className={styles.optionCard}
                 >
                     <div className={styles.optionTitle}>
                         <FormattedMessage
-                            defaultMessage="Secondary color"
-                            description="Label for color picker"
+                            defaultMessage="Secondary"
+                            description="Title for color picker"
                             id="nb.customAccent.secondaryTitle"
                         />
                     </div>
@@ -58,6 +65,38 @@ const CustomAccentModal = props => (
                         className={styles.colorPicker}
                         onChange={props.onChangeSecondaryColor}
                     />
+                    <p>
+                        <FormattedMessage
+                            defaultMessage="For less important menus"
+                            description="Label for color picker"
+                            id="nb.customAccent.secondaryLabel"
+                        />
+                    </p>
+                </div>
+                <div
+                    className={styles.optionCard}
+                >
+                    <div className={styles.optionTitle}>
+                        <FormattedMessage
+                            defaultMessage="Tertiary"
+                            description="Title for color picker"
+                            id="nb.customAccent.tertiaryTitle"
+                        />
+                    </div>
+                    <input
+                        style={{backgroundColor: props.tertiaryColor}}
+                        type="color"
+                        value={props.tertiaryColor}
+                        className={styles.colorPicker}
+                        onChange={props.onChangeTertiaryColor}
+                    />
+                    <p>
+                        <FormattedMessage
+                            defaultMessage="For menus being hovered over"
+                            description="Label for color picker"
+                            id="nb.customAccent.tertiaryLabel"
+                        />
+                    </p>
                 </div>
             </div>
             <p>
@@ -105,10 +144,12 @@ CustomAccentModal.propTypes = {
     onChangeGradient: PropTypes.func.isRequired,
     onChangePrimaryColor: PropTypes.func.isRequired,
     onChangeSecondaryColor: PropTypes.func.isRequired,
+    onChangeTertiaryColor: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     primaryColor: PropTypes.string.isRequired,
-    secondaryColor: PropTypes.string.isRequired
+    secondaryColor: PropTypes.string.isRequired,
+    tertiaryColor: PropTypes.string.isRequired
 };
 
 export default injectIntl(CustomAccentModal);

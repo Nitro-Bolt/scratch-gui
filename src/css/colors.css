@@ -51,7 +51,7 @@ $extensions-tertiary: var(--extensions-tertiary);
 $extensions-transparent: var(--extensions-transparent);
 $extensions-light: var(--extensions-light);
 
-$drop-highlight: var(--looks-transparent);
+$drop-highlight: var(--drop-highlight);
 
 $menu-bar-background: var(--menu-bar-background);
 $menu-bar-background-image: var(--menu-bar-background-image);

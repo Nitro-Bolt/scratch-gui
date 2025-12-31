@@ -118,6 +118,7 @@ class Theme {
                 ACCENT_MAP[ACCENT_CUSTOM].getGuiColors(
                     this.accent.primaryColor,
                     this.accent.secondaryColor,
+                    this.accent.tertiaryColor,
                     this.accent.isGradient
                 ) :
                 ACCENT_MAP[this.accent].guiColors,

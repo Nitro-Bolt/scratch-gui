@@ -17,12 +17,14 @@ class NBCustomAccentModal extends React.Component {
             'handleClose',
             'handleChangePrimaryColor',
             'handleChangeSecondaryColor',
+            'handleChangeTertiaryColor',
             'handleOk'
         ]);
         this.state = {
             isGradient: !!this.props.theme.accent.isGradient,
-            primaryColor: this.props.theme.accent.primaryColor ?? '#ff5726',
-            secondaryColor: this.props.theme.accent.secondaryColor ?? '#f2735a'
+            primaryColor: this.props.theme.accent.primaryColor ?? '#855cd6',
+            secondaryColor: this.props.theme.accent.secondaryColor ?? '#714eb7',
+            tertiaryColor: this.props.theme.accent.tertiaryColor ?? '#0fbd8c'
         };
     }
 
@@ -47,11 +49,18 @@ class NBCustomAccentModal extends React.Component {
             secondaryColor: e.target.value
         });
     }
+
+    handleChangeTertiaryColor (e) {
+        this.setState({
+            tertiaryColor: e.target.value
+        });
+    }
     
     handleOk () {
         const theme = this.props.theme.set('accent', {
             primaryColor: this.state.primaryColor,
             secondaryColor: this.state.secondaryColor,
+            tertiaryColor: this.state.tertiaryColor,
             isGradient: this.state.isGradient
         });
         this.props.onOk(theme);
@@ -67,9 +76,11 @@ class NBCustomAccentModal extends React.Component {
                 onChangeGradient={this.handleChangeGradient}
                 onChangePrimaryColor={this.handleChangePrimaryColor}
                 onChangeSecondaryColor={this.handleChangeSecondaryColor}
+                onChangeTertiaryColor={this.handleChangeTertiaryColor}
                 onOk={this.handleOk}
                 primaryColor={this.state.primaryColor}
                 secondaryColor={this.state.secondaryColor}
+                tertiaryColor={this.state.tertiaryColor}
             />
         );
     }

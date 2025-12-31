@@ -49,7 +49,7 @@ $extensions-tertiary-default: var(--extensions-tertiary-default);
 $extensions-transparent-default: var(--extensions-transparent-default);
 $extensions-light-default: var(--extensions-light-default);
 
-$drop-highlight-default: var(--looks-transparent-default);
+$drop-highlight-default: var(--drop-highlight-default);
 
 $menu-bar-background-default: var(--menu-bar-background-default);
 $menu-bar-foreground-default: var(--menu-bar-foreground-default);
