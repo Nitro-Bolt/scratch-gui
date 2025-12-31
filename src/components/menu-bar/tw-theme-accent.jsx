@@ -5,10 +5,9 @@ import {FormattedMessage, defineMessages} from 'react-intl';
 import {connect} from 'react-redux';
 
 import check from './check.svg';
-import customIcon from './nb-accent-custom.svg';
 import dropdownCaret from './dropdown-caret.svg';
 import {openCustomAccentModal} from '../../reducers/modals.js';
-import {MenuItem, Submenu} from '../menu/menu.jsx';
+import {MenuItem, MenuSection, Submenu} from '../menu/menu.jsx';
 import {ACCENT_ORANGE, ACCENT_BLUE, ACCENT_MAP, ACCENT_PURPLE,
     ACCENT_RED, ACCENT_RAINBOW, ACCENT_CUSTOM, Theme} from '../../lib/themes/index.js';
 import {openAccentMenu, accentMenuOpen, closeSettingsMenu} from '../../reducers/menus.js';
@@ -16,6 +15,7 @@ import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
 import rainbowIcon from './tw-accent-rainbow.svg';
 import styles from './settings-menu.css';
+import settingsIcon from '../menu-bar/icon--settings.svg';
 
 const options = defineMessages({
     [ACCENT_ORANGE]: {
@@ -42,17 +42,11 @@ const options = defineMessages({
         defaultMessage: 'Rainbow',
         description: 'Name of color scheme that uses a rainbow.',
         id: 'tw.accent.rainbow'
-    },
-    [ACCENT_CUSTOM]: {
-        defaultMessage: 'Custom',
-        description: 'Name of color scheme that is defined by the user.',
-        id: 'tw.accent.custom'
     }
 });
 
 const icons = {
-    [ACCENT_RAINBOW]: rainbowIcon,
-    [ACCENT_CUSTOM]: customIcon
+    [ACCENT_RAINBOW]: rainbowIcon
 };
 
 const ColorIcon = props => (
@@ -63,10 +57,6 @@ const ColorIcon = props => (
             draggable={false}
             // Image is decorative
             alt=""
-            style={{
-                // menu-bar-background is var(...), don't want to evaluate with the current values
-                backgroundColor: props.id === ACCENT_CUSTOM ? 'var(--looks-secondary)' : 'transparent'
-            }}
         />
     ) : (
         <div
@@ -75,7 +65,8 @@ const ColorIcon = props => (
                 // menu-bar-background is var(...), don't want to evaluate with the current values
                 backgroundColor: props.id === ACCENT_CUSTOM ? 'var(--looks-secondary)' :
                     ACCENT_MAP[props.id].guiColors['looks-secondary'],
-                backgroundImage: ACCENT_MAP[props.id].guiColors['menu-bar-background-image']
+                backgroundImage: props.id === ACCENT_CUSTOM ? 'none' :
+                    ACCENT_MAP[props.id].guiColors['menu-bar-background-image']
             }}
         />
     )
@@ -114,40 +105,106 @@ const AccentThemeMenu = ({
     onChangeTheme,
     onOpen,
     theme
-}) => (
-    <MenuItem expanded={isOpen}>
-        <div
-            className={styles.option}
-            onClick={onOpen}
-        >
-            <ColorIcon id={Object.hasOwn(theme.accent, 'primaryColor') ? ACCENT_CUSTOM : theme.accent} />
-            <span className={styles.submenuLabel}>
-                <FormattedMessage
-                    defaultMessage="Accent"
-                    description="Label for menu to choose accent color (eg. TurboWarp's red, Scratch's purple)"
-                    id="tw.menuBar.accent"
+}) => {
+    if (!localStorage.getItem('nb:custom-accents')) localStorage.setItem('nb:custom-accents', '[]');
+    /**
+     * @type {any[]}
+     */
+    const themes = JSON.parse(localStorage.getItem('nb:custom-accents'));
+
+    return (
+        <MenuItem expanded={isOpen}>
+            <div
+                className={styles.option}
+                onClick={onOpen}
+            >
+                <ColorIcon id={Object.hasOwn(theme.accent, 'primaryColor') ? ACCENT_CUSTOM : theme.accent} />
+                <span className={styles.submenuLabel}>
+                    <FormattedMessage
+                        defaultMessage="Accent"
+                        description="Label for menu to choose accent color (eg. TurboWarp's red, Scratch's purple)"
+                        id="tw.menuBar.accent"
+                    />
+                </span>
+                <img
+                    className={styles.expandCaret}
+                    src={dropdownCaret}
+                    draggable={false}
                 />
-            </span>
-            <img
-                className={styles.expandCaret}
-                src={dropdownCaret}
-                draggable={false}
-            />
-        </div>
-        <Submenu place={isRtl ? 'left' : 'right'}>
-            {Object.keys(options).map(item => (
-                <AccentMenuItem
-                    key={item}
-                    id={item}
-                    isSelected={(Object.hasOwn(theme.accent, 'primaryColor') ? ACCENT_CUSTOM : theme.accent) === item}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onClick={item === ACCENT_CUSTOM ? onClickCustomAccent :
-                        () => onChangeTheme(theme.set('accent', item))}
-                />
-            ))}
-        </Submenu>
-    </MenuItem>
-);
+            </div>
+            <Submenu place={isRtl ? 'left' : 'right'}>
+                {Object.keys(options).map(item => (
+                    <AccentMenuItem
+                        key={item}
+                        id={item}
+                        isSelected={theme.accent === item}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onClick={() => onChangeTheme(theme.set('accent', item))}
+                    />
+                ))}
+                <MenuSection>
+                    {themes.sort((a, b) => a.name > b.name).map((value, index) => (
+                        <MenuItem
+                            className={styles.menuSection}
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onClick={() => onChangeTheme(theme.set('accent', value))}
+                            key={index}
+                        >
+                            <div
+                                className={styles.option}
+                            >
+                                <img
+                                    className={classNames(styles.check,
+                                        {[styles.selected]: theme.accent.name === value.name})}
+                                    width={15}
+                                    height={12}
+                                    src={check}
+                                    draggable={false}
+                                />
+                                <div
+                                    className={styles.accentIconOuter}
+                                    style={{
+                                        backgroundColor: value.primaryColor
+                                    }}
+                                />
+                                {value.name}
+                            </div>
+                        </MenuItem>
+                    ))}
+                </MenuSection>
+                <MenuSection>
+                    <MenuItem
+                        className={styles.menuSection}
+                        onClick={onClickCustomAccent}
+                    >
+                        <div
+                            className={styles.option}
+                        >
+                            <img
+                                className={styles.check}
+                                width={15}
+                                height={12}
+                                src={check}
+                                draggable={false}
+                            />
+                            <img
+                                src={settingsIcon}
+                                draggable={false}
+                                width={21.6}
+                                height={21.6}
+                            />
+                            <FormattedMessage
+                                defaultMessage="Create/Manage"
+                                description="Menu item to open the custom accent manager"
+                                id="nb.customAccent"
+                            />
+                        </div>
+                    </MenuItem>
+                </MenuSection>
+            </Submenu>
+        </MenuItem>
+    );
+};
 
 AccentThemeMenu.propTypes = {
     isOpen: PropTypes.bool,

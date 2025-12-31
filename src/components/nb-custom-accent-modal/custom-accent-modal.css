@@ -13,7 +13,7 @@
 
 .body p,
 .unsandboxed-container,
-.url-input,
+.input,
 .text-code-input {
     margin: 1rem 0;
     display: block;
@@ -22,6 +22,7 @@
 .type-selector-container {
     display: flex;
     justify-content: space-around;
+    margin-bottom: 1rem;
 }
 .type-selector-button {
     width: 100%;
@@ -41,7 +42,7 @@
     border-color: $looks-transparent;
 }
 
-.url-input,
+.input,
 .text-code-input {
     width: 100%;
     border: 1px solid $ui-black-transparent;
@@ -49,7 +50,7 @@
     padding: 0.5rem;
     font-size: inherit;
 }
-.url-input {
+.input {
     height: 3rem;
 }
 .text-code-input {
@@ -228,5 +229,62 @@ label span {
 
 .options-row {
     display: flex;
-    justify-content: space-between;
+}
+
+.options-row > span {
+    flex-grow: 1;
+    gap: 1rem;
+}
+
+.accent-card-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.accent-card {
+    background: $ui-white;
+    border: 2px solid $ui-black-transparent;
+    border-radius: $space;
+    padding: calc($space * 1.5);
+    display: flex;
+    gap: 1rem;
+}
+
+.color-preview {
+    border-radius: 50% !important;
+}
+
+.accent-card > div > * {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: $looks-secondary;
+    background-size: 100%;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 4px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.accent-card > div > button:hover {
+    border: 1px solid $looks-secondary;
+    box-shadow: 0px 0px 0px 4px $looks-transparent;
+}
+
+.accent-card > div {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.edit-option {
+    background-image: url("../menu-bar/icon--settings.svg");
+}
+
+.delete-option {
+    background-image: url("../delete-button/icon--delete.svg");
+}
+
+.name {
+    flex-grow: 1;
 }
