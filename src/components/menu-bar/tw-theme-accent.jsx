@@ -177,7 +177,7 @@ const AccentThemeMenu = ({
                                     height={12}
                                     src={check}
                                     draggable={false}
-                                />{console.log(value.gradient)}
+                                />
                                 <div
                                     className={styles.accentIconOuter}
                                     style={{
