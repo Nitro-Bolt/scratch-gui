@@ -19,9 +19,9 @@ class NBCustomAccentModal extends React.Component {
             'handleOk'
         ]);
         this.state = {
-            isGradient: false,
-            primaryColor: '#ff5726',
-            secondaryColor: '#f2735a'
+            isGradient: !!this.props.theme.accent.isGradient,
+            primaryColor: this.props.theme.accent.primaryColor ?? '#ff5726',
+            secondaryColor: this.props.theme.accent.secondaryColor ?? '#f2735a'
         };
     }
 
