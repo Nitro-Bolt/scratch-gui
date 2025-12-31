@@ -7,6 +7,7 @@ import bindAll from 'lodash.bindall';
 import {closeCustomAccentModal} from '../reducers/modals.js';
 import CustomAccentModalComponent from '../components/nb-custom-accent-modal/custom-accent-modal.jsx';
 import {setTheme} from '../reducers/theme.js';
+import {persistTheme} from '../lib/themes/themePersistance.js';
 
 class NBCustomAccentModal extends React.Component {
     constructor (props) {
@@ -48,8 +49,14 @@ class NBCustomAccentModal extends React.Component {
     }
     
     handleOk () {
-        this.props.onOk(this.props.theme, this.state.primaryColor, this.state.secondaryColor, this.state.isGradient);
+        const theme = this.props.theme.set('accent', {
+            primaryColor: this.state.primaryColor,
+            secondaryColor: this.state.secondaryColor,
+            isGradient: this.state.isGradient
+        });
+        this.props.onOk(theme);
         this.props.onClose();
+        persistTheme(theme);
     }
 
     render () {
@@ -83,11 +90,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     onClose: () => dispatch(closeCustomAccentModal()),
-    onOk: (theme, primaryColor, secondaryColor, isGradient) => dispatch(setTheme(theme.set('accent', {
-        primaryColor,
-        secondaryColor,
-        isGradient
-    })))
+    onOk: theme => dispatch(setTheme(theme))
 });
 
 export default connect(
