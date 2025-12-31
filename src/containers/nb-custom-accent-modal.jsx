@@ -170,8 +170,17 @@ class NBCustomAccentModal extends React.Component {
     loadAccentIntoCreate (accent) {
         this.setState({
             isGradient: accent.isGradient,
-            gradientColors: accent.gradient.colors,
-            gradientDirection: accent.gradient.direction,
+            gradientColors: accent.gradient?.colors ?? [
+                {
+                    color: '#855cd6',
+                    position: 0
+                },
+                {
+                    color: '#4c97ff',
+                    position: 100
+                }
+            ],
+            gradientDirection: accent.gradient?.direction ?? 90,
             name: accent.name,
             primaryColor: accent.primaryColor,
             secondaryColor: accent.secondaryColor,
