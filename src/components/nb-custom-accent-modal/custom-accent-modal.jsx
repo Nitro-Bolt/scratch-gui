@@ -6,6 +6,7 @@ import styles from './custom-accent-modal.css';
 import Box from '../box/box.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
 import FileInput from './file-input.jsx';
+import MenuBar from '../menu-bar/menu-bar.jsx';
 
 const messages = defineMessages({
     title: {
@@ -176,6 +177,14 @@ const CustomAccentModal = props => {
                             <Box
                                 className={styles.cardBox}
                             >
+                                <Box
+                                    className={styles.card}
+                                    style={{
+                                        height: '3.5rem',
+                                        backgroundImage: gradientColorsToCSS(props.gradientColors,
+                                            props.gradientDirection)
+                                    }}
+                                />
                                 <label>
                                     <input
                                         type="number"
@@ -190,14 +199,6 @@ const CustomAccentModal = props => {
                                         id="nb.customAccent.headerGradientDegrees"
                                     />
                                 </label>
-                                <Box
-                                    className={styles.card}
-                                    style={{
-                                        height: '3.5rem',
-                                        backgroundImage: gradientColorsToCSS(props.gradientColors,
-                                            props.gradientDirection)
-                                    }}
-                                />
                                 {props.gradientColors.map((value, index) => (
                                     <Box
                                         className={styles.card}
