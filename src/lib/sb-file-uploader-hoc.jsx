@@ -76,43 +76,20 @@ const SBFileUploaderHOC = function (WrappedComponent) {
             if (this.props.showOpenFilePicker) {
                 (async () => {
                     try {
-                        const extensions = ['.sb', '.sb2', '.sb3'];
                         const [handle] = await this.props.showOpenFilePicker({
                             multiple: false,
                             types: [
                                 {
                                     description: 'Scratch Project',
                                     accept: {
-                                        // Chrome on Android seems to track the MIME type that a file has when it is
-                                        // downloaded and then the file picker enforces that it must match one of
-                                        // the types given here. Unfortunately, Scratch projects are not a very popular
-                                        // file type so there is no actual standard and everyone uses a different
-                                        // string. We are thus forced to enumerate them all here so that the file picker
-                                        // actually works as Android does not allow the user to manually disable the
-                                        // type filters.
-
-                                        // Most file hosting serivces won't recognize Scratch projects, so they'll
-                                        // serve it as an opaque byte stream.
-                                        'application/octet-stream': extensions,
-
-                                        // https://github.com/scratchfoundation/scratch-editor/blob/22f44c64a5287d6d511f4819f065270a6981f2c8/packages/scratch-vm/src/virtual-machine.js#L451C24-L451C53
-                                        'application/x.scratch.sb3': extensions,
-
-                                        // The dots are unusual, so sometimes hyphens are used instead.
-                                        'application/x-scratch-sb3': extensions,
-
-                                        // https://aur.archlinux.org/cgit/aur.git/tree/scratch3.xml?h=scratch3#n3
-                                        'application/x-scratch3-project': extensions,
-
-                                        // Used in various places but no clear origin
-                                        // https://github.com/search?q=%22application%2Fx-scratch2%22&type=code
-                                        'application/x-scratch2': extensions,
-
-                                        // https://aur.archlinux.org/cgit/aur.git/tree/scratch2.xml?h=scratch2#n3
-                                        'application/x-scratch2-project': extensions,
-
-                                        // https://github.com/scratchfoundation/Scratch_1.4/blob/d26f099e3d8358760d0129de4a57e792d97d146f/src/scratch.xml
-                                        'application/x-scratch-project': extensions
+                                        // Chrome on Android tracks the MIME type of files that get downloaded and
+                                        // then actually enforces that the type must match in showOpenFilePicker()
+                                        // and does not allow the user to override the filter. As Scratch projects have
+                                        // no well-defined and well-adopted MIME types, we can't assume anything about
+                                        // what MIME type they are saved with, so we have to use the most broad MIME
+                                        // type here. Otherwise some users just won't be able to load files for no
+                                        // fault of their own.
+                                        '*/*': ['.sb', '.sb2', '.sb3']
                                     }
                                 }
                             ]
@@ -311,7 +288,9 @@ const SBFileUploaderHOC = function (WrappedComponent) {
         onSetFileHandle: PropTypes.func
     };
     SBFileUploaderComponent.defaultProps = {
-        showOpenFilePicker: typeof showOpenFilePicker === 'function' ? window.showOpenFilePicker.bind(window) : null
+        showOpenFilePicker: typeof showOpenFilePicker === 'function' && !navigator.userAgent.includes('Android') ?
+            window.showOpenFilePicker.bind(window) :
+            null
     };
     const mapStateToProps = (state, ownProps) => {
         const loadingState = state.scratchGui.projectState.loadingState;

@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import log from './log';
 import {getIsShowingProject} from '../reducers/project-state';
 
-const PACKAGER_URL = 'https://packager.turbowarp.org';
-const PACKAGER_ORIGIN = PACKAGER_URL;
+const PACKAGER_URL = 'https://nitro-bolt.github.io/packager';
+const PACKAGER_ORIGIN = 'https://nitro-bolt.github.io';
 
 const PackagerIntegrationHOC = function (WrappedComponent) {
     class PackagerIntegrationComponent extends React.Component {

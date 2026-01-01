@@ -90,6 +90,7 @@ class Stage extends React.Component {
         this.attachRectEvents();
         this.attachMouseEvents(this.canvas);
         this.updateRect();
+        this.renderer.resize(this.rect.width, this.rect.height);
         this.props.vm.runtime.addListener('QUESTION', this.questionListener);
     }
     shouldComponentUpdate (nextProps, nextState) {

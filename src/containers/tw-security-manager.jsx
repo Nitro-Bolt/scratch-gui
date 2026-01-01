@@ -34,16 +34,16 @@ const isTrustedExtension = url => (
 );
 
 /**
- * Set of fetch resource origins that were manually trusted by the user.
+ * Set of fetch resource hosts that were manually trusted by the user.
  * @type {Set<string>}
  */
-const fetchOriginsTrustedByUser = new Set();
+const fetchHostsTrustedByUser = new Set();
 
 /**
- * Set of origins manually trusted by the user for embedding.
+ * Set of hosts manually trusted by the user for embedding.
  * @type {Set<string>}
  */
-const embedOriginsTrustedByUser = new Set();
+const embedHostsTrustedByUser = new Set();
 
 /**
  * @param {URL} parsed Parsed URL object
@@ -293,16 +293,21 @@ class TWSecurityManagerComponent extends React.Component {
             return true;
         }
         const {showModal, releaseLock} = await this.acquireModalLock();
-        const origin = (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.origin : null;
-        if (origin && fetchOriginsTrustedByUser.has(origin)) {
+        const host = (
+            parsed.protocol === 'http:' ||
+            parsed.protocol === 'https:' ||
+            parsed.protocol === 'ws:' ||
+            parsed.protocol === 'wss:'
+        ) ? parsed.host : null;
+        if (host && fetchHostsTrustedByUser.has(host)) {
             releaseLock();
             return true;
         }
         const allowed = await showModal(SecurityModals.Fetch, {
             url
         });
-        if (origin && allowed) {
-            fetchOriginsTrustedByUser.add(origin);
+        if (host && allowed) {
+            fetchHostsTrustedByUser.add(host);
         }
         return allowed;
     }
@@ -401,15 +406,15 @@ class TWSecurityManagerComponent extends React.Component {
         if (!parsed) {
             return false;
         }
-        const origin = (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.origin : null;
+        const host = (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.host : null;
         const {showModal, releaseLock} = await this.acquireModalLock();
-        if (origin && embedOriginsTrustedByUser.has(origin)) {
+        if (host && embedHostsTrustedByUser.has(host)) {
             releaseLock();
             return true;
         }
         const allowed = await showModal(SecurityModals.Embed, {url});
-        if (origin && allowed) {
-            embedOriginsTrustedByUser.add(origin);
+        if (host && allowed) {
+            embedHostsTrustedByUser.add(host);
         }
         return allowed;
     }
