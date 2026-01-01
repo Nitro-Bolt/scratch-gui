@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 
 import check from './check.svg';
 import dropdownCaret from './dropdown-caret.svg';
+import {gradientDataToCSS} from "../../lib/nb-gradient-to-css.js";
 import {openCustomAccentModal} from '../../reducers/modals.js';
 import {MenuItem, MenuSection, Submenu} from '../menu/menu.jsx';
 import {ACCENT_ORANGE, ACCENT_BLUE, ACCENT_MAP, ACCENT_PURPLE,
@@ -16,15 +17,6 @@ import {persistTheme} from '../../lib/themes/themePersistance.js';
 import rainbowIcon from './tw-accent-rainbow.svg';
 import styles from './settings-menu.css';
 import settingsIcon from '../menu-bar/icon--settings.svg';
-
-const gradientColorsToCSS = (colors, direction) => {
-    let buffer = `linear-gradient(${direction}deg`;
-    for (const color of colors) {
-        buffer += `, ${color.color} ${color.position}%`;
-    }
-    buffer += ')';
-    return buffer;
-};
 
 const options = defineMessages({
     [ACCENT_ORANGE]: {
@@ -75,7 +67,7 @@ const ColorIcon = props => (
                 backgroundColor: props.id === ACCENT_CUSTOM ? 'var(--looks-secondary)' :
                     ACCENT_MAP[props.id].guiColors['looks-secondary'],
                 backgroundImage: props.id === ACCENT_CUSTOM ? props.isGradient && props.gradient ?
-                    gradientColorsToCSS(props.gradient.colors, props.gradient.direction) :
+                    gradientDataToCSS(props.gradient.colors, props.gradient.direction) :
                     'none' :
                     ACCENT_MAP[props.id].guiColors['menu-bar-background-image']
             }}
@@ -183,7 +175,7 @@ const AccentThemeMenu = ({
                                     style={{
                                         backgroundColor: value.primaryColor,
                                         backgroundImage: value.isGradient && value.gradient ?
-                                            gradientColorsToCSS(value.gradient.colors, value.gradient.direction) :
+                                            gradientDataToCSS(value.gradient.colors, value.gradient.direction) :
                                             'none'
                                     }}
                                 />

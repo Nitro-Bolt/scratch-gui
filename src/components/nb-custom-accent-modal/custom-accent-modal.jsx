@@ -6,6 +6,7 @@ import styles from './custom-accent-modal.css';
 import Box from '../box/box.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
 import FileInput from './file-input.jsx';
+import {gradientDataToCSS} from '../../lib/nb-gradient-to-css.js';
 
 const messages = defineMessages({
     title: {
@@ -14,15 +15,6 @@ const messages = defineMessages({
         id: 'nb.customAccent.title'
     }
 });
-
-const gradientColorsToCSS = (colors, direction) => {
-    let buffer = `linear-gradient(${direction}deg`;
-    for (const color of colors) {
-        buffer += `, ${color.color} ${color.position}%`;
-    }
-    buffer += ')';
-    return buffer;
-};
 
 const CustomAccentModal = props => {
     if (!localStorage.getItem('nb:custom-accents')) localStorage.setItem('nb:custom-accents', '[]');
@@ -191,7 +183,7 @@ const CustomAccentModal = props => {
                                     className={styles.card}
                                     style={{
                                         height: '3.5rem',
-                                        backgroundImage: gradientColorsToCSS(props.gradientColors,
+                                        backgroundImage: gradientDataToCSS(props.gradientColors,
                                             props.gradientDirection)
                                     }}
                                 />

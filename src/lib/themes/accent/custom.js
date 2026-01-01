@@ -1,11 +1,4 @@
-const gradientColorsToCSS = (colors, direction) => {
-    let buffer = `linear-gradient(${direction}deg`;
-    for (const color of colors) {
-        buffer += `, ${color.color} ${color.position}%`;
-    }
-    buffer += ')';
-    return buffer;
-};
+import {gradientDataToCSS} from '../../../lib/nb-gradient-to-css.js';
 
 const getGuiColors = (primaryColor, secondaryColor, tertiaryColor, gradient) => ({
     'motion-primary': `${primaryColor}`,
@@ -24,7 +17,7 @@ const getGuiColors = (primaryColor, secondaryColor, tertiaryColor, gradient) => 
 
     'drop-highlight': `${primaryColor}`,
 
-    'menu-bar-background-image': `${gradient ? gradientColorsToCSS(gradient.colors, gradient.direction) : 'none'}`
+    'menu-bar-background-image': `${gradient ? gradientDataToCSS(gradient.colors, gradient.direction) : 'none'}`
 });
 
 const getBlockColors = (primaryColor, secondaryColor) => ({
