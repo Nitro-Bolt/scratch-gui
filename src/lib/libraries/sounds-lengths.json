@@ -350,8 +350,7 @@
         "sounds/material/metal/creak/creak01.mp3": 4830,
         "sounds/material/metal/door/door03.mp3": 1520,
         "sounds/material/metal/door/door02.mp3": 2460,
-        "sounds/material/metal/door/door01.mp3": 2250,
-        "sounds/mibup15full.mp3": 132480
+        "sounds/material/metal/door/door01.mp3": 2250
     },
     "scratch": {
         "ff8b8c3bf841a11fd5fe3afaa92be1b5": 3730,
@@ -704,6 +703,7 @@
         "00d6e72ef8bf7088233e98fbcee0ec6d": 820,
         "006316650ffc673dc02d36aa55881327": 950,
         "0039635b1d6853face36581784558454": 350,
-        "sounds/mibup15full.mp3": 132480
+        
+        "15eccd22c90176ed0420aaf8c858254b": 132480
     }
 }
