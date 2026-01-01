@@ -79,9 +79,23 @@ const CustomAccentModal = props => {
                         />
                         <p>
                             {themes.some(value => value.name === props.name) ?
-                                <span>{'You\'re editing an existing accent'}</span> :
-                                <span>{'A new accent will be created'}</span>
-                            }{' called "'}{props.name}{'"'}
+                                <FormattedMessage
+                                    defaultMessage={'You\'re editing an existing accent called "{name}"'}
+                                    description="Label for name input"
+                                    id="nb.customAccent.editingExisting"
+                                    values={{
+                                        name: props.name
+                                    }}
+                                /> :
+                                <FormattedMessage
+                                    defaultMessage={'A new accent will be created called "{name}"'}
+                                    description="Label for name input"
+                                    id="nb.customAccent.editingNew"
+                                    values={{
+                                        name: props.name
+                                    }}
+                                />
+                            }
                         </p>
                         <div className={styles.optionsRow}>
                             <div
@@ -224,6 +238,7 @@ const CustomAccentModal = props => {
                                             style={{
                                                 flexGrow: 1
                                             }}
+                                            dir={props.isRtl ? 'rtl' : 'ltr'}
                                         >
                                             <button
                                                 className={styles.deleteOption}
@@ -394,6 +409,7 @@ CustomAccentModal.propTypes = {
     gradientDirection: PropTypes.string,
     intl: intlShape,
     isGradient: PropTypes.bool.isRequired,
+    isRtl: PropTypes.bool,
     loadAccentIntoCreate: PropTypes.func.isRequired,
     name: PropTypes.string,
     onAddGradientColor: PropTypes.func.isRequired,

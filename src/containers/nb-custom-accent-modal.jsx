@@ -196,6 +196,7 @@ class NBCustomAccentModal extends React.Component {
                 gradientColors={this.state.gradientColors}
                 gradientDirection={this.state.gradientDirection}
                 isGradient={this.state.isGradient}
+                isRtl={this.props.isRtl}
                 loadAccentIntoCreate={this.loadAccentIntoCreate}
                 name={this.state.name}
                 onAddGradientColor={this.handleAddGradientColor}
@@ -225,6 +226,7 @@ class NBCustomAccentModal extends React.Component {
 NBCustomAccentModal.propTypes = {
     // eslint-disable-next-line react/no-unused-prop-types
     intl: intlShape,
+    isRtl: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     setTheme: PropTypes.func.isRequired,
@@ -232,6 +234,7 @@ NBCustomAccentModal.propTypes = {
 };
 
 const mapStateToProps = state => ({
+    isRtl: state.locales.isRtl,
     theme: state.scratchGui.theme.theme,
     vm: state.scratchGui.vm
 });

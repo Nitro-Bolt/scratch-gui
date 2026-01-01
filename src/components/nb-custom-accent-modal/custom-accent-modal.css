@@ -209,10 +209,6 @@ label {
     flex-basis: 100px;
 }
 
-.option-card + .option-card {
-    margin-left: 1rem;
-}
-
 .option-title {
     font-weight: bold;
     margin-bottom: 8px;
@@ -220,6 +216,7 @@ label {
 
 .options-row {
     display: flex;
+    gap: 1rem;
 }
 
 .options-row > span {
@@ -257,6 +254,14 @@ label {
     outline: none;
     transition: all 0.2s;
     margin: auto;
+}
+
+.card > div[dir="rtl"] > * {
+    margin-left: 0;
+}
+
+
+.card > div[dir="ltr"] > * {
     margin-right: 0;
 }
 
