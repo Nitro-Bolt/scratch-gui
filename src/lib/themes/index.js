@@ -130,7 +130,12 @@ class Theme {
     getBlockColors () {
         return defaultsDeep(
             {},
-            ACCENT_MAP[Object.hasOwn(this.accent, 'primaryColor') ? ACCENT_CUSTOM : this.accent].blockColors,
+            Object.hasOwn(this.accent, 'primaryColor') ?
+                ACCENT_MAP[ACCENT_CUSTOM].getBlockColors(
+                    this.accent.primaryColor,
+                    this.accent.secondaryColor
+                ) :
+                ACCENT_MAP[this.accent].blockColors,
             GUI_MAP[this.gui].blockColors,
             BLOCKS_MAP[this.blocks].colors
         );

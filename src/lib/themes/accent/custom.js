@@ -27,12 +27,12 @@ const getGuiColors = (primaryColor, secondaryColor, tertiaryColor, gradient) => 
     'menu-bar-background-image': `${gradient ? gradientColorsToCSS(gradient.colors, gradient.direction) : 'none'}`
 });
 
-const blockColors = {
-    checkboxActiveBackground: '#ff5726',
-    checkboxActiveBorder: '#fc3900'
-};
+const getBlockColors = (primaryColor, secondaryColor) => ({
+    checkboxActiveBackground: primaryColor,
+    checkboxActiveBorder: secondaryColor
+});
 
 export {
     getGuiColors,
-    blockColors
+    getBlockColors
 };
