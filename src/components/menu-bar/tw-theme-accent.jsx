@@ -9,8 +9,16 @@ import dropdownCaret from './dropdown-caret.svg';
 import {gradientDataToCSS} from "../../lib/nb-gradient-to-css.js";
 import {openCustomAccentModal} from '../../reducers/modals.js';
 import {MenuItem, MenuSection, Submenu} from '../menu/menu.jsx';
-import {ACCENT_ORANGE, ACCENT_BLUE, ACCENT_MAP, ACCENT_PURPLE,
-    ACCENT_RED, ACCENT_RAINBOW, ACCENT_CUSTOM, Theme} from '../../lib/themes/index.js';
+import {
+    ACCENT_ORANGE,
+    ACCENT_RED,
+    ACCENT_PURPLE,
+    ACCENT_BLUE,
+    ACCENT_RAINBOW,
+    ACCENT_CUSTOM,
+    ACCENT_MAP,
+    Theme
+} from '../../lib/themes/index.js';
 import {openAccentMenu, accentMenuOpen, closeSettingsMenu} from '../../reducers/menus.js';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
