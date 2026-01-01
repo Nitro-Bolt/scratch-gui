@@ -210,11 +210,11 @@ class NBCustomAccentModal extends React.Component {
                 onChangeTertiaryColor={this.handleChangeTertiaryColor}
                 onDeleteGradientColor={this.handleDeleteGradientColor}
                 onOk={this.handleOk}
+                onSetThemeToDefault={this.handleSetThemeToDefault}
                 onSwitchToCreate={this.handleSwitchToCreate}
                 onSwitchToManage={this.handleSwitchToManage}
                 primaryColor={this.state.primaryColor}
                 secondaryColor={this.state.secondaryColor}
-                setThemeToDefault={this.handleSetThemeToDefault}
                 tertiaryColor={this.state.tertiaryColor}
                 tab={this.state.tab}
             />

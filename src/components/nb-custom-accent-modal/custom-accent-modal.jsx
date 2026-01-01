@@ -345,7 +345,7 @@ const CustomAccentModal = props => {
                                             try {
                                                 const currentAccentJSON = JSON.parse(localStorage.getItem('tw:theme'));
                                                 if (value.name === currentAccentJSON.accent.name) {
-                                                    props.setThemeToDefault();
+                                                    props.onSetThemeToDefault();
                                                 }
                                             } catch (_) {
                                                 // ignore
@@ -408,11 +408,11 @@ CustomAccentModal.propTypes = {
     onClose: PropTypes.func.isRequired,
     onDeleteGradientColor: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
+    onSetThemeToDefault: PropTypes.func.isRequired,
     onSwitchToCreate: PropTypes.func.isRequired,
     onSwitchToManage: PropTypes.func.isRequired,
     primaryColor: PropTypes.string.isRequired,
     secondaryColor: PropTypes.string.isRequired,
-    setThemeToDefault: PropTypes.func.isRequired,
     tab: PropTypes.string.isRequired,
     tertiaryColor: PropTypes.string.isRequired
 };
