@@ -6,7 +6,6 @@ import styles from './custom-accent-modal.css';
 import Box from '../box/box.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
 import FileInput from './file-input.jsx';
-import MenuBar from '../menu-bar/menu-bar.jsx';
 
 const messages = defineMessages({
     title: {
@@ -27,7 +26,7 @@ const gradientColorsToCSS = (colors, direction) => {
 
 const CustomAccentModal = props => {
     if (!localStorage.getItem('nb:custom-accents')) localStorage.setItem('nb:custom-accents', '[]');
-    let [themes, setThemes] = useState(JSON.parse(localStorage.getItem('nb:custom-accents')));
+    const [themes, setThemes] = useState(JSON.parse(localStorage.getItem('nb:custom-accents')));
 
     return (
         <Modal
