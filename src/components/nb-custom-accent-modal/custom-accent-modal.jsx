@@ -1,6 +1,6 @@
 import {defineMessages, FormattedMessage, intlShape, injectIntl} from 'react-intl';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useState} from 'react';
 import Modal from '../../containers/modal.jsx';
 import styles from './custom-accent-modal.css';
 import Box from '../box/box.jsx';
@@ -27,10 +27,7 @@ const gradientColorsToCSS = (colors, direction) => {
 
 const CustomAccentModal = props => {
     if (!localStorage.getItem('nb:custom-accents')) localStorage.setItem('nb:custom-accents', '[]');
-    /**
-     * @type {any[]}
-     */
-    let themes = JSON.parse(localStorage.getItem('nb:custom-accents'));
+    let [themes, setThemes] = useState(JSON.parse(localStorage.getItem('nb:custom-accents')));
 
     return (
         <Modal
@@ -355,8 +352,7 @@ const CustomAccentModal = props => {
                                             let accentsJSON = JSON.parse(localStorage.getItem('nb:custom-accents'));
                                             accentsJSON = accentsJSON.filter(v => v.name !== value.name);
                                             localStorage.setItem('nb:custom-accents', JSON.stringify(accentsJSON));
-                                            themes = JSON.parse(localStorage.getItem('nb:custom-accents'));
-                                            props.onSwitchToCreate();
+                                            setThemes(JSON.parse(localStorage.getItem('nb:custom-accents')));
                                             try {
                                                 const currentAccentJSON = JSON.parse(localStorage.getItem('tw:theme'));
                                                 if (value.name === currentAccentJSON.accent.name) {
@@ -392,10 +388,9 @@ const CustomAccentModal = props => {
                                     }
                                     accentsJSON = accentsJSON.filter(value => value.name !== data.name);
                                     accentsJSON.push(data);
-                                    props.loadAccentIntoCreate(data);
                                 }
                                 localStorage.setItem('nb:custom-accents', JSON.stringify(accentsJSON));
-                                props.onSwitchToCreate();
+                                setThemes(accentsJSON);
                             }}
                         />
                     </Box>
