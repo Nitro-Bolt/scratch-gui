@@ -386,7 +386,8 @@ const CustomAccentModal = props => {
                                     // eslint-disable-next-line max-len
                                     if (isValid && !((data.gradient === null || (data.gradient && data.gradient.colors instanceof Array && ['number', 'string'].includes(typeof data.gradient.direction))) && typeof data.primaryColor === 'string' && typeof data.secondaryColor === 'string' && typeof data.tertiaryColor === 'string' && typeof data.name === 'string' && typeof data.isGradient === 'boolean')) isValid = false;
                                     if (!isValid) {
-                                        console.log('not valid');
+                                        // eslint-disable-next-line no-alert
+                                        alert(`${file.name} is not a valid accent file.`);
                                         continue;
                                     }
                                     accentsJSON = accentsJSON.filter(value => value.name !== data.name);
