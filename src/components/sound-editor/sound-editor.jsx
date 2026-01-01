@@ -189,7 +189,7 @@ const formatDuration = (playheadPercent, trimStartPercent, trimEndPercent, durat
     const progressInTrim = (playheadPercent - trimStartPercent) / trimSize;
     const currentTime = progressInTrim * trimDuration;
 
-    return `${formatTime(currentTime)} / ${formatTime(trimDuration)}`;
+    return `${formatTime(currentTime)} / ${formatTime(trimDuration)} (${trimDuration})`;
 };
 
 const formatSoundSize = bytes => {
