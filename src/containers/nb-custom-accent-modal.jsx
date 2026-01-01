@@ -152,7 +152,9 @@ class NBCustomAccentModal extends React.Component {
     }
 
     handleSetThemeToDefault () {
-        this.props.setTheme(this.props.theme.set('accent', ACCENT_ORANGE));
+        const theme = this.props.theme.set('accent', ACCENT_ORANGE);
+        this.props.setTheme(theme);
+        persistTheme(theme);
     }
 
     handleSwitchToCreate () {
