@@ -5,7 +5,6 @@ import Monitor from '../../containers/monitor.jsx';
 import PropTypes from 'prop-types';
 import {OrderedMap} from 'immutable';
 import {stageSizeToTransform} from '../../lib/screen-utils';
-import {sanitizeVariableType} from '../../lib/tw-safe-stringify.js';
 
 import styles from './monitor-list.css';
 
@@ -37,7 +36,7 @@ const MonitorList = props => (
                         params={monitorData.params}
                         spriteName={monitorData.spriteName}
                         targetId={monitorData.targetId}
-                        value={sanitizeVariableType(monitorData.value, monitorData.mode)}
+                        value={monitorData.value}
                         width={monitorData.width}
                         x={monitorData.x}
                         y={monitorData.y}

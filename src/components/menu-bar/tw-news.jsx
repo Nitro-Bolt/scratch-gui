@@ -5,7 +5,16 @@ import CloseButton from '../close-button/close-button.jsx';
 import styles from './tw-news.css';
 
 const LOCAL_STORAGE_KEY = 'tw:closedNews';
-const NEWS_ID = 'new-compiler';
+const NEWS_ID = 'android-fraud';
+
+const newsAppliesToUser = () => /android/i.test(navigator.userAgent);
+
+const NewsBody = () => (
+    <div className={styles.text}>
+        {/* eslint-disable-next-line max-len */}
+        {`The Google Play Store app calling itself TurboWarp is illegitimate and outdated. If you were misled into installing it, leave a 1 star review, uninstall it, and report it. An official one will exist eventually.`}
+    </div>
+);
 
 const getIsClosedInLocalStorage = () => {
     try {
@@ -27,7 +36,7 @@ class TWNews extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            closed: getIsClosedInLocalStorage()
+            closed: getIsClosedInLocalStorage() || !newsAppliesToUser()
         };
         this.handleClose = this.handleClose.bind(this);
     }
@@ -45,17 +54,7 @@ class TWNews extends React.Component {
         }
         return (
             <div className={styles.news}>
-                <div className={styles.text}>
-                    {/* eslint-disable-next-line max-len */}
-                    {`We rewrote the ${APP_NAME} compiler to make projects run even faster. Bugs are possible. `}
-                    <a
-                        href="https://docs.turbowarp.org/new-compiler"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        {'Learn more.'}
-                    </a>
-                </div>
+                <NewsBody />
                 <CloseButton
                     className={styles.close}
                     onClick={this.handleClose}

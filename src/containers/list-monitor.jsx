@@ -7,6 +7,7 @@ import {getEventXY} from '../lib/touch-utils';
 import {getVariableValue, setVariableValue} from '../lib/variable-utils';
 import ListMonitorComponent from '../components/monitor/list-monitor.jsx';
 import {Map} from 'immutable';
+import {safeStringify} from '../lib/tw-safe-stringify.js';
 
 class ListMonitor extends React.Component {
     constructor (props) {
@@ -25,6 +26,7 @@ class ListMonitor extends React.Component {
         this.state = {
             activeIndex: null,
             activeValue: null,
+            inputDidChange: false,
             width: props.width || 100,
             height: props.height || 200
         };
@@ -38,18 +40,26 @@ class ListMonitor extends React.Component {
 
         this.setState({
             activeIndex: index,
-            activeValue: this.props.value[index]
+            activeValue: safeStringify(this.props.value[index]),
+            inputDidChange: false
         });
     }
 
     handleDeactivate () {
         // Submit any in-progress value edits on blur
         if (this.state.activeIndex !== null) {
-            const {vm, targetId, id: variableId} = this.props;
-            const newListValue = getVariableValue(vm, targetId, variableId);
-            newListValue[this.state.activeIndex] = this.state.activeValue;
-            setVariableValue(vm, targetId, variableId, newListValue);
-            this.setState({activeIndex: null, activeValue: null});
+            if (this.state.inputDidChange) {
+                const {vm, targetId, id: variableId} = this.props;
+                const newListValue = getVariableValue(vm, targetId, variableId);
+                newListValue[this.state.activeIndex] = this.state.activeValue;
+                setVariableValue(vm, targetId, variableId, newListValue);
+            }
+
+            this.setState({
+                activeIndex: null,
+                activeValue: null,
+                inputDidChange: false
+            });
         }
     }
 
@@ -75,7 +85,8 @@ class ListMonitor extends React.Component {
             const newIndex = this.wrapListIndex(previouslyActiveIndex + navigateDirection, this.props.value.length);
             this.setState({
                 activeIndex: newIndex,
-                activeValue: this.props.value[newIndex]
+                activeValue: safeStringify(this.props.value[newIndex]),
+                inputDidChange: false
             });
             e.preventDefault(); // Stop default tab behavior, handled by this state change
         } else if (e.key === 'Enter') {
@@ -90,13 +101,17 @@ class ListMonitor extends React.Component {
             const newIndex = this.wrapListIndex(previouslyActiveIndex + newValueOffset, newListValue.length);
             this.setState({
                 activeIndex: newIndex,
-                activeValue: newListItemValue
+                activeValue: newListItemValue,
+                inputDidChange: false
             });
         }
     }
 
     handleInput (e) {
-        this.setState({activeValue: e.target.value});
+        this.setState({
+            activeValue: e.target.value,
+            inputDidChange: true
+        });
     }
 
     handleRemove (e) {
@@ -110,7 +125,8 @@ class ListMonitor extends React.Component {
         const newActiveIndex = Math.min(newListValue.length - 1, this.state.activeIndex);
         this.setState({
             activeIndex: newActiveIndex,
-            activeValue: newListValue[newActiveIndex]
+            activeValue: safeStringify(newListValue[newActiveIndex]),
+            inputDidChange: false
         });
     }
 
@@ -119,7 +135,11 @@ class ListMonitor extends React.Component {
         const {vm, targetId, id: variableId} = this.props;
         const newListValue = getVariableValue(vm, targetId, variableId).concat(['']);
         setVariableValue(vm, targetId, variableId, newListValue);
-        this.setState({activeIndex: newListValue.length - 1, activeValue: ''});
+        this.setState({
+            activeIndex: newListValue.length - 1,
+            activeValue: '',
+            inputDidChange: false
+        });
     }
 
     handleResizeMouseDown (e) {
