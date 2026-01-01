@@ -214,7 +214,7 @@ const AccentThemeMenu = ({
                                 height={21.6}
                             />
                             <FormattedMessage
-                                defaultMessage="Create/Manage"
+                                defaultMessage="Accent Manager"
                                 description="Menu item to open the custom accent manager"
                                 id="nb.customAccent"
                             />
