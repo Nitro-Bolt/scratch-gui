@@ -70,7 +70,7 @@
 
 .submenu > .menu {
     position: relative;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-color: #fff $motion-primary;
     border-radius: 8px;

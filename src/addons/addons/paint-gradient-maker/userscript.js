@@ -15,7 +15,8 @@ export default async function () {
         ...(isPM ? ["ROUNDED_RECT", "TRIANGLE", "SUSSY", "ARROW"] : [])
     ]);
 
-    let selectedClassName, unselectedClassName;
+    let selectedClassName, unselectedClassName, customBtn;
+    let observerUsed = false;
     let modalStorage = {};
 
     /* Internal Utils */
@@ -159,8 +160,13 @@ export default async function () {
         modalStorage.dir = settings.dir;
     }
 
-    function handleFillEvent() {
+    function handleFillEvent(paint) {
         if (!modalStorage._gradCache) return;
+
+        // set the GUI gradient mode to linear so we can position our gradients
+        paint.fillMode.gradientType = "HORIZONTAL";
+        paint.color.fillColor.gradientType = "HORIZONTAL";
+        paint.color.strokeColor.gradientType = "HORIZONTAL";
 
         // set the swatch color in case the GUI resets it
         const swatch = document.querySelector(`div[class^=color-button_color-button_] div[class^=color-button_color-button-swatch_]`);
@@ -528,11 +534,11 @@ export default async function () {
 
         const container = document.createElement("div");
         container.classList.add("SP-gradient-maker");
-        container.setAttribute("style", `position: absolute; z-index: 9999; pointer-events: auto; background-color: rgba(0,0,0,.1); width: 100%; height: 100vh;`);
+        container.setAttribute("style", `position: absolute; z-index: 9999; pointer-events: auto; background-color: transparent; width: 100%; height: 100vh;`);
 
         const modal = document.createElement("div");
         modal.classList.add("gradient-modal");
-        modal.setAttribute("style", `color: var(--paint-text-primary, #575e75); width: 450px; height: 260px; display: block; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--ui-secondary, hsla(215, 75%, 95%, 1)); border: solid 2px var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15)); border-radius: 5px; padding: 15px;`);
+        modal.setAttribute("style", `pointer-events: auto; color: var(--paint-text-primary, #575e75); width: 450px; height: 260px; display: block; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--ui-secondary, hsla(215, 75%, 95%, 1)); border: solid 2px var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15)); border-radius: 5px; padding: 15px;`);
         modalStorage.modal = modal;
 
         const title = document.createElement("span");
@@ -571,30 +577,47 @@ export default async function () {
         else if (oldCache) decodeFromCache(oldCache.settings, draggables, settings);
         else draggables.append(createDraggable(), createDraggable());
         updateDisplay();
+
+        container.addEventListener("click", (e) => {
+            if (e.target.getAttribute("class") === "SP-gradient-maker") container.remove();
+            e.stopPropagation();
+        });
     }
 
     function startListenerWorker() {
+        let lastMode, lastSelected, lastModals;
         ReduxStore.subscribe(() => {
             const paint = ReduxStore.getState().scratchPaint;
             if (!paint || paint?.format === undefined || paint?.format === null) return;
+            const { mode, selectedItems, modals } = paint;
 
             // no bitmap support :(
             if (paint.format.startsWith("BITMAP")) {
-                const oldCustomBtn = document.getElementById(customID);
-                if (oldCustomBtn) oldCustomBtn.remove();
+                if (customBtn) {
+                    customBtn.remove();
+                    customBtn = undefined;
+                }
                 return;
             }
 
-            // decode potential custom gradients
-            if (paint.selectedItems?.length) showSelectedGrad(paint.selectedItems[0]);
-
             // run relative tool events
-            if (paint.mode === "FILL") handleFillEvent();
-            else if (paperLinkModes.has(paint.mode)) handleShapeModeEvent(paint.mode);
-            else modalStorage._gradCache = undefined;
+            if (mode === "FILL") handleFillEvent(paint);
+            else if (paperLinkModes.has(mode)) handleShapeModeEvent(mode);
+
+            const idChain = selectedItems.map((e) => e.id).join(".");
+            const modalChain = `${modals.fillColor}${modals.strokeColor}`;
+            if (mode === lastMode && idChain === lastSelected && modalChain === lastModals) return;
+            lastMode = mode;
+            lastSelected = idChain;
+            lastModals = modalChain;
+
+            // decode potential custom gradients
+            if (selectedItems?.length) showSelectedGrad(selectedItems[0]);
+            else if (mode === "SELECT" || mode === "RESHAPE") modalStorage._gradCache = undefined;
 
             // add custom modal
-            if (!paint.modals.strokeColor && !paint.modals.fillColor) return;
+            if (!modals.strokeColor && !modals.fillColor) return;
+            if (observerUsed) return;
             const observer = new MutationObserver(() => {
                 const gradRow = document.querySelector(`div[class^="color-picker_gradient-picker-row_"]`);
                 if (!gradRow || gradRow.lastElementChild.id === customID) return;
@@ -603,7 +626,7 @@ export default async function () {
                 if (!selectedClassName) initGradSelectClasses(gradRow);
                 const children = Array.from(gradRow.children);
 
-                const customBtn = children[0].cloneNode(true);
+                customBtn = children[0].cloneNode(true);
                 customBtn.src = getButtonURI("select");
                 customBtn.id = customID;
                 customBtn.setAttribute("class", unselectedClassName);
@@ -615,14 +638,17 @@ export default async function () {
                         customBtn.setAttribute("class", selectedClassName);
                         openGradientMaker();
                     } else if (e.target.nodeName === "IMG") {
+                        modalStorage._gradCache = undefined;
                         customBtn.setAttribute("class", unselectedClassName);
                     }
                 });
 
+                observerUsed = false;
                 observer.disconnect();
             });
 
             observer.observe(document.body, { childList: true, subtree: true });
+            observerUsed = true;
         });
     }
 

@@ -509,10 +509,7 @@ class Blocks extends React.Component {
             // incomplete. Throwing the error would keep things like setting the
             // correct editing target from happening which can interfere with
             // some blocks and processes in the vm.
-            if (error.message) {
-                error.message = `Workspace Update Error: ${error.message}`;
-            }
-            log.error(error);
+            log.error('Workspace Update Error:', error);
         }
         this.workspace.addChangeListener(this.props.vm.blockListener);
 
