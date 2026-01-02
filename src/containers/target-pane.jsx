@@ -215,6 +215,7 @@ class TargetPane extends React.Component {
         /* eslint-disable no-unused-vars */
         const {
             dispatchUpdateRestore,
+            isFullScreen,
             isRtl,
             onActivateTab,
             onCloseImporting,
