@@ -395,8 +395,16 @@ const CustomAccentModal = props => {
                                         } catch {
                                             isValid = false;
                                         }
+                                        const colorRegex = /^#[a-fA-F0-9]{6}$/;
                                         // eslint-disable-next-line max-len
-                                        if (isValid && !((data.gradient === null || (data.gradient && data.gradient.colors instanceof Array && ['number', 'string'].includes(typeof data.gradient.direction))) && typeof data.primaryColor === 'string' && typeof data.secondaryColor === 'string' && typeof data.tertiaryColor === 'string' && typeof data.name === 'string' && typeof data.isGradient === 'boolean')) isValid = false;
+                                        if (isValid && (data.gradient === null || (data.gradient && data.gradient.colors instanceof Array && !isNaN(parseFloat(data.gradient.direction)))) && typeof data.primaryColor === 'string' && typeof data.secondaryColor === 'string' && typeof data.tertiaryColor === 'string' && typeof data.name === 'string' && typeof data.isGradient === 'boolean' && data.primaryColor.match(colorRegex) && data.secondaryColor.match(colorRegex) && data.tertiaryColor.match(colorRegex)) {
+                                            if (data.gradient.colors) {
+                                                for (const color of data.gradient.colors) {
+                                                    const position = parseFloat(color.position);
+                                                    if (position > 100 || position < 0 || !color.color.match(colorRegex)) isValid = false;
+                                                }
+                                            }
+                                        } else isValid = false;
                                         if (!isValid) {
                                             // eslint-disable-next-line no-alert
                                             alert(`${file.name} is not a valid accent file.`);
