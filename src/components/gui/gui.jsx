@@ -233,6 +233,14 @@ const GUIComponent = props => {
     });
 
     registerKeyboardShortcut({
+        key: '/',
+        ctrl: true
+    }, () => {
+        // eslint-disable-next-line max-len
+        document.querySelector('.scratchCategoryMenuRow > .scratchCategoryMenuItem:is(.scratchCategoryId-comments, .scratchCategoryId-lmscomments)')?.dispatchEvent(new MouseEvent('mouseup'));
+    });
+
+    registerKeyboardShortcut({
         key: 'e',
         ctrl: true
     }, () => {
