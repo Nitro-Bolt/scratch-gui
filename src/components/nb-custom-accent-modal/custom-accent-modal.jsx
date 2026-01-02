@@ -411,7 +411,7 @@ const CustomAccentModal = props => {
                             />
                         }
                         <Box className={styles.buttonRow}>
-                            {bulkSelect ?
+                            {themes.length > 1 && (bulkSelect ?
                                 <>
                                     <button
                                         // eslint-disable-next-line react/jsx-no-bind
@@ -518,7 +518,7 @@ const CustomAccentModal = props => {
                                         id="nb.customAccent.selectMultiple"
                                     />
                                 </button>
-                            }
+                            )}
                         </Box>
                     </Box>
                 }
