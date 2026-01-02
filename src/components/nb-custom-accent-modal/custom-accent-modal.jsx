@@ -194,7 +194,8 @@ const CustomAccentModal = props => {
                                     style={{
                                         height: '3.5rem',
                                         backgroundImage: gradientDataToCSS(props.gradientColors,
-                                            props.gradientDirection)
+                                            props.gradientDirection),
+                                        border: 'none'
                                     }}
                                 />
                                 <label>
