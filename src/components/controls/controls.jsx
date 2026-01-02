@@ -9,6 +9,7 @@ import TurboMode from '../turbo-mode/turbo-mode.jsx';
 import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.jsx';
 
 import styles from './controls.css';
+import { registerKeyboardShortcut } from '../../lib/nb-keyboard-shortcut.js';
 
 const messages = defineMessages({
     goTitle: {
@@ -36,6 +37,18 @@ const Controls = function (props) {
         isSmall,
         ...componentProps
     } = props;
+
+    registerKeyboardShortcut({
+        key: 'Enter',
+        ctrl: true
+    }, onGreenFlagClick);
+
+    registerKeyboardShortcut({
+        key: 'Enter',
+        ctrl: true,
+        shift: true
+    }, onStopAllClick);
+
     return (
         <div
             className={classNames(styles.controlsContainer, className)}
