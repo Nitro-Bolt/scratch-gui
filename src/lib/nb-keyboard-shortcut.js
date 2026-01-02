@@ -22,6 +22,9 @@ export const registerKeyboardShortcut = (shortcut, callback) => {
         event
     ) => {
         const ctrl = navigator.userAgent.includes('Mac') ? event.metaKey : event.ctrlKey;
+
+        if (!shortcut.ctrl && !shortcut.alt && ['INPUT', 'TEXTAREA'].includes(event.target.tagName)) return;
+
         if (
             (shortcut.key === event.key) &&
             (!!shortcut.ctrl === ctrl) &&

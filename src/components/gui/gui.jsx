@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
-import React, {useCallback, useEffect} from 'react';
+import React from 'react';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
 import {connect} from 'react-redux';
 import MediaQuery from 'react-responsive';
@@ -199,6 +199,32 @@ const GUIComponent = props => {
             if (i > 0 && i < 5) props.onActivateTab(parseInt(i, 10) - 1);
         });
     }
+
+    for (const i in Array(10).fill(null)) {
+        registerKeyboardShortcut({
+            key: i
+        }, () => {
+            const index = i === '0' ? '10' : i;
+            // eslint-disable-next-line max-len
+            document.querySelector(`.scratchCategoryMenuRow:nth-child(${parseInt(index, 10)}) > .scratchCategoryMenuItem`)?.dispatchEvent(new MouseEvent('mouseup'));
+        });
+    }
+
+    registerKeyboardShortcut({
+        key: 'ArrowUp',
+        ctrl: true
+    }, () => {
+        // eslint-disable-next-line max-len
+        document.querySelector('.scratchCategoryMenuRow:has(+ .scratchCategoryMenuRow > .categorySelected) > .scratchCategoryMenuItem')?.dispatchEvent(new MouseEvent('mouseup'));
+    });
+
+    registerKeyboardShortcut({
+        key: 'ArrowDown',
+        ctrl: true
+    }, () => {
+        // eslint-disable-next-line max-len
+        document.querySelector('.scratchCategoryMenuRow:has(> .categorySelected) + .scratchCategoryMenuRow > .scratchCategoryMenuItem')?.dispatchEvent(new MouseEvent('mouseup'));
+    });
 
 
     return (<MediaQuery minWidth={unconstrainedWidth}>{isUnconstrained => {
