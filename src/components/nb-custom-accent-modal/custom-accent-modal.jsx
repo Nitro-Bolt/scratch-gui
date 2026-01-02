@@ -20,7 +20,7 @@ const messages = defineMessages({
 const CustomAccentModal = props => {
     if (!localStorage.getItem('nb:custom-accents')) localStorage.setItem('nb:custom-accents', '[]');
     const [themes, setThemes] = useState(JSON.parse(localStorage.getItem('nb:custom-accents')));
-    
+
     let [bulkSelect, setBulkSelect] = useState(false);
     const [selectedThemes, setSelectedThemes] = useState([]);
 
