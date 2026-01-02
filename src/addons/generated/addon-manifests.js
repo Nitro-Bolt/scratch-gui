@@ -38,7 +38,7 @@ import _custom_block_text from "../addons/custom-block-text/_manifest_entry.js";
 import _editor_colored_context_menus from "../addons/editor-colored-context-menus/_manifest_entry.js";
 import _editor_stage_left from "../addons/editor-stage-left/_manifest_entry.js";
 import _editor_buttons_reverse_order from "../addons/editor-buttons-reverse-order/_manifest_entry.js";
-import _variable_manager from "../addons/variable-manager/_manifest_entry.js";
+//import _variable_manager from "../addons/variable-manager/_manifest_entry.js";
 import _search_sprites from "../addons/search-sprites/_manifest_entry.js";
 import _sprite_properties from "../addons/sprite-properties/_manifest_entry.js";
 import _gamepad from "../addons/gamepad/_manifest_entry.js";
@@ -120,7 +120,7 @@ export default {
   "editor-colored-context-menus": _editor_colored_context_menus,
   "editor-stage-left": _editor_stage_left,
   "editor-buttons-reverse-order": _editor_buttons_reverse_order,
-  "variable-manager": _variable_manager,
+  //"variable-manager": _variable_manager,
   "search-sprites": _search_sprites,
   "sprite-properties": _sprite_properties,
   "gamepad": _gamepad,
