@@ -111,14 +111,15 @@
     font-size: $menu-bar-standard-font-size;
 
     & span {
-        margin-left: 0.25rem;
+        margin: 0.25rem;
         font-weight: bold;
         letter-spacing: 0.4px;
+        line-height: 1rem;
     }
 }
 
 .variable-dropdown-body {
-    height: 100%;
+    height: calc(100% - 1rem - 2 * $space);
     overflow-y: auto;
     gap: 0.5rem;
 }
@@ -131,6 +132,7 @@
     display: flex;
     border-top: 1px solid $ui-black-transparent;
     height: 100%;
+    overflow: hidden;
 }
 
 .clones-selector_items-wrapper {
@@ -178,7 +180,7 @@
 
 .local-variables-list {
     width: 100%;
-    border-left: 1px solid var(--ui-black-transparent);
+    outline: 1px solid var(--ui-black-transparent);
     overflow-y: auto;
     padding: $space;
 }
