@@ -70,7 +70,7 @@ class TargetPane extends React.Component {
         this.props.vm.postSpriteInfo({size});
     }
     handleChangeSpriteVisibility (visible) {
-        this.props.vm.postSpriteInfo({visible});
+        if (!this.props.isFullScreen) this.props.vm.postSpriteInfo({visible});
     }
     handleChangeSpriteX (x) {
         this.props.vm.postSpriteInfo({x});
@@ -267,6 +267,7 @@ TargetPane.propTypes = {
 const mapStateToProps = state => ({
     editingTarget: state.scratchGui.targets.editingTarget,
     hoveredTarget: state.scratchGui.hoveredTarget,
+    isFullScreen: state.scratchGui.mode.isFullScreen,
     isRtl: state.locales.isRtl,
     spriteLibraryVisible: state.scratchGui.modals.spriteLibrary,
     sprites: state.scratchGui.targets.sprites,

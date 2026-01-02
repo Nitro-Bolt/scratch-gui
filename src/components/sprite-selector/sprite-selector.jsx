@@ -8,6 +8,7 @@ import SpriteList from './sprite-list.jsx';
 import ActionMenu from '../action-menu/action-menu.jsx';
 import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants';
 import {isRtl} from '@turbowarp/scratch-l10n';
+import {registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 import styles from './sprite-selector.css';
 
@@ -75,6 +76,12 @@ const SpriteSelectorComponent = function (props) {
         selectedSprite = {};
         spriteInfoDisabled = true;
     }
+    registerKeyboardShortcut({
+        key: 'h',
+        ctrl: true
+    }, () => {
+        if (!spriteInfoDisabled) onChangeSpriteVisibility(!selectedSprite.visible);
+    });
     return (
         <Box
             className={styles.spriteSelector}
