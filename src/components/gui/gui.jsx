@@ -207,6 +207,12 @@ const GUIComponent = props => {
         onExtensionButtonClick();
     });
 
+    registerKeyboardShortcut({
+        key: 'Escape'
+    }, event => {
+        event.target?.blur?.();
+    });
+
     return (<MediaQuery minWidth={unconstrainedWidth}>{isUnconstrained => {
         const stageSize = resolveStageSize(stageSizeMode, isUnconstrained);
 
