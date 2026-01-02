@@ -226,6 +226,12 @@ const GUIComponent = props => {
         document.querySelector('.scratchCategoryMenuRow:has(> .categorySelected) + .scratchCategoryMenuRow > .scratchCategoryMenuItem')?.dispatchEvent(new MouseEvent('mouseup'));
     });
 
+    registerKeyboardShortcut({
+        key: 'e',
+        ctrl: true
+    }, () => {
+        onExtensionButtonClick();
+    });
 
     return (<MediaQuery minWidth={unconstrainedWidth}>{isUnconstrained => {
         const stageSize = resolveStageSize(stageSizeMode, isUnconstrained);
