@@ -32,7 +32,6 @@
 .variable-dropdown {
     border-top: 1px solid $ui-black-transparent;
     margin-top: $space;
-    padding: $space;
     font-size: $menu-bar-standard-font-size;
     overflow-y: hidden;
     flex-grow: 1;
@@ -106,6 +105,7 @@
 .variable-dropdown-header {
     user-select: none;
     cursor: pointer;
+    padding: $space;
 
     & span {
         margin-left: 0.25rem;
