@@ -293,7 +293,7 @@ const CustomAccentModal = props => {
                                 id="nb.customAccent.noAccents"
                             />
                         </p>}
-                        {themes.sort((a, b) => a.name > b.name).map((value, index) => (
+                        {themes.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase()).map((value, index) => (
                             <div
                                 className={styles.card}
                                 key={index}

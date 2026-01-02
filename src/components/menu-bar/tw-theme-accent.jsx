@@ -160,7 +160,7 @@ const AccentThemeMenu = ({
                     />
                 ))}
                 <MenuSection>
-                    {themes.sort((a, b) => a.name > b.name).map((value, index) => (
+                    {themes.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase()).map((value, index) => (
                         <MenuItem
                             className={styles.menuSection}
                             // eslint-disable-next-line react/jsx-no-bind
