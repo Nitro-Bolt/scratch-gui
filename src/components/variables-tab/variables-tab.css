@@ -31,12 +31,14 @@
 }
 
 .variable-dropdown {
-    border-top: 1px solid $ui-black-transparent;
-    margin-top: $space;
     overflow-y: hidden;
     flex-grow: 1;
     min-height: 45%;
     transition: all 0.25s ease-out;
+}
+
+.variable-dropdown:not(:first-of-type) {
+    border-top: 1px solid $ui-black-transparent;
 }
 
 .variable-dropdown-collapsed {
@@ -116,18 +118,19 @@
 }
 
 .variable-dropdown-body {
-    padding: $space;
     height: 100%;
     overflow-y: auto;
     gap: 0.5rem;
 }
 
+.variable-dropdown-body:not(:has(.local-variables-selector)) {
+    padding: $space;
+}
+
 .local-variables-selector {
     display: flex;
-    border: 1px solid $ui-black-transparent;
+    border-top: 1px solid $ui-black-transparent;
     height: 100%;
-    border-top-left-radius: $space;
-    border-top-right-radius: $space;
 }
 
 .clones-selector_items-wrapper {
@@ -175,8 +178,6 @@
 
 .local-variables-list {
     width: 100%;
-    border-top-right-radius: inherit;
-    background: var(--ui-white);
     border-left: 1px solid var(--ui-black-transparent);
     overflow-y: auto;
     padding: $space;
