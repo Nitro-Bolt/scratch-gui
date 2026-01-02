@@ -5,6 +5,7 @@ import * as accentBlue from './accent/blue';
 import * as accentRed from './accent/red';
 import * as accentOrange from './accent/orange';
 import * as accentRainbow from './accent/rainbow';
+import * as accentCustom from './accent/custom';
 
 import * as guiLight from './gui/light';
 import * as guiDark from './gui/dark';
@@ -18,12 +19,14 @@ const ACCENT_BLUE = 'blue';
 const ACCENT_RED = 'red';
 const ACCENT_ORANGE = 'orange';
 const ACCENT_RAINBOW = 'rainbow';
+const ACCENT_CUSTOM = 'custom';
 const ACCENT_MAP = {
     [ACCENT_PURPLE]: accentPurple,
     [ACCENT_BLUE]: accentBlue,
     [ACCENT_RED]: accentRed,
     [ACCENT_ORANGE]: accentOrange,
-    [ACCENT_RAINBOW]: accentRainbow
+    [ACCENT_RAINBOW]: accentRainbow,
+    [ACCENT_CUSTOM]: accentCustom
 };
 const ACCENT_DEFAULT = ACCENT_ORANGE;
 
@@ -81,7 +84,8 @@ class Theme {
         /** @readonly */
         this.id = ++themeObjectsCreated;
         /** @readonly */
-        this.accent = Object.prototype.hasOwnProperty.call(ACCENT_MAP, accent) ? accent : ACCENT_DEFAULT;
+        this.accent = Object.prototype.hasOwnProperty.call(ACCENT_MAP, accent) ||
+            Object.prototype.hasOwnProperty.call(accent, 'primaryColor') ? accent : ACCENT_DEFAULT;
         /** @readonly */
         this.gui = Object.prototype.hasOwnProperty.call(GUI_MAP, gui) ? gui : GUI_DEFAULT;
         /** @readonly */
@@ -110,7 +114,14 @@ class Theme {
     getGuiColors () {
         return defaultsDeep(
             {},
-            ACCENT_MAP[this.accent].guiColors,
+            Object.hasOwn(this.accent, 'primaryColor') ?
+                ACCENT_MAP[ACCENT_CUSTOM].getGuiColors(
+                    this.accent.primaryColor,
+                    this.accent.secondaryColor,
+                    this.accent.tertiaryColor,
+                    this.accent.gradient
+                ) :
+                ACCENT_MAP[this.accent].guiColors,
             GUI_MAP[this.gui].guiColors,
             guiLight.guiColors
         );
@@ -119,7 +130,12 @@ class Theme {
     getBlockColors () {
         return defaultsDeep(
             {},
-            ACCENT_MAP[this.accent].blockColors,
+            Object.hasOwn(this.accent, 'primaryColor') ?
+                ACCENT_MAP[ACCENT_CUSTOM].getBlockColors(
+                    this.accent.primaryColor,
+                    this.accent.secondaryColor
+                ) :
+                ACCENT_MAP[this.accent].blockColors,
             GUI_MAP[this.gui].blockColors,
             BLOCKS_MAP[this.blocks].colors
         );
@@ -154,6 +170,7 @@ export {
     ACCENT_PURPLE,
     ACCENT_BLUE,
     ACCENT_RAINBOW,
+    ACCENT_CUSTOM,
     ACCENT_MAP,
 
     GUI_LIGHT,
