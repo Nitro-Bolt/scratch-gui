@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {defineMessages, FormattedMessage, intlShape, injectIntl} from 'react-intl';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
@@ -19,6 +20,15 @@ const messages = defineMessages({
 const CustomAccentModal = props => {
     if (!localStorage.getItem('nb:custom-accents')) localStorage.setItem('nb:custom-accents', '[]');
     const [themes, setThemes] = useState(JSON.parse(localStorage.getItem('nb:custom-accents')));
+    
+    let [bulkSelect, setBulkSelect] = useState(false);
+    const [selectedThemes, setSelectedThemes] = useState([]);
+
+    const _setBulkSelect = setBulkSelect;
+    setBulkSelect = value => {
+        setSelectedThemes(Array(themes.length).fill(false));
+        _setBulkSelect(value);
+    };
 
     return (
         <Modal
@@ -311,79 +321,204 @@ const CustomAccentModal = props => {
                                     />
                                 </div>
                                 <div>
-                                    <button
-                                        className={styles.downloadOption}
-                                        // eslint-disable-next-line react/jsx-no-bind
-                                        onClick={() => {
-                                            const url = URL.createObjectURL(new Blob([JSON.stringify(value)], {
-                                                type: 'application/json'
-                                            }));
-                                            const element = document.createElement('a');
-                                            element.style.display = 'none';
-                                            element.href = url;
-                                            element.download = `${value.name}.json`;
-                                            document.body.append(element);
-                                            element.click();
-                                            document.body.removeChild(element);
-                                            URL.revokeObjectURL(url);
-                                        }}
-                                    />
-                                    <button
-                                        className={styles.editOption}
-                                        // eslint-disable-next-line react/jsx-no-bind
-                                        onClick={() => {
-                                            props.loadAccentIntoCreate(value);
-                                            props.onSwitchToCreate();
-                                        }}
-                                    />
-                                    <button
-                                        className={styles.deleteOption}
-                                        // eslint-disable-next-line react/jsx-no-bind
-                                        onClick={() => {
-                                            let accentsJSON = JSON.parse(localStorage.getItem('nb:custom-accents'));
-                                            accentsJSON = accentsJSON.filter(v => v.name !== value.name);
-                                            localStorage.setItem('nb:custom-accents', JSON.stringify(accentsJSON));
-                                            setThemes(JSON.parse(localStorage.getItem('nb:custom-accents')));
-                                            try {
-                                                const currentAccentJSON = JSON.parse(localStorage.getItem('tw:theme'));
-                                                if (value.name === currentAccentJSON.accent.name) {
-                                                    props.onSetThemeToDefault();
-                                                }
-                                            } catch (_) {
-                                                // ignore
-                                            }
-                                        }}
-                                    />
+                                    {bulkSelect ?
+                                        <FancyCheckbox
+                                            checked={selectedThemes[index]}
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onChange={e => {
+                                                const temp = [...selectedThemes];
+                                                temp[index] = e.target.checked;
+                                                setSelectedThemes(temp);
+                                            }}
+                                        /> :
+                                        <>
+                                            <button
+                                                className={styles.downloadOption}
+                                                // eslint-disable-next-line react/jsx-no-bind
+                                                onClick={() => {
+                                                    const url = URL.createObjectURL(new Blob([JSON.stringify(value)], {
+                                                        type: 'application/json'
+                                                    }));
+                                                    const element = document.createElement('a');
+                                                    element.style.display = 'none';
+                                                    element.href = url;
+                                                    element.download = `${value.name}.json`;
+                                                    document.body.append(element);
+                                                    element.click();
+                                                    document.body.removeChild(element);
+                                                    URL.revokeObjectURL(url);
+                                                }}
+                                            />
+                                            <button
+                                                className={styles.editOption}
+                                                // eslint-disable-next-line react/jsx-no-bind
+                                                onClick={() => {
+                                                    props.loadAccentIntoCreate(value);
+                                                    props.onSwitchToCreate();
+                                                }}
+                                            />
+                                            <button
+                                                className={styles.deleteOption}
+                                                // eslint-disable-next-line react/jsx-no-bind
+                                                onClick={() => {
+                                                    let accentsJSON = JSON.parse(localStorage.getItem('nb:custom-accents'));
+                                                    accentsJSON = accentsJSON.filter(v => v.name !== value.name);
+                                                    localStorage.setItem('nb:custom-accents', JSON.stringify(accentsJSON));
+                                                    setThemes(JSON.parse(localStorage.getItem('nb:custom-accents')));
+                                                    try {
+                                                        const currentAccentJSON = JSON.parse(localStorage.getItem('tw:theme'));
+                                                        if (value.name === currentAccentJSON.accent.name) {
+                                                            props.onSetThemeToDefault();
+                                                        }
+                                                    } catch (_) {
+                                                        // ignore
+                                                    }
+                                                }}
+                                            />
+                                        </>
+                                    }
                                 </div>
                             </div>
                         ))}
-                        <FileInput
-                            accept="application/json"
-                            // eslint-disable-next-line react/jsx-no-bind
-                            onChange={async files => {
-                                let accentsJSON = JSON.parse(localStorage.getItem('nb:custom-accents'));
-                                for (const file of files) {
-                                    let isValid = true;
-                                    let data;
-                                    try {
-                                        data = JSON.parse(await file.text());
-                                    } catch {
-                                        isValid = false;
+                        {!bulkSelect &&
+                            <FileInput
+                                accept="application/json"
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onChange={async files => {
+                                    let accentsJSON = JSON.parse(localStorage.getItem('nb:custom-accents'));
+                                    for (const file of files) {
+                                        let isValid = true;
+                                        let data;
+                                        try {
+                                            data = JSON.parse(await file.text());
+                                        } catch {
+                                            isValid = false;
+                                        }
+                                        // eslint-disable-next-line max-len
+                                        if (isValid && !((data.gradient === null || (data.gradient && data.gradient.colors instanceof Array && ['number', 'string'].includes(typeof data.gradient.direction))) && typeof data.primaryColor === 'string' && typeof data.secondaryColor === 'string' && typeof data.tertiaryColor === 'string' && typeof data.name === 'string' && typeof data.isGradient === 'boolean')) isValid = false;
+                                        if (!isValid) {
+                                            // eslint-disable-next-line no-alert
+                                            alert(`${file.name} is not a valid accent file.`);
+                                            continue;
+                                        }
+                                        accentsJSON = accentsJSON.filter(value => value.name !== data.name);
+                                        accentsJSON.push(data);
                                     }
-                                    // eslint-disable-next-line max-len
-                                    if (isValid && !((data.gradient === null || (data.gradient && data.gradient.colors instanceof Array && ['number', 'string'].includes(typeof data.gradient.direction))) && typeof data.primaryColor === 'string' && typeof data.secondaryColor === 'string' && typeof data.tertiaryColor === 'string' && typeof data.name === 'string' && typeof data.isGradient === 'boolean')) isValid = false;
-                                    if (!isValid) {
-                                        // eslint-disable-next-line no-alert
-                                        alert(`${file.name} is not a valid accent file.`);
-                                        continue;
+                                    localStorage.setItem('nb:custom-accents', JSON.stringify(accentsJSON));
+                                    setThemes(accentsJSON);
+                                }}
+                            />
+                        }
+                        <Box className={styles.buttonRow}>
+                            {bulkSelect ?
+                                <>
+                                    <button
+                                        // eslint-disable-next-line react/jsx-no-bind
+                                        onClick={() => setBulkSelect(false)}
+                                    >
+                                        <FormattedMessage
+                                            defaultMessage="Cancel"
+                                            description="Label for button to cancel"
+                                            id="gui.customProcedures.cancelSelectMultiple"
+                                        />
+                                    </button>
+                                    {selectedThemes.every(v => v) ?
+                                        <button
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onClick={() => setSelectedThemes(Array(themes.length).fill(false))}
+                                        >
+                                            <FormattedMessage
+                                                defaultMessage="Select None"
+                                                description="Label for button to select none"
+                                                id="nb.customAccent.selectNone"
+                                            />
+                                        </button> :
+                                        <button
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onClick={() => setSelectedThemes(Array(themes.length).fill(true))}
+                                        >
+                                            <FormattedMessage
+                                                defaultMessage="Select All"
+                                                description="Label for button to select all"
+                                                id="nb.customAccent.selectAll"
+                                            />
+                                        </button>
                                     }
-                                    accentsJSON = accentsJSON.filter(value => value.name !== data.name);
-                                    accentsJSON.push(data);
-                                }
-                                localStorage.setItem('nb:custom-accents', JSON.stringify(accentsJSON));
-                                setThemes(accentsJSON);
-                            }}
-                        />
+                                    <button
+                                        // eslint-disable-next-line react/jsx-no-bind
+                                        onClick={() => {
+                                            let accentsJSON = JSON.parse(localStorage.getItem('nb:custom-accents'));
+                                            for (const i in selectedThemes) {
+                                                if (!selectedThemes[i]) continue;
+                                                const value = themes[i];
+                                                accentsJSON = accentsJSON.filter(v => v.name !== value.name);
+                                                try {
+                                                    const currentAccentJSON = JSON.parse(localStorage.getItem('tw:theme'));
+                                                    if (value.name === currentAccentJSON.accent.name) {
+                                                        props.onSetThemeToDefault();
+                                                    }
+                                                } catch (_) {
+                                                    // ignore
+                                                }
+                                            }
+                                            localStorage.setItem('nb:custom-accents', JSON.stringify(accentsJSON));
+                                            setThemes(accentsJSON);
+                                            setSelectedThemes(Array(accentsJSON.length).fill(false));
+                                            setBulkSelect(false);
+                                        }}
+                                        className={styles.okButton}
+                                    >
+                                        <FormattedMessage
+                                            defaultMessage="Delete"
+                                            description="Label for button to delete"
+                                            id="nb.customAccent.deleteMultiple"
+                                        />
+                                    </button>
+                                    <button
+                                        // eslint-disable-next-line react/jsx-no-bind
+                                        onClick={() => {
+                                            const accentsJSON = JSON.parse(localStorage.getItem('nb:custom-accents'));
+                                            for (const i in selectedThemes) {
+                                                if (!selectedThemes[i]) continue;
+                                                const value = themes[i];
+                                                const url = URL.createObjectURL(new Blob([JSON.stringify(value)], {
+                                                    type: 'application/json'
+                                                }));
+                                                const element = document.createElement('a');
+                                                element.style.display = 'none';
+                                                element.href = url;
+                                                element.download = `${value.name}.json`;
+                                                document.body.append(element);
+                                                element.click();
+                                                document.body.removeChild(element);
+                                                URL.revokeObjectURL(url);
+                                            }
+                                            localStorage.setItem('nb:custom-accents', JSON.stringify(accentsJSON));
+                                            setThemes(accentsJSON);
+                                            setSelectedThemes(Array(accentsJSON.length).fill(false));
+                                            setBulkSelect(false);
+                                        }}
+                                        className={styles.okButton}
+                                    >
+                                        <FormattedMessage
+                                            defaultMessage="Export"
+                                            description="Label for button to export"
+                                            id="nb.customAccent.exportMultiple"
+                                        />
+                                    </button>
+                                </> :
+                                <button
+                                    // eslint-disable-next-line react/jsx-no-bind
+                                    onClick={() => setBulkSelect(true)}
+                                >
+                                    <FormattedMessage
+                                        defaultMessage="Select Multiple"
+                                        description="Label for button to select multiple accents"
+                                        id="nb.customAccent.selectMultiple"
+                                    />
+                                </button>
+                            }
+                        </Box>
                     </Box>
                 }
             </Box>
