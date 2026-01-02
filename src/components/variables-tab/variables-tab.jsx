@@ -43,7 +43,8 @@ const _dropdownCaretElement = isCollapsed => (
         height={5}
         style={{
             transform: `rotate(${isCollapsed ? -90 : 0}deg)`,
-            filter: 'var(--filter-icon-black)'
+            filter: 'var(--filter-icon-black)',
+            verticalAlign: 'middle'
         }}
     />
 );
