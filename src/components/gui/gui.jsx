@@ -200,46 +200,6 @@ const GUIComponent = props => {
         });
     }
 
-    for (const i in Array(10).fill(null)) {
-        registerKeyboardShortcut({
-            key: i
-        }, () => {
-            const index = i === '0' ? '10' : i;
-            // eslint-disable-next-line max-len
-            document.querySelector(`.scratchCategoryMenuRow:nth-child(${parseInt(index, 10)}) > .scratchCategoryMenuItem`)?.dispatchEvent(new MouseEvent('mouseup'));
-        });
-    }
-
-    registerKeyboardShortcut({
-        key: 'ArrowUp',
-        ctrl: true
-    }, () => {
-        // eslint-disable-next-line max-len
-        let element = document.querySelector('.scratchCategoryMenuRow:has(+ .scratchCategoryMenuRow > .categorySelected) > .scratchCategoryMenuItem');
-        // eslint-disable-next-line max-len
-        if (!element) element = document.querySelector('.scratchCategoryMenuRow:last-of-type > .scratchCategoryMenuItem');
-        element.dispatchEvent(new MouseEvent('mouseup'));
-    });
-
-    registerKeyboardShortcut({
-        key: 'ArrowDown',
-        ctrl: true
-    }, () => {
-        // eslint-disable-next-line max-len
-        let element = document.querySelector('.scratchCategoryMenuRow:has(> .categorySelected) + .scratchCategoryMenuRow > .scratchCategoryMenuItem');
-        // eslint-disable-next-line max-len
-        if (!element) element = document.querySelector('.scratchCategoryMenuRow:first-of-type > .scratchCategoryMenuItem');
-        element.dispatchEvent(new MouseEvent('mouseup'));
-    });
-
-    registerKeyboardShortcut({
-        key: '/',
-        ctrl: true
-    }, () => {
-        // eslint-disable-next-line max-len
-        document.querySelector('.scratchCategoryMenuRow > .scratchCategoryMenuItem:is(.scratchCategoryId-comments, .scratchCategoryId-lmscomments)')?.dispatchEvent(new MouseEvent('mouseup'));
-    });
-
     registerKeyboardShortcut({
         key: 'e',
         ctrl: true
