@@ -82,6 +82,11 @@ const SpriteSelectorComponent = function (props) {
     }, () => {
         if (!spriteInfoDisabled) onChangeSpriteVisibility(!selectedSprite.visible);
     });
+    registerKeyboardShortcut({
+        key: 'F2'
+    }, () => {
+        document.querySelector('[class*="sprite-info_sprite-input_"]').focus();
+    });
     return (
         <Box
             className={styles.spriteSelector}
