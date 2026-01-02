@@ -4,6 +4,7 @@ import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import dropdownCaret from './dropdown-caret.svg';
+import {safeStringify} from '../../lib/tw-safe-stringify.js';
 
 const messages = defineMessages({
     forThisSprite: {
@@ -45,9 +46,6 @@ const _dropdownCaretElement = isCollapsed => (
         }}
     />
 );
-
-// TODO: Replace with tw-safe-stringify
-const stringify = value => (Array.isArray(value) || typeof value === 'object' ? JSON.stringify(value) : value);
 
 const Variables = ({
     variables, optCloneId, optNameReadonly = false, intl, editingVariable, handleInputChange, handleKeyDown, handleSubmitEditedVariable
@@ -106,7 +104,7 @@ const Variables = ({
                         <textarea
                             rows="5"
                             value={
-                                Array.isArray(currentVarValue) ? currentVarValue.map(i => (stringify(i))).join('\n') : currentVarValue
+                                Array.isArray(currentVarValue) ? currentVarValue.map(i => (safeStringify(i))).join('\n') : currentVarValue
                             }
                             onChange={valueHandlers.onChange}
                             onKeyDown={valueHandlers.onKeyDown}
@@ -130,7 +128,7 @@ const Variables = ({
                         readOnly={optNameReadonly}
                     />
                     <input
-                        value={stringify(currentVarValue)}
+                        value={safeStringify(currentVarValue)}
                         onChange={valueHandlers.onChange}
                         onKeyDown={valueHandlers.onKeyDown}
                         onBlur={valueHandlers.onBlur}

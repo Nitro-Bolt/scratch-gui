@@ -29,7 +29,6 @@ class VariableManager extends React.Component {
             clones: [],
             editingVariable: {}
         };
-
     }
 
     componentDidMount () {
