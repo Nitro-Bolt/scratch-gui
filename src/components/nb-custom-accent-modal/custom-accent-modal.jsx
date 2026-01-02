@@ -398,7 +398,7 @@ const CustomAccentModal = props => {
                                         const colorRegex = /^#[a-fA-F0-9]{6}$/;
                                         // eslint-disable-next-line max-len
                                         if (isValid && (data.gradient === null || (data.gradient && data.gradient.colors instanceof Array && !isNaN(parseFloat(data.gradient.direction)))) && typeof data.primaryColor === 'string' && typeof data.secondaryColor === 'string' && typeof data.tertiaryColor === 'string' && typeof data.name === 'string' && typeof data.isGradient === 'boolean' && data.primaryColor.match(colorRegex) && data.secondaryColor.match(colorRegex) && data.tertiaryColor.match(colorRegex)) {
-                                            if (data.gradient.colors) {
+                                            if (data.gradient !== null) {
                                                 for (const color of data.gradient.colors) {
                                                     const position = parseFloat(color.position);
                                                     if (position > 100 || position < 0 || !color.color.match(colorRegex)) isValid = false;
