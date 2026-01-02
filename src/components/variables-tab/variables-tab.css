@@ -12,12 +12,12 @@
     flex-direction: column;
 }
 
-[dir="ltr"] .wrapper {
+[dir="ltr"] .wrapper:not(:global(.sa-stage-hidden *)) {
     border-top-right-radius: $space;
     border-bottom-right-radius: $space;
 }
 
-[dir="rtl"] .wrapper {
+[dir="rtl"] .wrapper:not(:global(.sa-stage-hidden *)) {
     border-top-left-radius: $space;
     border-bottom-left-radius: $space;
 }
