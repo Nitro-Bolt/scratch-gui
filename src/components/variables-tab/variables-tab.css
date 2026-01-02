@@ -122,6 +122,7 @@
     height: calc(100% - 1rem - 2 * $space);
     overflow-y: auto;
     gap: 0.5rem;
+    border-top: 1px solid $ui-black-transparent;
 }
 
 .variable-dropdown-body:not(:has(.local-variables-selector)) {
@@ -130,7 +131,6 @@
 
 .local-variables-selector {
     display: flex;
-    border-top: 1px solid $ui-black-transparent;
     height: 100%;
     overflow: hidden;
 }
