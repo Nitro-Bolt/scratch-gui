@@ -68,18 +68,19 @@ const addons = [
     'tw-remove-backpack',
     'tw-remove-feedback',
     'tw-disable-cloud-variables',
-    'editor-stepping'
+    'editor-stepping',
+    'editor-block-chomping',
+    'paint-gradient-maker',
 ];
 
 const newAddons = [
     'reorder-custom-inputs',
     'multi-sprite-selecting',
-    'paint-gradient-maker',
     'paint-tool-panel',
     'custom-web-font',
+    'custom-block-font',
     'expanded-backpack',
     'rename-broadcasts',
-    'editor-block-chomping',
     'remove-logo',
     'undo-redo-buttons',
     'toolbox-category-drag',

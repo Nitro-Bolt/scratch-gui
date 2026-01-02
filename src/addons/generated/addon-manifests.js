@@ -73,6 +73,7 @@ import _tw_disable_cloud_variables from "../addons/tw-disable-cloud-variables/_m
 import _editor_stepping from "../addons/editor-stepping/_manifest_entry.js";
 import _expanded_backpack from "../addons/expanded-backpack/_manifest_entry.js";
 import _custom_web_font from "../addons/custom-web-font/_manifest_entry.js";
+import _custom_block_font from "../addons/custom-block-font/_manifest_entry.js";
 import _multi_sprite_selecting from "../addons/multi-sprite-selecting/_manifest_entry.js";
 import _paint_tool_panel from "../addons/paint-tool-panel/_manifest_entry.js";
 import _remove_logo from "../addons/remove-logo/_manifest_entry.js";
@@ -161,6 +162,7 @@ export default {
   "vol-slider": _vol_slider,
   "expanded-backpack": _expanded_backpack,
   "custom-web-font": _custom_web_font,
+  "custom-block-font": _custom_block_font,
   "multi-sprite-selecting": _multi_sprite_selecting,
   "paint-tool-panel": _paint_tool_panel,
   "remove-logo": _remove_logo,

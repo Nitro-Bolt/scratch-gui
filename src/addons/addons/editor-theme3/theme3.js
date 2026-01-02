@@ -136,6 +136,7 @@ export default async function ({ addon, console }) {
     return tertiaryColor(category);
   };
   const textColor = (field) => {
+    if (field.sourceBlock_.textColour) return field.sourceBlock_.textColour;
     if (addon.self.disabled || textMode() === "white") return "#ffffff";
     if (textMode() === "black") return "#000000";
     if (field) return field.sourceBlock_.getColourTertiary();
