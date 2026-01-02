@@ -55,6 +55,8 @@ import costumesIcon from '!../../lib/tw-recolor/build!./icon--costumes.svg';
 import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
 import variablesIcon from '!../../lib/tw-recolor/build!./icon--variables.svg';
 
+import {registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+
 const messages = defineMessages({
     addExtension: {
         id: 'gui.gui.addExtension',
@@ -188,6 +190,17 @@ const GUIComponent = props => {
         FIXED_WIDTH +
         Math.max(0, customStageSize.width - FIXED_WIDTH)
     );
+
+    for (const i in Array(10).fill(null)) {
+        registerKeyboardShortcut({
+            key: i,
+            ctrl: true
+        }, () => {
+            if (i > 0 && i < 5) props.onActivateTab(parseInt(i, 10) - 1);
+        });
+    }
+
+
     return (<MediaQuery minWidth={unconstrainedWidth}>{isUnconstrained => {
         const stageSize = resolveStageSize(stageSizeMode, isUnconstrained);
 
