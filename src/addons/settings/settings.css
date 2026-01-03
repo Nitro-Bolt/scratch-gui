@@ -24,11 +24,11 @@ body {
     margin: 0;
 }
 
-a[href] {
+.container a[href] {
     color: $link-color;
     text-decoration: underline;
 }
-a:active, a:focus {
+.container a:active, a:focus {
     outline: none;
     box-shadow: 0 0 0 3px $looks-transparent;
 }
@@ -44,12 +44,12 @@ a:active, a:focus {
     overflow: hidden;
 }
 
-.section {
+.container .section {
     max-width: 1280px;
     margin: auto;
 }
 
-.header {
+.container .header {
     position: relative;
     padding: 8px 20px;
     background-color: $ui-secondary;
@@ -107,6 +107,7 @@ a:active, a:focus {
     outline: none;
     background-color: transparent;
     font-size: 14px;
+    box-sizing: content-box;
 }
 /* legacy edge */
 .search-input::-ms-clear {
@@ -455,6 +456,10 @@ a:active, a:focus {
     outline: none;
     border: 1px solid transparent;
     border-radius: 4px 0px 0px 4px;
+}
+
+.setting :is(input[type="checkbox"], input[type="radio"]) {
+    padding: 0;
 }
 
 .reset-setting-button {

@@ -9,6 +9,8 @@ import classNames from 'classnames';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
 import FileInput from './file-input.jsx';
 import {gradientDataToCSS} from '../../lib/nb-gradient-to-css.js';
+import AddonSettingsComponent from '../../addons/settings/settings.jsx';
+import {onExportSettings} from '../../playground/addon-settings.jsx';
 
 const messages = defineMessages({
     title: {
@@ -521,7 +523,11 @@ const EditorSettingsModal = props => {
         },
         {
             title: messages.addons,
-            content: <iframe src="/addons.html" />,
+            content: <Box>
+                <AddonSettingsComponent
+                    onExportSettings={onExportSettings}
+                />
+            </Box>,
             escaped: true
         },
         {

@@ -289,6 +289,7 @@ label {
     height: 100%;
     overflow: auto;
     flex-grow: 1;
+    position: relative;
 }
 
 .content:not(.escaped) {

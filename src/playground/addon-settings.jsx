@@ -19,9 +19,9 @@ import downloadBlob from '../lib/download-blob.js';
 import Settings from '../addons/settings/settings.jsx';
 import render from './app-target';
 
-const onExportSettings = settings => {
+export const onExportSettings = settings => {
     const blob = new Blob([JSON.stringify(settings)]);
-    downloadBlob('turbowarp-addon-settings.json', blob);
+    downloadBlob('nitrobolt-addon-settings.json', blob);
 };
 
 render((
