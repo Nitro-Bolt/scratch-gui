@@ -13,7 +13,20 @@ class NBEditorSettingsModal extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
-            'handleClose'
+            'handleAddGradientColor',
+            'handleClose',
+            'handleChangeGradient',
+            'handleChangeGradientColorColor',
+            'handleChangeGradientColorPosition',
+            'handleChangeGradientDirection',
+            'handleChangeName',
+            'handleChangePrimaryColor',
+            'handleChangeSecondaryColor',
+            'handleChangeTertiaryColor',
+            'handleDeleteGradientColor',
+            'handleOk',
+            'handleSetThemeToDefault',
+            'loadAccentIntoCreate'
         ]);
         this.state = {
             isGradient: false,
@@ -31,8 +44,7 @@ class NBEditorSettingsModal extends React.Component {
             name: '',
             primaryColor: '#855cd6',
             secondaryColor: '#714eb7',
-            tertiaryColor: '#0fbd8c',
-            tab: 'create'
+            tertiaryColor: '#0fbd8c'
         };
     }
 
@@ -132,7 +144,6 @@ class NBEditorSettingsModal extends React.Component {
         accentsJSON.push(accent);
         localStorage.setItem('nb:custom-accents', JSON.stringify(accentsJSON));
         this.props.onOk(theme);
-        this.props.onClose();
         persistTheme(theme);
     }
 
@@ -140,18 +151,6 @@ class NBEditorSettingsModal extends React.Component {
         const theme = this.props.theme.set('accent', ACCENT_ORANGE);
         this.props.setTheme(theme);
         persistTheme(theme);
-    }
-
-    handleSwitchToCreate () {
-        this.setState({
-            tab: 'create'
-        });
-    }
-
-    handleSwitchToManage () {
-        this.setState({
-            tab: 'manage'
-        });
     }
 
     loadAccentIntoCreate (accent) {
@@ -178,8 +177,30 @@ class NBEditorSettingsModal extends React.Component {
     render () {
         return (
             <EditorSettingsModalComponent
-                onClose={this.handleClose}
+                gradientColors={this.state.gradientColors}
+                gradientDirection={this.state.gradientDirection}
+                isGradient={this.state.isGradient}
                 isRtl={this.props.isRtl}
+                loadAccentIntoCreate={this.loadAccentIntoCreate}
+                name={this.state.name}
+                onAddGradientColor={this.handleAddGradientColor}
+                onClose={this.handleClose}
+                onChangeGradient={this.handleChangeGradient}
+                onChangeGradientColorColor={this.handleChangeGradientColorColor}
+                onChangeGradientColorPosition={this.handleChangeGradientColorPosition}
+                onChangeGradientDirection={this.handleChangeGradientDirection}
+                onChangeName={this.handleChangeName}
+                onChangePrimaryColor={this.handleChangePrimaryColor}
+                onChangeSecondaryColor={this.handleChangeSecondaryColor}
+                onChangeTertiaryColor={this.handleChangeTertiaryColor}
+                onDeleteGradientColor={this.handleDeleteGradientColor}
+                onOk={this.handleOk}
+                onSetThemeToDefault={this.handleSetThemeToDefault}
+                onSwitchToCreate={this.handleSwitchToCreate}
+                onSwitchToManage={this.handleSwitchToManage}
+                primaryColor={this.state.primaryColor}
+                secondaryColor={this.state.secondaryColor}
+                tertiaryColor={this.state.tertiaryColor}
             />
         );
     }
