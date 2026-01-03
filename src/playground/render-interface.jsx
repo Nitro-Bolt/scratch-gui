@@ -493,6 +493,7 @@ class Interface extends React.Component {
                                                 color: '#7DD100',
                                                 cursor: 'pointer'
                                             }}
+                                            href={'https://dinosaurmod.github.io/Dino-Home'}
                                         >
                                             Dinosaurmod
                                         </a>
