@@ -196,8 +196,6 @@ class NBEditorSettingsModal extends React.Component {
                 onDeleteGradientColor={this.handleDeleteGradientColor}
                 onOk={this.handleOk}
                 onSetThemeToDefault={this.handleSetThemeToDefault}
-                onSwitchToCreate={this.handleSwitchToCreate}
-                onSwitchToManage={this.handleSwitchToManage}
                 primaryColor={this.state.primaryColor}
                 secondaryColor={this.state.secondaryColor}
                 tertiaryColor={this.state.tertiaryColor}

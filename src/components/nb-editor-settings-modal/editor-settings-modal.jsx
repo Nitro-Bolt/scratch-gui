@@ -20,6 +20,10 @@ const messages = defineMessages({
         id: 'nb.editorSettings.accentsSection',
         defaultMessage: 'Accents'
     },
+    addons: {
+        id: 'nb.editorSettings.addonsSection',
+        defaultMessage: 'Addons'
+    },
     git: {
         id: 'nb.editorSettings.gitSection',
         defaultMessage: 'Git'
@@ -127,7 +131,6 @@ const EditorSettingsModal = props => {
                                             // eslint-disable-next-line react/jsx-no-bind
                                             onClick={() => {
                                                 props.loadAccentIntoCreate(value);
-                                                props.onSwitchToCreate();
                                             }}
                                         />
                                         <button
@@ -517,6 +520,11 @@ const EditorSettingsModal = props => {
             </Box>
         },
         {
+            title: messages.addons,
+            content: <iframe src="/addons.html" />,
+            escaped: true
+        },
+        {
             title: messages.git,
             content: null
         },
@@ -544,16 +552,33 @@ const EditorSettingsModal = props => {
                             // eslint-disable-next-line react/jsx-no-bind
                             onClick={() => setSelectedSectionIndex(index)}
                         >
+                            {section.icon &&
+                                <img
+                                    src={section.icon}
+                                    width="20"
+                                    height="20"
+                                />
+                            }
                             <FormattedMessage
                                 {...section.title}
                             />
                         </div>
                     ))}
                 </div>
-                <div className={styles.content}>
-                    <h1><FormattedMessage {...sections[selectedSectionIndex].title} /></h1>
-                    {sections[selectedSectionIndex].content}
-                </div>
+                {sections[selectedSectionIndex].escaped ?
+                    <div
+                        className={classNames(
+                            styles.content,
+                            styles.escaped
+                        )}
+                    >
+                        {sections[selectedSectionIndex].content}
+                    </div> :
+                    <div className={styles.content}>
+                        <h1><FormattedMessage {...sections[selectedSectionIndex].title} /></h1>
+                        {sections[selectedSectionIndex].content}
+                    </div>
+                }
             </Box>
         </Modal>
     );
@@ -580,8 +605,6 @@ EditorSettingsModal.propTypes = {
     onDeleteGradientColor: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     onSetThemeToDefault: PropTypes.func.isRequired,
-    onSwitchToCreate: PropTypes.func.isRequired,
-    onSwitchToManage: PropTypes.func.isRequired,
     primaryColor: PropTypes.string.isRequired,
     secondaryColor: PropTypes.string.isRequired,
     tertiaryColor: PropTypes.string.isRequired
