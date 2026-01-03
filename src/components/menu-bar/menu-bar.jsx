@@ -1028,12 +1028,6 @@ class MenuBar extends React.Component {
                         >
                             {/* todo: icon */}
                             <Button className={styles.feedbackButton}>
-                                <img
-                                    src={editIcon}
-                                    draggable={false}
-                                    width={20}
-                                    height={20}
-                                />
                                 <FormattedMessage
                                     defaultMessage="{APP_NAME} Feedback"
                                     description="Button to give feedback in the menu bar"
