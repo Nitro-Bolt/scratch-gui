@@ -35,7 +35,8 @@ class CustomProcedures extends React.Component {
             'setHexBlockColor',
             'setBlocks',
             'handleTestFunction',
-            'handleRemoveAllInputs'
+            'handleRemoveAllInputs',
+            'findAllCategories',
         ]);
         this.state = {
             rtlOffset: 0,
@@ -260,6 +261,10 @@ class CustomProcedures extends React.Component {
             }
         }
     }
+    findAllCategories () {
+        if (!window.Blockly) return;
+        return window.Blockly.getMainWorkspace().toolbox_.categoryMenu_.categories_;
+    }
     render () {
         return (
             <CustomProceduresComponent
@@ -286,6 +291,7 @@ class CustomProcedures extends React.Component {
                 setHexBlockColor={this.setHexBlockColor}
                 onTestStart={this.handleTestFunction}
                 onRemoveAllInputs={this.handleRemoveAllInputs}
+                findAllCategories={this.findAllCategories}
             />
         );
     }
