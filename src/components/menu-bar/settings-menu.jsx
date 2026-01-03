@@ -87,9 +87,9 @@ const SettingsMenu = ({
                             height={24}
                         />
                         <FormattedMessage
-                            defaultMessage="All Settings"
+                            defaultMessage="Editor Settings"
                             description="Settings menu"
-                            id="gui.menuBar.allSettings"
+                            id="gui.menuBar.editorSettings"
                         />
                     </div>
                 </MenuItem>
