@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import check from './check.svg';
 import dropdownCaret from './dropdown-caret.svg';
 import {gradientDataToCSS} from '../../lib/nb-gradient-to-css.js';
+import {openCustomAccentModal} from '../../reducers/modals.js';
 import {MenuItem, MenuSection, Submenu} from '../menu/menu.jsx';
 import {
     ACCENT_ORANGE,
@@ -113,6 +114,7 @@ AccentMenuItem.propTypes = {
 const AccentThemeMenu = ({
     isOpen,
     isRtl,
+    onClickCustomAccent,
     onChangeTheme,
     onOpen,
     theme
@@ -190,6 +192,35 @@ const AccentThemeMenu = ({
                         </MenuItem>
                     ))}
                 </MenuSection>
+                <MenuSection>
+                    <MenuItem
+                        className={styles.menuSection}
+                        onClick={onClickCustomAccent}
+                    >
+                        <div
+                            className={styles.option}
+                        >
+                            <img
+                                className={styles.check}
+                                width={15}
+                                height={12}
+                                src={check}
+                                draggable={false}
+                            />
+                            <img
+                                src={settingsIcon}
+                                draggable={false}
+                                width={21.6}
+                                height={21.6}
+                            />
+                            <FormattedMessage
+                                defaultMessage="Accent Manager"
+                                description="Menu item to open the custom accent manager"
+                                id="nb.customAccent"
+                            />
+                        </div>
+                    </MenuItem>
+                </MenuSection>
             </Submenu>
         </MenuItem>
     );
@@ -198,6 +229,7 @@ const AccentThemeMenu = ({
 AccentThemeMenu.propTypes = {
     isOpen: PropTypes.bool,
     isRtl: PropTypes.bool,
+    onClickCustomAccent: PropTypes.func,
     onChangeTheme: PropTypes.func,
     onOpen: PropTypes.func,
     theme: PropTypes.instanceOf(Theme)
@@ -210,6 +242,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    onClickCustomAccent: () => {
+        dispatch(openCustomAccentModal());
+        dispatch(closeSettingsMenu());
+    },
     onChangeTheme: theme => {
         dispatch(setTheme(theme));
         dispatch(closeSettingsMenu());

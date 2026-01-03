@@ -19,6 +19,7 @@ const MODAL_RESTORE_POINTS = 'restorePointModal';
 const MODAL_FONTS = 'fontsModal';
 const MODAL_UNKNOWN_PLATFORM = 'unknownPlatformModal';
 const MODAL_INVALID_PROJECT = 'invalidProjectModal';
+const MODAL_CUSTOM_ACCENT = 'customAccentModal';
 const MODAL_EDITOR_SETTINGS = 'editorSettingsModal';
 
 const initialState = {
@@ -40,6 +41,7 @@ const initialState = {
     [MODAL_FONTS]: false,
     [MODAL_UNKNOWN_PLATFORM]: false,
     [MODAL_INVALID_PROJECT]: false,
+    [MODAL_CUSTOM_ACCENT]: false,
     [MODAL_EDITOR_SETTINGS]: false
 };
 
@@ -124,6 +126,9 @@ const openUnknownPlatformModal = function () {
 const openInvalidProjectModal = function () {
     return openModal(MODAL_INVALID_PROJECT);
 };
+const openCustomAccentModal = function () {
+    return openModal(MODAL_CUSTOM_ACCENT);
+};
 const openEditorSettingsModal = function () {
     return openModal(MODAL_EDITOR_SETTINGS);
 };
@@ -181,6 +186,9 @@ const closeUnknownPlatformModal = function () {
 const closeInvalidProjectModal = function () {
     return closeModal(MODAL_INVALID_PROJECT);
 };
+const closeCustomAccentModal = function () {
+    return closeModal(MODAL_CUSTOM_ACCENT);
+};
 const closeEditorSettingsModal = function () {
     return closeModal(MODAL_EDITOR_SETTINGS);
 };
@@ -205,6 +213,7 @@ export {
     openFontsModal,
     openUnknownPlatformModal,
     openInvalidProjectModal,
+    openCustomAccentModal,
     openEditorSettingsModal,
     closeBackdropLibrary,
     closeCostumeLibrary,
@@ -224,5 +233,6 @@ export {
     closeFontsModal,
     closeUnknownPlatformModal,
     closeInvalidProjectModal,
+    closeCustomAccentModal,
     closeEditorSettingsModal
 };

@@ -4,16 +4,31 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {intlShape} from 'react-intl';
 import bindAll from 'lodash.bindall';
-import {closeEditorSettingsModal} from '../reducers/modals.js';
-import EditorSettingsModalComponent from '../components/nb-editor-settings-modal/editor-settings-modal.jsx';
+import {closeCustomAccentModal} from '../reducers/modals.js';
+import CustomAccentModalComponent from '../components/nb-custom-accent-modal/custom-accent-modal.jsx';
 import {setTheme} from '../reducers/theme.js';
 import {persistTheme} from '../lib/themes/themePersistance.js';
 
-class NBEditorSettingsModal extends React.Component {
+class NBCustomAccentModal extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
-            'handleClose'
+            'handleAddGradientColor',
+            'handleClose',
+            'handleChangeGradient',
+            'handleChangeGradientColorColor',
+            'handleChangeGradientColorPosition',
+            'handleChangeGradientDirection',
+            'handleChangeName',
+            'handleChangePrimaryColor',
+            'handleChangeSecondaryColor',
+            'handleChangeTertiaryColor',
+            'handleDeleteGradientColor',
+            'handleOk',
+            'handleSetThemeToDefault',
+            'handleSwitchToCreate',
+            'handleSwitchToManage',
+            'loadAccentIntoCreate'
         ]);
         this.state = {
             isGradient: false,
@@ -177,15 +192,38 @@ class NBEditorSettingsModal extends React.Component {
 
     render () {
         return (
-            <EditorSettingsModalComponent
-                onClose={this.handleClose}
+            <CustomAccentModalComponent
+                gradientColors={this.state.gradientColors}
+                gradientDirection={this.state.gradientDirection}
+                isGradient={this.state.isGradient}
                 isRtl={this.props.isRtl}
+                loadAccentIntoCreate={this.loadAccentIntoCreate}
+                name={this.state.name}
+                onAddGradientColor={this.handleAddGradientColor}
+                onClose={this.handleClose}
+                onChangeGradient={this.handleChangeGradient}
+                onChangeGradientColorColor={this.handleChangeGradientColorColor}
+                onChangeGradientColorPosition={this.handleChangeGradientColorPosition}
+                onChangeGradientDirection={this.handleChangeGradientDirection}
+                onChangeName={this.handleChangeName}
+                onChangePrimaryColor={this.handleChangePrimaryColor}
+                onChangeSecondaryColor={this.handleChangeSecondaryColor}
+                onChangeTertiaryColor={this.handleChangeTertiaryColor}
+                onDeleteGradientColor={this.handleDeleteGradientColor}
+                onOk={this.handleOk}
+                onSetThemeToDefault={this.handleSetThemeToDefault}
+                onSwitchToCreate={this.handleSwitchToCreate}
+                onSwitchToManage={this.handleSwitchToManage}
+                primaryColor={this.state.primaryColor}
+                secondaryColor={this.state.secondaryColor}
+                tertiaryColor={this.state.tertiaryColor}
+                tab={this.state.tab}
             />
         );
     }
 }
 
-NBEditorSettingsModal.propTypes = {
+NBCustomAccentModal.propTypes = {
     // eslint-disable-next-line react/no-unused-prop-types
     intl: intlShape,
     isRtl: PropTypes.bool,
@@ -203,11 +241,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     setTheme: theme => dispatch(setTheme(theme)),
-    onClose: () => dispatch(closeEditorSettingsModal()),
+    onClose: () => dispatch(closeCustomAccentModal()),
     onOk: theme => dispatch(setTheme(theme))
 });
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(NBEditorSettingsModal);
+)(NBCustomAccentModal);
