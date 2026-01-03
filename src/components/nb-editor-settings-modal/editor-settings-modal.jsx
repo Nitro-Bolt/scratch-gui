@@ -8,6 +8,8 @@ import Box from '../box/box.jsx';
 import classNames from 'classnames';
 import AddonSettingsComponent from '../../addons/settings/settings.jsx';
 import {onExportSettings} from '../../playground/addon-settings.jsx';
+import {closeEditorSettingsModal, openCustomAccentModal} from '../../reducers/modals.js';
+import {connect} from 'react-redux';
 
 const messages = defineMessages({
     title: {
@@ -40,7 +42,15 @@ const EditorSettingsModal = props => {
     const sections = [
         {
             title: messages.accents,
-            content: null
+            content: <button
+                className={styles.button}
+                onClick={props.onOpenAccentManager}
+            >
+                <FormattedMessage
+                    id="nb.editorSettings.openAccentManager"
+                    defaultMessage="Open Accent Manager"
+                />
+            </button>
         },
         {
             title: messages.addons,
@@ -130,4 +140,16 @@ EditorSettingsModal.propTypes = {
     onClose: PropTypes.func.isRequired
 };
 
-export default injectIntl(EditorSettingsModal);
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = dispatch => ({
+    onOpenAccentManager: () => {
+        dispatch(closeEditorSettingsModal());
+        dispatch(openCustomAccentModal());
+    }
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(injectIntl(EditorSettingsModal));
