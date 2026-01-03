@@ -41,6 +41,7 @@ const EditorSettingsModal = props => {
 
     if (!localStorage.getItem('nb:custom-accents')) localStorage.setItem('nb:custom-accents', '[]');
     const [themes, setThemes] = useState(JSON.parse(localStorage.getItem('nb:custom-accents')));
+    const [dirty, setDirty] = useState(false);
 
     let [bulkSelect, setBulkSelect] = useState(false);
     const [selectedThemes, setSelectedThemes] = useState([]);
@@ -525,6 +526,8 @@ const EditorSettingsModal = props => {
             title: messages.addons,
             content: <Box>
                 <AddonSettingsComponent
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onDirty={d => setDirty(d)}
                     onExportSettings={onExportSettings}
                 />
             </Box>,
@@ -570,6 +573,18 @@ const EditorSettingsModal = props => {
                             />
                         </div>
                     ))}
+                    {dirty && (
+                        <div
+                            className={styles.topicItem}
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onClick={() => location.reload()}
+                        >
+                            <FormattedMessage
+                                id="nb.editorSettings.dirty"
+                                defaultMessage="Reload to apply settings"
+                            />
+                        </div>
+                    )}
                 </div>
                 {sections[selectedSectionIndex].escaped ?
                     <div
