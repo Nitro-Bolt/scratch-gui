@@ -10,11 +10,16 @@ import bindAll from 'lodash.bindall';
 import AddonSettingsComponent from '../../addons/settings/settings.jsx';
 import DocumentationLink from '../tw-documentation-link/documentation-link.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
+import Input from '../forms/input.jsx';
+import BufferedInputHOC from '../forms/buffered-input-hoc.jsx';
 import {onExportSettings} from '../../playground/addon-settings.jsx';
 import {closeEditorSettingsModal, openCustomAccentModal} from '../../reducers/modals.js';
 import {connect} from 'react-redux';
 import helpIcon from './help-icon.svg';
 import {APP_NAME} from '../../lib/brand.js';
+import {setUsername, setUsernameInvalid} from '../../reducers/tw.js';
+import isScratchDesktop from '../../lib/isScratchDesktop.js';
+import {generateRandomUsername} from '../../lib/tw-username.js';
 
 const messages = defineMessages({
     title: {
@@ -56,6 +61,8 @@ const messages = defineMessages({
         defaultMessage: 'Projects'
     }
 });
+
+const BufferedInput = BufferedInputHOC(Input);
 
 const LearnMore = props => (
     <React.Fragment>
@@ -256,6 +263,63 @@ const EditorSettingsModal = props => {
         {
             title: messages.projects,
             content: <Box>
+                {props.usernameInvalid && <p className={classNames(styles.helpText, styles.mustChange)}>
+                    <FormattedMessage
+                        // eslint-disable-next-line max-len
+                        defaultMessage="Sorry, the cloud variable server thinks your username may be unsafe. Please change it to something else or {resetIt}."
+                        id="tw.usernameModal.mustChange"
+                        values={{
+                            resetIt: (
+                                <a
+                                    className={styles.resetLink}
+                                    // eslint-disable-next-line react/jsx-no-bind
+                                    onClick={() => props.onSetUsername(isScratchDesktop() ? 'player' : generateRandomUsername())}
+                                >
+                                    <FormattedMessage
+                                        defaultMessage="reset it (recommended)"
+                                        description="link to reset username"
+                                        id="tw.usernameModal.mustChange.resetIt"
+                                    />
+                                </a>
+                            )
+                        }}
+                    />
+                </p>}
+                <Setting
+                    primary={(
+                        <div className={classNames(styles.label, styles.customStageSize)}>
+                            <FormattedMessage
+                                defaultMessage="Username:"
+                                id="nb.editorSettings.username"
+                            />
+                            <BufferedInput
+                                value={props.username}
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onSubmit={value => {
+                                    props.onSetUsername(value);
+                                }}
+                                type="text"
+                                pattern="[a-zA-Z0-9_\-]*"
+                                maxLength="20"
+                                spellCheck="false"
+                            />
+                        </div>
+                    )}
+                    help={<>
+                        <p>
+                            <FormattedMessage
+                                id="nb.editorSettings.usernameHelp"
+                                defaultMessage="This value will be stored in your browser's storage. It may be logged when you interact with projects that contain cloud variables. It will also be used for Live Collaboration."
+                            />
+                        </p>
+                        <p>
+                            <FormattedMessage
+                                id="nb.editorSettings.usernameHelp2"
+                                defaultMessage="Values that do not correspond to a valid Scratch account will typically be rejected by the cloud variable server. We recommend leaving it as-is or changing it to your Scratch username."
+                            />
+                        </p>
+                    </>}
+                />
                 <div className={styles.header}>
                     <FormattedMessage
                         id="nb.editorSettings.dangerZone"
@@ -351,16 +415,26 @@ EditorSettingsModal.propTypes = {
     isRtl: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     onOpenAccentManager: PropTypes.func.isRequired,
+    onSetUsername: PropTypes.func,
     prefs: PropTypes.any,
-    setPref: PropTypes.func.isRequired
+    setPref: PropTypes.func.isRequired,
+    username: PropTypes.string,
+    usernameInvalid: PropTypes.bool
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = state => ({
+    username: state.scratchGui.tw.username,
+    usernameInvalid: state.scratchGui.tw.usernameInvalid
+});
 
 const mapDispatchToProps = dispatch => ({
     onOpenAccentManager: () => {
         dispatch(closeEditorSettingsModal());
         dispatch(openCustomAccentModal());
+    },
+    onSetUsername: username => {
+        dispatch(setUsername(username));
+        dispatch(setUsernameInvalid(false));
     }
 });
 
