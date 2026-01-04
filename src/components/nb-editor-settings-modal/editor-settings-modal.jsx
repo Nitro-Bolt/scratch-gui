@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import {defineMessages, FormattedMessage, intlShape, injectIntl} from 'react-intl';
 import PropTypes from 'prop-types';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Modal from '../../containers/modal.jsx';
 import styles from './editor-settings-modal.css';
 import Box from '../box/box.jsx';
@@ -217,7 +217,7 @@ const EditorSettingsModal = props => {
                     value={!!props.prefs['hide-backpack']}
                     label={<FormattedMessage
                         id="nb.editorSettings.hideBackpack"
-                        defaultMessage="Hide Backback"
+                        defaultMessage="Hide backback"
                     />}
                     help={<FormattedMessage
                         id="nb.editorSettings.hideBackpackHelp"
@@ -234,7 +234,7 @@ const EditorSettingsModal = props => {
                     value={!!props.prefs['hide-feedback']}
                     label={<FormattedMessage
                         id="nb.editorSettings.hideFeedback"
-                        defaultMessage="Hide Feedback Button"
+                        defaultMessage="Hide feedback button"
                     />}
                     help={<FormattedMessage
                         id="nb.editorSettings.hideFeedbackHelp"
@@ -267,7 +267,7 @@ const EditorSettingsModal = props => {
                     value={!!props.prefs['disable-compiler']}
                     label={<FormattedMessage
                         id="nb.editorSettings.disableCompiler"
-                        defaultMessage="Always Disable Compiler"
+                        defaultMessage="Always disable compiler"
                     />}
                     help={<FormattedMessage
                         id="nb.editorSettings.disableCompilerHelp"
