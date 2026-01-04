@@ -251,7 +251,6 @@ class Interface extends React.Component {
                     <GUI
                         onClickAddonSettings={handleClickAddonSettings}
                         onUpdateProjectTitle={this.handleUpdateProjectTitle}
-                        backpackVisible
                         backpackHost="_local_"
                         {...props}
                     />
