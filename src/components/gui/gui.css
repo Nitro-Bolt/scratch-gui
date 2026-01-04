@@ -387,20 +387,20 @@ $fade-out-distance: 15px;
     background-color: white;
 }
 
-body[theme="light"] .blocklyScrollbarVertical g rect,
-body[theme="light"] .blocklyScrollbarHorizontal g rect {
+/*body[theme="light"] .blocklyScrollbarVertical,
+body[theme="light"] .blocklyScrollbarHorizontal {
     fill: #cecdce;
-}
-body[theme="light"] .blocklyScrollbarVertical:hover g rect,
-body[theme="light"] .blocklyScrollbarHorizontal:hover g rect {
+}*/
+body[theme="light"] .blocklyScrollbarVertical:hover,
+body[theme="light"] .blocklyScrollbarHorizontal:hover {
     fill: #edebed;
 }
 
-body[theme="dark"] .blocklyScrollbarVertical g rect,
-body[theme="dark"] .blocklyScrollbarHorizontal g rect {
+/*body[theme="dark"] .blocklyScrollbarVertical,
+body[theme="dark"] .blocklyScrollbarHorizontal {
     fill: #666;
-}
-body[theme="dark"] .blocklyScrollbarVertical:hover g rect,
-body[theme="dark"] .blocklyScrollbarHorizontal:hover g rect {
+}*/
+body[theme="dark"] .blocklyScrollbarVertical:hover,
+body[theme="dark"] .blocklyScrollbarHorizontal:hover {
     fill: #888;
 }
