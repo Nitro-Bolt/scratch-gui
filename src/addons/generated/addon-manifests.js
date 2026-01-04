@@ -76,7 +76,6 @@ import _hide_stage from "../addons/hide-stage/_manifest_entry.js";
 import _tw_straighten_comments from "../addons/tw-straighten-comments/_manifest_entry.js";
 import _tw_disable_vibration from "../addons/tw-disable-vibration/_manifest_entry.js";
 import _tw_disable_cloud_variables from "../addons/tw-disable-cloud-variables/_manifest_entry.js";
-import _tw_disable_compiler from "../addons/tw-disable-compiler/_manifest_entry.js";
 import _editor_stepping from "../addons/editor-stepping/_manifest_entry.js";
 export default {
   "cat-blocks": _cat_blocks,
