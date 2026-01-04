@@ -43,6 +43,10 @@ const messages = defineMessages({
         id: 'nb.editorSettings.gitSection',
         defaultMessage: 'Git'
     },
+    projects: {
+        id: 'nb.editorSettings.projectsSection',
+        defaultMessage: 'Projects'
+    },
     shortcuts: {
         id: 'nb.editorSettings.shortcutsSection',
         defaultMessage: 'Shortcuts'
@@ -184,22 +188,6 @@ const EditorSettingsModal = props => {
                     <div className={styles.divider} />
                 </div>
                 <BooleanSetting
-                    value={!!props.prefs['disable-compiler']}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.disableCompiler"
-                        defaultMessage="Always Disable Compiler"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.disableCompilerHelp"
-                        defaultMessage="Disables the {APP_NAME} compiler by default. It can still be manually enabled per-project through Edit > Advanced Settings."
-                        values={{
-                            APP_NAME
-                        }}
-                    />}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => props.setPref('disable-compiler', e.target.checked)}
-                />
-                <BooleanSetting
                     value={!!props.prefs['hide-backpack']}
                     label={<FormattedMessage
                         id="nb.editorSettings.hideBackpack"
@@ -234,6 +222,34 @@ const EditorSettingsModal = props => {
         {
             title: messages.git,
             content: null
+        },
+        {
+            title: messages.projects,
+            content: <Box>
+                <div className={styles.header}>
+                    <FormattedMessage
+                        id="nb.editorSettings.dangerZone"
+                        defaultMessage="Danger Zone"
+                    />
+                    <div className={styles.divider} />
+                </div>
+                <BooleanSetting
+                    value={!!props.prefs['disable-compiler']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.disableCompiler"
+                        defaultMessage="Always Disable Compiler"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.disableCompilerHelp"
+                        defaultMessage="Disables the {APP_NAME} compiler by default. It can still be manually enabled per-project through Edit > Advanced Settings."
+                        values={{
+                            APP_NAME
+                        }}
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => props.setPref('disable-compiler', e.target.checked)}
+                />
+            </Box>
         },
         {
             title: messages.shortcuts,
