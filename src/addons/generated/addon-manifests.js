@@ -156,6 +156,5 @@ export default {
   "tw-straighten-comments": _tw_straighten_comments,
   "tw-disable-vibration": _tw_disable_vibration,
   "tw-disable-cloud-variables": _tw_disable_cloud_variables,
-  "tw-disable-compiler": _tw_disable_compiler,
   "editor-stepping": _editor_stepping,
 };

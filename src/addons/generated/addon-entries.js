@@ -77,6 +77,5 @@ export default {
   "tw-straighten-comments": () => import(/* webpackChunkName: "addon-entry-tw-straighten-comments" */ "../addons/tw-straighten-comments/_runtime_entry.js"),
   "tw-disable-vibration": () => import(/* webpackChunkName: "addon-entry-tw-disable-vibration" */ "../addons/tw-disable-vibration/_runtime_entry.js"),
   "tw-disable-cloud-variables": () => import(/* webpackChunkName: "addon-entry-tw-disable-cloud-variables" */ "../addons/tw-disable-cloud-variables/_runtime_entry.js"),
-  "tw-disable-compiler": () => import(/* webpackChunkName: "addon-entry-tw-disable-compiler" */ "../addons/tw-disable-compiler/_runtime_entry.js"),
   "editor-stepping": () => import(/* webpackChunkName: "addon-entry-editor-stepping" */ "../addons/editor-stepping/_runtime_entry.js"),
 };

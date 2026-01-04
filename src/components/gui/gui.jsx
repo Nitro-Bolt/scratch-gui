@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
 import {connect} from 'react-redux';
 import MediaQuery from 'react-responsive';
@@ -179,6 +179,9 @@ const GUIComponent = props => {
     const [prefs, setPrefs] = useState(JSON.parse(localStorage.getItem('nb:preferences') ?? '{}'));
     const backpackVisible = (_backpackVisible ?? true) && !prefs['hide-backpack'];
     const feedbackVisible = !prefs['hide-feedback'];
+    useEffect(() => vm.setCompilerOptions({
+        enabled: !prefs['disable-compiler']
+    }), []);
 
     const setPref = (preference, value) => {
         const p = {...prefs};

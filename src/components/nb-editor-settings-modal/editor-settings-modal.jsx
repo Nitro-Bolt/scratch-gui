@@ -14,6 +14,7 @@ import {onExportSettings} from '../../playground/addon-settings.jsx';
 import {closeEditorSettingsModal, openCustomAccentModal} from '../../reducers/modals.js';
 import {connect} from 'react-redux';
 import helpIcon from './help-icon.svg';
+import {APP_NAME} from '../../lib/brand.js';
 
 const messages = defineMessages({
     title: {
@@ -182,6 +183,22 @@ const EditorSettingsModal = props => {
                     />
                     <div className={styles.divider} />
                 </div>
+                <BooleanSetting
+                    value={!!props.prefs['disable-compiler']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.disableCompiler"
+                        defaultMessage="Always Disable Compiler"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.disableCompilerHelp"
+                        defaultMessage="Disables the {APP_NAME} compiler by default. It can still be manually enabled per-project through Edit > Advanced Settings."
+                        values={{
+                            APP_NAME
+                        }}
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => props.setPref('disable-compiler', e.target.checked)}
+                />
                 <BooleanSetting
                     value={!!props.prefs['hide-backpack']}
                     label={<FormattedMessage
