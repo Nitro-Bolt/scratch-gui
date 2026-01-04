@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
-import React, {useCallback, useEffect} from 'react';
+import React, {useState} from 'react';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
 import {connect} from 'react-redux';
 import MediaQuery from 'react-responsive';
@@ -88,7 +88,7 @@ const GUIComponent = props => {
         basePath,
         backdropLibraryVisible,
         backpackHost,
-        backpackVisible,
+        _backpackVisible,
         blocksId,
         blocksTabVisible,
         cardsVisible,
@@ -176,6 +176,17 @@ const GUIComponent = props => {
         return <Box {...componentProps}>{children}</Box>;
     }
 
+    const [prefs, setPrefs] = useState(JSON.parse(localStorage.getItem('nb:preferences') ?? '{}'));
+    const backpackVisible = (_backpackVisible ?? true) && !prefs['hide-backpack'];
+    const feedbackVisible = !prefs['hide-feedback'];
+
+    const setPref = (preference, value) => {
+        const p = {...prefs};
+        p[preference] = value;
+        setPrefs(p);
+        localStorage.setItem('nb:preferences', JSON.stringify(p));
+    };
+
     const tabClassNames = {
         tabs: styles.tabs,
         tab: classNames(tabStyles.reactTabsTab, styles.tab),
@@ -202,7 +213,11 @@ const GUIComponent = props => {
                 {settingsModalVisible && <TWSettingsModal />}
                 {customExtensionModalVisible && <TWCustomExtensionModal />}
                 {customAccentModalVisible && <NBCustomAccentModal />}
-                {editorSettingsModalVisible && <NBEditorSettingsModal />}
+                {editorSettingsModalVisible && <NBEditorSettingsModal
+                    prefs={prefs}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    setPref={setPref}
+                />}
                 {extensionManagerModalVisible && <NBExtensionManagerModal />}
                 {fontsModalVisible && <TWFontsModal />}
                 {unknownPlatformModalVisible && <TWUnknownPlatformModal />}
@@ -317,6 +332,7 @@ const GUIComponent = props => {
                     canShare={canShare}
                     className={styles.menuBarPosition}
                     enableCommunity={enableCommunity}
+                    feedbackVisible={feedbackVisible}
                     isShared={isShared}
                     isTotallyNormal={isTotallyNormal}
                     logo={logo}

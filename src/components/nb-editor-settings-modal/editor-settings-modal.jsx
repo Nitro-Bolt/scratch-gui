@@ -6,16 +6,25 @@ import Modal from '../../containers/modal.jsx';
 import styles from './editor-settings-modal.css';
 import Box from '../box/box.jsx';
 import classNames from 'classnames';
+import bindAll from 'lodash.bindall';
 import AddonSettingsComponent from '../../addons/settings/settings.jsx';
+import DocumentationLink from '../tw-documentation-link/documentation-link.jsx';
+import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
 import {onExportSettings} from '../../playground/addon-settings.jsx';
 import {closeEditorSettingsModal, openCustomAccentModal} from '../../reducers/modals.js';
 import {connect} from 'react-redux';
+import helpIcon from './help-icon.svg';
 
 const messages = defineMessages({
     title: {
         defaultMessage: 'Editor Settings',
         description: 'Title of editor settings modal',
         id: 'nb.editorSettings.title'
+    },
+    help: {
+        defaultMessage: 'Click for help',
+        description: 'Hover text of help icon in settings',
+        id: 'nb.editorSettings.help'
     },
     accents: {
         id: 'nb.editorSettings.accentsSection',
@@ -24,6 +33,10 @@ const messages = defineMessages({
     addons: {
         id: 'nb.editorSettings.addonsSection',
         defaultMessage: 'Addons'
+    },
+    display: {
+        id: 'nb.editorSettings.displaySection',
+        defaultMessage: 'Display'
     },
     git: {
         id: 'nb.editorSettings.gitSection',
@@ -34,6 +47,104 @@ const messages = defineMessages({
         defaultMessage: 'Shortcuts'
     }
 });
+
+const LearnMore = props => (
+    <React.Fragment>
+        {' '}
+        <DocumentationLink {...props}>
+            <FormattedMessage
+                defaultMessage="Learn more."
+                id="gui.alerts.cloudInfoLearnMore"
+            />
+        </DocumentationLink>
+    </React.Fragment>
+);
+
+class UnwrappedSetting extends React.Component {
+    constructor (props) {
+        super(props);
+        bindAll(this, [
+            'handleClickHelp'
+        ]);
+        this.state = {
+            helpVisible: false
+        };
+    }
+    componentDidUpdate (prevProps) {
+        if (this.props.active && !prevProps.active) {
+            // eslint-disable-next-line react/no-did-update-set-state
+            this.setState({
+                helpVisible: true
+            });
+        }
+    }
+    handleClickHelp () {
+        this.setState(prevState => ({
+            helpVisible: !prevState.helpVisible
+        }));
+    }
+    render () {
+        return (
+            <div
+                className={classNames(styles.setting, {
+                    [styles.active]: this.props.active
+                })}
+            >
+                <div className={styles.label}>
+                    {this.props.primary}
+                    <button
+                        className={styles.helpIcon}
+                        onClick={this.handleClickHelp}
+                        title={this.props.intl.formatMessage(messages.help)}
+                    >
+                        <img
+                            src={helpIcon}
+                            draggable={false}
+                        />
+                    </button>
+                </div>
+                {this.state.helpVisible && (
+                    <div className={styles.detail}>
+                        {this.props.help}
+                        {this.props.slug && <LearnMore slug={this.props.slug} />}
+                    </div>
+                )}
+                {this.props.secondary}
+            </div>
+        );
+    }
+}
+UnwrappedSetting.propTypes = {
+    intl: intlShape,
+    active: PropTypes.bool,
+    help: PropTypes.node,
+    primary: PropTypes.node,
+    secondary: PropTypes.node,
+    slug: PropTypes.string
+};
+const Setting = injectIntl(UnwrappedSetting);
+
+const BooleanSetting = ({value, onChange, label, ...props}) => (
+    <Setting
+        {...props}
+        active={value}
+        primary={
+            <label className={styles.label}>
+                <FancyCheckbox
+                    className={styles.checkbox}
+                    checked={value}
+                    onChange={onChange}
+                />
+                {label}
+            </label>
+        }
+    />
+);
+BooleanSetting.propTypes = {
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.bool.isRequired,
+    label: PropTypes.node.isRequired
+};
 
 const EditorSettingsModal = props => {
     const [selectedSectionIndex, setSelectedSectionIndex] = useState(0);
@@ -60,6 +171,48 @@ const EditorSettingsModal = props => {
                 onExportSettings={onExportSettings}
             />,
             escaped: true
+        },
+        {
+            title: messages.display,
+            content: <Box>
+                <div className={styles.header}>
+                    <FormattedMessage
+                        id="nb.editorSettings.dangerZone"
+                        defaultMessage="Danger Zone"
+                    />
+                    <div className={styles.divider} />
+                </div>
+                <BooleanSetting
+                    value={!!props.prefs['hide-backpack']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.hideBackpack"
+                        defaultMessage="Hide Backback"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.hideBackpackHelp"
+                        defaultMessage="Removes the backpack from the bottom of the screen."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.setPref('hide-backpack', e.target.checked);
+                        // resizes block palette and stuff
+                        requestAnimationFrame(() => dispatchEvent(new Event('resize')));
+                    }}
+                />
+                <BooleanSetting
+                    value={!!props.prefs['hide-feedback']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.hideFeedback"
+                        defaultMessage="Hide Feedback Button"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.hideFeedbackHelp"
+                        defaultMessage="Removes the feedback button from the top of the screen."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => props.setPref('hide-feedback', e.target.checked)}
+                />
+            </Box>
         },
         {
             title: messages.git,
@@ -137,7 +290,10 @@ EditorSettingsModal.propTypes = {
     intl: intlShape,
     // eslint-disable-next-line react/no-unused-prop-types
     isRtl: PropTypes.bool,
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    onOpenAccentManager: PropTypes.func.isRequired,
+    prefs: PropTypes.any,
+    setPref: PropTypes.func.isRequired
 };
 
 const mapStateToProps = () => ({});

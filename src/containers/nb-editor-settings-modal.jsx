@@ -180,6 +180,8 @@ class NBEditorSettingsModal extends React.Component {
             <EditorSettingsModalComponent
                 onClose={this.handleClose}
                 isRtl={this.props.isRtl}
+                prefs={this.props.prefs}
+                setPref={this.props.setPref}
             />
         );
     }
@@ -191,7 +193,9 @@ NBEditorSettingsModal.propTypes = {
     isRtl: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
+    prefs: PropTypes.any,
     setTheme: PropTypes.func.isRequired,
+    setPref: PropTypes.func.isRequired,
     theme: PropTypes.instanceOf(Theme)
 };
 
