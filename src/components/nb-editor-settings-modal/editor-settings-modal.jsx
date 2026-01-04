@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import {defineMessages, FormattedMessage, intlShape, injectIntl} from 'react-intl';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Modal from '../../containers/modal.jsx';
 import styles from './editor-settings-modal.css';
 import Box from '../box/box.jsx';
@@ -35,6 +35,10 @@ const messages = defineMessages({
         id: 'nb.editorSettings.addonsSection',
         defaultMessage: 'Addons'
     },
+    analytics: {
+        id: 'nb.editorSettings.analyticsSection',
+        defaultMessage: 'Analytics'
+    },
     display: {
         id: 'nb.editorSettings.displaySection',
         defaultMessage: 'Display'
@@ -43,13 +47,13 @@ const messages = defineMessages({
         id: 'nb.editorSettings.gitSection',
         defaultMessage: 'Git'
     },
+    keymap: {
+        id: 'nb.editorSettings.keymapSection',
+        defaultMessage: 'Keymap'
+    },
     projects: {
         id: 'nb.editorSettings.projectsSection',
         defaultMessage: 'Projects'
-    },
-    shortcuts: {
-        id: 'nb.editorSettings.shortcutsSection',
-        defaultMessage: 'Shortcuts'
     }
 });
 
@@ -153,6 +157,7 @@ BooleanSetting.propTypes = {
 
 const EditorSettingsModal = props => {
     const [selectedSectionIndex, setSelectedSectionIndex] = useState(0);
+    const [windchimeOptOut, setWindchimeOptOut] = useState(!!localStorage.getItem('tw:windchime_opt_out'));
     const [dirty, setDirty] = useState(false);
 
     const sections = [
@@ -176,6 +181,27 @@ const EditorSettingsModal = props => {
                 onExportSettings={onExportSettings}
             />,
             escaped: true
+        },
+        {
+            title: messages.analytics,
+            content: <Box>
+                <BooleanSetting
+                    value={!windchimeOptOut}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.viewCounter"
+                        defaultMessage="Allow counting my views"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.viewCounterHelp"
+                        defaultMessage="When you start a project that is loaded from Scratch, this may be logged so that a view counter can be incremented over time. Views are anonymous and can not be tied back to any user."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        localStorage.setItem('tw:windchime_opt_out', !e.target.checked);
+                        setWindchimeOptOut(!e.target.checked);
+                    }}
+                />
+            </Box>
         },
         {
             title: messages.display,
@@ -224,6 +250,10 @@ const EditorSettingsModal = props => {
             content: null
         },
         {
+            title: messages.keymap,
+            content: null
+        },
+        {
             title: messages.projects,
             content: <Box>
                 <div className={styles.header}>
@@ -250,10 +280,6 @@ const EditorSettingsModal = props => {
                     onChange={e => props.setPref('disable-compiler', e.target.checked)}
                 />
             </Box>
-        },
-        {
-            title: messages.shortcuts,
-            content: null
         }
     ];
 
@@ -266,7 +292,7 @@ const EditorSettingsModal = props => {
         >
             <Box className={styles.body}>
                 <div className={styles.topicList}>
-                    {sections.map((section, index) => (
+                    {sections.sort((a, b) => a.title.defaultMessage > b.title.defaultMessage).map((section, index) => (
                         <div
                             key={index}
                             className={classNames(styles.topicItem, {
