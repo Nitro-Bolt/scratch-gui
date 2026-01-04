@@ -157,7 +157,7 @@ BooleanSetting.propTypes = {
 
 const EditorSettingsModal = props => {
     const [selectedSectionIndex, setSelectedSectionIndex] = useState(0);
-    const [windchimeOptOut, setWindchimeOptOut] = useState(!!localStorage.getItem('tw:windchime_opt_out'));
+    const [windchimeOptOut, setWindchimeOptOut] = useState(localStorage.getItem('tw:windchime_opt_out') === 'true');
     const [dirty, setDirty] = useState(false);
 
     const sections = [
