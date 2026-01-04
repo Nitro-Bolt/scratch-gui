@@ -387,20 +387,20 @@ $fade-out-distance: 15px;
     background-color: white;
 }
 
-/*body[theme="light"] .blocklyScrollbarVertical,
-body[theme="light"] .blocklyScrollbarHorizontal {
+body[theme="light"] [class*=".blocklyScrollbarVertical"],
+body[theme="light"] [class*=".blocklyScrollbarHorizontal"] {
     fill: #cecdce;
-}*/
-body[theme="light"] .blocklyScrollbarVertical:hover,
-body[theme="light"] .blocklyScrollbarHorizontal:hover {
+}
+body[theme="light"] [class*=".blocklyScrollbarVertical"]:hover,
+body[theme="light"] [class*=".blocklyScrollbarHorizontal"]:hover {
     fill: #edebed;
 }
-
-/*body[theme="dark"] .blocklyScrollbarVertical,
-body[theme="dark"] .blocklyScrollbarHorizontal {
+s
+body[theme="dark"] [class*=".blocklyScrollbarVertical"],
+body[theme="dark"] [class*=".blocklyScrollbarHorizontal"] {
     fill: #666;
-}*/
-body[theme="dark"] .blocklyScrollbarVertical:hover,
-body[theme="dark"] .blocklyScrollbarHorizontal:hover {
+}
+body[theme="dark"] [class*=".blocklyScrollbarVertical"]:hover,
+body[theme="dark"] [class*=".blocklyScrollbarHorizontal"]:hover {
     fill: #888;
 }
