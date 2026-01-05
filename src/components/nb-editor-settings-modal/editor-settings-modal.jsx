@@ -213,6 +213,21 @@ const EditorSettingsModal = props => {
         {
             title: messages.display,
             content: <Box>
+                <BooleanSetting
+                    value={!!props.prefs['compact-tabs']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.compactTabs"
+                        defaultMessage="Compact tabs"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.compactTabsHelp"
+                        defaultMessage="Removes the text from tabs, leaving just the icon."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.setPref('compact-tabs', e.target.checked);
+                    }}
+                />
                 <div className={styles.header}>
                     <FormattedMessage
                         id="nb.editorSettings.dangerZone"

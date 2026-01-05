@@ -145,11 +145,17 @@
     filter: grayscale(100%);
 }
 
-[dir="ltr"] .tab img {
+.compact {}
+
+.compact .tab span {
+    display: none;
+}
+
+[dir="ltr"] :not(.compact) > .tab img {
     margin-right: 0.125rem;
 }
 
-[dir="rtl"] .tab img {
+[dir="rtl"] :not(.compact) >  .tab img {
     margin-left: 0.125rem;
 }
 

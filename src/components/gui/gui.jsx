@@ -370,7 +370,16 @@ const GUIComponent = props => {
                                 selectedTabPanelClassName={tabClassNames.tabPanelSelected}
                                 onSelect={onActivateTab}
                             >
-                                <TabList className={tabClassNames.tabList}>
+                                <TabList
+                                    className={
+                                        classNames(
+                                            tabClassNames.tabList,
+                                            {
+                                                [styles.compact]: prefs['compact-tabs']
+                                            }
+                                        )
+                                    }
+                                >
                                     <Tab className={tabClassNames.tab}>
                                         <img
                                             draggable={false}
