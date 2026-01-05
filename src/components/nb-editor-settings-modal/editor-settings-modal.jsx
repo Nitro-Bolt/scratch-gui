@@ -32,10 +32,6 @@ const messages = defineMessages({
         description: 'Hover text of help icon in settings',
         id: 'nb.editorSettings.help'
     },
-    accents: {
-        id: 'nb.editorSettings.accentsSection',
-        defaultMessage: 'Accents'
-    },
     addons: {
         id: 'nb.editorSettings.addonsSection',
         defaultMessage: 'Addons'
@@ -169,18 +165,6 @@ const EditorSettingsModal = props => {
 
     const sections = [
         {
-            title: messages.accents,
-            content: <button
-                className={styles.button}
-                onClick={props.onOpenAccentManager}
-            >
-                <FormattedMessage
-                    id="nb.editorSettings.openAccentManager"
-                    defaultMessage="Open Accent Manager"
-                />
-            </button>
-        },
-        {
             title: messages.addons,
             content: <AddonSettingsComponent
                 // eslint-disable-next-line react/jsx-no-bind
@@ -228,6 +212,24 @@ const EditorSettingsModal = props => {
                         props.setPref('compact-tabs', e.target.checked);
                     }}
                 />
+                <div className={styles.header}>
+                    <FormattedMessage
+                        id="nb.editorSettings.theme"
+                        defaultMessage="Theme"
+                    />
+                    <div className={styles.divider} />
+                </div>
+                <p>
+                    <button
+                        className={styles.button}
+                        onClick={props.onOpenAccentManager}
+                    >
+                        <FormattedMessage
+                            id="nb.editorSettings.openAccentManager"
+                            defaultMessage="Open Accent Manager"
+                        />
+                    </button>
+                </p>
                 <div className={styles.header}>
                     <FormattedMessage
                         id="nb.editorSettings.dangerZone"
