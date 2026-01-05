@@ -122,16 +122,16 @@ const Credits = () => (
             <p><i>The list order is randomized on each refresh.</i></p>
             <h2>Sound Effects</h2>
             <p>
-                All PenguinMod sounds are downloaded or created from:
+                All PenguinMod and DinosaurMod sounds are downloaded or created from:
                 <ul>
                     <li><a href="https://freesound.org/">https://freesound.org/</a></li>
                     <li><a href="https://archive.org/">https://archive.org/</a></li>
                     <li><a href="https://discord.gg/NZ9MBMYTZh">User-submissions from the PenguinMod Discord Server</a></li>
                     <li>The PenguinMod Developers</li>
                 </ul>
-                All sounds exclusive to PenguinMod are included under Public Domain licenses or licenses such as MIT and CC0.
+                All sounds exclusive to PenguinMod and DinosaurMod are included under Public Domain licenses or licenses such as MIT and CC0.
             </p>
-            <p>This is the current list of user-submitted sound creators:</p>
+            <p>This is the current list of user-submitted PenguinMod sound creators:</p>
             <UserList users={UserData.pmSoundSubmittors} />
             <p><i>The list order is randomized on each refresh.</i></p>
         </section>
