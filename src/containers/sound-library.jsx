@@ -13,6 +13,7 @@ import LibraryComponent from '../components/library/library.jsx';
 import {getSoundLibrary} from '../lib/libraries/tw-async-libraries';
 import soundLengths from '../lib/libraries/sounds-lengths.json';
 import soundTags from '../lib/libraries/sound-tags';
+import otherSoundPreviews from '../lib/libraries/other-sound-previews/sound-previews.js';
 
 import {connect} from 'react-redux';
 
@@ -41,8 +42,8 @@ const getSoundLibraryThumbnailData = (soundLibraryContent, isRtl) => soundLibrar
     } = sound;
     return {
         _md5: md5ext,
-        rawURL: sound.fromDinosaurmodLibrary ?
-            `${DM_LIBRARY_API}files/sound_previews/${sound.libraryFilePage2.replace(/\//g, "_").replace(".mp3", ".png")}` :
+        rawURL: sound.customSoundPreviewName ?
+            otherSoundPreviews[sound.customSoundPreviewName] :
              (sound.fromPenguinModLibrary ? `${PM_LIBRARY_API}files/sound_previews/${sound.libraryFilePage.replace(/\//g, "_").replace(".mp3", ".png")}` :
               `${PM_LIBRARY_API}files/scratch_sound_previews/${assetId}.png`),
         soundLength: sound.fromDinosaurModLibrary ?

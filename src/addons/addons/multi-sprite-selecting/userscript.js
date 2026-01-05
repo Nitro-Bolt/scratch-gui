@@ -144,8 +144,10 @@ export default async function ({ addon, console, msg }) {
                 const spriteId = wrapper.dataset.spriteId;
                 if (selectedSprites.has(spriteId)) {
                     wrapper.style.outline = "6px solid blue";
+                    wrapper.style.borderRadius = "8px";
                 } else {
                     wrapper.style.outline = "";
+                    wrapper.style.borderRadius = "0";
                 }
             });
         }

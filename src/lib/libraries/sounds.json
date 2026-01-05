@@ -6295,7 +6295,8 @@
         "assetId": "15eccd22c90176ed0420aaf8c858254b",
         "dataFormat": "",
         "rate": 44100,
-        "md5ext": "15eccd22c90176ed0420aaf8c858254b.mp3"
+        "md5ext": "15eccd22c90176ed0420aaf8c858254b.mp3",
+        "customSoundPreviewName": "mibup15full"
     },
     {
         "name": "Mustache",
