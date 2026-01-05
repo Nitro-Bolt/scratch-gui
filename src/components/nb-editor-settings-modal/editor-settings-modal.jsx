@@ -32,13 +32,13 @@ const messages = defineMessages({
         description: 'Hover text of help icon in settings',
         id: 'nb.editorSettings.help'
     },
+    general: {
+        id: 'nb.editorSettings.generalSection',
+        defaultMessage: 'General'
+    },
     addons: {
         id: 'nb.editorSettings.addonsSection',
         defaultMessage: 'Addons'
-    },
-    analytics: {
-        id: 'nb.editorSettings.analyticsSection',
-        defaultMessage: 'Analytics'
     },
     display: {
         id: 'nb.editorSettings.displaySection',
@@ -51,10 +51,6 @@ const messages = defineMessages({
     keymap: {
         id: 'nb.editorSettings.keymapSection',
         defaultMessage: 'Keymap'
-    },
-    projects: {
-        id: 'nb.editorSettings.projectsSection',
-        defaultMessage: 'Projects'
     }
 });
 
@@ -165,6 +161,116 @@ const EditorSettingsModal = props => {
 
     const sections = [
         {
+            title: messages.general,
+            content: <Box>
+                <div className={styles.header}>
+                    <FormattedMessage
+                        id="nb.editorSettings.personal"
+                        defaultMessage="Personal"
+                    />
+                    <div className={styles.divider} />
+                </div>
+                {props.usernameInvalid && <p className={classNames(styles.helpText, styles.mustChange)}>
+                    <FormattedMessage
+                        // eslint-disable-next-line max-len
+                        defaultMessage="Sorry, the cloud variable server thinks your username may be unsafe. Please change it to something else or {resetIt}."
+                        id="tw.usernameModal.mustChange"
+                        values={{
+                            resetIt: (
+                                <a
+                                    className={styles.resetLink}
+                                    // eslint-disable-next-line react/jsx-no-bind
+                                    onClick={() => props.onSetUsername(isScratchDesktop() ? 'player' : generateRandomUsername())}
+                                >
+                                    <FormattedMessage
+                                        defaultMessage="reset it (recommended)"
+                                        description="link to reset username"
+                                        id="tw.usernameModal.mustChange.resetIt"
+                                    />
+                                </a>
+                            )
+                        }}
+                    />
+                </p>}
+                <Setting
+                    primary={(
+                        <div className={classNames(styles.label, styles.customStageSize)}>
+                            <FormattedMessage
+                                defaultMessage="Username:"
+                                id="nb.editorSettings.username"
+                            />
+                            <BufferedInput
+                                value={props.username}
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onSubmit={value => {
+                                    props.onSetUsername(value);
+                                }}
+                                type="text"
+                                pattern="[a-zA-Z0-9_\-]*"
+                                maxLength="20"
+                                spellCheck="false"
+                            />
+                        </div>
+                    )}
+                    help={<>
+                        <p>
+                            <FormattedMessage
+                                id="nb.editorSettings.usernameHelp"
+                                defaultMessage="This value will be stored in your browser's storage. It may be logged when you interact with projects that contain cloud variables. It will also be used for Live Collaboration."
+                            />
+                        </p>
+                        <p>
+                            <FormattedMessage
+                                id="nb.editorSettings.usernameHelp2"
+                                defaultMessage="Values that do not correspond to a valid Scratch account will typically be rejected by the cloud variable server. We recommend leaving it as-is or changing it to your Scratch username."
+                            />
+                        </p>
+                    </>}
+                />
+                <Box>
+                    <BooleanSetting
+                        value={!windchimeOptOut}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.viewCounter"
+                            defaultMessage="Allow counting my views"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.viewCounterHelp"
+                            defaultMessage="When you start a project that is loaded from Scratch, this may be logged so that a view counter can be incremented over time. Views are anonymous and can not be tied back to any user."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => {
+                            localStorage.setItem('tw:windchime_opt_out', !e.target.checked);
+                            setWindchimeOptOut(!e.target.checked);
+                        }}
+                    />
+                </Box>
+                <div className={styles.header}>
+                    <FormattedMessage
+                        id="nb.editorSettings.dangerZone"
+                        defaultMessage="Danger Zone"
+                    />
+                    <div className={styles.divider} />
+                </div>
+                <BooleanSetting
+                    value={!!props.prefs['disable-compiler']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.disableCompiler"
+                        defaultMessage="Always disable compiler"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.disableCompilerHelp"
+                        defaultMessage="Disables the {APP_NAME} compiler by default. It can still be manually enabled per-project through Edit > Advanced Settings."
+                        values={{
+                            APP_NAME
+                        }}
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => props.setPref('disable-compiler', e.target.checked)}
+                />
+            </Box>
+        },
+        {
             title: messages.addons,
             content: <AddonSettingsComponent
                 // eslint-disable-next-line react/jsx-no-bind
@@ -172,27 +278,6 @@ const EditorSettingsModal = props => {
                 onExportSettings={onExportSettings}
             />,
             escaped: true
-        },
-        {
-            title: messages.analytics,
-            content: <Box>
-                <BooleanSetting
-                    value={!windchimeOptOut}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.viewCounter"
-                        defaultMessage="Allow counting my views"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.viewCounterHelp"
-                        defaultMessage="When you start a project that is loaded from Scratch, this may be logged so that a view counter can be incremented over time. Views are anonymous and can not be tied back to any user."
-                    />}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => {
-                        localStorage.setItem('tw:windchime_opt_out', !e.target.checked);
-                        setWindchimeOptOut(!e.target.checked);
-                    }}
-                />
-            </Box>
         },
         {
             title: messages.display,
@@ -276,91 +361,6 @@ const EditorSettingsModal = props => {
         {
             title: messages.keymap,
             content: null
-        },
-        {
-            title: messages.projects,
-            content: <Box>
-                {props.usernameInvalid && <p className={classNames(styles.helpText, styles.mustChange)}>
-                    <FormattedMessage
-                        // eslint-disable-next-line max-len
-                        defaultMessage="Sorry, the cloud variable server thinks your username may be unsafe. Please change it to something else or {resetIt}."
-                        id="tw.usernameModal.mustChange"
-                        values={{
-                            resetIt: (
-                                <a
-                                    className={styles.resetLink}
-                                    // eslint-disable-next-line react/jsx-no-bind
-                                    onClick={() => props.onSetUsername(isScratchDesktop() ? 'player' : generateRandomUsername())}
-                                >
-                                    <FormattedMessage
-                                        defaultMessage="reset it (recommended)"
-                                        description="link to reset username"
-                                        id="tw.usernameModal.mustChange.resetIt"
-                                    />
-                                </a>
-                            )
-                        }}
-                    />
-                </p>}
-                <Setting
-                    primary={(
-                        <div className={classNames(styles.label, styles.customStageSize)}>
-                            <FormattedMessage
-                                defaultMessage="Username:"
-                                id="nb.editorSettings.username"
-                            />
-                            <BufferedInput
-                                value={props.username}
-                                // eslint-disable-next-line react/jsx-no-bind
-                                onSubmit={value => {
-                                    props.onSetUsername(value);
-                                }}
-                                type="text"
-                                pattern="[a-zA-Z0-9_\-]*"
-                                maxLength="20"
-                                spellCheck="false"
-                            />
-                        </div>
-                    )}
-                    help={<>
-                        <p>
-                            <FormattedMessage
-                                id="nb.editorSettings.usernameHelp"
-                                defaultMessage="This value will be stored in your browser's storage. It may be logged when you interact with projects that contain cloud variables. It will also be used for Live Collaboration."
-                            />
-                        </p>
-                        <p>
-                            <FormattedMessage
-                                id="nb.editorSettings.usernameHelp2"
-                                defaultMessage="Values that do not correspond to a valid Scratch account will typically be rejected by the cloud variable server. We recommend leaving it as-is or changing it to your Scratch username."
-                            />
-                        </p>
-                    </>}
-                />
-                <div className={styles.header}>
-                    <FormattedMessage
-                        id="nb.editorSettings.dangerZone"
-                        defaultMessage="Danger Zone"
-                    />
-                    <div className={styles.divider} />
-                </div>
-                <BooleanSetting
-                    value={!!props.prefs['disable-compiler']}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.disableCompiler"
-                        defaultMessage="Always disable compiler"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.disableCompilerHelp"
-                        defaultMessage="Disables the {APP_NAME} compiler by default. It can still be manually enabled per-project through Edit > Advanced Settings."
-                        values={{
-                            APP_NAME
-                        }}
-                    />}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => props.setPref('disable-compiler', e.target.checked)}
-                />
-            </Box>
         }
     ];
 
@@ -373,7 +373,7 @@ const EditorSettingsModal = props => {
         >
             <Box className={styles.body}>
                 <div className={styles.topicList}>
-                    {sections.sort((a, b) => a.title.defaultMessage > b.title.defaultMessage).map((section, index) => (
+                    {sections.map((section, index) => (
                         <div
                             key={index}
                             className={classNames(styles.topicItem, {
