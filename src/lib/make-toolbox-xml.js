@@ -344,16 +344,6 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                 </value>
             </block>
             <block type="looks_nextbackdrop"/>
-            <block type="looks_getinputofbackdrop">
-                <value name="INPUT">
-                    <shadow type="looks_getinput_menu"/>
-                </value>
-                <value name="COSTUME">
-                    <shadow type="looks_backdrops">
-                        <field name="BACKDROP">${backdropName}</field>
-                    </shadow>
-                </value>
-            </block>
         ` : `
             <label text="Costumes\/Backdrops"></label>
             <block id="${targetId}_switchcostumeto" type="looks_switchcostumeto">
@@ -389,16 +379,6 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                 </value>
             </block>
             <block type="looks_nextbackdrop"/>
-            <block type="looks_getinputofbackdrop">
-                <value name="INPUT">
-                    <shadow type="looks_getinput_menu"/>
-                </value>
-                <value name="COSTUME">
-                    <shadow type="looks_backdrops">
-                        <field name="BACKDROP">${backdropName}</field>
-                    </shadow>
-                </value>
-            </block>
             ${blockSeparator}
             <block type="looks_changesizeby">
                 <value name="CHANGE">
@@ -1743,6 +1723,16 @@ const liveTests = function (isLiveTest, targetId, soundName) {
                 </shadow>
             </value>
         </block>
+        <block type="looks_getinputofbackdrop">
+                <value name="INPUT">
+                    <shadow type="looks_getinput_menu"/>
+                </value>
+                <value name="COSTUME">
+                    <shadow type="looks_backdrops">
+                        <field name="BACKDROP">${backdropName}</field>
+                    </shadow>
+                </value>
+            </block>
         ${blockSeparator}
         <block type="control_fieldbutton"></block>
         <block type="motion_mutatorCheckboxTest"></block>
