@@ -22,6 +22,7 @@ import settingsIcon from './icon--settings.svg';
 import styles from './stage-header.css';
 
 import FullscreenAPI from '../../lib/tw-fullscreen-api';
+import { registerKeyboardShortcut } from '../../lib/nb-keyboard-shortcut.js';
 
 const messages = defineMessages({
     largeStageSizeMessage: {
@@ -85,6 +86,11 @@ const StageHeaderComponent = function (props) {
     let header = null;
 
     const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen || isEmbedded);
+
+    registerKeyboardShortcut({
+        key: 'Enter',
+        alt: true
+    }, () => (isFullScreen ? onSetStageUnFullScreen() : onSetStageFullScreen()));
 
     if (isFullScreen || isEmbedded) {
         const settingsButton = isEmbedded && enableSettingsButton ? (
