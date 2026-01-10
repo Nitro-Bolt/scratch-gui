@@ -20,6 +20,7 @@ const MODAL_FONTS = 'fontsModal';
 const MODAL_UNKNOWN_PLATFORM = 'unknownPlatformModal';
 const MODAL_INVALID_PROJECT = 'invalidProjectModal';
 const MODAL_CUSTOM_ACCENT = 'customAccentModal';
+const MODAL_GIT = 'gitModal';
 
 const initialState = {
     [MODAL_BACKDROP_LIBRARY]: false,
@@ -40,7 +41,8 @@ const initialState = {
     [MODAL_FONTS]: false,
     [MODAL_UNKNOWN_PLATFORM]: false,
     [MODAL_INVALID_PROJECT]: false,
-    [MODAL_CUSTOM_ACCENT]: false
+    [MODAL_CUSTOM_ACCENT]: false,
+    [MODAL_GIT]: false
 };
 
 const reducer = function (state, action) {
@@ -127,6 +129,9 @@ const openInvalidProjectModal = function () {
 const openCustomAccentModal = function () {
     return openModal(MODAL_CUSTOM_ACCENT);
 };
+const openGitModal = function () {
+    return openModal(MODAL_GIT);
+}
 const closeBackdropLibrary = function () {
     return closeModal(MODAL_BACKDROP_LIBRARY);
 };
@@ -184,6 +189,9 @@ const closeInvalidProjectModal = function () {
 const closeCustomAccentModal = function () {
     return closeModal(MODAL_CUSTOM_ACCENT);
 };
+const closeGitModal = function () {
+    return closeModal(MODAL_GIT);
+}
 export {
     reducer as default,
     initialState as modalsInitialState,
@@ -206,6 +214,7 @@ export {
     openUnknownPlatformModal,
     openInvalidProjectModal,
     openCustomAccentModal,
+    openGitModal,
     closeBackdropLibrary,
     closeCostumeLibrary,
     closeExtensionLibrary,
@@ -224,5 +233,6 @@ export {
     closeFontsModal,
     closeUnknownPlatformModal,
     closeInvalidProjectModal,
-    closeCustomAccentModal
+    closeCustomAccentModal,
+    closeGitModal
 };

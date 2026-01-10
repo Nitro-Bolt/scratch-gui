@@ -34,7 +34,7 @@ import CloudVariablesToggler from '../../containers/tw-cloud-toggler.jsx';
 import TWSaveStatus from './tw-save-status.jsx';
 import TWNews from './tw-news.jsx';
 
-import {openTipsLibrary, openExtensionManagerModal, openSettingsModal, openRestorePointModal} from '../../reducers/modals';
+import {openTipsLibrary, openExtensionManagerModal, openSettingsModal, openRestorePointModal, openGitModal} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import {
     isTimeTravel220022BC,
@@ -96,6 +96,7 @@ import editIcon from './icon--edit.svg';
 import addonsIcon from './addons.svg';
 import errorIcon from './tw-error.svg';
 import advancedIcon from './tw-advanced.svg';
+import gitIcon from './nb-git.svg';
 
 import ninetiesLogo from './nineties_logo.svg';
 import catLogo from './cat_logo.svg';
@@ -105,7 +106,7 @@ import oldtimeyLogo from './oldtimey-logo.svg';
 import sharedMessages from '../../lib/shared-messages';
 
 import SeeInsideButton from './tw-see-inside.jsx';
-import {notScratchDesktop} from '../../lib/isScratchDesktop.js';
+import {isScratchDesktop, notScratchDesktop} from '../../lib/isScratchDesktop.js';
 import {APP_NAME} from '../../lib/brand.js';
 
 const ariaMessages = defineMessages({
@@ -717,6 +718,26 @@ class MenuBar extends React.Component {
                                 </MenuBarMenu>
                             </MenuLabel>
                         )}
+                        {isScratchDesktop() && this.props.onClickGitModal && (
+                            <div
+                                className={classNames(styles.menuBarItem, styles.hoverable)}
+                                onClick={this.props.onClickGitModal}
+                            >
+                                <img
+                                    src={gitIcon}
+                                    draggable={false}
+                                    width={20}
+                                    height={20}
+                                />
+                                <span className={styles.collapsibleLabel}>
+                                    <FormattedMessage
+                                        defaultMessage="Git"
+                                        description="Button to open git menu"
+                                        id="nb.menuBar.git"
+                                    />
+                                </span>
+                            </div>
+                        )}
                         <MenuLabel
                             open={this.props.editMenuOpen}
                             onOpen={this.props.onClickEdit}
@@ -1134,6 +1155,7 @@ MenuBar.propTypes = {
     onClickSettings: PropTypes.func,
     onClickExtensionManagerModal: PropTypes.func,
     onClickSettingsModal: PropTypes.func,
+    onClickGitModal: PropTypes.func,
     onLogOut: PropTypes.func,
     onOpenRegistration: PropTypes.func,
     onOpenTipLibrary: PropTypes.func,
@@ -1224,6 +1246,10 @@ const mapDispatchToProps = dispatch => ({
     onRequestCloseAbout: () => dispatch(closeAboutMenu()),
     onClickRestorePoints: () => dispatch(openRestorePointModal()),
     onClickSettings: () => dispatch(openSettingsMenu()),
+    onClickGitModal: () => {
+        dispatch(closeEditMenu());
+        dispatch(openGitModal());
+    },
     onClickExtensionManagerModal: () => {
         dispatch(closeEditMenu());
         dispatch(openExtensionManagerModal());
