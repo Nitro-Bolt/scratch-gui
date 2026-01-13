@@ -251,6 +251,14 @@ const GitModal = props => {
         contentLabel={props.intl.formatMessage(messages.title)}
         id="gitModal"
       >
+        <input
+          ref={fileInputRef}
+          type="file"
+          webkitdirectory="true"
+          directory="true"
+          onChange={handleFolderSelected}
+          style={{display: 'none'}}
+        />
         <Box className={styles.body}>
           {isUserSelectedFolder ? (
             <div>
