@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
@@ -27,11 +27,44 @@ const messages = defineMessages({
   initRepo: {
     defaultMessage: 'Initialize Repository',
     id: 'nb.git.init'
+  },
+  repoPath: {
+    defaultMessage: 'Repository folder',
+    id: 'nb.git.repoPath'
+  },
+  chooseFolder: {
+    defaultMessage: 'Choose Folder',
+    id: 'nb.git.chooseFolder'
+  },
+  noFolder: {
+    defaultMessage: 'No folder selected',
+    id: 'nb.git.noFolder'
+  },
+  pickFolder: {
+    defaultMessage: 'Select a folder to use Git.',
+    id: 'nb.git.pickFolder'
+  },
+  refresh: {
+    defaultMessage: 'Refresh',
+    id: 'nb.git.refresh'
+  },
+  emptyCommit: {
+    defaultMessage: 'Commit message cannot be empty',
+    id: 'nb.git.emptyCommit'
+  },
+  folderPickerUnavailable: {
+    defaultMessage: 'Folder picker is only available in NitroBolt Desktop.',
+    id: 'nb.git.folderPickerUnavailable'
+  },
+  cleanTree: {
+    defaultMessage: 'Working tree clean',
+    id: 'nb.git.clean'
   }
 });
 
 const GitModal = props => {
   const [gitAvailable, setGitAvailable] = useState(false);
+  const [repoPath, setRepoPath] = useState(props.projectPath || '');
   const [isRepository, setIsRepository] = useState(false);
   const [branch, setBranch] = useState('');
   const [status, setStatus] = useState(null);
@@ -45,10 +78,21 @@ const GitModal = props => {
   }, []);
 
   useEffect(() => {
-    if (gitAvailable && props.projectPath && isRepository) {
-      refreshStatus();
+    if (props.projectPath && props.projectPath !== repoPath) {
+      setRepoPath(props.projectPath);
     }
-  }, [props.projectPath, gitAvailable, isRepository]);
+  }, [props.projectPath, repoPath]);
+
+  useEffect(() => {
+    if (gitAvailable && repoPath) {
+      refreshStatus(repoPath);
+    } else if (!repoPath) {
+      setStatus(null);
+      setIsRepository(false);
+      setBranch('');
+      setLoading(false);
+    }
+  }, [repoPath, gitAvailable]);
 
   const checkGitAvailability = async () => {
     if (!window.Git) {
@@ -61,8 +105,8 @@ const GitModal = props => {
       const available = await window.Git.isAvailable();
       setGitAvailable(available);
 
-      if (available && props.projectPath) {
-        await refreshStatus();
+      if (available && repoPath) {
+        await refreshStatus(repoPath);
       } else {
         setLoading(false);
       }
@@ -72,20 +116,32 @@ const GitModal = props => {
     }
   };
 
-  const refreshStatus = async () => {
-    if (!props.projectPath || !gitAvailable) return;
+  const refreshStatus = async (targetPath = repoPath) => {
+    if (!targetPath || !gitAvailable) {
+      setStatus(null);
+      setIsRepository(false);
+      setBranch('');
+      return;
+    }
 
     try {
       setLoading(true);
       setError(null);
 
-      const result = await window.Git.status(props.projectPath);
+      const result = await window.Git.status(targetPath);
       if (result.success) {
         setIsRepository(result.data.isRepository);
-        setBranch(result.data.branch || 'unknown');
-        setStatus(result.data);
+        if (result.data.isRepository) {
+          setBranch(result.data.branch || 'unknown');
+          setStatus(result.data);
+        } else {
+          setBranch('');
+          setStatus(null);
+        }
       } else {
         setIsRepository(false);
+        setBranch('');
+        setStatus(null);
         setError(result.error);
       }
     } catch (err) {
@@ -95,63 +151,104 @@ const GitModal = props => {
     }
   };
 
-  const handleInitRepository = async () => {
+  const handleSelectDirectory = async () => {
+    if (!window.EditorPreload || !window.EditorPreload.showOpenDirectoryPicker) {
+      setError(props.intl.formatMessage(messages.folderPickerUnavailable));
+      return;
+    }
+
     try {
       setLoading(true);
-      const result = await window.Git.init(props.projectPath);
+      setError(null);
+      const result = await window.EditorPreload.showOpenDirectoryPicker();
+      if (!result || !result.path) return;
+
+      setRepoPath(result.path);
+      await refreshStatus(result.path);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const guardRepoPath = () => {
+    if (!repoPath) {
+      setError(props.intl.formatMessage(messages.pickFolder));
+      return false;
+    }
+    return true;
+  };
+
+  const handleInitRepository = async () => {
+    if (!guardRepoPath()) return;
+    try {
+      setLoading(true);
+      const result = await window.Git.init(repoPath);
       if (result.success) {
-        await refreshStatus();
+        await refreshStatus(repoPath);
       } else {
         setError(result.error);
       }
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleAddAll = async () => {
+    if (!guardRepoPath()) return;
     try {
       setLoading(true);
-      const result = await window.Git.add(props.projectPath, []);
+      const result = await window.Git.add(repoPath, []);
       if (result.success) {
-        await refreshStatus();
+        await refreshStatus(repoPath);
       } else {
         setError(result.error);
       }
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleCommit = async () => {
+    if (!guardRepoPath()) return;
     if (!commitMessage.trim()) {
-      setError('Commit message cannot be empty');
+      setError(props.intl.formatMessage(messages.emptyCommit));
       return;
     }
 
     try {
       setIsCommitting(true);
-      const result = await window.Git.commit(props.projectPath, commitMessage);
+      const result = await window.Git.commit(repoPath, commitMessage);
       if (result.success) {
         setCommitMessage('');
-        await refreshStatus();
+        await refreshStatus(repoPath);
       } else {
         setError(result.error);
       }
+    } catch (err) {
+      setError(err.message);
     } finally {
       setIsCommitting(false);
     }
   };
 
   const handleDiscardFile = async file => {
+    if (!guardRepoPath()) return;
     try {
       setLoading(true);
-      const result = await window.Git.discard(props.projectPath, file);
+      const result = await window.Git.discard(repoPath, file);
       if (result.success) {
-        await refreshStatus();
+        await refreshStatus(repoPath);
       } else {
         setError(result.error);
       }
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -191,42 +288,6 @@ const GitModal = props => {
     );
   }
 
-  if (!isRepository && !loading) {
-    return (
-      <Modal
-        className={styles.modalContent}
-        onRequestClose={props.onClose}
-        contentLabel={props.intl.formatMessage(messages.title)}
-        id="gitModal"
-      >
-        <Box className={styles.body}>
-          <p>{props.intl.formatMessage(messages.notRepo)}</p>
-          <button
-            className={styles.button}
-            onClick={handleInitRepository}
-          >
-            {props.intl.formatMessage(messages.initRepo)}
-          </button>
-        </Box>
-      </Modal>
-    );
-  }
-
-  if (loading) {
-    return (
-      <Modal
-        className={styles.modalContent}
-        onRequestClose={props.onClose}
-        contentLabel={props.intl.formatMessage(messages.title)}
-        id="gitModal"
-      >
-        <Box className={styles.body}>
-          <div className={styles.loading}>Loading…</div>
-        </Box>
-      </Modal>
-    );
-  }
-
   return (
     <Modal
       className={styles.modalContent}
@@ -237,44 +298,127 @@ const GitModal = props => {
       <Box className={styles.body}>
         <div className={styles.header}>
           {props.intl.formatMessage(messages.title)}
-          <span className={styles.branch}>📍 {branch}</span>
+          {isRepository && branch && (
+            <span className={styles.branch}>📍 {branch}</span>
+          )}
+        </div>
+
+        <div className={styles.section}>
+          <div className={styles.sectionTitle}>
+            {props.intl.formatMessage(messages.repoPath)}
+          </div>
+          <div className={styles.pathRow}>
+            <div className={styles.pathValue}>
+              {repoPath || props.intl.formatMessage(messages.noFolder)}
+            </div>
+            <button
+              className={styles.smallButton}
+              onClick={handleSelectDirectory}
+              disabled={loading}
+            >
+              {props.intl.formatMessage(messages.chooseFolder)}
+            </button>
+            {repoPath ? (
+              <button
+                className={styles.smallButton}
+                onClick={() => refreshStatus()}
+                disabled={loading}
+              >
+                {props.intl.formatMessage(messages.refresh)}
+              </button>
+            ) : null}
+          </div>
         </div>
 
         {error && <div className={styles.error}>{error}</div>}
 
-        {status && (
-          <div className={styles.section}>
-            <h3>Changes</h3>
-
-            {status.unstaged.map(file => (
-              <div key={file} className={styles.fileItem}>
-                <span>{file}</span>
-                <button onClick={() => handleDiscardFile(file)}>
-                  Discard
-                </button>
-              </div>
-            ))}
-
-            {status.untracked.map(file => (
-              <div key={file} className={styles.fileItem}>
-                <span>{file}</span>
-              </div>
-            ))}
+        {!repoPath && (
+          <div className={styles.notice}>
+            {props.intl.formatMessage(messages.pickFolder)}
           </div>
         )}
 
-        {(status.unstaged.length > 0 || status.untracked.length > 0) && (
+        {repoPath && loading && (
+          <div className={styles.notice}>Loading…</div>
+        )}
+
+        {repoPath && !loading && !isRepository && (
           <div className={styles.section}>
-            <textarea
-              value={commitMessage}
-              onChange={e => setCommitMessage(e.target.value)}
-              placeholder="Enter commit message…"
-            />
-            <button onClick={handleAddAll}>Stage All</button>
-            <button onClick={handleCommit} disabled={isCommitting}>
-              Commit
+            <p>{props.intl.formatMessage(messages.notRepo)}</p>
+            <button
+              className={styles.button}
+              onClick={handleInitRepository}
+              disabled={loading}
+            >
+              {props.intl.formatMessage(messages.initRepo)}
             </button>
           </div>
+        )}
+
+        {repoPath && !loading && isRepository && status && (
+          <>
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>Changes</div>
+
+              {status.unstaged.map(file => (
+                <div key={`unstaged-${file}`} className={styles.fileItem}>
+                  <span className={styles.fileName}>{file}</span>
+                  <button
+                    className={styles.smallButton}
+                    onClick={() => handleDiscardFile(file)}
+                  >
+                    Discard
+                  </button>
+                </div>
+              ))}
+
+              {status.untracked.map(file => (
+                <div key={`untracked-${file}`} className={styles.fileItem}>
+                  <span className={styles.fileName}>{file}</span>
+                </div>
+              ))}
+
+              {status.unstaged.length === 0 && status.untracked.length === 0 && (
+                <div className={styles.notice}>
+                  {props.intl.formatMessage(messages.cleanTree)}
+                </div>
+              )}
+            </div>
+
+            {(status.unstaged.length > 0 || status.untracked.length > 0) && (
+              <div className={styles.section}>
+                <textarea
+                  className={styles.commitInput}
+                  value={commitMessage}
+                  onChange={e => setCommitMessage(e.target.value)}
+                  placeholder="Enter commit message…"
+                />
+                <div className={styles.buttonGroup}>
+                  <button
+                    className={styles.button}
+                    onClick={handleAddAll}
+                    disabled={loading}
+                  >
+                    Stage All
+                  </button>
+                  <button
+                    className={styles.button}
+                    onClick={handleCommit}
+                    disabled={isCommitting}
+                  >
+                    Commit
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {status.lastCommit && (
+              <div className={styles.section}>
+                <div className={styles.sectionTitle}>Latest Commit</div>
+                <div className={styles.lastCommit}>{status.lastCommit}</div>
+              </div>
+            )}
+          </>
         )}
       </Box>
     </Modal>
