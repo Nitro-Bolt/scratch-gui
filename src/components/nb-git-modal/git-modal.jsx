@@ -64,7 +64,14 @@ const messages = defineMessages({
 
 const GitModal = props => {
   const [gitAvailable, setGitAvailable] = useState(false);
-  const [repoPath, setRepoPath] = useState(props.projectPath || '');
+  const [repoPath, setRepoPath] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('nb:git-repo-path');
+      return saved || props.projectPath || '';
+    } catch {
+      return props.projectPath || '';
+    }
+  });
   const [isRepository, setIsRepository] = useState(false);
   const [branch, setBranch] = useState('');
   const [status, setStatus] = useState(null);
@@ -76,6 +83,14 @@ const GitModal = props => {
   useEffect(() => {
     checkGitAvailability();
   }, []);
+
+  useEffect(() => {
+    if (repoPath) {
+      try {
+        sessionStorage.setItem('nb:git-repo-path', repoPath);
+      } catch (err) {}
+    }
+  }, [repoPath]);
 
   useEffect(() => {
     if (props.projectPath && props.projectPath !== repoPath) {
