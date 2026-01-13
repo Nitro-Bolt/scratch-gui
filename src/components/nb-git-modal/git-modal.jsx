@@ -27,6 +27,18 @@ const messages = defineMessages({
   initRepo: {
     defaultMessage: 'Initialize Repository',
     id: 'nb.git.init'
+  },
+  chooseFolder: {
+    defaultMessage: 'Choose Repository Folder',
+    id: 'nb.git.chooseFolder'
+  },
+  selectedFolder: {
+    defaultMessage: 'Selected folder:',
+    id: 'nb.git.selectedFolder'
+  },
+  initializeHere: {
+    defaultMessage: 'Initialize Here',
+    id: 'nb.git.initializeHere'
   }
 });
 
@@ -39,16 +51,24 @@ const GitModal = props => {
   const [error, setError] = useState(null);
   const [commitMessage, setCommitMessage] = useState('');
   const [isCommitting, setIsCommitting] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const fileInputRef = React.useRef(null);
+
+  useEffect(() => {
+    if (props.projectPath) {
+      setSelectedFolder(props.projectPath);
+    }
+  }, [props.projectPath]);
 
   useEffect(() => {
     checkGitAvailability();
   }, []);
 
   useEffect(() => {
-    if (gitAvailable && props.projectPath && isRepository) {
+    if (gitAvailable && (selectedFolder || props.projectPath)) {
       refreshStatus();
     }
-  }, [props.projectPath, gitAvailable, isRepository]);
+  }, [selectedFolder, gitAvailable, props.projectPath]);
 
   const checkGitAvailability = async () => {
     if (!window.Git) {
@@ -61,7 +81,7 @@ const GitModal = props => {
       const available = await window.Git.isAvailable();
       setGitAvailable(available);
 
-      if (available && props.projectPath) {
+      if (available && (selectedFolder || props.projectPath)) {
         await refreshStatus();
       } else {
         setLoading(false);
@@ -73,13 +93,14 @@ const GitModal = props => {
   };
 
   const refreshStatus = async () => {
-    if (!props.projectPath || !gitAvailable) return;
+    const folder = selectedFolder || props.projectPath;
+    if (!folder || !gitAvailable) return;
 
     try {
       setLoading(true);
       setError(null);
 
-      const result = await window.Git.status(props.projectPath);
+      const result = await window.Git.status(folder);
       if (result.success) {
         setIsRepository(result.data.isRepository);
         setBranch(result.data.branch || 'unknown');
@@ -95,15 +116,41 @@ const GitModal = props => {
     }
   };
 
+  const handleChooseFolder = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFolderSelected = (event) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const firstFile = files[0];
+
+      if (firstFile.path) {
+        const folderPath = firstFile.path.split('\\').slice(0, -1).join('\\');
+        setSelectedFolder(folderPath);
+        setTimeout(() => refreshStatus(), 500);
+      }
+    }
+  };
+
   const handleInitRepository = async () => {
+    const folder = selectedFolder || props.projectPath;
+    if (!folder) {
+      setError('Please select a folder first');
+      return;
+    }
+
     try {
       setLoading(true);
-      const result = await window.Git.init(props.projectPath);
+      setError(null);
+      const result = await window.Git.init(folder);
       if (result.success) {
         await refreshStatus();
       } else {
         setError(result.error);
       }
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -112,7 +159,8 @@ const GitModal = props => {
   const handleAddAll = async () => {
     try {
       setLoading(true);
-      const result = await window.Git.add(props.projectPath, []);
+      const folder = selectedFolder || props.projectPath;
+      const result = await window.Git.add(folder, []);
       if (result.success) {
         await refreshStatus();
       } else {
@@ -131,7 +179,8 @@ const GitModal = props => {
 
     try {
       setIsCommitting(true);
-      const result = await window.Git.commit(props.projectPath, commitMessage);
+      const folder = selectedFolder || props.projectPath;
+      const result = await window.Git.commit(folder, commitMessage);
       if (result.success) {
         setCommitMessage('');
         await refreshStatus();
@@ -146,7 +195,8 @@ const GitModal = props => {
   const handleDiscardFile = async file => {
     try {
       setLoading(true);
-      const result = await window.Git.discard(props.projectPath, file);
+      const folder = selectedFolder || props.projectPath;
+      const result = await window.Git.discard(folder, file);
       if (result.success) {
         await refreshStatus();
       } else {
@@ -192,6 +242,8 @@ const GitModal = props => {
   }
 
   if (!isRepository && !loading) {
+    const isUserSelectedFolder = selectedFolder && selectedFolder !== props.projectPath;
+
     return (
       <Modal
         className={styles.modalContent}
@@ -200,13 +252,34 @@ const GitModal = props => {
         id="gitModal"
       >
         <Box className={styles.body}>
-          <p>{props.intl.formatMessage(messages.notRepo)}</p>
-          <button
-            className={styles.button}
-            onClick={handleInitRepository}
-          >
-            {props.intl.formatMessage(messages.initRepo)}
-          </button>
+          {isUserSelectedFolder ? (
+            <div>
+              <p>{props.intl.formatMessage(messages.selectedFolder)} <br /> <strong>{selectedFolder}</strong></p>
+              <p>{props.intl.formatMessage(messages.notRepo)}</p>
+              <button
+                className={styles.button}
+                onClick={handleInitRepository}
+              >
+                {props.intl.formatMessage(messages.initializeHere)}
+              </button>
+              <button
+                className={styles.button}
+                onClick={handleChooseFolder}
+              >
+                {props.intl.formatMessage(messages.chooseFolder)}
+              </button>
+            </div>
+          ) : (
+            <div>
+              <p>{props.intl.formatMessage(messages.notRepo)}</p>
+              <button
+                className={styles.button}
+                onClick={handleChooseFolder}
+              >
+                {props.intl.formatMessage(messages.chooseFolder)}
+              </button>
+            </div>
+          )}
         </Box>
       </Modal>
     );
@@ -234,6 +307,14 @@ const GitModal = props => {
       contentLabel={props.intl.formatMessage(messages.title)}
       id="gitModal"
     >
+      <input
+        ref={fileInputRef}
+        type="file"
+        webkitdirectory="true"
+        directory="true"
+        onChange={handleFolderSelected}
+        style={{display: 'none'}}
+      />
       <Box className={styles.body}>
         <div className={styles.header}>
           {props.intl.formatMessage(messages.title)}
