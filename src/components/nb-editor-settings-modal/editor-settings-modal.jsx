@@ -234,10 +234,20 @@ const EditorSettingsModal = props => {
                             id="nb.editorSettings.viewCounter"
                             defaultMessage="Allow counting my views"
                         />}
-                        help={<FormattedMessage
-                            id="nb.editorSettings.viewCounterHelp"
-                            defaultMessage="When you start a project that is loaded from Scratch, this may be logged so that a view counter can be incremented over time. Views are anonymous and can not be tied back to any user."
-                        />}
+                        help={<>
+                            <FormattedMessage
+                                id="nb.editorSettings.viewCounterHelp"
+                                defaultMessage="When you start a project that is loaded from Scratch, this may be logged so that a view counter can be incremented over time. Views are anonymous and can not be tied back to any user."
+                            /> <a
+                                href="/privacy.html"
+                                target="_blank"
+                            >
+                                <FormattedMessage
+                                    id="nb.editorSettings.viewCounterPrivacyLink"
+                                    defaultMessage="Privacy policy"
+                                />
+                            </a>
+                        </>}
                         // eslint-disable-next-line react/jsx-no-bind
                         onChange={e => {
                             localStorage.setItem('tw:windchime_opt_out', !e.target.checked);
