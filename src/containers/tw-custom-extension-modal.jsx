@@ -116,13 +116,15 @@ class CustomExtensionModal extends React.Component {
     }
     async handleLoadExtension () {
         let failed = false;
-        if (this.props.swapId) {
+        // i dont think this is a good idea to say anymore, either swap works or its bugged
+        if (/*this.props.swapId*/ false) {
             /* eslint-disable-next-line no-alert, max-len */
             if (!confirm('Failure to swap extensions will cause the extension to be flatout removed, are you sure the inputed extension has matching id\'s and has no errors?')) {
                 return;
             }
         }
         this.handleClose();
+        const oldUrl = this.props.vm.extensionManager.extensionUrlFromId(this.props.swapId);
         try {
             const url = await this.getExtensionURL();
             if (this.state.type !== 'url' && this.state.unsandboxed) {
@@ -131,18 +133,22 @@ class CustomExtensionModal extends React.Component {
             if (this.props.swapId) {
                 const runtime = this.props.vm.runtime;
                 this.props.vm.extensionManager.prepareSwap(this.props.swapId);
-                const loadedIds = await this.props.vm.extensionManager.loadExtensionURL(url);
+                const startingIds = Object.keys(this.props.vm.extensionManager.getExtensionURLs());
+                await this.props.vm.extensionManager.loadExtensionURL(url);
+                const loadedIds = Object.keys(this.props.vm.extensionManager.getExtensionURLs())
+                    .filter(id => !startingIds.includes(id));
                 if (!loadedIds.includes(this.props.swapId)) {
                     for (const ext of loadedIds) this.props.vm.extensionManager.removeExtension(ext);
+                    this.props.vm.extensionManager.loadExtensionURL(oldUrl);
                     // eslint-disable-next-line no-alert
-                    alert('The extension you used to for the edit had a different id to the one you where editing.');
+                    alert('The extension you used to for the edit had a different id to the one you where editing. Reverting replacement.');
                 }
                 this.props.vm.runtime._removeExtensionPrimitive(this.props.swapId);
                 loadedIds.forEach(extId => {
                     const idx = runtime._blockInfo.findIndex(ext => ext.id === extId);
                     const doubleIdx = runtime._blockInfo.findIndex((ext, i) => ext.id === extId && i !== idx);
                     if (doubleIdx === -1) return;
-                    const extInfo = runtime._blockInfo[idx];
+                    const extInfo = runtime._blockInfo[doubleIdx];
                     runtime._blockInfo.splice(doubleIdx, 1);
                     runtime._blockInfo.splice(idx, 1, extInfo);
                 });
@@ -160,6 +166,7 @@ class CustomExtensionModal extends React.Component {
                 // eslint-disable-next-line no-alert
                 alert('The extension you used to for the edit has failed to load.');
                 this.props.vm.runtime._removeExtensionPrimitive(this.props.swapId);
+                this.props.vm.extensionManager.loadExtensionURL(oldUrl);
             }
             if (failed) return;
             if (!this.state.addingToLibrary) return;

@@ -45,7 +45,7 @@ const reducer = function (state, action) {
         const makeState = {
             [action.modal]: true
         };
-        if (action.extensionModalSwapId) makeState.extensionModalSwapId = action.extensionModalSwapId;
+        makeState.extensionModalSwapId = action.extensionModalSwapId;
         return Object.assign({}, state, makeState);
     }
     case CLOSE_MODAL:

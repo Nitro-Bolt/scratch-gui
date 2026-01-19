@@ -1510,6 +1510,17 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'Pointers',
+        extensionId: 'jwPointer',
+        iconURL: 'https://studio.penguinmod.com/static/assets/9599fd8ac0e980a9b54528414b3a8a04.svg',
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
+        tags: ['penguinmod', 'datamgmt'],
+        description: 'Define references to values. (extra blocks if used with Array extension)',
+        extDeveloper: 'jwklong',
+        featured: true
+    },
+    {
         name: (
             <FormattedMessage
                 defaultMessage="TurboWarp Blocks"
