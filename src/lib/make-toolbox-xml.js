@@ -761,6 +761,8 @@ const json = function (colors) {
         </block>
         <block type="json_values">
         </block>
+        <block type="json_entries" id="json_entries">
+        </block>
         <block type="json_value_of_key">
             <value name="KEY">
                 <shadow type="text">
