@@ -25,9 +25,9 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 22
-        cache: npm
-    - run: npm ci
-    - run: npm run build
+        cache: pnpm
+    - run: pnpm i
+    - run: pnpm run build
       env:
         NODE_ENV: production
         ROUTING_STYLE: hash
