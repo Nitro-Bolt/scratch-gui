@@ -2,10 +2,24 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
 
   "extends": [
-    "github>scratchfoundation/scratch-renovate-config"
+    "config:base"
   ],
 
-  "ignoreDeps": [
-    "cat-blocks"
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "*"
+      ],
+      "enabled": false
+    },
+    {
+      "matchPackageNames": [
+        "scratch-vm",
+        "scratch-blocks",
+        "scratch-paint",
+        "scratch-render"
+      ],
+      "enabled": true
+    }
   ]
 }
