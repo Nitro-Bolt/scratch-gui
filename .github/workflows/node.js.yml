@@ -30,20 +30,17 @@ jobs:
       with:
         node-version: 22
         cache: pnpm
-        cache-dependency-path: 'scratch-gui/pnpm-lock.yaml'
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
-      working-directory: scratch-gui
     - name: Build
       run: pnpm build
-      working-directory: scratch-gui
       env:
         NODE_ENV: production
         ROUTING_STYLE: hash
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: scratch-gui/build/
+        path: ./build/
 
   deploy:
     environment:
