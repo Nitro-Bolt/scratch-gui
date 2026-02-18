@@ -1,0 +1,21 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  "extends": [
+    "config:base"
+  ],
+
+  "forkProcessing": "enabled",
+
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "scratch-vm",
+        "scratch-blocks",
+        "scratch-paint",
+        "scratch-render"
+      ],
+      "enabled": true
+    }
+  ]
+}
