@@ -2,17 +2,14 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
 
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
+
+  "rangeStrategy": "update-lockfile",
 
   "packageRules": [
     {
-      "matchPackageNames": [
-        "*"
-      ],
-      "enabled": false
-    },
-    {
+      "matchDatasources": ["github-tags"],
       "matchPackageNames": [
         "scratch-vm",
         "scratch-blocks",
