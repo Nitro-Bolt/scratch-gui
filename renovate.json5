@@ -8,12 +8,6 @@
   "packageRules": [
     {
       "matchPackageNames": [
-        "*"
-      ],
-      "enabled": false
-    },
-    {
-      "matchPackageNames": [
         "scratch-vm",
         "scratch-blocks",
         "scratch-paint",
