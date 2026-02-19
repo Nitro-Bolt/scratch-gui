@@ -809,7 +809,7 @@ Blocks.defaultOptions = {
         colour: '#ddd'
     },
     comments: true,
-    collapse: false,
+    collapse: true,
     sounds: false
 };
 
