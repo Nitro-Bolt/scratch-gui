@@ -1,4 +1,5 @@
 export default {
+    ASSET: 'ASSET',
     SOUND: 'SOUND',
     COSTUME: 'COSTUME',
     SPRITE: 'SPRITE',
