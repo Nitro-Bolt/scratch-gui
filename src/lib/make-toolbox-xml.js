@@ -757,7 +757,11 @@ const json = function (colors) {
         <block type="json_to_string">
         </block>
         ${blockSeparator}
-        <block type="json_get_properties">
+        <block type="json_keys">
+        </block>
+        <block type="json_values">
+        </block>
+        <block type="json_entries">
         </block>
         <block type="json_value_of_key">
             <value name="KEY">
