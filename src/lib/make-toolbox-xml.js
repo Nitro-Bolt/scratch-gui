@@ -757,11 +757,7 @@ const json = function (colors) {
         <block type="json_to_string">
         </block>
         ${blockSeparator}
-        <block type="json_keys">
-        </block>
-        <block type="json_values">
-        </block>
-        <block type="json_entries" id="json_entries">
+        <block type="json_get_properties">
         </block>
         <block type="json_value_of_key">
             <value name="KEY">
@@ -823,6 +819,8 @@ const json = function (colors) {
                 </shadow>
             </value>
         </block>
+        <block type="json_array_length" id="json_array_length">
+        </block>
         <block type="json_add_item">
             <value name="ITEM">
                 <shadow type="text">
@@ -853,6 +851,18 @@ const json = function (colors) {
             <value name="ITEM">
                 <shadow type="text">
                     <field name="TEXT">${bar}</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="json_slice_array" id="json_slice_array">
+            <value name="START">
+                <shadow type="math_number">
+                    <field name="NUM">1</field>
+                </shadow>
+            </value>
+            <value name="END">
+                <shadow type="math_number">
+                    <field name="NUM">2</field>
                 </shadow>
             </value>
         </block>
