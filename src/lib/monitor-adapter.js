@@ -15,7 +15,7 @@ const isUndefined = a => typeof a === 'undefined';
  * @param {VirtualMachine} block.vm - the VM instance which owns the block
  * @return {object} The adapted monitor with label and category
  */
-export default function ({id, spriteName, opcode, params, value, vm}) {
+export default function ({id, mode, spriteName, opcode, params, value, vm}) {
     // Extension monitors get their labels from the Runtime through `getLabelForOpcode`.
     // Other monitors' labels are hard-coded in `OpcodeLabels`.
     let {label, category, labelFn} = (vm && vm.runtime.getLabelForOpcode(opcode)) || OpcodeLabels.getLabel(opcode);
@@ -33,9 +33,9 @@ export default function ({id, spriteName, opcode, params, value, vm}) {
         value = Number(value.toFixed(6));
     }
 
-    // Convert to a string now. That should help avoid unnecessary re-renders in a few edge cases.
+    // Convert scalars to a string now. That should help avoid unnecessary re-renders in a few edge cases.
     // For lists, we stringify when we display the list row instead of doing a full list copy on every change.
-    if (!Array.isArray(value)) {
+    if (mode !== 'list') {
         value = safeStringify(value);
     }
 

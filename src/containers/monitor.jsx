@@ -13,7 +13,6 @@ import {Theme} from '../lib/themes';
 import SliderPrompt from './slider-prompt.jsx';
 
 import {connect} from 'react-redux';
-import {Map} from 'immutable';
 import VM from 'scratch-vm';
 
 const availableModes = opcode => (
@@ -75,11 +74,11 @@ class Monitor extends React.Component {
             rect = getInitialPosition(
                 this.props.monitorLayout, this.props.id, this.element.offsetWidth, this.element.offsetHeight);
             this.props.addMonitorRect(this.props.id, rect);
-            this.props.vm.runtime.requestUpdateMonitor(Map({
+            this.props.vm.runtime.requestUpdateMonitor({
                 id: this.props.id,
                 x: rect.upperStart.x,
                 y: rect.upperStart.y
-            }));
+            });
         }
         this.element.style.top = `${rect.upperStart.y}px`;
         this.element.style.left = `${rect.upperStart.x}px`;
@@ -91,7 +90,8 @@ class Monitor extends React.Component {
         for (const key of Object.getOwnPropertyNames(nextProps)) {
             // Don't need to rerender when other monitors are moved.
             // monitorLayout is only used during initial layout.
-            if (key !== 'monitorLayout' && nextProps[key] !== this.props[key]) {
+            // Using Object.is to tell apart 0 and -0 and avoid unnecessary re-renders for NaN
+            if (key !== 'monitorLayout' && !Object.is(nextProps[key], this.props[key])) {
                 return true;
             }
         }
@@ -115,44 +115,44 @@ class Monitor extends React.Component {
             newX,
             newY
         );
-        this.props.vm.runtime.requestUpdateMonitor(Map({
+        this.props.vm.runtime.requestUpdateMonitor({
             id: this.props.id,
             x: newX,
             y: newY
-        }));
+        });
     }
     handleHide () {
-        this.props.vm.runtime.requestUpdateMonitor(Map({
+        this.props.vm.runtime.requestUpdateMonitor({
             id: this.props.id,
             visible: false
-        }));
+        });
     }
     handleNextMode () {
         const modes = availableModes(this.props.opcode);
         const modeIndex = modes.indexOf(this.props.mode);
         const newMode = modes[(modeIndex + 1) % modes.length];
-        this.props.vm.runtime.requestUpdateMonitor(Map({
+        this.props.vm.runtime.requestUpdateMonitor({
             id: this.props.id,
             mode: newMode
-        }));
+        });
     }
     handleSetModeToDefault () {
-        this.props.vm.runtime.requestUpdateMonitor(Map({
+        this.props.vm.runtime.requestUpdateMonitor({
             id: this.props.id,
             mode: 'default'
-        }));
+        });
     }
     handleSetModeToLarge () {
-        this.props.vm.runtime.requestUpdateMonitor(Map({
+        this.props.vm.runtime.requestUpdateMonitor({
             id: this.props.id,
             mode: 'large'
-        }));
+        });
     }
     handleSetModeToSlider () {
-        this.props.vm.runtime.requestUpdateMonitor(Map({
+        this.props.vm.runtime.requestUpdateMonitor({
             id: this.props.id,
             mode: 'slider'
-        }));
+        });
     }
     handleSliderPromptClose () {
         this.setState({sliderPrompt: false});
@@ -163,12 +163,12 @@ class Monitor extends React.Component {
     handleSliderPromptOk (min, max, isDiscrete) {
         const realMin = Math.min(min, max);
         const realMax = Math.max(min, max);
-        this.props.vm.runtime.requestUpdateMonitor(Map({
+        this.props.vm.runtime.requestUpdateMonitor({
             id: this.props.id,
             sliderMin: realMin,
             sliderMax: realMax,
             isDiscrete: isDiscrete
-        }));
+        });
         this.handleSliderPromptClose();
     }
     setElement (monitorElt) {

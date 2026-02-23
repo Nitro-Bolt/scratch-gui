@@ -6,7 +6,6 @@ import {connect} from 'react-redux';
 import {getEventXY} from '../lib/touch-utils';
 import {getVariableValue, setVariableValue} from '../lib/variable-utils';
 import ListMonitorComponent from '../components/monitor/list-monitor.jsx';
-import {Map} from 'immutable';
 import {safeStringify} from '../lib/tw-safe-stringify.js';
 
 class ListMonitor extends React.Component {
@@ -161,11 +160,11 @@ class ListMonitor extends React.Component {
             onMouseMove(ev); // Make sure width/height are up-to-date
             window.removeEventListener('mousemove', onMouseMove);
             window.removeEventListener('mouseup', onMouseUp);
-            this.props.vm.runtime.requestUpdateMonitor(Map({
+            this.props.vm.runtime.requestUpdateMonitor({
                 id: this.props.id,
                 height: this.state.height,
                 width: this.state.width
-            }));
+            });
         };
 
         window.addEventListener('mousemove', onMouseMove);
