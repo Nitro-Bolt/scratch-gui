@@ -90,6 +90,7 @@ class Stage extends React.Component {
         this.attachRectEvents();
         this.attachMouseEvents(this.canvas);
         this.updateRect();
+        this.renderer.resize(this.rect.width, this.rect.height);
         this.props.vm.runtime.addListener('QUESTION', this.questionListener);
     }
     shouldComponentUpdate (nextProps, nextState) {
@@ -193,7 +194,7 @@ class Stage extends React.Component {
         // Set editing target from cursor position, if clicking on a sprite.
         const mousePosition = [x - this.rect.left, y - this.rect.top];
         const drawableId = this.renderer.pick(mousePosition[0], mousePosition[1]);
-        if (drawableId === null) return;
+        if (drawableId === -1) return;
         const targetId = this.props.vm.getTargetIdForDrawableId(drawableId);
         if (targetId === null) return;
         this.props.vm.setEditingTarget(targetId);
@@ -376,7 +377,7 @@ class Stage extends React.Component {
     onStartDrag (x, y) {
         if (this.state.dragId) return;
         const drawableId = this.renderer.pick(x, y);
-        if (drawableId === null) return;
+        if (drawableId === -1) return;
         const targetId = this.props.vm.getTargetIdForDrawableId(drawableId);
         if (targetId === null) return;
 

@@ -3,9 +3,7 @@ import classNames from 'classnames';
 import Box from '../box/box.jsx';
 import Monitor from '../../containers/monitor.jsx';
 import PropTypes from 'prop-types';
-import {OrderedMap} from 'immutable';
 import {stageSizeToTransform} from '../../lib/screen-utils';
-import {sanitizeVariableType} from '../../lib/nb-sanitize.js';
 
 import styles from './monitor-list.css';
 
@@ -22,7 +20,7 @@ const MonitorList = props => (
             className={styles.monitorListScaler}
             style={stageSizeToTransform(props.stageSize)}
         >
-            {props.monitors.valueSeq().filter(m => m.visible)
+            {props.monitors && props.monitors.valueSeq().filter(m => m.visible)
                 .map(monitorData => (
                     <Monitor
                         draggable={props.draggable}
@@ -37,7 +35,7 @@ const MonitorList = props => (
                         params={monitorData.params}
                         spriteName={monitorData.spriteName}
                         targetId={monitorData.targetId}
-                        value={sanitizeVariableType(monitorData.value, monitorData.mode)}
+                        value={monitorData.value}
                         width={monitorData.width}
                         x={monitorData.x}
                         y={monitorData.y}
@@ -50,7 +48,9 @@ const MonitorList = props => (
 
 MonitorList.propTypes = {
     draggable: PropTypes.bool.isRequired,
-    monitors: PropTypes.instanceOf(OrderedMap),
+    monitors: PropTypes.shape({
+        valueSeq: PropTypes.func
+    }),
     onMonitorChange: PropTypes.func.isRequired,
     stageSize: PropTypes.shape({
         width: PropTypes.number,

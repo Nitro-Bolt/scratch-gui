@@ -1,0 +1,26 @@
+@import "../../css/colors.css";
+
+.news {
+    background: $motion-tertiary;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.375rem 0;
+    gap: 0.5rem;
+}
+
+.text {
+    flex-grow: 1;
+    color: white;
+    text-align: center;
+}
+
+.text a {
+    color: inherit;
+}
+
+.close {
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+}

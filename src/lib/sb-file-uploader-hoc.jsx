@@ -82,9 +82,14 @@ const SBFileUploaderHOC = function (WrappedComponent) {
                                 {
                                     description: 'Scratch Project',
                                     accept: {
-                                        // Using application/x.scratch.sb3 as done in scratch-vm causes file pickers
-                                        // to disallow picking any items in Chrome 133 on Android.
-                                        'application/octet-stream': ['.sb', '.sb2', '.sb3']
+                                        // Chrome on Android tracks the MIME type of files that get downloaded and
+                                        // then actually enforces that the type must match in showOpenFilePicker()
+                                        // and does not allow the user to override the filter. As Scratch projects have
+                                        // no well-defined and well-adopted MIME types, we can't assume anything about
+                                        // what MIME type they are saved with, so we have to use the most broad MIME
+                                        // type here. Otherwise some users just won't be able to load files for no
+                                        // fault of their own.
+                                        '*/*': ['.sb', '.sb2', '.sb3']
                                     }
                                 }
                             ]
@@ -101,8 +106,7 @@ const SBFileUploaderHOC = function (WrappedComponent) {
                         if (err && err.name === 'AbortError') {
                             return;
                         }
-                        // eslint-disable-next-line no-console
-                        console.error(err);
+                        log.error(err);
                     }
                 })();
             } else {
@@ -284,7 +288,9 @@ const SBFileUploaderHOC = function (WrappedComponent) {
         onSetFileHandle: PropTypes.func
     };
     SBFileUploaderComponent.defaultProps = {
-        showOpenFilePicker: typeof showOpenFilePicker === 'function' ? window.showOpenFilePicker.bind(window) : null
+        showOpenFilePicker: typeof showOpenFilePicker === 'function' && !navigator.userAgent.includes('Android') ?
+            window.showOpenFilePicker.bind(window) :
+            null
     };
     const mapStateToProps = (state, ownProps) => {
         const loadingState = state.scratchGui.projectState.loadingState;

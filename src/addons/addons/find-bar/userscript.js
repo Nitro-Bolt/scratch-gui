@@ -64,7 +64,7 @@ export default async function ({ addon, msg, console }) {
         return;
       }
       const tab = addon.tab.redux.state.scratchGui.editorTab.activeTabIndex;
-      const visible = tab === 0 || tab === 1 || tab === 2;
+      const visible = tab === 0 || tab === 1 || tab === 2 || tab === 3;
       this.findBarOuter.hidden = !visible;
     }
 

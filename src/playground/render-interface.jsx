@@ -125,22 +125,15 @@ const Footer = () => (
                             id="tw.footer.credits"
                         />
                     </a>
-                    <a href="https://github.com/sponsors/GarboMuffin">
-                        <FormattedMessage
-                            defaultMessage="Donate"
-                            description="Donation link in footer"
-                            id="tw.footer.donate"
-                        />
-                    </a>
                 </div>
                 <div className={styles.footerSection}>
                     <a href="https://desktop.turbowarp.org/">
                         {/* Do not translate */}
                         {'TurboWarp Desktop'}
                     </a>
-                    <a href="https://packager.turbowarp.org/">
+                    <a href="https://nitro-bolt.github.io/packager">
                         {/* Do not translate */}
-                        {'TurboWarp Packager'}
+                        {'NitroBolt Packager'}
                     </a>
                     <a href="https://docs.turbowarp.org/embedding">
                         <FormattedMessage
