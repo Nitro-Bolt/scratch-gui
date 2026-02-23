@@ -46,7 +46,7 @@ const handleFileUpload = function (fileInput, onload, onerror) {
         reader.onload = () => {
             const fileType = file.type;
             const { fileName, fileExtension } = extractFileNameAndExtension(file.name);
-            onload(reader.result, fileType, fileName, i, files.length, fileExtension);
+            onload(reader.result, fileType, fileName, i, files.length, fileExtension, file.lastModified);
             readFile(i + 1, files);
         };
         reader.onerror = onerror;

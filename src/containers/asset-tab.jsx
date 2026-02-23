@@ -4,9 +4,12 @@ import bindAll from 'lodash.bindall';
 import VM from 'scratch-vm';
 
 import AssetPanel from '../components/asset-panel/asset-panel.jsx';
+import AssetViewer from './asset-viewer.jsx';
+
 import fileUploadIcon from '../components/action-menu/icon--file-upload.svg';
-import assetIcon from '../components/asset-panel/icon--assets.svg';
+import assetIcon from '../components/asset-panel/icon--asset.svg';
 import soundIcon from '../components/asset-panel/icon--sound.svg';
+import codeIcon from '../components/asset-panel/icon--code.svg';
 
 import DragConstants from '../lib/drag-constants';
 import {handleFileUpload, assetUpload} from '../lib/file-uploader.js';
@@ -24,6 +27,24 @@ import {
 } from '../reducers/editor-tab';
 
 import {connect} from 'react-redux';
+
+const formatSize = bytes => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(2)} KB`;
+    if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(2)} MB`;
+    return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
+};
+
+// A list of file extensions for scratch-based mods
+// Used for the blocks icon
+const projectFormats = [
+    'sb3',
+    'sprite3',
+    'pmp', // PenguinMod
+    'pms',
+    'snail', // Snail-IDE
+    '.electra' // Electra-mod
+];
 
 class AssetTab extends React.Component {
     constructor (props) {
@@ -44,12 +65,16 @@ class AssetTab extends React.Component {
 
     getAssetIcon (asset) {
         const contentType = asset.asset.assetType.contentType;
+        const dataFormat = asset.dataFormat;
+        console.log(asset, contentType);
         if (contentType.startsWith('audio/')) {
             return {url: soundIcon};
         } else if (contentType.startsWith('image/')) {
             const assetObject = asset.asset;
             if (!assetObject) return {url: assetIcon};
             return {asset: assetObject};
+        } else if (projectFormats.includes(dataFormat)) {
+            return {url: codeIcon};
         } else {
             return {url: assetIcon};
         }
@@ -80,10 +105,11 @@ class AssetTab extends React.Component {
         const storage = this.props.vm.runtime.storage;
         const targetId = this.props.vm.editingTarget.id;
         this.props.onShowImporting();
-        handleFileUpload(e.target, (buffer, fileType, fileName, fileIndex, fileCount, fileExtension) => {
+        handleFileUpload(e.target, (buffer, fileType, fileName, fileIndex, fileCount, fileExtension, lastModified) => {
             console.log(fileType);
-            assetUpload(buffer, fileType, fileExtension, storage, newAsset => {
+            assetUpload(buffer, fileType, fileExtension || '', storage, newAsset => {
                 newAsset.name = fileName;
+                newAsset.lastModified = lastModified;
                 this.props.vm.addAsset(newAsset, targetId).then(() => {
                     this.handleNewAsset();
                     if (fileIndex === fileCount - 1) {
@@ -152,8 +178,10 @@ class AssetTab extends React.Component {
 
         const assets = sprite.assets ? sprite.assets.map(asset => (
             {
-                name: asset.name + '.' + asset.dataFormat,
+                name: asset.dataFormat ?
+                    asset.name + '.' + asset.dataFormat : asset.name,
                 dragPayload: asset,
+                details: formatSize(asset.asset.data.byteLength),
                 ...this.getAssetIcon(asset)
             }
         )) : [];
@@ -165,6 +193,8 @@ class AssetTab extends React.Component {
                 id: 'gui.assetTab.fileUploadAsset'
             }
         });
+
+        const selectedAsset = sprite.assets[this.state.selectedAssetIndex];
 
         return (
             <AssetPanel
@@ -191,6 +221,15 @@ class AssetTab extends React.Component {
                     type="file"
                     onChange={this.handleAssetUpload}
                 />
+                {sprite.assets && selectedAsset && 
+                    <AssetViewer
+                        icon={this.getAssetIcon(selectedAsset)}
+                        name={selectedAsset.name}
+                        lastModified={new Date(selectedAsset.lastModified).toLocaleString()}
+                        size={formatSize(selectedAsset.asset.data.byteLength)}
+                        assetIndex={this.state.selectedAssetIndex}
+                    />
+                }
             </AssetPanel>
         );
     }
