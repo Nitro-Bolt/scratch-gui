@@ -18,7 +18,7 @@ const messages = defineMessages({
     },
     lastModifiedDate: {
         id: 'gui.assetViewer.lastModifiedDate',
-        description: 'Lavel for the last modification date of the asset',
+        description: 'Label for the last modification date of the asset',
         defaultMessage: 'Last Modified'
     },
     size: {
