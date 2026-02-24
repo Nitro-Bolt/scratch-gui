@@ -69,6 +69,13 @@ const blockColors = {
         tertiary: '#E64D00',
         quaternary: '#FFDDCC'
     },
+    // Same reasoning as data_lists, but this is to differentiate tables
+    data_tables: {
+        primary: "#ACF0A4",
+        secondary: "#4A8A43",
+        tertiary: "#4A8A43",
+        quaternary: "#4A8A43"
+    },
     json: {
         primary: '#9A99FF',
         secondary: '#4240A1',

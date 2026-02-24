@@ -179,30 +179,49 @@ class Monitor extends React.Component {
     }
     handleImport () {
         importCSV().then(async ({rows, text}) => {
-            const numberOfColumns = rows[0].length;
-            let columnNumber = 1;
-            if (numberOfColumns > 1) {
-                const msg = this.props.intl.formatMessage(messages.columnPrompt, {numberOfColumns});
-                // prompt() returns Promise in desktop app
-                columnNumber = parseInt(await prompt(msg), 10); // eslint-disable-line no-alert
-            }
-            let newListValue;
-            if (isNaN(columnNumber) || numberOfColumns === 1) {
-                newListValue = text.replace(/\r/g, '').split('\n');
-            } else {
-                newListValue = rows.map(row => row[columnNumber - 1])
-                    .filter(item => typeof item === 'string'); // CSV importer can leave undefineds
-            }
             const {vm, targetId, id: variableId} = this.props;
-            setVariableValue(vm, targetId, variableId, newListValue);
+            if (this.props.mode === 'table') {
+                // For tables, use the entire 2D array
+                setVariableValue(vm, targetId, variableId, rows);
+            } else {
+                // For lists, extract a single column
+                const numberOfColumns = rows[0].length;
+                let columnNumber = 1;
+                if (numberOfColumns > 1) {
+                    const msg = this.props.intl.formatMessage(messages.columnPrompt, {numberOfColumns});
+                    // prompt() returns Promise in desktop app
+                    columnNumber = parseInt(await prompt(msg), 10); // eslint-disable-line no-alert
+                }
+                let newListValue;
+                if (isNaN(columnNumber) || numberOfColumns === 1) {
+                    newListValue = text.replace(/\r/g, '').split('\n');
+                } else {
+                    newListValue = rows.map(row => row[columnNumber - 1])
+                        .filter(item => typeof item === 'string'); // CSV importer can leave undefineds
+                }
+                setVariableValue(vm, targetId, variableId, newListValue);
+            }
         });
     }
     handleExport () {
         const {vm, targetId, id: variableId} = this.props;
         const variable = getVariable(vm, targetId, variableId);
-        const text = variable.value.join('\r\n');
-        const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
-        downloadBlob(`${variable.name}.txt`, blob);
+        if (this.props.mode === 'table') {
+            // For tables, export as CSV with rows and columns
+            const text = variable.value.map(row => {
+                if (Array.isArray(row)) {
+                    return row.join(',');
+                }
+                return row;
+            }).join('\r\n');
+            const blob = new Blob([text], {type: 'text/csv;charset=utf-8'});
+            downloadBlob(`${variable.name}.csv`, blob);
+        } else {
+            // For lists, export as newline-separated text
+            const text = variable.value.join('\r\n');
+            const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+            downloadBlob(`${variable.name}.txt`, blob);
+        }
     }
     render () {
         const monitorProps = monitorAdapter(this.props);
