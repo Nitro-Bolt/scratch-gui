@@ -17,8 +17,8 @@
     font-size: 0.75rem;
 }
 
-.icon {
-    max-height: calc(30 * $space);
+.media-preview {
+    max-height: calc(50 * $space);
     border-radius: 0.25rem;
     margin: 1rem
 }

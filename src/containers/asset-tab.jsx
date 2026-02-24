@@ -224,10 +224,7 @@ class AssetTab extends React.Component {
                 {sprite.assets && selectedAsset && 
                     <AssetViewer
                         icon={this.getAssetIcon(selectedAsset)}
-                        name={selectedAsset.name}
-                        lastModified={new Date(selectedAsset.lastModified).toLocaleString()}
-                        size={formatSize(selectedAsset.asset.data.byteLength)}
-                        assetIndex={this.state.selectedAssetIndex}
+                        selectedAssetIndex={this.state.selectedAssetIndex}
                     />
                 }
             </AssetPanel>
