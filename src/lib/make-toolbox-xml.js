@@ -354,6 +354,21 @@ const sound = function (isInitialSetup, isStage, targetId, soundName, colors) {
     `;
 };
 
+const assets = function (isInitialSetup, isStage, targetId, assetName, colors) {
+    // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
+    return `
+    <category name="%{BKY_CATEGORY_ASSETS}" id="assets" colour="${colors.primary}" secondaryColour="${colors.tertiary}">
+        <block id="${targetId}_assets_test" type="assets_test">
+            <value name="ASSET_MENU">
+                <shadow type="assets_menu">
+                    <field name="ASSET_MENU">${assetName}</field>
+                </shadow>
+            </value>
+        </block>
+    </category>
+    `;
+};
+
 const events = function (isInitialSetup, isStage, targetId, colors) {
     // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
     return `
@@ -976,17 +991,19 @@ const xmlClose = '</xml>';
  * @param {?string} costumeName - The name of the default selected costume dropdown.
  * @param {?string} backdropName - The name of the default selected backdrop dropdown.
  * @param {?string} soundName -  The name of the default selected sound dropdown.
+ * @param {?string} assetName - The name of the default selected asset dropdown.
  * @param {?object} colors - The colors for the theme.
  * @returns {string} - a ScratchBlocks-style XML document for the contents of the toolbox.
  */
 const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, categoriesXML = [],
-    costumeName = '', backdropName = '', soundName = '', colors = defaultBlockColors) {
+    costumeName = '', backdropName = '', soundName = '', assetName = '', colors = defaultBlockColors) {
     isStage = isInitialSetup || isStage;
     const gap = [categorySeparator];
 
     costumeName = xmlEscape(costumeName);
     backdropName = xmlEscape(backdropName);
     soundName = xmlEscape(soundName);
+    assetName = xmlEscape(assetName);
 
     categoriesXML = categoriesXML.slice();
     const moveCategory = categoryId => {
@@ -1002,6 +1019,7 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
     const looksXML = moveCategory('looks') ||
         looks(isInitialSetup, isStage, targetId, costumeName, backdropName, colors.looks);
     const soundXML = moveCategory('sound') || sound(isInitialSetup, isStage, targetId, soundName, colors.sounds);
+    const assetsXML = moveCategory('assets') || assets(isInitialSetup, isStage, targetId, assetName, colors.assets);
     const eventsXML = moveCategory('event') || events(isInitialSetup, isStage, targetId, colors.event);
     const controlXML = moveCategory('control') || control(isInitialSetup, isStage, targetId, colors.control);
     const sensingXML = moveCategory('sensing') || sensing(isInitialSetup, isStage, targetId, colors.sensing);
@@ -1023,6 +1041,7 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
         motionXML, gap,
         looksXML, gap,
         soundXML, gap,
+        assetsXML, gap,
         eventsXML, gap,
         controlXML, gap,
         sensingXML, gap,
@@ -1045,7 +1064,7 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
     if (vm) vm.emit(
       'MAKE_TOOLBOX_XML', makeToolboxXML.exports, everything,
       isInitialSetup, isStage, targetId, categoriesXML,
-      costumeName, backdropName, soundName, colors
+      costumeName, backdropName, soundName, assetName, colors
     );
     return everything.join('\n');
 };
@@ -1064,6 +1083,7 @@ makeToolboxXML.exports = {
   motion,
   looks,
   sound,
+  assets,
   events,
   control,
   sensing,

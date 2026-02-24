@@ -76,6 +76,13 @@ export default function (vm) {
         };
     };
 
+    const assetsMenu = function () {
+        if (vm.editingTarget && vm.editingTarget.getAssets().length > 0) {
+            return vm.editingTarget.getAssets().map(asset => [asset.name, asset.name]);
+        }
+        return [['', '']];
+    };
+
     const soundsMenu = function () {
         let menu = [['', '']];
         if (vm.editingTarget && vm.editingTarget.sprite.sounds.length > 0) {
@@ -144,6 +151,8 @@ export default function (vm) {
         return [[myself, '_myself_']].concat(spriteMenu());
     };
 
+    const assetsColors = ScratchBlocks.Colours.assets;
+
     const soundColors = ScratchBlocks.Colours.sounds;
 
     const looksColors = ScratchBlocks.Colours.looks;
@@ -155,6 +164,11 @@ export default function (vm) {
     const controlColors = ScratchBlocks.Colours.control;
 
     const eventColors = ScratchBlocks.Colours.event;
+
+    ScratchBlocks.Blocks.assets_menu.init = function () {
+        const json = jsonForMenuBlock('ASSET_MENU', assetsMenu, assetsColors, []);
+        this.jsonInit(json);
+    };
 
     ScratchBlocks.Blocks.sound_sounds_menu.init = function () {
         const json = jsonForMenuBlock('SOUND_MENU', soundsMenu, soundColors, []);
