@@ -1,4 +1,3 @@
-// This entire thing might need to be redone
 import bindAll from 'lodash.bindall';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -7,7 +6,7 @@ import {connect} from 'react-redux';
 import {getEventXY} from '../lib/touch-utils';
 import {getVariableValue, setVariableValue} from '../lib/variable-utils';
 import TableMonitorComponent from '../components/monitor/table-monitor.jsx';
-import {Map} from 'immutable';
+import {safeStringify} from '../lib/tw-safe-stringify.js';
 
 class TableMonitor extends React.Component {
     constructor (props) {
@@ -19,16 +18,46 @@ class TableMonitor extends React.Component {
             'handleRemove',
             'handleKeyPress',
             'handleFocus',
-            'handleResizeMouseDown'
+            'handleResizeMouseDown',
+            'handleAddRow',
+            'handleAddColumn'
         ]);
 
         this.state = {
             activeRowIndex: null,
             activeColIndex: null,
             activeValue: null,
+            inputDidChange: false,
             width: props.width || 200,
             height: props.height || 200
         };
+    }
+
+    getTableValue (rowIndex, colIndex) {
+        const {value} = this.props;
+        if (!Array.isArray(value) || !Array.isArray(value[rowIndex])) {
+            return '';
+        }
+        return value[rowIndex][colIndex];
+    }
+
+    cloneTableValue (tableValue) {
+        if (!Array.isArray(tableValue)) {
+            return [];
+        }
+        return tableValue.map(row => (Array.isArray(row) ? row.slice() : []));
+    }
+
+    ensureTableCell (tableValue, rowIndex, colIndex) {
+        while (tableValue.length <= rowIndex) {
+            tableValue.push([]);
+        }
+        if (!Array.isArray(tableValue[rowIndex])) {
+            tableValue[rowIndex] = [];
+        }
+        while (tableValue[rowIndex].length <= colIndex) {
+            tableValue[rowIndex].push('');
+        }
     }
 
     handleActivate (rowIndex, colIndex) {
@@ -40,19 +69,26 @@ class TableMonitor extends React.Component {
         this.setState({
             activeRowIndex: rowIndex,
             activeColIndex: colIndex,
-            activeValue: this.props.value[rowIndex][colIndex]
+            activeValue: safeStringify(this.getTableValue(rowIndex, colIndex)),
+            inputDidChange: false
         });
     }
 
     handleDeactivate () {
         // Submit any in-progress value edits on blur
-        if (this.state.activeRowIndex !== null && this.state.activeColIndex !== null) {
+        if (this.state.activeRowIndex !== null && this.state.activeColIndex !== null && this.state.inputDidChange) {
             const {vm, targetId, id: variableId} = this.props;
-            const newTableValue = getVariableValue(vm, targetId, variableId);
+            const newTableValue = this.cloneTableValue(getVariableValue(vm, targetId, variableId));
+            this.ensureTableCell(newTableValue, this.state.activeRowIndex, this.state.activeColIndex);
             newTableValue[this.state.activeRowIndex][this.state.activeColIndex] = this.state.activeValue;
             setVariableValue(vm, targetId, variableId, newTableValue);
-            this.setState({activeRowIndex: null, activeColIndex: null, activeValue: null});
         }
+        this.setState({
+            activeRowIndex: null,
+            activeColIndex: null,
+            activeValue: null,
+            inputDidChange: false
+        });
     }
 
     handleFocus (e) {
@@ -65,58 +101,129 @@ class TableMonitor extends React.Component {
         // Tab / shift+tab navigate down / up the list.
         // Arrow down / arrow up navigate down / up the list.
         // Enter / shift+enter insert new blank item below / above.
-        const previouslyActiveRowIndex = this.state.activeRowIndex;
-        const previouslyActiveColIndex = this.state.activeColIndex;
-        const {vm, targetId, id: variableId} = this.props;
+        const {value} = this.props;
+        if (!Array.isArray(value)) return;
+        const rowCount = value.length;
+        const colCount = value.reduce((max, row) => Math.max(max, Array.isArray(row) ? row.length : 0), 0);
 
-        let navigateDirection = 0;
-        if (e.key === 'Tab') navigateDirection = e.shiftKey ? -1 : 1;
-        else if (e.key === 'ArrowUp') navigateDirection = -1;
-        else if (e.key === 'ArrowDown') navigateDirection = 1;
-        if (navigateDirection) {
-            this.handleDeactivate(); // Submit in-progress edits
-            const newRowIndex = this.wrapListIndex(previouslyActiveRowIndex + navigateDirection, this.props.value.length);
+        if (rowCount === 0 || colCount === 0) return;
+
+        const {activeRowIndex: row, activeColIndex: col} = this.state;
+        let nextRow = row;
+        let nextCol = col;
+        let navigate = false;
+
+        switch (e.key) {
+        case 'Tab':
+            navigate = true;
+            if (e.shiftKey) {
+                nextCol -= 1;
+                if (nextCol < 0) {
+                    nextCol = colCount - 1;
+                    nextRow = this.wrapTableIndex(nextRow - 1, rowCount);
+                }
+            } else {
+                nextCol += 1;
+                if (nextCol >= colCount) {
+                    nextCol = 0;
+                    nextRow = this.wrapTableIndex(nextRow + 1, rowCount);
+                }
+            }
+            break;
+        case 'ArrowUp':
+            navigate = true;
+            nextRow = this.wrapTableIndex(nextRow - 1, rowCount);
+            break;
+        case 'ArrowDown':
+            navigate = true;
+            nextRow = this.wrapTableIndex(nextRow + 1, rowCount);
+            break;
+        case 'ArrowLeft':
+            navigate = true;
+            nextCol = this.wrapTableIndex(nextCol - 1, colCount);
+            break;
+        case 'ArrowRight':
+            navigate = true;
+            nextCol = this.wrapTableIndex(nextCol + 1, colCount);
+            break;
+        case 'Enter':
+            navigate = true;
+            nextRow = this.wrapTableIndex(nextRow + (e.shiftKey ? -1 : 1), rowCount);
+            break;
+        default:
+            break;
+        }
+
+        if (navigate) {
+            this.handleDeactivate();
             this.setState({
-                activeRowIndex: newRowIndex,
-                activeColIndex: previouslyActiveColIndex,
-                activeValue: this.props.value[newRowIndex][previouslyActiveColIndex]
+                activeRowIndex: nextRow,
+                activeColIndex: nextCol,
+                activeValue: safeStringify(this.getTableValue(nextRow, nextCol)),
+                inputDidChange: false
             });
-            e.preventDefault(); // Stop default tab behavior, handled by this state change
-        } else if (e.key === 'Enter') {
-            this.handleDeactivate(); // Submit in-progress edits
-            const newListItemValue = ''; // Enter adds a blank item
-            const newValueOffset = e.shiftKey ? 0 : 1; // Shift-enter inserts above
-            const listValue = getVariableValue(vm, targetId, variableId);
-            const newListValue = listValue.slice(0, previouslyActiveRowIndex + newValueOffset)
-                .concat([newListItemValue])
-                .concat(listValue.slice(previouslyActiveRowIndex + newValueOffset));
-            setVariableValue(vm, targetId, variableId, newListValue);
-            const newRowIndex = this.wrapListIndex(previouslyActiveRowIndex + newValueOffset, newListValue.length);
-            this.setState({
-                activeRowIndex: newRowIndex,
-                activeColIndex: previouslyActiveColIndex,
-                activeValue: newListItemValue
-            });
+            e.preventDefault();
         }
     }
 
     handleInput (e) {
-        this.setState({activeValue: e.target.value});
+        this.setState({
+            activeValue: e.target.value,
+            inputDidChange: true
+        });
+    }
+
+    handleAddRow () {
+        const {vm, targetId, id: variableId} = this.props;
+        const currentValue = getVariableValue(vm, targetId, variableId);
+        const newTableValue = this.cloneTableValue(currentValue);
+        const columnCount = newTableValue.length > 0 && Array.isArray(newTableValue[0])
+            ? newTableValue[0].length
+            : 1;
+        const newRow = Array(columnCount).fill('');
+        newTableValue.push(newRow);
+        setVariableValue(vm, targetId, variableId, newTableValue);
+        this.setState({
+            activeRowIndex: newTableValue.length - 1,
+            activeColIndex: 0,
+            activeValue: '',
+            inputDidChange: false
+        });
+    }
+
+    handleAddColumn () {
+        const {vm, targetId, id: variableId} = this.props;
+        const currentValue = getVariableValue(vm, targetId, variableId);
+        const newTableValue = this.cloneTableValue(currentValue);
+        if (newTableValue.length === 0) {
+            newTableValue.push(['']);
+        } else {
+            for (let i = 0; i < newTableValue.length; i++) {
+                if (Array.isArray(newTableValue[i])) {
+                    newTableValue[i].push('');
+                }
+            }
+        }
+        setVariableValue(vm, targetId, variableId, newTableValue);
+        this.setState({
+            activeRowIndex: 0,
+            activeColIndex: newTableValue[0].length - 1,
+            activeValue: '',
+            inputDidChange: false
+        });
     }
 
     handleRemove (e) {
         e.preventDefault(); // Default would blur input, prevent that.
         e.stopPropagation(); // Bubbling would activate, which will be handled here
         const {vm, targetId, id: variableId} = this.props;
-        const listValue = getVariableValue(vm, targetId, variableId);
-        const newListValue = listValue.slice(0, this.state.activeRowIndex)
-            .concat(listValue.slice(this.state.activeRowIndex + 1));
-        setVariableValue(vm, targetId, variableId, newListValue);
-        const newActiveRowIndex = Math.min(newListValue.length - 1, this.state.activeRowIndex);
+        const newTableValue = this.cloneTableValue(getVariableValue(vm, targetId, variableId));
+        this.ensureTableCell(newTableValue, this.state.activeRowIndex, this.state.activeColIndex);
+        newTableValue[this.state.activeRowIndex][this.state.activeColIndex] = '';
+        setVariableValue(vm, targetId, variableId, newTableValue);
         this.setState({
-            activeRowIndex: newActiveRowIndex,
-            activeColIndex: this.state.activeColIndex,
-            activeValue: newListValue[newActiveRowIndex][this.state.activeColIndex]
+            activeValue: '',
+            inputDidChange: false
         });
     }
 
@@ -139,19 +246,18 @@ class TableMonitor extends React.Component {
             onMouseMove(ev); // Make sure width/height are up-to-date
             window.removeEventListener('mousemove', onMouseMove);
             window.removeEventListener('mouseup', onMouseUp);
-            this.props.vm.runtime.requestUpdateMonitor(Map({
+            this.props.vm.runtime.requestUpdateMonitor({
                 id: this.props.id,
                 height: this.state.height,
                 width: this.state.width
-            }));
+            });
         };
 
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('mouseup', onMouseUp);
-
     }
 
-    wrapListIndex (index, length) {
+    wrapTableIndex (index, length) {
         return (index + length) % length;
     }
 
@@ -169,6 +275,8 @@ class TableMonitor extends React.Component {
                 height={this.state.height}
                 width={this.state.width}
                 onActivate={this.handleActivate}
+                onAddColumn={this.handleAddColumn}
+                onAddRow={this.handleAddRow}
                 onDeactivate={this.handleDeactivate}
                 onFocus={this.handleFocus}
                 onInput={this.handleInput}
