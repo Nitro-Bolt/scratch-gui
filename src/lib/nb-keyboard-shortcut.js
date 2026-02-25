@@ -21,7 +21,7 @@ export const defaultKeyboardShortcuts = {
     'project-full-screen': {alt: true, key: 'Enter'},
     'start-project': {ctrl: true, key: 'Enter'},
     'stop-project': {ctrl: true, shift: true, key: 'Enter'},
-    'toggle-sprite-visibility': {key: 'h'}
+    'toggle-sprite-visibility': {ctrl: true, key: 'h'}
 };
 
 /**
