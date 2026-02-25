@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable max-len */
 import {defineMessages, FormattedMessage, intlShape, injectIntl} from 'react-intl';
 import PropTypes from 'prop-types';
@@ -20,6 +21,8 @@ import {APP_NAME} from '../../lib/brand.js';
 import {setUsername, setUsernameInvalid} from '../../reducers/tw.js';
 import isScratchDesktop from '../../lib/isScratchDesktop.js';
 import {generateRandomUsername} from '../../lib/tw-username.js';
+import KeyInput from './key-input.jsx';
+import { defaultKeyboardShortcuts } from '../../lib/nb-keyboard-shortcut.js';
 
 const messages = defineMessages({
     title: {
@@ -370,7 +373,109 @@ const EditorSettingsModal = props => {
         },
         {
             title: messages.keymap,
-            content: null
+            content: <Box>
+                <div className={styles.header}>
+                    <FormattedMessage
+                        id="nb.editorSettings.keymap.popups"
+                        defaultMessage="Popups"
+                    />
+                    <div className={styles.divider} />
+                </div>
+                <Box className={styles.keySetting}>
+                    <FormattedMessage
+                        defaultMessage="Open backpack"
+                        id="nb.editorSettings.keymap.openBackpack"
+                    />
+                    <KeyInput
+                        onChange={shortcut => props.setPref('keybind-open-backpack', shortcut.toJSON())}
+                        shortcut={props.prefs['keybind-open-backpack'] ?? defaultKeyboardShortcuts['open-backpack']}
+                    />
+                </Box>
+                <Box className={styles.keySetting}>
+                    <FormattedMessage
+                        defaultMessage="Open editor settings"
+                        id="nb.editorSettings.keymap.openEditorSettings"
+                    />
+                    <KeyInput
+                        onChange={shortcut => props.setPref('keybind-open-editor-settings', shortcut.toJSON())}
+                        shortcut={props.prefs['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings']}
+                    />
+                </Box>
+                <Box className={styles.keySetting}>
+                    <FormattedMessage
+                        defaultMessage="Open extension catlog"
+                        id="nb.editorSettings.keymap.openExtentions"
+                    />
+                    <KeyInput
+                        onChange={shortcut => props.setPref('keybind-open-extensions', shortcut.toJSON())}
+                        shortcut={props.prefs['keybind-open-extensions'] ?? defaultKeyboardShortcuts['open-extensions']}
+                    />
+                </Box>
+                <div className={styles.header}>
+                    <FormattedMessage
+                        id="nb.editorSettings.keymap.projectControls"
+                        defaultMessage="Project Controls"
+                    />
+                    <div className={styles.divider} />
+                </div>
+                <Box className={styles.keySetting}>
+                    <FormattedMessage
+                        defaultMessage="Start project"
+                        id="nb.editorSettings.keymap.startProject"
+                    />
+                    <KeyInput
+                        onChange={shortcut => props.setPref('keybind-start-project', shortcut.toJSON())}
+                        shortcut={props.prefs['keybind-start-project'] ?? defaultKeyboardShortcuts['start-project']}
+                    />
+                </Box>
+                <Box className={styles.keySetting}>
+                    <FormattedMessage
+                        defaultMessage="Stop project"
+                        id="nb.editorSettings.keymap.stopProject"
+                    />
+                    <KeyInput
+                        onChange={shortcut => props.setPref('keybind-stop-project', shortcut.toJSON())}
+                        shortcut={props.prefs['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project']}
+                    />
+                </Box>
+                <Box className={styles.keySetting}>
+                    <FormattedMessage
+                        defaultMessage="Toggle project full screen"
+                        id="nb.editorSettings.keymap.projectFullScreen"
+                    />
+                    <KeyInput
+                        onChange={shortcut => props.setPref('keybind-project-full-screen', shortcut.toJSON())}
+                        shortcut={props.prefs['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen']}
+                    />
+                </Box>
+                <div className={styles.header}>
+                    <FormattedMessage
+                        id="nb.editorSettings.keymap.spriteSettings"
+                        defaultMessage="Sprite Settings"
+                    />
+                    <div className={styles.divider} />
+                </div>
+                <Box className={styles.keySetting}>
+                    <FormattedMessage
+                        defaultMessage="Change sprite name"
+                        id="nb.editorSettings.keymap.changeSpriteName"
+                    />
+                    <KeyInput
+                        onChange={shortcut => props.setPref('keybind-change-sprite-name', shortcut.toJSON())}
+                        shortcut={props.prefs['keybind-change-sprite-name'] ?? defaultKeyboardShortcuts['change-sprite-name']}
+                    />
+                </Box>
+                <Box className={styles.keySetting}>
+                    <FormattedMessage
+                        defaultMessage="Toggle sprite visibility"
+                        id="nb.editorSettings.keymap.spriteVisibility"
+                    />
+                    <KeyInput
+                        onChange={shortcut => props.setPref('keybind-toggle-sprite-visibility', shortcut.toJSON())}
+                        shortcut={props.prefs['keybind-toggle-sprite-visibility'] ?? defaultKeyboardShortcuts['toggle-sprite-visibility']}
+                    />
+                </Box>
+            </Box>
         }
     ];
 

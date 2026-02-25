@@ -6,7 +6,7 @@ import DragConstants from '../../lib/drag-constants';
 import {ComingSoonTooltip} from '../coming-soon/coming-soon.jsx';
 import SpriteSelectorItem from '../../containers/sprite-selector-item.jsx';
 import styles from './backpack.css';
-import {registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 // TODO make sprite selector item not require onClick
 const noop = () => {};
@@ -56,12 +56,10 @@ const Backpack = ({
     onRename,
     onMouseEnter,
     onMouseLeave,
-    onMore
+    onMore,
+    prefs
 }) => {
-    registerKeyboardShortcut({
-        key: 'b',
-        ctrl: true
-    }, onToggle);
+    registerKeyboardShortcut(prefs['keybind-open-backpack'] ?? defaultKeyboardShortcuts['open-backpack'], onToggle);
     return (
         <div className={styles.backpackContainer}>
             <div
@@ -162,7 +160,8 @@ const Backpack = ({
                 </div>
             ) : null}
         </div>
-)};
+    );
+};
 
 Backpack.propTypes = {
     blockDragOver: PropTypes.bool,
@@ -184,6 +183,7 @@ Backpack.propTypes = {
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
     onToggle: PropTypes.func,
+    prefs: PropTypes.any,
     showMore: PropTypes.bool
 };
 

@@ -56,7 +56,7 @@ import costumesIcon from '!../../lib/tw-recolor/build!./icon--costumes.svg';
 import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
 import variablesIcon from '!../../lib/tw-recolor/build!./icon--variables.svg';
 
-import {registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 const messages = defineMessages({
     addExtension: {
@@ -138,6 +138,7 @@ const GUIComponent = props => {
         onActivateVariablesTab,
         onActivateTab,
         onClickLogo,
+        onEditorSettings,
         onExtensionButtonClick,
         onOpenCustomExtensionModal,
         onProjectTelemetryEvent,
@@ -215,13 +216,16 @@ const GUIComponent = props => {
             if (i > 0 && i < 5) props.onActivateTab(parseInt(i, 10) - 1);
         });
     }
+    
+    registerKeyboardShortcut(
+        prefs['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings'],
+        onEditorSettings
+    );
 
-    registerKeyboardShortcut({
-        key: 'e',
-        ctrl: true
-    }, () => {
-        onExtensionButtonClick();
-    });
+    registerKeyboardShortcut(
+        prefs['keybind-open-extensions'] ?? defaultKeyboardShortcuts['open-extensions'],
+        onExtensionButtonClick
+    );
 
     registerKeyboardShortcut({
         key: 'Escape'
@@ -273,6 +277,7 @@ const GUIComponent = props => {
                     isRtl={isRtl}
                     loading={loading}
                     stageSize={STAGE_SIZE_MODES.full}
+                    prefs={prefs}
                     vm={vm}
                 >
                     {alertsVisible ? (
@@ -513,7 +518,10 @@ const GUIComponent = props => {
                                 </TabPanel>
                             </Tabs>
                             {backpackVisible ? (
-                                <Backpack host={backpackHost} />
+                                <Backpack
+                                    host={backpackHost}
+                                    prefs={prefs}
+                                />
                             ) : null}
                         </Box>
 
@@ -523,10 +531,12 @@ const GUIComponent = props => {
                                 isRendererSupported={isRendererSupported()}
                                 isRtl={isRtl}
                                 stageSize={stageSize}
+                                prefs={prefs}
                                 vm={vm}
                             />
                             <Box className={styles.targetWrapper}>
                                 <TargetPane
+                                    prefs={prefs}
                                     stageSize={stageSize}
                                     vm={vm}
                                 />

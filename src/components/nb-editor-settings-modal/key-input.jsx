@@ -10,11 +10,11 @@ class Shortcut {
     alt;
     key;
 
-    constructor (ctrl, shift, alt, key) {
-        this.ctrl = ctrl;
-        this.shift = shift;
-        this.alt = alt;
-        this.key = key;
+    constructor (object) {
+        this.ctrl = object.ctrl;
+        this.shift = object.shift;
+        this.alt = object.alt;
+        this.key = object.key;
     }
 
     toString () {
@@ -25,6 +25,15 @@ class Shortcut {
             this.key.toUpperCase()
         ].filter(v => v).join('+');
     }
+
+    toJSON () {
+        return {
+            ctrl: this.ctrl,
+            shift: this.shift,
+            alt: this.alt,
+            key: this.key
+        };
+    }
 }
 
 class KeyInput extends React.Component {
@@ -34,9 +43,10 @@ class KeyInput extends React.Component {
             'handleChange',
             'handleClick'
         ]);
+        console.log(props.shortcut);
         this.state = {
             listening: false,
-            shortcut: props.shortcut
+            shortcut: props.shortcut ? new Shortcut(props.shortcut) : null
         };
     }
 
@@ -45,7 +55,12 @@ class KeyInput extends React.Component {
         if (e.key === 'Backspace') {
             shortcut = null;
         } else {
-            shortcut = new Shortcut(e.ctrlKey, e.shiftKey, e.altKey, e.key);
+            shortcut = new Shortcut({
+                ctrl: e.ctrlKey,
+                shift: e.shiftKey,
+                alt: e.altKey,
+                key: e.key
+            });
         }
         this.props.onChange(shortcut);
         this.setState({listening: false, shortcut});
@@ -86,7 +101,7 @@ class KeyInput extends React.Component {
 }
 
 KeyInput.propTypes = {
-    shortcut: PropTypes.instanceOf(Shortcut),
+    shortcut: PropTypes.any,
     onChange: PropTypes.func
 };
 

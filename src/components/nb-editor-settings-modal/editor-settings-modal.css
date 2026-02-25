@@ -410,3 +410,15 @@ label {
     background: rgb(233, 233, 53);
     color: $text-primary-default;
 }
+
+.key-setting {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.key-setting > * {
+    flex: 1 0;
+}

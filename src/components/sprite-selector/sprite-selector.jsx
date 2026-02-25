@@ -8,7 +8,7 @@ import SpriteList from './sprite-list.jsx';
 import ActionMenu from '../action-menu/action-menu.jsx';
 import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants';
 import {isRtl} from '@turbowarp/scratch-l10n';
-import {registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 import styles from './sprite-selector.css';
 
@@ -63,6 +63,7 @@ const SpriteSelectorComponent = function (props) {
         onSelectSprite,
         onSpriteUpload,
         onSurpriseSpriteClick,
+        prefs,
         raised,
         selectedId,
         spriteFileInput,
@@ -76,17 +77,17 @@ const SpriteSelectorComponent = function (props) {
         selectedSprite = {};
         spriteInfoDisabled = true;
     }
-    registerKeyboardShortcut({
-        key: 'h',
-        ctrl: true
-    }, () => {
-        if (!spriteInfoDisabled) onChangeSpriteVisibility(!selectedSprite.visible);
-    });
-    registerKeyboardShortcut({
-        key: 'F2'
-    }, () => {
-        document.querySelector('[class*="sprite-info_sprite-input_"]').focus();
-    });
+    registerKeyboardShortcut(
+        prefs['keybind-toggle-sprite-visibility'] ?? defaultKeyboardShortcuts['toggle-sprite-visibility'], () => {
+            if (!spriteInfoDisabled) onChangeSpriteVisibility(!selectedSprite.visible);
+        }
+    );
+    registerKeyboardShortcut(
+        prefs['keybind-change-sprite-name'] ?? defaultKeyboardShortcuts['change-sprite-name'],
+        () => {
+            document.querySelector('[class*="sprite-info_sprite-input_"]').focus();
+        }
+    );
     return (
         <Box
             className={styles.spriteSelector}
@@ -182,6 +183,7 @@ SpriteSelectorComponent.propTypes = {
     onSelectSprite: PropTypes.func,
     onSpriteUpload: PropTypes.func,
     onSurpriseSpriteClick: PropTypes.func,
+    prefs: PropTypes.any,
     raised: PropTypes.bool,
     selectedId: PropTypes.string,
     spriteFileInput: PropTypes.func,
