@@ -22,7 +22,10 @@ import {setUsername, setUsernameInvalid} from '../../reducers/tw.js';
 import isScratchDesktop from '../../lib/isScratchDesktop.js';
 import {generateRandomUsername} from '../../lib/tw-username.js';
 import KeyInput from './key-input.jsx';
-import { defaultKeyboardShortcuts } from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeyboardShortcuts} from '../../lib/nb-keyboard-shortcut.js';
+import {setTheme} from '../../reducers/theme.js';
+import {persistTheme} from '../../lib/themes/themePersistance.js';
+import {GUI_DARK, GUI_LIGHT, Theme} from '../../lib/themes/index.js';
 
 const messages = defineMessages({
     title: {
@@ -328,6 +331,19 @@ const EditorSettingsModal = props => {
                         />
                     </button>
                 </p>
+                <BooleanSetting
+                    value={props.theme.gui === GUI_DARK}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.darkMode"
+                        defaultMessage="Dark mode"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.darkModeHelp"
+                        defaultMessage="Turns the website dark to make it easier on the eyes."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={() => props.onChangeTheme(props.theme.set('gui', props.theme.gui === GUI_DARK ? GUI_LIGHT : GUI_DARK))}
+                />
                 <div className={styles.header}>
                     <FormattedMessage
                         id="nb.editorSettings.dangerZone"
@@ -546,20 +562,28 @@ EditorSettingsModal.propTypes = {
     // eslint-disable-next-line react/no-unused-prop-types
     isRtl: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
+    onChangeTheme: PropTypes.func,
     onOpenAccentManager: PropTypes.func.isRequired,
     onSetUsername: PropTypes.func,
     prefs: PropTypes.any,
     setPref: PropTypes.func.isRequired,
+    theme: PropTypes.instanceOf(Theme),
     username: PropTypes.string,
     usernameInvalid: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
+    theme: state.scratchGui.theme.theme,
     username: state.scratchGui.tw.username,
     usernameInvalid: state.scratchGui.tw.usernameInvalid
 });
 
 const mapDispatchToProps = dispatch => ({
+    onChangeTheme: theme => {
+        console.log(theme);
+        dispatch(setTheme(theme));
+        persistTheme(theme);
+    },
     onOpenAccentManager: () => {
         dispatch(closeEditorSettingsModal());
         dispatch(openCustomAccentModal());

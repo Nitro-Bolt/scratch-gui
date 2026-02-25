@@ -9,7 +9,7 @@ import TurboMode from '../turbo-mode/turbo-mode.jsx';
 import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.jsx';
 
 import styles from './controls.css';
-import { defaultKeyboardShortcuts, registerKeyboardShortcut } from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 const messages = defineMessages({
     goTitle: {
