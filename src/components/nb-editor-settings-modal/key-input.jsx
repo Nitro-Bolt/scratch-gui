@@ -23,6 +23,8 @@ class Shortcut {
             this.shift ? 'Shift' : false,
             this.alt ? 'Alt' : false,
             this.key.toUpperCase()
+                .replace('ENTER', 'Enter')
+                .replace(' ', 'Space')
         ].filter(v => v).join('+');
     }
 
@@ -43,7 +45,6 @@ class KeyInput extends React.Component {
             'handleChange',
             'handleClick'
         ]);
-        console.log(props.shortcut);
         this.state = {
             listening: false,
             shortcut: props.shortcut ? new Shortcut(props.shortcut) : null
@@ -54,7 +55,7 @@ class KeyInput extends React.Component {
         let shortcut;
         if (e.key === 'Backspace') {
             shortcut = null;
-        } else {
+        } else if (e.key !== 'Escape') {
             shortcut = new Shortcut({
                 ctrl: e.ctrlKey,
                 shift: e.shiftKey,
@@ -62,7 +63,7 @@ class KeyInput extends React.Component {
                 key: e.key
             });
         }
-        this.props.onChange(shortcut);
+        if (!['Backspace', 'Escape'].includes(e.key)) this.props.onChange(shortcut);
         this.setState({listening: false, shortcut});
     }
 
@@ -91,7 +92,7 @@ class KeyInput extends React.Component {
                     <span>{this.state.shortcut.toString()}</span>
                 ) : (
                     <FormattedMessage
-                        defaultMessage="N/A"
+                        defaultMessage="Not set"
                         id="nb.keyInput.none"
                     />
                 )}
