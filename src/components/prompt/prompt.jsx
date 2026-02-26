@@ -38,6 +38,12 @@ const messages = defineMessages({
         description: 'A message that displays in a list modal when the stage is selected indicating ' +
             'that the list being created will available to all sprites.',
         id: 'gui.gui.listPromptAllSpritesMessage'
+    },
+    tableAvailableToAllSpritesMessage: {
+        defaultMessage: 'This table will be available to all sprites.',
+        description: 'A message that displays in a table modal when the stage is selected indicating ' +
+            'that the table being created will available to all sprites.',
+        id: 'gui.gui.tablePromptAllSpritesMessage'
     }
 });
 
@@ -78,7 +84,11 @@ const PromptComponent = props => (
                 <div>
                     {props.isStage ?
                         <div className={styles.infoMessage}>
-                            {props.showListMessage ? (
+                            {props.showTableMessage ? (
+                                <FormattedMessage
+                                    {...messages.tableAvailableToAllSpritesMessage}
+                                />
+                            ) : (props.showListMessage ? (
                                 <FormattedMessage
                                     {...messages.listAvailableToAllSpritesMessage}
                                 />
@@ -86,7 +96,7 @@ const PromptComponent = props => (
                                 <FormattedMessage
                                     {...messages.availableToAllSpritesMessage}
                                 />
-                            )}
+                            ))}
                         </div> :
                         <Box className={styles.optionsRow}>
                             <label>
@@ -211,6 +221,7 @@ PromptComponent.propTypes = {
     globalSelected: PropTypes.bool.isRequired,
     isStage: PropTypes.bool.isRequired,
     showListMessage: PropTypes.bool.isRequired,
+    showTableMessage: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired,
     onCancel: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
