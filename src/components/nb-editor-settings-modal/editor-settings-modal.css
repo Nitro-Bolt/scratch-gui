@@ -11,6 +11,7 @@
 .body {
     background: $ui-white;
     height: 550px;
+    max-height: calc(100vh - 100px - 3.125rem);
     overflow: auto;
     display: flex;
 }
