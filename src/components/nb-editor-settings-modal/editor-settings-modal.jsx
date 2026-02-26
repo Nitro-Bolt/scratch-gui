@@ -530,7 +530,8 @@ const EditorSettingsModal = props => {
                     {dirty && (
                         <button
                             className={classNames(styles.button, styles.dirtyButton)}
-                            onClick={props.onOpenAccentManager}
+                            // eslint-disable-next-line react/jsx-handler-names
+                            onClick={() => location.reload()}
                         >
                             <FormattedMessage
                                 id="nb.editorSettings.dirty"
