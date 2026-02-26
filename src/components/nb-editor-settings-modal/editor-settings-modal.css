@@ -270,6 +270,13 @@ label {
     border-right: 1px solid $ui-black-transparent;
     height: 100%;
     position: relative;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.navigation {
+    flex-grow: 1;
 }
     
 .topic-item {
@@ -408,9 +415,8 @@ label {
 
 .dirty-button {
     width: calc(100% - 20px);
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
+    margin: 10px;
+    justify-content: flex-end;
 }
 
 .warning {

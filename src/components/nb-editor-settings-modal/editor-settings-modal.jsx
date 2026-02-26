@@ -504,27 +504,29 @@ const EditorSettingsModal = props => {
         >
             <Box className={styles.body}>
                 <div className={styles.topicList}>
-                    {sections.map((section, index) => (
-                        <div
-                            key={index}
-                            className={classNames(styles.topicItem, {
-                                [styles.active]: selectedSectionIndex === index
-                            })}
-                            // eslint-disable-next-line react/jsx-no-bind
-                            onClick={() => setSelectedSectionIndex(index)}
-                        >
-                            {section.icon &&
-                                <img
-                                    src={section.icon}
-                                    width="20"
-                                    height="20"
+                    <div className={styles.navigation}>
+                        {sections.map((section, index) => (
+                            <div
+                                key={index}
+                                className={classNames(styles.topicItem, {
+                                    [styles.active]: selectedSectionIndex === index
+                                })}
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onClick={() => setSelectedSectionIndex(index)}
+                            >
+                                {section.icon &&
+                                    <img
+                                        src={section.icon}
+                                        width="20"
+                                        height="20"
+                                    />
+                                }
+                                <FormattedMessage
+                                    {...section.title}
                                 />
-                            }
-                            <FormattedMessage
-                                {...section.title}
-                            />
-                        </div>
-                    ))}
+                            </div>
+                        ))}
+                    </div>
                     {dirty && (
                         <button
                             className={classNames(styles.button, styles.dirtyButton)}
