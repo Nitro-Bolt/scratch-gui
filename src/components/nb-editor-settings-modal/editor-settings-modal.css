@@ -10,7 +10,7 @@
 
 .body {
     background: $ui-white;
-    height: calc(100vh - 100px - 3.125rem);
+    height: 550px;
     overflow: auto;
     display: flex;
 }
