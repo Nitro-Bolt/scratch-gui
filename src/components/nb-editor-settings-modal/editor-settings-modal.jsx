@@ -355,7 +355,7 @@ const EditorSettingsModal = props => {
                     value={!!props.prefs['hide-backpack']}
                     label={<FormattedMessage
                         id="nb.editorSettings.hideBackpack"
-                        defaultMessage="Hide backback"
+                        defaultMessage="Hide backpack"
                     />}
                     help={<FormattedMessage
                         id="nb.editorSettings.hideBackpackHelp"
