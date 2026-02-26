@@ -707,11 +707,18 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
                 </shadow>
             </value>
         </block>
-        ${blockSeparator}
         <block type="operator_mathop">
             <value name="NUM">
                 <shadow type="math_number">
                     <field name="NUM"/>
+                </shadow>
+            </value>
+        </block>
+        ${blockSeparator}
+        <block type="operator_cast">
+            <value name="VALUE">
+                <shadow type="text">
+                    <field name="TEXT"/>
                 </shadow>
             </value>
         </block>
@@ -747,15 +754,6 @@ const json = function (colors) {
         colour="${colors.primary}"
         secondaryColour="${colors.tertiary}">
         <block type="json_new_object">
-        </block>
-        <block type="json_to_object">
-            <value name="STR">
-                <shadow type="text">
-                    <field name="TEXT">${object}</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="json_to_string">
         </block>
         ${blockSeparator}
         <block type="json_get_properties">
@@ -797,13 +795,6 @@ const json = function (colors) {
         </block>
         ${blockSeparator}
         <block type="json_new_array">
-        </block>
-        <block type="json_to_array">
-            <value name="STR">
-                <shadow type="text">
-                    <field name="TEXT">${array}</field>
-                </shadow>
-            </value>
         </block>
         ${blockSeparator}
         <block type="json_value_of_index">
