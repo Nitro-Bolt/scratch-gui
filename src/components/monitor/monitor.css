@@ -186,3 +186,50 @@
 .footer-length {
     text-align: center;
 }
+
+.table-column-tag {
+    font-weight: bold;
+    color: $text-primary-default;
+    margin: 0 1px;
+    height: 20px;
+    line-height: 20px;
+    min-width: 32px;
+}
+
+.table-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 1px 0;
+    flex-shrink: 0;
+    transform: translateZ(0); /* Keep sharp when scaled */
+}
+
+.table-row .list-index {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0 2px 0 4px;
+    height: 22px;
+    line-height: 22px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.table-value {
+    min-width: 64px;
+    text-align: left;
+    margin: 0 1px;
+    border-radius: calc($space / 2);
+    border: 1px solid $ui-black-transparent-default;
+    height: 22px;
+}
+
+.footer-hidden {
+    visibility: hidden;
+}
+
+.overflowx {
+    overflow-x: auto;
+}

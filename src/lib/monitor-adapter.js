@@ -35,7 +35,7 @@ export default function ({id, mode, spriteName, opcode, params, value, vm}) {
 
     // Convert scalars to a string now. That should help avoid unnecessary re-renders in a few edge cases.
     // For lists, we stringify when we display the list row instead of doing a full list copy on every change.
-    if (mode !== 'list') {
+    if (mode !== 'list' && mode !== 'table') {
         value = safeStringify(value);
     }
 

@@ -17,12 +17,15 @@ import VM from 'scratch-vm';
 
 const availableModes = opcode => (
     monitorModes.filter(t => {
-        if (opcode === 'data_variable') {
-            return t !== 'list';
-        } else if (opcode === 'data_listcontents') {
-            return t === 'list';
+        switch (opcode) {
+            case 'data_variable':
+                return t !== 'list' && t !== 'table';
+            case 'data_listcontents':
+                return t === 'list';
+            case 'data_tablecontents':
+                return t === 'table';
         }
-        return t !== 'slider' && t !== 'list';
+        return t !== 'slider' && t !== 'list' && t !== 'table';
     })
 );
 
@@ -176,35 +179,55 @@ class Monitor extends React.Component {
     }
     handleImport () {
         importCSV().then(async ({rows, text}) => {
-            const numberOfColumns = rows[0].length;
-            let columnNumber = 1;
-            if (numberOfColumns > 1) {
-                const msg = this.props.intl.formatMessage(messages.columnPrompt, {numberOfColumns});
-                // prompt() returns Promise in desktop app
-                columnNumber = parseInt(await prompt(msg), 10); // eslint-disable-line no-alert
-            }
-            let newListValue;
-            if (isNaN(columnNumber) || numberOfColumns === 1) {
-                newListValue = text.replace(/\r/g, '').split('\n');
-            } else {
-                newListValue = rows.map(row => row[columnNumber - 1])
-                    .filter(item => typeof item === 'string'); // CSV importer can leave undefineds
-            }
             const {vm, targetId, id: variableId} = this.props;
-            setVariableValue(vm, targetId, variableId, newListValue);
+            if (this.props.mode === 'table') {
+                // For tables, use the entire 2D array
+                setVariableValue(vm, targetId, variableId, rows);
+            } else {
+                // For lists, extract a single column
+                const numberOfColumns = rows[0].length;
+                let columnNumber = 1;
+                if (numberOfColumns > 1) {
+                    const msg = this.props.intl.formatMessage(messages.columnPrompt, {numberOfColumns});
+                    // prompt() returns Promise in desktop app
+                    columnNumber = parseInt(await prompt(msg), 10); // eslint-disable-line no-alert
+                }
+                let newListValue;
+                if (isNaN(columnNumber) || numberOfColumns === 1) {
+                    newListValue = text.replace(/\r/g, '').split('\n');
+                } else {
+                    newListValue = rows.map(row => row[columnNumber - 1])
+                        .filter(item => typeof item === 'string'); // CSV importer can leave undefineds
+                }
+                setVariableValue(vm, targetId, variableId, newListValue);
+            }
         });
     }
     handleExport () {
         const {vm, targetId, id: variableId} = this.props;
         const variable = getVariable(vm, targetId, variableId);
-        const text = variable.value.join('\r\n');
-        const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
-        downloadBlob(`${variable.name}.txt`, blob);
+        if (this.props.mode === 'table') {
+            // For tables, export as CSV with rows and columns
+            const text = variable.value.map(row => {
+                if (Array.isArray(row)) {
+                    return row.join(',');
+                }
+                return row;
+            }).join('\r\n');
+            const blob = new Blob([text], {type: 'text/csv;charset=utf-8'});
+            downloadBlob(`${variable.name}.csv`, blob);
+        } else {
+            // For lists, export as newline-separated text
+            const text = variable.value.join('\r\n');
+            const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+            downloadBlob(`${variable.name}.txt`, blob);
+        }
     }
     render () {
         const monitorProps = monitorAdapter(this.props);
         const showSliderOption = availableModes(this.props.opcode).indexOf('slider') !== -1;
         const isList = this.props.mode === 'list';
+        const isTable = this.props.mode === 'table';
         return (
             <React.Fragment>
                 {this.state.sliderPrompt && <SliderPrompt
@@ -228,12 +251,12 @@ class Monitor extends React.Component {
                     theme={this.props.theme}
                     width={this.props.width}
                     onDragEnd={this.handleDragEnd}
-                    onExport={isList ? this.handleExport : null}
-                    onImport={isList ? this.handleImport : null}
+                    onExport={(isList || isTable) ? this.handleExport : null}
+                    onImport={(isList || isTable) ? this.handleImport : null}
                     onHide={this.handleHide}
                     onNextMode={this.handleNextMode}
-                    onSetModeToDefault={isList ? null : this.handleSetModeToDefault}
-                    onSetModeToLarge={isList ? null : this.handleSetModeToLarge}
+                    onSetModeToDefault={(isList || isTable) ? null : this.handleSetModeToDefault}
+                    onSetModeToLarge={(isList || isTable) ? null : this.handleSetModeToLarge}
                     onSetModeToSlider={showSliderOption ? this.handleSetModeToSlider : null}
                     onSliderPromptOpen={this.handleSliderPromptOpen}
                 />
@@ -251,7 +274,7 @@ Monitor.propTypes = {
     isDiscrete: PropTypes.bool,
     max: PropTypes.number,
     min: PropTypes.number,
-    mode: PropTypes.oneOf(['default', 'slider', 'large', 'list']),
+    mode: PropTypes.oneOf(['default', 'slider', 'large', 'list', 'table']),
     monitorLayout: PropTypes.shape({
         monitors: PropTypes.object, // eslint-disable-line react/forbid-prop-types
         savedMonitorPositions: PropTypes.object // eslint-disable-line react/forbid-prop-types
@@ -271,7 +294,13 @@ Monitor.propTypes = {
         PropTypes.arrayOf(PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.number
-        ]))
+        ])),
+        PropTypes.arrayOf(
+            PropTypes.arrayOf(
+                PropTypes.oneOfType([
+                    PropTypes.number,
+                    PropTypes.string
+        ])))
     ]), // eslint-disable-line react/no-unused-prop-types
     vm: PropTypes.instanceOf(VM),
     width: PropTypes.number,
