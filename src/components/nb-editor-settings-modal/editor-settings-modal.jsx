@@ -526,16 +526,15 @@ const EditorSettingsModal = props => {
                         </div>
                     ))}
                     {dirty && (
-                        <div
-                            className={styles.topicItem}
-                            // eslint-disable-next-line react/jsx-no-bind
-                            onClick={() => location.reload()}
+                        <button
+                            className={classNames(styles.button, styles.dirtyButton)}
+                            onClick={props.onOpenAccentManager}
                         >
                             <FormattedMessage
                                 id="nb.editorSettings.dirty"
-                                defaultMessage="Reload to apply settings"
+                                defaultMessage="Refresh to apply settings"
                             />
-                        </div>
+                        </button>
                     )}
                 </div>
                 {sections[selectedSectionIndex].escaped ?

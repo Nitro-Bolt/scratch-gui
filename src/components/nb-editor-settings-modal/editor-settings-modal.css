@@ -269,6 +269,7 @@ label {
     flex-shrink: 0;
     border-right: 1px solid $ui-black-transparent;
     height: 100%;
+    position: relative;
 }
     
 .topic-item {
@@ -400,8 +401,16 @@ label {
     font-family: inherit;
     font-weight: bold;
 }
+
 .button:active, .button:focus-within {
     box-shadow: 0 0 0 3px $looks-transparent;
+}
+
+.dirty-button {
+    width: calc(100% - 20px);
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
 }
 
 .warning {
