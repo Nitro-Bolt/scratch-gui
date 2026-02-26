@@ -24,6 +24,7 @@ class SpriteInfo extends React.Component {
         return (
             <SpriteInfoComponent
                 {...this.props}
+                nameRef={this.props.nameRef}
                 onClickNotVisible={this.handleClickNotVisible}
                 onClickVisible={this.handleClickVisible}
             />
@@ -33,6 +34,7 @@ class SpriteInfo extends React.Component {
 
 SpriteInfo.propTypes = {
     ...SpriteInfoComponent.propTypes,
+    nameRef: PropTypes.any,
     onChangeDirection: PropTypes.func,
     onChangeName: PropTypes.func,
     onChangeSize: PropTypes.func,
