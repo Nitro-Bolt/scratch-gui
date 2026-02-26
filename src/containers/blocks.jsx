@@ -710,7 +710,6 @@ class Blocks extends React.Component {
             workspaceMetrics,
             ...props
         } = this.props;
-
         /* eslint-enable no-unused-vars */
         return (
             <React.Fragment>
