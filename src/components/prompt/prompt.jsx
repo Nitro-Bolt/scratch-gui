@@ -49,7 +49,7 @@ const messages = defineMessages({
 
 const Packager = () => (
     <a
-        href="https://nitro-bolt.github.io/packager"
+        href="https://packager.nitrobolt.org"
         target="_blank"
         rel="noopener noreferrer"
     >
