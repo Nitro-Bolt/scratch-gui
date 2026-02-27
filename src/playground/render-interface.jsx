@@ -131,7 +131,7 @@ const Footer = () => (
                         {/* Do not translate */}
                         {'TurboWarp Desktop'}
                     </a>
-                    <a href="https://nitro-bolt.github.io/packager">
+                    <a href="https://packager.nitrobolt.org/">
                         {/* Do not translate */}
                         {'NitroBolt Packager'}
                     </a>
