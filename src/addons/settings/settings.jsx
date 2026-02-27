@@ -917,7 +917,7 @@ class AddonSettingsComponent extends React.Component {
         this.state = {
             loading: false,
             dirty: false,
-            search: getInitialSearch(),
+            search: props.onDirty ? getInitialSearch() : '',
             extended: false,
             ...this.readFullAddonState()
         };
