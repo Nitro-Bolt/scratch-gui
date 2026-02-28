@@ -358,7 +358,40 @@ const assets = function (isInitialSetup, isStage, targetId, assetName, colors) {
     // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
     return `
     <category name="%{BKY_CATEGORY_ASSETS}" id="assets" colour="${colors.primary}" secondaryColour="${colors.tertiary}">
-        <block id="${targetId}_assets_test" type="assets_test">
+        <block id="${targetId}_assets_file_as_type" type="assets_file_as_type">
+            <value name="ASSET_MENU">
+                <shadow type="assets_menu">
+                    <field name="ASSET_MENU">${assetName}</field>
+                </shadow>
+            </value>
+        </block>
+        ${blockSeparator}
+        <block id="${targetId}_assets_metadata" type="assets_metadata">
+            <value name="ASSET_MENU">
+                <shadow type="assets_menu">
+                    <field name="ASSET_MENU">${assetName}</field>
+                </shadow>
+            </value>
+        </block>
+        <block id="${targetId}_assets_set" type="assets_set">
+            <value name="ASSET_MENU">
+                <shadow type="assets_menu">
+                    <field name="ASSET_MENU">${assetName}</field>
+                </shadow>
+            </value>
+            <value name="VALUE">
+                <shadow type="text">
+                    <field name="TEXT">Hello</field>
+                </shadow>
+            </value>
+        </block>
+        ${blockSeparator}
+        <block id="${targetId}_assets_write" type="assets_write">
+            <value name="VALUE">
+                <shadow type="text">
+                    <field name="TEXT">Hello</field>
+                </shadow>
+            </value>
             <value name="ASSET_MENU">
                 <shadow type="assets_menu">
                     <field name="ASSET_MENU">${assetName}</field>

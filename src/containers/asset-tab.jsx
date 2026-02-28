@@ -109,6 +109,7 @@ class AssetTab extends React.Component {
             console.log(fileType);
             assetUpload(buffer, fileType, fileExtension || '', storage, newAsset => {
                 newAsset.name = fileName;
+                newAsset.contentType = newAsset.asset.assetType.contentType.toLowerCase(); // Could be uppercase?
                 newAsset.lastModified = lastModified;
                 this.props.vm.addAsset(newAsset, targetId).then(() => {
                     this.handleNewAsset();
