@@ -91,13 +91,6 @@
     margin-right: 0.5rem;
 }
 
-label {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-}
-
 .color-option {
     cursor: pointer;
     height: 35px;
