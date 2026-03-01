@@ -26,6 +26,9 @@ const getMediaType = dataFormat => {
         case 'svg':
         case 'bmp':
         case 'ico':
+        case 'tiff':
+        case 'heif':
+        case 'apng':
             return 'image';
         case 'mp4':
         case 'm4v':
