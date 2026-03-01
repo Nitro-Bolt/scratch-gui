@@ -8,7 +8,6 @@ import Box from '../box/box.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
 import FileInput from './file-input.jsx';
 import {gradientDataToCSS} from '../../lib/nb-gradient-to-css.js';
-import {isMistwarpTheme, convertMistwarpTheme} from '../../lib/themes/mistwarp-compat.js';
 
 const messages = defineMessages({
     title: {
@@ -399,19 +398,6 @@ const CustomAccentModal = props => {
                                             data = JSON.parse(await file.text());
                                         } catch {
                                             isValid = false;
-                                        }
-                                        if (isMistwarpTheme(data)) {
-                                            const converted = convertMistwarpTheme(data);
-                                            if (converted) {
-                                                data = {
-                                                    name: converted.accent.name || file.name.replace('.json', ''),
-                                                    primaryColor: converted.accent.primaryColor,
-                                                    secondaryColor: converted.accent.secondaryColor,
-                                                    tertiaryColor: converted.accent.tertiaryColor,
-                                                    gradient: converted.accent.gradient,
-                                                    isGradient: converted.accent.isGradient
-                                                };
-                                            }
                                         }
                                         const colorRegex = /^#[a-fA-F0-9]{6}$/;
                                         // eslint-disable-next-line max-len
