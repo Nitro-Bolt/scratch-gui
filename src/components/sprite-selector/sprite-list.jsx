@@ -64,6 +64,7 @@ const SpriteList = function (props) {
                     isRaised = isRaised || [
                         DragConstants.COSTUME,
                         DragConstants.SOUND,
+                        DragConstants.ASSET,
                         DragConstants.BACKPACK_COSTUME,
                         DragConstants.BACKPACK_SOUND,
                         DragConstants.BACKPACK_CODE].includes(draggingType);
