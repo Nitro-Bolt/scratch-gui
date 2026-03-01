@@ -16,6 +16,34 @@ const formatSize = bytes => {
     return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
 };
 
+const getMediaType = dataFormat => {
+    switch (dataFormat) {
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+        case 'gif':
+        case 'webp':
+        case 'svg':
+        case 'bmp':
+        case 'ico':
+            return 'image';
+        case 'mp4':
+        case 'm4v':
+        case 'webm':
+        case 'mov':
+            return 'video';
+        case 'mp3':
+        case 'wav':
+        case 'aac':
+        case 'ogg':
+        case 'opus':
+        case 'flac':
+            return 'audio';
+        default:
+            return null;
+    }
+};
+
 class AssetViewer extends React.Component {
     constructor (props) {
         super(props);
@@ -57,7 +85,7 @@ class AssetViewer extends React.Component {
     updateBlobURL () {
         this.revokeBlobURL();
         
-        if (!this.props.contentType) {
+        if (!this.props.mediaType) {
             this.setState({blobURL: null});
             return;
         }
@@ -73,7 +101,9 @@ class AssetViewer extends React.Component {
     }
 
     handleAssetRename (newName) {
-        this.props.vm.renameAsset(this.props.assetIndex, newName);
+        const [name, ...extensionParts] = newName.split('.');
+        const extension = extensionParts.join('.');
+        this.props.vm.renameAsset(this.props.assetIndex, name, extension);
     }
 
     render () {
@@ -90,7 +120,7 @@ class AssetViewer extends React.Component {
                 lastModified={this.props.lastModified}
                 size={this.props.size}
                 blobURL={this.state.blobURL}
-                contentType={this.props.contentType}
+                mediaType={this.props.mediaType}
                 imageURL={imageURL}
                 onChangeName={this.handleAssetRename}
             />
@@ -114,22 +144,20 @@ const mapStateToProps = (state, {selectedAssetIndex}) => {
     const index = selectedAssetIndex < sprite.assets.length ?
         selectedAssetIndex : sprite.assets.length - 1;
     const assetObject = sprite.assets[index];
-    const contentType = assetObject.asset.assetType.contentType;
-    const isMediaType = 
-        contentType.startsWith('audio/') ||
-        contentType.startsWith('video/') ||
-        contentType.startsWith('image/');
 
     return {
         vm: state.scratchGui.vm,
-        name: assetObject.name,
+        name: assetObject.dataFormat !== '' ?
+            assetObject.name + '.' + assetObject.dataFormat :
+            assetObject.name,
         lastModified: assetObject.lastModified ?
             new Date(assetObject.lastModified).toLocaleString() :
             'Unknown',
         size: formatSize(assetObject.asset.data.byteLength),
         assetIndex: index,
         assetId: assetObject.asset.assetId,
-        contentType: isMediaType ? contentType : null
+        contentType: assetObject.contentType,
+        mediaType: getMediaType(assetObject.dataFormat)
     };
 };
 

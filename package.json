@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@microbit/microbit-universal-hex": "0.2.2",
-    "@nitro-bolt/scratch-storage": "^1.0.0-test",
+    "@nitro-bolt/scratch-storage": "^1.0.1-test",
     "@turbowarp/jszip": "^3.11.1",
     "@turbowarp/nanolog": "^1.0.1",
     "@turbowarp/scratch-l10n": "^3.1001.0-202401241456-994097a5",

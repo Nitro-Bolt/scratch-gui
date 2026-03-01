@@ -31,12 +31,12 @@ const messages = defineMessages({
 const AssetViewerComponent = props => (
     <div className={styles.viewerContainer}>
         
-            {props.blobURL && props.contentType ? (
-                props.contentType.startsWith('video/') ? (
+            {props.blobURL && props.mediaType ? (
+                props.mediaType === 'video' ? (
                     <video className={styles.mediaPreview} src={props.blobURL} controls />
-                ) : props.contentType.startsWith('audio/') ? (
+                ) : props.mediaType === 'audio' ? (
                     <audio className={styles.mediaPreview} src={props.blobURL} controls />
-                ) : props.contentType.startsWith('image/') ? (
+                ) : props.mediaType === 'image' ? (
                     <img className={styles.mediaPreview} src={props.blobURL} draggable={false} />
                 ) : null
             ) : (
@@ -75,6 +75,7 @@ AssetViewerComponent.propTypes = {
     size: PropTypes.string.isRequired,
     blobURL: PropTypes.any,
     contentType: PropTypes.any,
+    mediaType: PropTypes.any,
     imageURL: PropTypes.string.isRequired,
     intl: intlShape
 };
