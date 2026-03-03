@@ -210,8 +210,8 @@ const AccentThemeMenu = ({
                             <img
                                 src={settingsIcon}
                                 draggable={false}
-                                width={21.6}
-                                height={21.6}
+                                width={24}
+                                height={24}
                             />
                             <FormattedMessage
                                 defaultMessage="Accent Manager"

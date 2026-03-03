@@ -11,7 +11,8 @@ import {closeSettingsMenu, openThemeMenu, themeMenuOpen} from '../../reducers/me
 import dropdownCaret from './dropdown-caret.svg';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
-import themeIcon from './tw-sun.svg';
+import sunIcon from './tw-sun.svg';
+import moonIcon from './tw-moon.svg';
 import styles from './settings-menu.css';
 
 const options = defineMessages({
@@ -27,6 +28,11 @@ const options = defineMessages({
     }
 });
 
+const icons = {
+    [GUI_LIGHT]: sunIcon,
+    [GUI_DARK]: moonIcon
+};
+
 const GuiThemeMenu = ({
     isOpen,
     isRtl,
@@ -41,7 +47,7 @@ const GuiThemeMenu = ({
             onClick={onOpen}
         >
             <img
-                src={themeIcon}
+                src={sunIcon}
                 draggable={false}
                 width={24}
                 height={24}
@@ -76,6 +82,17 @@ const GuiThemeMenu = ({
                             src={check}
                             draggable={false}
                         />
+                        {icons[item] ? <img
+                            src={icons[item]}
+                            draggable={false}
+                            width={24}
+                            height={24}
+                        /> : <div
+                            style={{
+                                width: 24,
+                                height: 24
+                            }}
+                        />}
                         <FormattedMessage {...options[item]} />
                     </div>
                 </MenuItem>
