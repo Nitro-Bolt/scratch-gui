@@ -65,10 +65,10 @@ const SettingsMenu = ({
                 {canChangeLanguage && <LanguageMenu onRequestCloseSettings={onRequestClose} />}
                 {canChangeTheme && (
                     <React.Fragment>
-                        <TWGuiThemeMenu />
                         <TWBlocksThemeMenu
                             onOpenCustomSettings={onOpenCustomSettings}
                         />
+                        <TWGuiThemeMenu />
                         <TWAccentThemeMenu />
                     </React.Fragment>
                 )}
