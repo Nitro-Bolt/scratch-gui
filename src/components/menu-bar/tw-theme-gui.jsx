@@ -5,7 +5,7 @@ import {FormattedMessage, defineMessages} from 'react-intl';
 import {connect} from 'react-redux';
 
 import check from './check.svg';
-import {MenuItem, Submenu} from '../menu/menu.jsx';
+import {MenuItem, MenuSection, Submenu} from '../menu/menu.jsx';
 import {GUI_DARK, GUI_LIGHT, Theme} from '../../lib/themes/index.js';
 import {closeSettingsMenu, openThemeMenu, themeMenuOpen} from '../../reducers/menus.js';
 import dropdownCaret from './dropdown-caret.svg';
@@ -14,6 +14,8 @@ import {persistTheme} from '../../lib/themes/themePersistance.js';
 import sunIcon from './tw-sun.svg';
 import moonIcon from './tw-moon.svg';
 import styles from './settings-menu.css';
+import settingsIcon from '../menu-bar/icon--settings.svg';
+import {openCustomThemeModal} from '../../reducers/modals.js';
 
 const options = defineMessages({
     [GUI_LIGHT]: {
@@ -37,6 +39,7 @@ const GuiThemeMenu = ({
     isOpen,
     isRtl,
     onChangeTheme,
+    onClickCustomTheme,
     onOpen,
     theme
 }) => (
@@ -97,6 +100,35 @@ const GuiThemeMenu = ({
                     </div>
                 </MenuItem>
             ))}
+            <MenuSection>
+                <MenuItem
+                    className={styles.menuSection}
+                    onClick={onClickCustomTheme}
+                >
+                    <div
+                        className={styles.option}
+                    >
+                        <img
+                            className={styles.check}
+                            width={15}
+                            height={12}
+                            src={check}
+                            draggable={false}
+                        />
+                        <img
+                            src={settingsIcon}
+                            draggable={false}
+                            width={24}
+                            height={24}
+                        />
+                        <FormattedMessage
+                            defaultMessage="Theme Manager"
+                            description="Menu item to open the custom theme manager"
+                            id="nb.customTheme"
+                        />
+                    </div>
+                </MenuItem>
+            </MenuSection>
         </Submenu>
     </MenuItem>
 );
@@ -105,6 +137,7 @@ GuiThemeMenu.propTypes = {
     isOpen: PropTypes.bool,
     isRtl: PropTypes.bool,
     onChangeTheme: PropTypes.func,
+    onClickCustomTheme: PropTypes.func,
     onOpen: PropTypes.func,
     theme: PropTypes.instanceOf(Theme)
 };
@@ -120,6 +153,10 @@ const mapDispatchToProps = dispatch => ({
         dispatch(setTheme(theme));
         dispatch(closeSettingsMenu());
         persistTheme(theme);
+    },
+    onClickCustomTheme: () => {
+        dispatch(openCustomThemeModal());
+        dispatch(closeSettingsMenu());
     },
     onOpen: () => dispatch(openThemeMenu())
 });

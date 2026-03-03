@@ -34,6 +34,7 @@ import TWSettingsModal from '../../containers/tw-settings-modal.jsx';
 import TWSecurityManager from '../../containers/tw-security-manager.jsx';
 import TWCustomExtensionModal from '../../containers/tw-custom-extension-modal.jsx';
 import NBCustomAccentModal from '../../containers/nb-custom-accent-modal.jsx';
+import NBCustomThemeModal from '../../containers/nb-custom-theme-modal.jsx';
 import NBEditorSettingsModal from '../../containers/nb-editor-settings-modal.jsx';
 import NBExtensionManagerModal from '../../containers/nb-extension-manager-modal.jsx';
 import TWRestorePointManager from '../../containers/tw-restore-point-manager.jsx';
@@ -164,6 +165,7 @@ const GUIComponent = props => {
         settingsModalVisible,
         customExtensionModalVisible,
         customAccentModalVisible,
+        customThemeModalVisible,
         editorSettingsModalVisible,
         extensionManagerModalVisible,
         fontsModalVisible,
@@ -242,6 +244,7 @@ const GUIComponent = props => {
                 {settingsModalVisible && <TWSettingsModal />}
                 {customExtensionModalVisible && <TWCustomExtensionModal />}
                 {customAccentModalVisible && <NBCustomAccentModal />}
+                {customThemeModalVisible && <NBCustomThemeModal />}
                 {editorSettingsModalVisible && <NBEditorSettingsModal
                     prefs={prefs}
                     // eslint-disable-next-line react/jsx-no-bind
@@ -630,6 +633,7 @@ GUIComponent.propTypes = {
     settingsModalVisible: PropTypes.bool,
     customExtensionModalVisible: PropTypes.bool,
     customAccentModalVisible: PropTypes.bool,
+    customThemeModalVisible: PropTypes.bool,
     editorSettingsModalVisible: PropTypes.bool,
     extensionManagerModalVisible: PropTypes.bool,
     fontsModalVisible: PropTypes.bool,
