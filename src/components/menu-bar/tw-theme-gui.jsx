@@ -13,6 +13,7 @@ import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
 import sunIcon from './tw-sun.svg';
 import moonIcon from './tw-moon.svg';
+import customIcon from './tw-blocks-custom.svg';
 import styles from './settings-menu.css';
 import settingsIcon from '../menu-bar/icon--settings.svg';
 import {openCustomThemeModal} from '../../reducers/modals.js';
@@ -50,7 +51,7 @@ const GuiThemeMenu = ({
             onClick={onOpen}
         >
             <img
-                src={sunIcon}
+                src={icons[theme.gui] ?? customIcon}
                 draggable={false}
                 width={24}
                 height={24}
