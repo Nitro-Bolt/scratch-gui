@@ -26,17 +26,6 @@ const formatSize = bytes => {
     return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
 };
 
-// A list of file extensions for scratch-based mods
-// Used for the blocks icon
-const projectFormats = [
-    'sb3',
-    'sprite3',
-    'pmp', // PenguinMod
-    'pms',
-    'snail', // Snail-IDE
-    '.electra' // Electra-mod
-];
-
 class AssetTab extends React.Component {
     constructor (props) {
         super(props);
@@ -148,7 +137,7 @@ class AssetTab extends React.Component {
     handleExportAsset (assetIndex) {
         const item = this.props.vm.editingTarget.sprite.assets[assetIndex];
         const blob = new Blob([item.asset.data], {type: item.asset.assetType.contentType});
-        downloadBlob(`${item.name}.${item.asset.dataFormat}`, blob);
+        downloadBlob(`${item.name}.${item.dataFormat}`, blob);
     }
 
     setFileInput (input) {
