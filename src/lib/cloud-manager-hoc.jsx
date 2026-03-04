@@ -13,8 +13,8 @@ import {
 import {
     showAlertWithTimeout
 } from '../reducers/alerts';
-import {openUsernameModal} from '../reducers/modals';
 import {setUsernameInvalid, setCloudHost} from '../reducers/tw';
+import {openEditorSettingsModal} from '../reducers/modals';
 
 /**
  * TW: Our scratch-vm has an alternative fix to the cloud variable and video sensing privacy concerns.
@@ -210,7 +210,7 @@ const cloudManagerHOC = function (WrappedComponent) {
         onShowCloudInfo: () => showAlertWithTimeout(dispatch, 'cloudInfo'),
         onInvalidUsername: () => {
             dispatch(setUsernameInvalid(true));
-            dispatch(openUsernameModal());
+            dispatch(openEditorSettingsModal());
         }
     });
 

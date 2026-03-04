@@ -917,7 +917,7 @@ class AddonSettingsComponent extends React.Component {
         this.state = {
             loading: false,
             dirty: false,
-            search: getInitialSearch(),
+            search: props.onDirty ? '' : getInitialSearch(),
             extended: false,
             ...this.readFullAddonState()
         };
@@ -972,6 +972,7 @@ class AddonSettingsComponent extends React.Component {
             };
             if (reloadRequired) {
                 newState.dirty = true;
+                this.props.onDirty?.(true);
             }
             return newState;
         });
@@ -1112,7 +1113,7 @@ class AddonSettingsComponent extends React.Component {
                             </span>
                         </a>
                     </div>
-                    {this.state.dirty && (
+                    {this.state.dirty && !this.props.onDirty && (
                         <Dirty
                             onReloadNow={Channels.reloadChannel ? this.handleReloadNow : null}
                         />
@@ -1171,6 +1172,7 @@ class AddonSettingsComponent extends React.Component {
     }
 }
 AddonSettingsComponent.propTypes = {
+    onDirty: PropTypes.func,
     onExportSettings: PropTypes.func
 };
 

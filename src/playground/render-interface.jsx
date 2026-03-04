@@ -127,11 +127,11 @@ const Footer = () => (
                     </a>
                 </div>
                 <div className={styles.footerSection}>
-                    <a href="https://desktop.turbowarp.org/">
+                    <a href="https://desktop.nitrobolt.org/">
                         {/* Do not translate */}
-                        {'TurboWarp Desktop'}
+                        {'NitroBolt Desktop'}
                     </a>
-                    <a href="https://nitro-bolt.github.io/packager">
+                    <a href="https://packager.nitrobolt.org/">
                         {/* Do not translate */}
                         {'NitroBolt Packager'}
                     </a>
@@ -251,7 +251,6 @@ class Interface extends React.Component {
                     <GUI
                         onClickAddonSettings={handleClickAddonSettings}
                         onUpdateProjectTitle={this.handleUpdateProjectTitle}
-                        backpackVisible
                         backpackHost="_local_"
                         {...props}
                     />

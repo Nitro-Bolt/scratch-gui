@@ -17,8 +17,8 @@ const manifest = {
   "settings": [
     {
       "dynamic": true,
-      "name": "Separate List Category",
-      "id": "separateListCategory",
+      "name": "Separate List and Table Categories",
+      "id": "separateListAndTableCategories",
       "type": "boolean",
       "default": true
     },

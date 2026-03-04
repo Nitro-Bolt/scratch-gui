@@ -569,6 +569,7 @@ const sensing = function (isInitialSetup, isStage, targetId, colors) {
         <block id="current" type="sensing_current"/>
         <block type="sensing_dayssince2000"/>
         ${blockSeparator}
+        <block id="online" type="sensing_online"/>
         <block type="sensing_username"/>
         ${categorySeparator}
     </category>
@@ -754,11 +755,18 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
                 </shadow>
             </value>
         </block>
-        ${blockSeparator}
         <block type="operator_mathop">
             <value name="NUM">
                 <shadow type="math_number">
                     <field name="NUM"/>
+                </shadow>
+            </value>
+        </block>
+        ${blockSeparator}
+        <block type="operator_cast">
+            <value name="VALUE">
+                <shadow type="text">
+                    <field name="TEXT"/>
                 </shadow>
             </value>
         </block>
@@ -795,21 +803,8 @@ const json = function (colors) {
         secondaryColour="${colors.tertiary}">
         <block type="json_new_object">
         </block>
-        <block type="json_to_object">
-            <value name="STR">
-                <shadow type="text">
-                    <field name="TEXT">${object}</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="json_to_string">
-        </block>
         ${blockSeparator}
-        <block type="json_keys">
-        </block>
-        <block type="json_values">
-        </block>
-        <block type="json_entries" id="json_entries">
+        <block type="json_get_properties">
         </block>
         <block type="json_value_of_key">
             <value name="KEY">
@@ -849,13 +844,6 @@ const json = function (colors) {
         ${blockSeparator}
         <block type="json_new_array">
         </block>
-        <block type="json_to_array">
-            <value name="STR">
-                <shadow type="text">
-                    <field name="TEXT">${array}</field>
-                </shadow>
-            </value>
-        </block>
         ${blockSeparator}
         <block type="json_value_of_index">
             <value name="INDEX">
@@ -870,6 +858,8 @@ const json = function (colors) {
                     <field name="TEXT">${bar}</field>
                 </shadow>
             </value>
+        </block>
+        <block type="json_array_length" id="json_array_length">
         </block>
         <block type="json_add_item">
             <value name="ITEM">
@@ -901,6 +891,18 @@ const json = function (colors) {
             <value name="ITEM">
                 <shadow type="text">
                     <field name="TEXT">${bar}</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="json_slice_array" id="json_slice_array">
+            <value name="START">
+                <shadow type="math_number">
+                    <field name="NUM">1</field>
+                </shadow>
+            </value>
+            <value name="END">
+                <shadow type="math_number">
+                    <field name="NUM">2</field>
                 </shadow>
             </value>
         </block>

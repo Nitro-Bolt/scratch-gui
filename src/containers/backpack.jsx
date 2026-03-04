@@ -281,6 +281,7 @@ class Backpack extends React.Component {
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
                 onToggle={this.props.host ? this.handleToggle : null}
+                prefs={this.props.prefs}
             />
         );
     }
@@ -290,6 +291,7 @@ Backpack.propTypes = {
     intl: intlShape,
     host: PropTypes.string,
     token: PropTypes.string,
+    prefs: PropTypes.any,
     username: PropTypes.string,
     vm: PropTypes.instanceOf(VM)
 };

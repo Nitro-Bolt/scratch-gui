@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {setCloudHost} from '../reducers/tw';
 import CloudVariableBadge from '../components/tw-cloud-variable-badge/cloud-variable-badge.jsx';
 import bindAll from 'lodash.bindall';
-import {openUsernameModal} from '../reducers/modals';
+import {openEditorSettingsModal} from '../reducers/modals.js';
 
 class TWCloudVariableBadge extends React.Component {
     constructor (props) {
@@ -41,7 +41,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     onSetCloudHost: cloudHost => dispatch(setCloudHost(cloudHost)),
-    onOpenChangeUsername: () => dispatch(openUsernameModal())
+    onOpenChangeUsername: () => dispatch(openEditorSettingsModal())
 });
 
 export default connect(

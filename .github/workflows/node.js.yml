@@ -1,22 +1,13 @@
-name: Build and Deploy
+name: CI
 
 on:
-  workflow_dispatch:
   push:
-    branches: [develop]
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "deploy"
-  cancel-in-progress: true
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -28,21 +19,4 @@ jobs:
         cache: npm
     - run: npm ci
     - run: npm run build
-      env:
-        NODE_ENV: production
-        ROUTING_STYLE: hash
-    - name: Upload pages artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: ./build/
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+    - run: npm run test:unit

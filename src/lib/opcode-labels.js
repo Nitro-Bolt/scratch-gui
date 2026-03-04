@@ -130,8 +130,13 @@ const messages = defineMessages({
     },
     sensing_dayssince2000: {
         defaultMessage: 'days since 2000',
-        description: 'Label for the days since 2000 monitor when show on the stage',
+        description: 'Label for the days since 2000 monitor when shown on the stage',
         id: 'tw.opcode.2000'
+    },
+    sensing_online: {
+        defaultMessage: 'online?',
+        description: 'Name of "online?" block',
+        id: 'tw.opcode.online'
     }
 });
 
@@ -164,6 +169,7 @@ class OpcodeLabels {
             // Data
             data_variable: {category: 'data'},
             data_listcontents: {category: 'list'},
+            data_tablecontents: {category: 'table'},
 
             // Sound
             sound_volume: {category: 'sound'},
@@ -178,7 +184,8 @@ class OpcodeLabels {
             sensing_username: {category: 'sensing'},
             sensing_current: {category: 'sensing'},
             sensing_timer: {category: 'sensing'},
-            sensing_dayssince2000: {category: 'sensing'}
+            sensing_dayssince2000: {category: 'sensing'},
+            sensing_online: {category: 'sensing'}
         };
 
         // Initialize opcodeMap with default strings
@@ -224,6 +231,7 @@ class OpcodeLabels {
         // Data
         this._opcodeMap.data_variable.labelFn = params => params.VARIABLE;
         this._opcodeMap.data_listcontents.labelFn = params => params.LIST;
+        this._opcodeMap.data_tablecontents.labelFn = params => params.TABLE;
 
         // Sound
         this._opcodeMap.sound_volume.labelFn = () => this._translator(messages.sound_volume);
@@ -256,6 +264,7 @@ class OpcodeLabels {
         };
         this._opcodeMap.sensing_timer.labelFn = () => this._translator(messages.sensing_timer);
         this._opcodeMap.sensing_dayssince2000.labelFn = () => this._translator(messages.sensing_dayssince2000);
+        this._opcodeMap.sensing_online.labelFn = () => this._translator(messages.sensing_online);
     }
 
     /**

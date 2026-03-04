@@ -78,6 +78,7 @@ StageHeader.propTypes = {
     onOpenSettings: PropTypes.func.isRequired,
     // tw: replace showBranding
     isEmbedded: PropTypes.bool.isRequired,
+    prefs: PropTypes.any,
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)).isRequired,
     vm: PropTypes.instanceOf(VM).isRequired
 };

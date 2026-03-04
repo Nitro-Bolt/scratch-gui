@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 
 import check from './check.svg';
 import dropdownCaret from './dropdown-caret.svg';
-import {gradientDataToCSS} from "../../lib/nb-gradient-to-css.js";
+import {gradientDataToCSS} from '../../lib/nb-gradient-to-css.js';
 import {openCustomAccentModal} from '../../reducers/modals.js';
 import {MenuItem, MenuSection, Submenu} from '../menu/menu.jsx';
 import {

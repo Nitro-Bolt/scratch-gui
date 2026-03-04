@@ -94,6 +94,10 @@
     }
 }
 
+.variable-item input {
+    border-radius: 0.25rem;
+}
+
 [dir="ltr"] .variable-item * {
     text-align: left;
 }

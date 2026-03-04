@@ -607,7 +607,7 @@
         "tw.extensionGallery.error": "Error al cargar la galería de extensiones. Visita extensions.turbowarp.org para encontrar más extensiones.",
         "tw.extensionGallery.loading": "Cargando galería de extensiones...",
         "tw.extensionGallery.more": "Obtenga más información sobre las extensiones en extensions.turbowarp.org.",
-        "tw.extensionGallery.name": "Galería de Extensiones de {APP_NAME}",
+        "tw.extensionGallery.name": "Extensiones de {APP_NAME}",
         "tw.favorite": "Favorito",
         "tw.featuredProjectsStudio": "Ver estudio en Scratch",
         "tw.feedback": "Comentarios y Bugs",

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
-import React, {useCallback, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
 import {connect} from 'react-redux';
 import MediaQuery from 'react-responsive';
@@ -31,11 +31,11 @@ import Alerts from '../../containers/alerts.jsx';
 import DragLayer from '../../containers/drag-layer.jsx';
 import ConnectionModal from '../../containers/connection-modal.jsx';
 import TelemetryModal from '../telemetry-modal/telemetry-modal.jsx';
-import TWUsernameModal from '../../containers/tw-username-modal.jsx';
 import TWSettingsModal from '../../containers/tw-settings-modal.jsx';
 import TWSecurityManager from '../../containers/tw-security-manager.jsx';
 import TWCustomExtensionModal from '../../containers/tw-custom-extension-modal.jsx';
 import NBCustomAccentModal from '../../containers/nb-custom-accent-modal.jsx';
+import NBEditorSettingsModal from '../../containers/nb-editor-settings-modal.jsx';
 import NBExtensionManagerModal from '../../containers/nb-extension-manager-modal.jsx';
 import TWRestorePointManager from '../../containers/tw-restore-point-manager.jsx';
 import TWFontsModal from '../../containers/tw-fonts-modal.jsx';
@@ -56,6 +56,8 @@ import costumesIcon from '!../../lib/tw-recolor/build!./icon--costumes.svg';
 import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
 import assetsIcon from '!../../lib/tw-recolor/build!./icon--assets.svg';
 import variablesIcon from '!../../lib/tw-recolor/build!./icon--variables.svg';
+
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 const messages = defineMessages({
     addExtension: {
@@ -90,7 +92,7 @@ const GUIComponent = props => {
         basePath,
         backdropLibraryVisible,
         backpackHost,
-        backpackVisible,
+        _backpackVisible,
         blocksId,
         blocksTabVisible,
         cardsVisible,
@@ -139,6 +141,7 @@ const GUIComponent = props => {
         onActivateVariablesTab,
         onActivateTab,
         onClickLogo,
+        onEditorSettings,
         onExtensionButtonClick,
         onOpenCustomExtensionModal,
         onProjectTelemetryEvent,
@@ -162,10 +165,10 @@ const GUIComponent = props => {
         telemetryModalVisible,
         theme,
         tipsLibraryVisible,
-        usernameModalVisible,
         settingsModalVisible,
         customExtensionModalVisible,
         customAccentModalVisible,
+        editorSettingsModalVisible,
         extensionManagerModalVisible,
         fontsModalVisible,
         unknownPlatformModalVisible,
@@ -177,6 +180,20 @@ const GUIComponent = props => {
     if (children) {
         return <Box {...componentProps}>{children}</Box>;
     }
+
+    const [prefs, setPrefs] = useState(JSON.parse(localStorage.getItem('nb:preferences') ?? '{}'));
+    const backpackVisible = (_backpackVisible ?? true) && !prefs['hide-backpack'];
+    const feedbackVisible = !prefs['hide-feedback'];
+    useEffect(() => vm.setCompilerOptions({
+        enabled: !prefs['disable-compiler']
+    }), []);
+
+    const setPref = (preference, value) => {
+        const p = {...prefs};
+        p[preference] = value;
+        setPrefs(p);
+        localStorage.setItem('nb:preferences', JSON.stringify(p));
+    };
 
     const tabClassNames = {
         tabs: styles.tabs,
@@ -192,6 +209,32 @@ const GUIComponent = props => {
         FIXED_WIDTH +
         Math.max(0, customStageSize.width - FIXED_WIDTH)
     );
+
+    for (const i in Array(10).fill(null)) {
+        registerKeyboardShortcut({
+            key: i,
+            ctrl: true
+        }, () => {
+            if (i > 0 && i < 5) props.onActivateTab(parseInt(i, 10) - 1);
+        });
+    }
+    
+    registerKeyboardShortcut(
+        prefs['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings'],
+        onEditorSettings
+    );
+
+    registerKeyboardShortcut(
+        prefs['keybind-open-extensions'] ?? defaultKeyboardShortcuts['open-extensions'],
+        onExtensionButtonClick
+    );
+
+    registerKeyboardShortcut({
+        key: 'Escape'
+    }, event => {
+        event.target?.blur?.();
+    });
+
     return (<MediaQuery minWidth={unconstrainedWidth}>{isUnconstrained => {
         const stageSize = resolveStageSize(stageSizeMode, isUnconstrained);
 
@@ -200,10 +243,14 @@ const GUIComponent = props => {
                 <TWSecurityManager securityManager={securityManager} />
                 <TWRestorePointManager />
                 <TWWindChimeSubmitter isEmbedded={isEmbedded} />
-                {usernameModalVisible && <TWUsernameModal />}
                 {settingsModalVisible && <TWSettingsModal />}
                 {customExtensionModalVisible && <TWCustomExtensionModal />}
                 {customAccentModalVisible && <NBCustomAccentModal />}
+                {editorSettingsModalVisible && <NBEditorSettingsModal
+                    prefs={prefs}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    setPref={setPref}
+                />}
                 {extensionManagerModalVisible && <NBExtensionManagerModal />}
                 {fontsModalVisible && <TWFontsModal />}
                 {unknownPlatformModalVisible && <TWUnknownPlatformModal />}
@@ -231,6 +278,7 @@ const GUIComponent = props => {
                     isRtl={isRtl}
                     loading={loading}
                     stageSize={STAGE_SIZE_MODES.full}
+                    prefs={prefs}
                     vm={vm}
                 >
                     {alertsVisible ? (
@@ -318,6 +366,7 @@ const GUIComponent = props => {
                     canShare={canShare}
                     className={styles.menuBarPosition}
                     enableCommunity={enableCommunity}
+                    feedbackVisible={feedbackVisible}
                     isShared={isShared}
                     isTotallyNormal={isTotallyNormal}
                     logo={logo}
@@ -352,7 +401,16 @@ const GUIComponent = props => {
                                 selectedTabPanelClassName={tabClassNames.tabPanelSelected}
                                 onSelect={onActivateTab}
                             >
-                                <TabList className={tabClassNames.tabList}>
+                                <TabList
+                                    className={
+                                        classNames(
+                                            tabClassNames.tabList,
+                                            {
+                                                [styles.compact]: prefs['compact-tabs']
+                                            }
+                                        )
+                                    }
+                                >
                                     <Tab className={tabClassNames.tab}>
                                         <img
                                             draggable={false}
@@ -478,7 +536,10 @@ const GUIComponent = props => {
                                 </TabPanel>
                             </Tabs>
                             {backpackVisible ? (
-                                <Backpack host={backpackHost} />
+                                <Backpack
+                                    host={backpackHost}
+                                    prefs={prefs}
+                                />
                             ) : null}
                         </Box>
 
@@ -488,10 +549,12 @@ const GUIComponent = props => {
                                 isRendererSupported={isRendererSupported()}
                                 isRtl={isRtl}
                                 stageSize={stageSize}
+                                prefs={prefs}
                                 vm={vm}
                             />
                             <Box className={styles.targetWrapper}>
                                 <TargetPane
+                                    prefs={prefs}
                                     stageSize={stageSize}
                                     vm={vm}
                                 />
@@ -586,10 +649,10 @@ GUIComponent.propTypes = {
     telemetryModalVisible: PropTypes.bool,
     theme: PropTypes.instanceOf(Theme),
     tipsLibraryVisible: PropTypes.bool,
-    usernameModalVisible: PropTypes.bool,
     settingsModalVisible: PropTypes.bool,
     customExtensionModalVisible: PropTypes.bool,
     customAccentModalVisible: PropTypes.bool,
+    editorSettingsModalVisible: PropTypes.bool,
     extensionManagerModalVisible: PropTypes.bool,
     fontsModalVisible: PropTypes.bool,
     unknownPlatformModalVisible: PropTypes.bool,

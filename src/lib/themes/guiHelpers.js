@@ -15,6 +15,7 @@ const BLOCK_COLOR_NAMES = [
     'operators',
     'data',
     'data_lists',
+    'data_tables',
     'json',
     'more',
     'comments',
