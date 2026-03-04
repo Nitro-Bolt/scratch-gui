@@ -13,6 +13,7 @@ const noop = () => {};
 const dragTypeMap = { // Keys correspond with the backpack-server item types
     costume: DragConstants.BACKPACK_COSTUME,
     sound: DragConstants.BACKPACK_SOUND,
+    asset: DragConstants.BACKPACK_ASSET,
     script: DragConstants.BACKPACK_CODE,
     sprite: DragConstants.BACKPACK_SPRITE
 };
@@ -27,6 +28,11 @@ const labelMap = defineMessages({
         id: 'gui.backpack.soundLabel',
         defaultMessage: 'sound',
         description: 'Label for sound backpack item'
+    },
+    asset: {
+        id: 'gui.backpack.assetLabel',
+        defaultMessage: 'asset',
+        description: 'Label for asset backpack item'
     },
     script: {
         id: 'gui.backpack.scriptLabel',

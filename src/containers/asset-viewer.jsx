@@ -4,6 +4,7 @@ import bindAll from 'lodash.bindall';
 import VM from 'scratch-vm';
 
 import getCostumeUrl from '../lib/get-costume-url';
+import getAssetType from '../lib/nb-asset-type.js';
 
 import {connect} from 'react-redux';
 
@@ -14,37 +15,6 @@ const formatSize = bytes => {
     if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(2)} KB`;
     if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(2)} MB`;
     return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
-};
-
-const getMediaType = dataFormat => {
-    switch (dataFormat) {
-        case 'jpg':
-        case 'jpeg':
-        case 'png':
-        case 'gif':
-        case 'webp':
-        case 'svg':
-        case 'bmp':
-        case 'ico':
-        case 'tiff':
-        case 'heif':
-        case 'apng':
-            return 'image';
-        case 'mp4':
-        case 'm4v':
-        case 'webm':
-        case 'mov':
-            return 'video';
-        case 'mp3':
-        case 'wav':
-        case 'aac':
-        case 'ogg':
-        case 'opus':
-        case 'flac':
-            return 'audio';
-        default:
-            return null;
-    }
 };
 
 class AssetViewer extends React.Component {
@@ -98,7 +68,7 @@ class AssetViewer extends React.Component {
             this.setState({blobURL: null});
             return;
         }
-        
+
         const blob = new Blob([assetObject.asset.data], {type: this.props.contentType});
         this.setState({blobURL: URL.createObjectURL(blob)});
     }
@@ -111,7 +81,7 @@ class AssetViewer extends React.Component {
 
     render () {
         let imageURL;
-        if (this.props.icon.asset) {
+        if (this.props.mediaType === 'image') {
             imageURL = getCostumeUrl(this.props.icon.asset);
         } else if (this.props.icon.url) {
             imageURL = this.props.icon.url;
@@ -147,6 +117,8 @@ const mapStateToProps = (state, {selectedAssetIndex}) => {
     const index = selectedAssetIndex < sprite.assets.length ?
         selectedAssetIndex : sprite.assets.length - 1;
     const assetObject = sprite.assets[index];
+    const mediaType = getAssetType(assetObject);
+    console.log(mediaType);
 
     return {
         vm: state.scratchGui.vm,
@@ -160,7 +132,7 @@ const mapStateToProps = (state, {selectedAssetIndex}) => {
         assetIndex: index,
         assetId: assetObject.asset.assetId,
         contentType: assetObject.contentType,
-        mediaType: getMediaType(assetObject.dataFormat)
+        mediaType: mediaType.displayable ? mediaType.type : null
     };
 };
 

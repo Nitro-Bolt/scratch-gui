@@ -9,6 +9,7 @@ import {
     deleteBackpackObject,
     updateBackpackObject,
     soundPayload,
+    assetPayload,
     costumePayload,
     spritePayload,
     codePayload,
@@ -21,7 +22,7 @@ import {connect} from 'react-redux';
 import storage from '../lib/storage';
 import VM from 'scratch-vm';
 
-const dragTypes = [DragConstants.COSTUME, DragConstants.SOUND, DragConstants.SPRITE];
+const dragTypes = [DragConstants.COSTUME, DragConstants.SOUND, DragConstants.ASSET, DragConstants.SPRITE];
 const DroppableBackpack = DropAreaHOC(dragTypes)(BackpackComponent);
 
 const messages = defineMessages({
@@ -111,6 +112,10 @@ class Backpack extends React.Component {
             break;
         case DragConstants.SOUND:
             payloader = soundPayload;
+            presaveAsset = dragInfo.payload.asset;
+            break;
+        case DragConstants.ASSET:
+            payloader = assetPayload;
             presaveAsset = dragInfo.payload.asset;
             break;
         case DragConstants.SPRITE:

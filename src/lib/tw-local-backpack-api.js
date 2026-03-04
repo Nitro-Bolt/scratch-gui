@@ -36,6 +36,10 @@ const idbItemToBackpackItem = item => {
         }
     } else if (item.type === 'sound') {
         assetType = storage.AssetType.Sound;
+    } else if (item.type === 'asset') {
+        assetType = storage.AssetType.Asset;
+        assetType.runtimeFormat = item.dataFormat;
+        assetType.contentType = item.contentType;
     }
 
     if (assetType) {
@@ -119,13 +123,7 @@ const getBackpackContents = async ({
     });
 };
 
-const saveBackpackObject = async ({
-    type,
-    mime,
-    name,
-    body,
-    thumbnail
-}) => {
+const saveBackpackObject = async (backpackObject) => {
     // User interaction -- fine to show a permission dialog
     requestPersistentStorage();
 
@@ -133,19 +131,22 @@ const saveBackpackObject = async ({
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(STORE_NAME, 'readwrite');
         transaction.onerror = event => {
-            reject(new Error(`Sving object: ${event.target.error}`));
+            reject(new Error(`Saving object: ${event.target.error}`));
         };
         const store = transaction.objectStore(STORE_NAME);
-        const bodyData = base64ToArrayBuffer(body);
+        const bodyData = base64ToArrayBuffer(backpackObject.body);
         const bodyMD5 = md5(bodyData);
         const idbItem = {
-            type,
-            mime,
-            name,
+            ...backpackObject,
             bodyData,
             bodyMD5,
-            thumbnailData: base64ToArrayBuffer(thumbnail)
+            thumbnailData: base64ToArrayBuffer(backpackObject.thumbnail)
         };
+
+        // Delete some unnecessary items
+        delete idbItem.body;
+        delete idbItem.thumbnail;
+
         const putRequest = store.put(idbItem);
         putRequest.onsuccess = () => {
             idbItem.id = putRequest.result;

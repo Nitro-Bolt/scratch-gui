@@ -7,24 +7,15 @@ import AssetPanel from '../components/asset-panel/asset-panel.jsx';
 import AssetViewer from './asset-viewer.jsx';
 
 import fileUploadIcon from '../components/action-menu/icon--file-upload.svg';
-import assetIcon from '../components/asset-panel/icon--asset.svg';
-import soundIcon from '../components/asset-panel/icon--sound.svg';
-import codeIcon from '../components/asset-panel/icon--code.svg';
 
 import DragConstants from '../lib/drag-constants';
 import {handleFileUpload, assetUpload} from '../lib/file-uploader.js';
 import downloadBlob from '../lib/download-blob';
+import getAssetType from '../lib/nb-asset-type.js';
 import {showStandardAlert, closeAlertWithId} from '../reducers/alerts';
 
 import {defineMessages, intlShape, injectIntl} from 'react-intl';
 import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
-
-import {
-    activateTab,
-    ASSETS_TAB_INDEX,
-    COSTUMES_TAB_INDEX,
-    SOUNDS_TAB_INDEX
-} from '../reducers/editor-tab';
 
 import {connect} from 'react-redux';
 
@@ -63,26 +54,17 @@ class AssetTab extends React.Component {
         this.state = {selectedAssetIndex: 0};
     }
 
-    getAssetIcon (asset) {
-        const contentType = asset.asset.assetType.contentType;
-        const dataFormat = asset.dataFormat;
-        console.log(asset, contentType);
-        if (contentType.startsWith('audio/')) {
-            return {url: soundIcon};
-        } else if (contentType.startsWith('image/')) {
-            const assetObject = asset.asset;
-            if (!assetObject) return {url: assetIcon};
-            return {asset: assetObject};
-        } else if (projectFormats.includes(dataFormat)) {
-            return {url: codeIcon};
+    getAssetIcon (assetObject) {
+        const assetType = getAssetType(assetObject);
+        if (assetType.type === 'image') {
+            return {asset: assetObject.asset};
         } else {
-            return {url: assetIcon};
+            return {url: assetType.icon};
         }
     }
 
     handleSelectAsset (assetIndex) {
         this.setState({selectedAssetIndex: assetIndex});
-        
     }
 
     handleNewAsset () {
@@ -131,16 +113,29 @@ class AssetTab extends React.Component {
 
             this.setState({selectedAssetIndex: sprite.assets.indexOf(activeAsset)});
         } else if (dropInfo.dragType === DragConstants.BACKPACK_COSTUME) {
-            this.props.onActivateCostumesTab();
-            this.props.vm.addCostume(dropInfo.payload.body, {
-                name: dropInfo.payload.name
-            });
-        } else if (dropInfo.dragType === DragConstants.BACKPACK_SOUND) {
-            this.props.onActivateSoundsTab();
-            this.props.vm.addSound({
+           this.props.vm.addAsset({
                 md5: dropInfo.payload.body,
+                lastModified: Date.now(),
+                contentType: dropInfo.payload.mime,
+                dataFormat: dropInfo.payload.dataFormat,
                 name: dropInfo.payload.name
-            });
+            }).then(this.handleNewAsset);
+        } else if (dropInfo.dragType === DragConstants.BACKPACK_SOUND) {
+           this.props.vm.addAsset({
+                md5: dropInfo.payload.body,
+                lastModified: Date.now(),
+                contentType: dropInfo.payload.mime,
+                dataFormat: dropInfo.payload.dataFormat,
+                name: dropInfo.payload.name
+            }).then(this.handleNewAsset);
+        } else if (dropInfo.dragType === DragConstants.BACKPACK_ASSET) {
+            this.props.vm.addAsset({
+                md5: dropInfo.payload.body,
+                lastModified: dropInfo.payload.lastModified,
+                contentType: dropInfo.payload.mime,
+                dataFormat: dropInfo.payload.dataFormat,
+                name: dropInfo.payload.name
+            }).then(this.handleNewAsset);
         }
     }
 
@@ -238,8 +233,6 @@ AssetTab.propTypes = {
     editingTarget: PropTypes.string,
     intl: intlShape,
     isRtl: PropTypes.bool,
-    onActivateCostumesTab: PropTypes.func.isRequired,
-    onActivateSoundsTab: PropTypes.func.isRequired,
     onCloseImporting: PropTypes.func.isRequired,
     onShowImporting: PropTypes.func.isRequired,
     sprites: PropTypes.shape({
@@ -265,9 +258,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onActivateAssetsTab: () => dispatch(activateTab(ASSETS_TAB_INDEX)),
-    onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
-    onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
     onCloseImporting: () => dispatch(closeAlertWithId('importingAsset')),
     onShowImporting: () => dispatch(showStandardAlert('importingAsset'))
 });

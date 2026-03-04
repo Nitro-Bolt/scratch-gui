@@ -67,6 +67,7 @@ const SpriteList = function (props) {
                         DragConstants.ASSET,
                         DragConstants.BACKPACK_COSTUME,
                         DragConstants.BACKPACK_SOUND,
+                        DragConstants.BACKPACK_ASSET,
                         DragConstants.BACKPACK_CODE].includes(draggingType);
 
                     return (

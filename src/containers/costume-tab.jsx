@@ -13,6 +13,7 @@ import DragConstants from '../lib/drag-constants';
 import {emptyCostume} from '../lib/empty-assets';
 import sharedMessages from '../lib/shared-messages';
 import downloadBlob from '../lib/download-blob';
+import getAssetType from '../lib/nb-asset-type.js';
 
 import {
     openCostumeLibrary,
@@ -21,7 +22,8 @@ import {
 
 import {
     activateTab,
-    SOUNDS_TAB_INDEX
+    SOUNDS_TAB_INDEX,
+    ASSETS_TAB_INDEX
 } from '../reducers/editor-tab';
 
 import {setRestore} from '../reducers/restore-deletion';
@@ -231,6 +233,27 @@ class CostumeTab extends React.Component {
                 md5: dropInfo.payload.body,
                 name: dropInfo.payload.name
             });
+        } else if (dropInfo.dragType === DragConstants.BACKPACK_ASSET) {
+            // Detect if the asset can be added as a costume
+            // If it is not a costume, add it to assets
+            const type = getAssetType(dropInfo.payload).type;
+            const payload = dropInfo.payload;
+            const vm = this.props.vm;
+            if (type === 'image') {
+                costumeUpload(payload.bodyData, payload.mime, vm, vmCostume => {
+                    vmCostume[0].name = payload.name;
+                    this.handleNewCostume(vmCostume, false, vm.editingTarget.id)
+                });
+            } else {
+                this.props.onActivateAssetsTab();
+                this.props.vm.addAsset({
+                    md5: dropInfo.payload.body,
+                    lastModified: dropInfo.payload.lastModified,
+                    contentType: dropInfo.payload.mime,
+                    dataFormat: dropInfo.payload.dataFormat,
+                    name: dropInfo.payload.name
+                });
+            }
         }
     }
     setFileInput (input) {
@@ -334,6 +357,7 @@ CostumeTab.propTypes = {
     intl: intlShape,
     isRtl: PropTypes.bool,
     onActivateSoundsTab: PropTypes.func.isRequired,
+    onActivateAssetsTab: PropTypes.func.isRequired,
     onCloseImporting: PropTypes.func.isRequired,
     onNewLibraryBackdropClick: PropTypes.func.isRequired,
     onNewLibraryCostumeClick: PropTypes.func.isRequired,
@@ -365,6 +389,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
+    onActivateAssetsTab: () => dispatch(activateTab(ASSETS_TAB_INDEX)),
     onNewLibraryBackdropClick: e => {
         e.preventDefault();
         dispatch(openBackdropLibrary());

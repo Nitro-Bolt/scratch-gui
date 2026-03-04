@@ -34,7 +34,7 @@ const AssetViewerComponent = props => (
             {props.blobURL && props.mediaType ? (
                 props.mediaType === 'video' ? (
                     <video className={styles.mediaPreview} src={props.blobURL} controls />
-                ) : props.mediaType === 'audio' ? (
+                ) : props.mediaType === 'sound' ? (
                     <audio className={styles.mediaPreview} src={props.blobURL} controls />
                 ) : props.mediaType === 'image' ? (
                     <img className={styles.mediaPreview} src={props.blobURL} draggable={false} />
