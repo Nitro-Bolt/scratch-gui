@@ -75,7 +75,7 @@ class AssetViewer extends React.Component {
 
     handleAssetRename (newName) {
         const [name, ...extensionParts] = newName.split('.');
-        const extension = extensionParts.join('.');
+        const extension = extensionParts.join('.') || 'file';
         this.props.vm.renameAsset(this.props.assetIndex, name, extension);
     }
 

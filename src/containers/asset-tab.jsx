@@ -77,10 +77,9 @@ class AssetTab extends React.Component {
         const targetId = this.props.vm.editingTarget.id;
         this.props.onShowImporting();
         handleFileUpload(e.target, (buffer, fileType, fileName, fileIndex, fileCount, fileExtension, lastModified) => {
-            console.log(fileType);
-            assetUpload(buffer, fileType, fileExtension || '', storage, newAsset => {
+            assetUpload(buffer, fileType, fileExtension || 'file', storage, newAsset => {
                 newAsset.name = fileName;
-                newAsset.contentType = newAsset.asset.assetType.contentType.toLowerCase(); // Could be uppercase?
+                newAsset.contentType = newAsset.asset.assetType.contentType;
                 newAsset.lastModified = lastModified;
                 this.props.vm.addAsset(newAsset, targetId).then(() => {
                     this.handleNewAsset();
@@ -199,7 +198,6 @@ class AssetTab extends React.Component {
                 onItemClick={this.handleSelectAsset}
             >
                 <input
-                    accept="*"
                     multiple
                     ref={this.setFileInput}
                     style={{ display: 'none' }}
