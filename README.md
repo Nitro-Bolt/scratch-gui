@@ -1,4 +1,4 @@
-TurboWarp GUI modified for use in [NitroBolt](https://github.com/Nitro-Bolt/)
+TurboWarp GUI modified for use in [NitroBolt](https://nitrobolt.org/)
 
 ## Setup
 
