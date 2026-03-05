@@ -722,6 +722,8 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
                 </shadow>
             </value>
         </block>
+        <block type="operator_typeof">
+        </block>
         ${categorySeparator}
     </category>
     `;
@@ -864,6 +866,21 @@ const json = function (colors) {
             <value name="ITEM">
                 <shadow type="text">
                     <field name="TEXT">${bar}</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="json_map" id="json_map">
+            <value name="VALUE">
+                <shadow type="json_map_value">
+                </shadow>
+            </value>
+            <value name="INDEX">
+                <shadow type="json_map_index">
+                </shadow>
+            </value>
+            <value name="METHOD">
+                <shadow type="text">
+                    <field name="TEXT">bar</field>
                 </shadow>
             </value>
         </block>
