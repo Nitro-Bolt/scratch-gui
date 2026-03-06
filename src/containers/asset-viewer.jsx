@@ -35,7 +35,12 @@ class AssetViewer extends React.Component {
     }
 
     componentDidUpdate (prevProps) {
-        if (prevProps.assetId !== this.props.assetId) {
+        if (
+            prevProps.assetId !== this.props.assetId ||
+            prevProps.assetIndex !== this.props.assetIndex ||
+            prevProps.contentType !== this.props.contentType ||
+            prevProps.mediaType !== this.props.mediaType
+        ) {
             this.updateBlobURL();
         }
     }
@@ -109,6 +114,7 @@ AssetViewer.propTypes = {
     assetId: PropTypes.string.isRequired,
     assetIndex: PropTypes.number.isRequired,
     contentType: PropTypes.string,
+    mediaType: PropTypes.string,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 
@@ -118,7 +124,6 @@ const mapStateToProps = (state, {selectedAssetIndex}) => {
         selectedAssetIndex : sprite.assets.length - 1;
     const assetObject = sprite.assets[index];
     const mediaType = getAssetType(assetObject);
-    console.log(mediaType);
 
     return {
         vm: state.scratchGui.vm,
