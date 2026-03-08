@@ -116,6 +116,52 @@ const Variables = ({
                 </div>
             );
             break;
+        case 'table':
+            final.push(
+                <div
+                    key={id}
+                    className={styles.variableItem}
+                    style={{
+                        border: '1px solid var(--ui-black-transparent)',
+                        padding: '0.5rem',
+                        marginBottom: '0.5rem',
+                        borderLeftWidth: '2px',
+                        gridTemplateColumns: 'auto',
+                        overflowX: 'auto',
+                        maxWidth: '71rem',
+                        maxHeight: '11rem'
+                    }}
+                >
+                    <input
+                        value={currentVarName}
+                        onChange={nameHandlers.onChange}
+                        onKeyDown={nameHandlers.onKeyDown}
+                        onBlur={nameHandlers.onBlur}
+                        readOnly={optNameReadonly}
+                    />
+                    {currentVarValue.map(i => (
+                        <div
+                            key={i}
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: '0.5rem'
+                            }}
+                        >
+                            { i.map(j => (
+                                <input
+                                    key={`${j},${i}`}
+                                    value={safeStringify(j)}
+                                    onChange={valueHandlers.onChange}
+                                    onKeyDown={valueHandlers.onKeyDown}
+                                    onBlur={valueHandlers.onBlur}
+                                />))
+                            }
+                        </div>)
+                    )}
+                </div>
+            );
+            break;
         default:
             final.push(
                 <div

@@ -74,9 +74,10 @@
     }
 }
 
-.variable-item * {
+.variable-item input {
     word-break: break-word;
     width: 100%;
+    min-width: 145px;
     padding: $space;
     text-overflow: ellipsis;
     transition: 0.25s ease-out;
