@@ -8,18 +8,66 @@ const shuffle = list => {
     return list;
 };
 
-const fromHardcoded = ({userID = '0', username}) => {
+const fromHardcoded = ({github, userID = '0', username}) => {
     const result = {
-        image: `https://trampoline.turbowarp.org/avatars/${userID}`,
+        image: github ? `https://avatars.githubusercontent.com/u/${userID}` : `https://trampoline.turbowarp.org/avatars/${userID}`,
         text: username
     };
     if (username && userID !== '0') {
-        result.href = `https://scratch.mit.edu/users/${username}/`;
+        result.href = github ? `https://github.com/${username}/` : `https://scratch.mit.edu/users/${username}/`;
     }
     return result;
 };
 
 // The lists below are in no particular order.
+
+const team = [
+    {
+        userID: '41219524',
+        username: 'CubesterYT'
+    },
+    {
+        userID: '64691048',
+        username: 'CST1229'
+    },
+    {
+        userID: '128887584',
+        username: 'FurryR'
+    },
+    {
+        userID: '161761456',
+        username: 'lordcat__'
+    },
+    {
+        userID: '138703180',
+        username: 'ddededodediamante'
+    },
+    {
+        userID: '150145748',
+        username: 'Penthusiast'
+    },
+    {
+        userID: '54392956',
+        username: 'fath11'
+    },
+    {
+        userID: '55189061',
+        username: 'insanetaco2000'
+    },
+    {
+        userID: '129226914',
+        username: 'raynecloudy',
+        github: true
+    },
+    {
+        userID: '60627927',
+        username: 'jwklongYT'
+    },
+    {
+        userID: '53190566',
+        username: 'Code_Magician'
+    }
+].map(fromHardcoded);
 
 const contributors = [
     {
@@ -356,6 +404,7 @@ const docs = [
 ].map(fromHardcoded);
 
 export default {
+    team: shuffle(team),
     contributors: shuffle(contributors),
     addonDevelopers: shuffle(addonDevelopers),
     extensionDevelopers: shuffle(extensionDevelopers),
