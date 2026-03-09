@@ -62,10 +62,10 @@ const blockColors = {
         quaternary: '#FF661A'
     },
     data_tables: {
-        primary: "#1B3318",
-        secondary: "#4C4C4C",
-        tertiary: "#66BD5C",
-        quaternary: "#66BD5C"
+        primary: '#1B3318',
+        secondary: '#4C4C4C',
+        tertiary: '#66BD5C',
+        quaternary: '#66BD5C'
     },
     json: {
         primary: '#141433',

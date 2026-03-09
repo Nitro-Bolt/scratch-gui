@@ -49,10 +49,10 @@ import gdxforInsetIconURL from './gdxfor/gdxfor-small.svg';
 import gdxforConnectionIconURL from './gdxfor/gdxfor-illustration.svg';
 import gdxforConnectionSmallIconURL from './gdxfor/gdxfor-small.svg';
 
-import twIcon from './tw/tw.svg';
+import nbIcon from './nb/nb.svg';
 import customExtensionIcon from './custom/custom.svg';
-import returnIcon from './custom/return.svg';
-import galleryIcon from './gallery/gallery.svg';
+import galleryIconNB from './gallery/gallery-nb.svg';
+import galleryIconTW from './gallery/gallery-tw.svg';
 import {APP_NAME} from '../../brand';
 
 export default [
@@ -372,7 +372,7 @@ export default [
             />
         ),
         extensionId: 'tw',
-        iconURL: twIcon,
+        iconURL: nbIcon,
         description: (
             <FormattedMessage
                 defaultMessage="Weird new blocks."
@@ -407,80 +407,43 @@ export default [
     }
 ];
 
-export const galleryLoading = {
-    name: (
-        <FormattedMessage
-            defaultMessage="{APP_NAME} Extension Gallery"
-            description="Name of extensions.turbowarp.org in extension library"
-            id="tw.extensionGallery.name"
-            values={{
-                APP_NAME
-            }}
-        />
-    ),
-    href: 'https://extensions.turbowarp.org/',
-    extensionId: 'gallery',
-    iconURL: galleryIcon,
-    description: (
-        <FormattedMessage
-            // eslint-disable-next-line max-len
-            defaultMessage="Loading extension gallery..."
-            description="Appears while loading extension list from the custom extension gallery"
-            id="tw.extensionGallery.loading"
-        />
-    ),
-    tags: ['tw'],
-    featured: true
+const gallerySourceDisplay = {
+    nitrobolt: {
+        name: 'NitroBolt Extension Gallery',
+        href: 'https://extensions.nitrobolt.org/',
+        iconURL: galleryIconNB,
+        tag: 'nb'
+    },
+    turbowarp: {
+        name: 'TurboWarp Extension Gallery',
+        href: 'https://extensions.turbowarp.org/',
+        iconURL: galleryIconTW,
+        tag: 'tw'
+    }
 };
 
-export const galleryMore = {
-    name: (
-        <FormattedMessage
-            defaultMessage="{APP_NAME} Extension Gallery"
-            description="Name of extensions.turbowarp.org in extension library"
-            id="tw.extensionGallery.name"
-            values={{
-                APP_NAME
-            }}
-        />
-    ),
-    href: 'https://extensions.turbowarp.org/',
-    extensionId: 'gallery',
-    iconURL: galleryIcon,
-    description: (
-        <FormattedMessage
-            // eslint-disable-next-line max-len
-            defaultMessage="Learn more about extensions at extensions.turbowarp.org."
-            description="Appears after the extension list from the gallery was loaded successfully"
-            id="tw.extensionGallery.more"
-        />
-    ),
-    tags: ['tw'],
-    featured: true
+const createGalleryStatusItem = (sourceId, description) => {
+    const source = gallerySourceDisplay[sourceId];
+    return {
+        name: source.name,
+        href: source.href,
+        extensionId: `gallery_${sourceId}`,
+        iconURL: source.iconURL,
+        description,
+        tags: [source.tag],
+        featured: true
+    };
 };
 
-export const galleryError = {
-    name: (
-        <FormattedMessage
-            defaultMessage="{APP_NAME} Extension Gallery"
-            description="Name of extensions.turbowarp.org in extension library"
-            id="tw.extensionGallery.name"
-            values={{
-                APP_NAME
-            }}
-        />
-    ),
-    href: 'https://extensions.turbowarp.org/',
-    extensionId: 'gallery',
-    iconURL: galleryIcon,
-    description: (
-        <FormattedMessage
-            // eslint-disable-next-line max-len
-            defaultMessage="Error loading extension gallery. Visit extensions.turbowarp.org to find more extensions."
-            description="Appears when an error occurred loading extension list from the custom extension gallery"
-            id="tw.extensionGallery.error"
-        />
-    ),
-    tags: ['tw'],
-    featured: true
+export const galleryStatusItems = {
+    nitrobolt: {
+        loading: createGalleryStatusItem('nitrobolt', 'Loading NitroBolt extension gallery...'),
+        more: createGalleryStatusItem('nitrobolt', 'Learn more about extensions at extensions.nitrobolt.org.'),
+        error: createGalleryStatusItem('nitrobolt', 'Error loading NitroBolt extension gallery. Visit extensions.nitrobolt.org to find more extensions.')
+    },
+    turbowarp: {
+        loading: createGalleryStatusItem('turbowarp', 'Loading TurboWarp extension gallery...'),
+        more: createGalleryStatusItem('turbowarp', 'Learn more about extensions at extensions.turbowarp.org.'),
+        error: createGalleryStatusItem('turbowarp', 'Error loading TurboWarp extension gallery. Visit extensions.turbowarp.org to find more extensions.')
+    }
 };
