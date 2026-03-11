@@ -739,6 +739,11 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
             </value>
         </block>
         <block type="operator_typeof">
+            <value name="VALUE">
+                <shadow type="text">
+                    <field name="TEXT">${apple}</field>
+                </shadow>
+            </value>
         </block>
         ${categorySeparator}
     </category>
