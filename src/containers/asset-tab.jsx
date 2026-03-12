@@ -93,13 +93,9 @@ class AssetTab extends React.Component {
 
     handleDrop (dropInfo) {
         if (dropInfo.dragType === DragConstants.ASSET) {
-            const sprite = this.props.vm.editingTarget.sprite;
-            const activeAsset = sprite.assets[this.state.selectedAssetIndex];
-
             this.props.vm.reorderAsset(this.props.vm.editingTarget.id,
                 dropInfo.index, dropInfo.newIndex);
-
-            this.setState({selectedAssetIndex: sprite.assets.indexOf(activeAsset)});
+            this.setState({selectedAssetIndex: dropInfo.newIndex});
         } else if (dropInfo.dragType === DragConstants.BACKPACK_COSTUME) {
            this.props.vm.addAsset({
                 md5: dropInfo.payload.body,
@@ -204,7 +200,7 @@ class AssetTab extends React.Component {
                     type="file"
                     onChange={this.handleAssetUpload}
                 />
-                {sprite.assets && selectedAsset && 
+                {sprite.assets && selectedAsset &&
                     <AssetViewer
                         icon={this.getAssetIcon(selectedAsset)}
                         selectedAssetIndex={this.state.selectedAssetIndex}

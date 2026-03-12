@@ -6,8 +6,72 @@ import assetIconPNG from './backpack/asset-thumbnail.png';
 import soundIconPNG from './backpack/sound-thumbnail.png';
 import codeIconPNG from './backpack/code-thumbnail.png';
 
+const textLanguages = {
+    txt: 'plaintext',
+    text: 'plaintext',
+    md: 'markdown',
+    markdown: 'markdown',
+    json: 'json',
+    js: 'javascript',
+    mjs: 'javascript',
+    cjs: 'javascript',
+    ts: 'typescript',
+    jsx: 'javascript',
+    tsx: 'typescript',
+    html: 'html',
+    htm: 'html',
+    css: 'css',
+    scss: 'scss',
+    less: 'less',
+    xml: 'xml',
+    yml: 'yaml',
+    yaml: 'yaml',
+    csv: 'plaintext',
+    tsv: 'plaintext',
+    py: 'python',
+    java: 'java',
+    c: 'c',
+    h: 'cpp',
+    cpp: 'cpp',
+    cc: 'cpp',
+    cxx: 'cpp',
+    cs: 'csharp',
+    go: 'go',
+    rs: 'rust',
+    sh: 'shell',
+    bash: 'shell',
+    sql: 'sql',
+    ini: 'ini'
+};
+
+const textContentTypes = new Set([
+    'application/json',
+    'application/javascript',
+    'application/typescript',
+    'application/xml',
+    'application/yaml',
+    'application/x-yaml',
+    'application/x-sh',
+    'application/sql'
+]);
+
 export default (asset, pngIcon = false) => {
-    switch (asset.dataFormat) {
+    const format = (asset.dataFormat || '').toLowerCase();
+    const contentType = (asset.contentType || '').toLowerCase();
+    const language = textLanguages[format] || 'plaintext';
+
+    // Temporary solution, maybe
+    if (textLanguages[format] || contentType.startsWith('text/') || textContentTypes.has(contentType)) {
+        return {
+            type: 'text',
+            displayable: true,
+            editable: true,
+            language,
+            icon: pngIcon ? assetIconPNG : assetIcon
+        };
+    }
+
+    switch (format) {
         case 'jpg':
         case 'jpeg':
         case 'png':

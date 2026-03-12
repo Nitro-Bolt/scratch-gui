@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import bindAll from 'lodash.bindall';
+import debounce from 'lodash.debounce';
 import VM from 'scratch-vm';
 
 import getCostumeUrl from '../lib/get-costume-url';
@@ -22,16 +23,31 @@ class AssetViewer extends React.Component {
         super(props);
 
         bindAll(this, [
-            'handleAssetRename'
+            'handleAssetRename',
+            'handleTextContentChange',
+            'handleEditorDidMount',
+            'handleUndo',
+            'handleRedo'
         ]);
 
         this.state = {
-            blobURL: null
+            blobURL: null,
+            textContent: '',
+            canUndo: false,
+            canRedo: false
         };
+
+        this.editor = null;
+        this.editorDisposable = null;
+        this.initialContent = '';
+        this.saveTextAssetDebounced = debounce(value => {
+            this.saveTextAsset(value);
+        }, 150);
     }
 
     componentDidMount () {
         this.updateBlobURL();
+        this.updateTextContent();
     }
 
     componentDidUpdate (prevProps) {
@@ -41,12 +57,23 @@ class AssetViewer extends React.Component {
             prevProps.contentType !== this.props.contentType ||
             prevProps.mediaType !== this.props.mediaType
         ) {
+            this.initialContent = '';
             this.updateBlobURL();
+            this.updateTextContent();
         }
     }
 
     componentWillUnmount () {
         this.revokeBlobURL();
+        this.clearEditorListener();
+        this.saveTextAssetDebounced.cancel();
+    }
+
+    clearEditorListener () {
+        if (this.editorDisposable) {
+            this.editorDisposable.dispose();
+            this.editorDisposable = null;
+        }
     }
 
     revokeBlobURL () {
@@ -60,10 +87,27 @@ class AssetViewer extends React.Component {
         return sprite.assets[this.props.assetIndex];
     }
 
+    decodeAssetData () {
+        const assetObject = this.getAssetObject();
+        if (!assetObject || !assetObject.asset || !assetObject.asset.data) {
+            return '';
+        }
+
+        try {
+            return new TextDecoder().decode(assetObject.asset.data);
+        } catch (e) {
+            return '';
+        }
+    }
+
     updateBlobURL () {
         this.revokeBlobURL();
-        
-        if (!this.props.mediaType) {
+
+        const supportsBlobPreview = this.props.mediaType === 'video' ||
+            this.props.mediaType === 'sound' ||
+            this.props.mediaType === 'image';
+
+        if (!supportsBlobPreview) {
             this.setState({blobURL: null});
             return;
         }
@@ -76,6 +120,127 @@ class AssetViewer extends React.Component {
 
         const blob = new Blob([assetObject.asset.data], {type: this.props.contentType});
         this.setState({blobURL: URL.createObjectURL(blob)});
+    }
+
+    updateTextContent () {
+        if (!this.props.isTextEditable) {
+            this.setState({
+                textContent: '',
+                canUndo: false,
+                canRedo: false
+            });
+            return;
+        }
+
+        this.setState({
+            textContent: this.decodeAssetData(),
+            canUndo: false,
+            canRedo: false
+        });
+    }
+
+    saveTextAsset (value) {
+        if (!this.props.isTextEditable) {
+            return;
+        }
+
+        const assetObject = this.getAssetObject();
+        if (!assetObject || !assetObject.asset || typeof assetObject.asset.encodeTextData !== 'function') {
+            return;
+        }
+
+        const extension = assetObject.dataFormat || 'txt';
+        assetObject.asset.encodeTextData(value, extension, true);
+        assetObject.md5 = `${assetObject.asset.assetId}.${extension}`;
+        assetObject.assetId = assetObject.asset.assetId;
+        this.props.vm.runtime.emitProjectChanged();
+    }
+
+    updateUndoRedoState () {
+        if (!this.editor) {
+            return;
+        }
+
+        const model = this.editor.getModel();
+        if (!model || typeof model.canUndo !== 'function' || typeof model.canRedo !== 'function') {
+            return;
+        }
+
+        const currentContent = model.getValue();
+        const contentHasChanged = currentContent !== this.initialContent;
+        const canUndo = model.canUndo() && contentHasChanged;
+        const canRedo = model.canRedo();
+
+        this.setState({
+            canUndo,
+            canRedo
+        });
+    }
+
+    handleEditorDidMount (editor) {
+        this.clearEditorListener();
+        this.editor = editor;
+
+        const model = editor.getModel();
+        this.initialContent = model ? model.getValue() : '';
+
+        if (model && typeof model.onDidChangeContent === 'function') {
+            this.editorDisposable = model.onDidChangeContent(() => {
+                this.updateUndoRedoState();
+            });
+        }
+
+        setTimeout(() => {
+            if (!this.editor) return;
+
+            this.editor.setPosition({lineNumber: 1, column: 1});
+
+            this.setState({
+                canUndo: false,
+                canRedo: false
+            });
+        }, 0);
+    }
+
+    handleTextContentChange (value) {
+        this.setState({textContent: value});
+        this.saveTextAssetDebounced(value);
+        this.updateUndoRedoState();
+    }
+
+    handleUndo () {
+        if (!this.editor) {
+            return;
+        }
+
+        const model = this.editor.getModel();
+        if (!model) return;
+
+        this.editor.trigger('asset-editor-toolbar', 'undo', null);
+
+        setTimeout(() => {
+            if (!this.editor || !model) return;
+
+            const contentAfter = model.getValue();
+
+            if (contentAfter === this.initialContent) {
+                this.editor.trigger('asset-editor-toolbar', 'redo', null);
+            }
+
+            this.updateUndoRedoState();
+        }, 0);
+    }
+
+    handleRedo () {
+        if (!this.editor) {
+            return;
+        }
+
+        this.editor.trigger('asset-editor-toolbar', 'redo', null);
+
+        setTimeout(() => {
+            this.updateUndoRedoState();
+        }, 0);
     }
 
     handleAssetRename (newName) {
@@ -92,6 +257,8 @@ class AssetViewer extends React.Component {
             imageURL = this.props.icon.url;
         }
 
+        const monacoTheme = this.props.theme && this.props.theme.gui === 'dark' ? 'vs-dark' : 'vs';
+
         return (
             <AssetViewerComponent
                 name={this.props.name}
@@ -100,7 +267,17 @@ class AssetViewer extends React.Component {
                 blobURL={this.state.blobURL}
                 mediaType={this.props.mediaType}
                 imageURL={imageURL}
+                isTextEditable={this.props.isTextEditable}
+                textContent={this.state.textContent}
+                textLanguage={this.props.textLanguage}
+                monacoTheme={monacoTheme}
+                canUndo={this.state.canUndo}
+                canRedo={this.state.canRedo}
                 onChangeName={this.handleAssetRename}
+                onChangeText={this.handleTextContentChange}
+                onEditorDidMount={this.handleEditorDidMount}
+                onUndo={this.handleUndo}
+                onRedo={this.handleRedo}
             />
         );
     }
@@ -115,18 +292,22 @@ AssetViewer.propTypes = {
     assetIndex: PropTypes.number.isRequired,
     contentType: PropTypes.string,
     mediaType: PropTypes.string,
+    isTextEditable: PropTypes.bool,
+    textLanguage: PropTypes.string,
+    theme: PropTypes.object,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 
 const mapStateToProps = (state, {selectedAssetIndex}) => {
     const sprite = state.scratchGui.vm.editingTarget.sprite;
-    const index = selectedAssetIndex < sprite.assets.length ?
+    const index = selectedAssetIndex >= 0 && selectedAssetIndex < sprite.assets.length ?
         selectedAssetIndex : sprite.assets.length - 1;
     const assetObject = sprite.assets[index];
-    const mediaType = getAssetType(assetObject);
+    const assetType = getAssetType(assetObject);
 
     return {
         vm: state.scratchGui.vm,
+        theme: state.scratchGui.theme.theme,
         name: assetObject.dataFormat !== '' ?
             assetObject.name + '.' + assetObject.dataFormat :
             assetObject.name,
@@ -137,7 +318,9 @@ const mapStateToProps = (state, {selectedAssetIndex}) => {
         assetIndex: index,
         assetId: assetObject.asset.assetId,
         contentType: assetObject.contentType,
-        mediaType: mediaType.displayable ? mediaType.type : null
+        mediaType: assetType.displayable ? assetType.type : null,
+        isTextEditable: assetType.editable === true,
+        textLanguage: assetType.language || 'plaintext'
     };
 };
 

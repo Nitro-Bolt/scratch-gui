@@ -5,6 +5,7 @@ const webpack = require('webpack');
 // Plugins
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 // PostCss
 const autoprefixer = require('autoprefixer');
@@ -67,6 +68,14 @@ const base = {
     },
     module: {
         rules: [{
+            test: /\.css$/,
+            include: /node_modules[\\/]monaco-editor/,
+            use: [{
+                loader: 'style-loader'
+            }, {
+                loader: 'css-loader'
+            }]
+        }, {
             test: /\.jsx?$/,
             loader: 'babel-loader',
             include: [
@@ -88,6 +97,7 @@ const base = {
         },
         {
             test: /\.css$/,
+            exclude: /node_modules[\\/]monaco-editor/,
             use: [{
                 loader: 'style-loader'
             }, {
@@ -130,6 +140,28 @@ const base = {
                     force: true
                 }
             ]
+        }),
+        new MonacoWebpackPlugin({
+            languages: [
+                'plaintext',
+                'markdown',
+                'json',
+                'javascript',
+                'typescript',
+                'html',
+                'css',
+                'xml',
+                'yaml',
+                'python',
+                'java',
+                'cpp',
+                'csharp',
+                'go',
+                'rust',
+                'shell',
+                'sql',
+                'ini'
+            ]
         })
     ]
 };
@@ -155,7 +187,7 @@ module.exports = [
         module: {
             rules: base.module.rules.concat([
                 {
-                    test: /\.(svg|png|wav|mp3|gif|jpg|woff2|hex)$/,
+                    test: /\.(svg|png|wav|mp3|gif|jpg|woff|woff2|ttf|eot|hex)$/,
                     loader: 'url-loader',
                     options: {
                         limit: 2048,
@@ -266,7 +298,7 @@ module.exports = [
             module: {
                 rules: base.module.rules.concat([
                     {
-                        test: /\.(svg|png|wav|mp3|gif|jpg|woff2|hex)$/,
+                        test: /\.(svg|png|wav|mp3|gif|jpg|woff|woff2|ttf|eot|hex)$/,
                         loader: 'url-loader',
                         options: {
                             limit: 2048,
