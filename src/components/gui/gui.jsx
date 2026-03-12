@@ -215,7 +215,7 @@ const GUIComponent = props => {
             key: i,
             ctrl: true
         }, () => {
-            if (i > 0 && i < 5) props.onActivateTab(parseInt(i, 10) - 1);
+            if (i > 0 && i <= 5) props.onActivateTab(parseInt(i, 10) - 1);
         });
     }
     
