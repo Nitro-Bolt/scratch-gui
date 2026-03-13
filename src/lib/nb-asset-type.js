@@ -1,3 +1,6 @@
+import {Buffer} from 'buffer';
+import {isText} from 'istextorbinary/edition-es5';
+
 import assetIcon from '../components/asset-panel/icon--asset.svg';
 import soundIcon from '../components/asset-panel/icon--sound.svg';
 import codeIcon from '../components/asset-panel/icon--code.svg';
@@ -6,70 +9,33 @@ import assetIconPNG from './backpack/asset-thumbnail.png';
 import soundIconPNG from './backpack/sound-thumbnail.png';
 import codeIconPNG from './backpack/code-thumbnail.png';
 
-const textLanguages = {
+const languageAliases = {
     txt: 'plaintext',
     text: 'plaintext',
     md: 'markdown',
-    markdown: 'markdown',
-    json: 'json',
     js: 'javascript',
     mjs: 'javascript',
     cjs: 'javascript',
-    ts: 'typescript',
     jsx: 'javascript',
+    ts: 'typescript',
     tsx: 'typescript',
-    html: 'html',
-    htm: 'html',
-    css: 'css',
-    scss: 'scss',
-    less: 'less',
-    xml: 'xml',
-    yml: 'yaml',
-    yaml: 'yaml',
-    csv: 'plaintext',
-    tsv: 'plaintext',
     py: 'python',
-    java: 'java',
-    c: 'c',
-    h: 'cpp',
-    cpp: 'cpp',
-    cc: 'cpp',
-    cxx: 'cpp',
-    cs: 'csharp',
-    go: 'go',
-    rs: 'rust',
+    yml: 'yaml',
     sh: 'shell',
     bash: 'shell',
-    sql: 'sql',
-    ini: 'ini'
+    c: 'cpp',
+    h: 'cpp',
+    cc: 'cpp',
+    cxx: 'cpp',
+    cs: 'csharp'
 };
-
-const textContentTypes = new Set([
-    'application/json',
-    'application/javascript',
-    'application/typescript',
-    'application/xml',
-    'application/yaml',
-    'application/x-yaml',
-    'application/x-sh',
-    'application/sql'
-]);
 
 export default (asset, pngIcon = false) => {
     const format = (asset.dataFormat || '').toLowerCase();
-    const contentType = (asset.contentType || '').toLowerCase();
-    const language = textLanguages[format] || 'plaintext';
-
-    // Temporary solution, maybe
-    if (textLanguages[format] || contentType.startsWith('text/') || textContentTypes.has(contentType)) {
-        return {
-            type: 'text',
-            displayable: true,
-            editable: true,
-            language,
-            icon: pngIcon ? assetIconPNG : assetIcon
-        };
-    }
+    const language = languageAliases[format] || format || 'plaintext';
+    const extension = format || 'file';
+    const assetName = `${asset.name || 'asset'}.${extension}`;
+    const assetData = asset.asset && asset.asset.data;
 
     switch (format) {
         case 'jpg':
@@ -119,12 +85,34 @@ export default (asset, pngIcon = false) => {
                 type: 'code',
                 displayable: false,
                 icon: pngIcon ? codeIconPNG : codeIcon
-            }
-        default:
-            return {
-                type: null,
-                icon: pngIcon ? assetIconPNG : assetIcon,
-                displayable: false
             };
+        default:
+            break;
     }
+
+    let detectedTextAsset = false;
+    if (assetData) {
+        try {
+            const bufferAssetData = Buffer.isBuffer(assetData) ? assetData : Buffer.from(assetData);
+            detectedTextAsset = isText(assetName, bufferAssetData) === true;
+        } catch (e) {
+            detectedTextAsset = false;
+        }
+    }
+
+    if (detectedTextAsset) {
+        return {
+            type: 'text',
+            displayable: true,
+            editable: true,
+            language,
+            icon: pngIcon ? assetIconPNG : assetIcon
+        };
+    }
+
+    return {
+        type: null,
+        icon: pngIcon ? assetIconPNG : assetIcon,
+        displayable: false
+    };
 };

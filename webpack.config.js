@@ -141,28 +141,7 @@ const base = {
                 }
             ]
         }),
-        new MonacoWebpackPlugin({
-            languages: [
-                'plaintext',
-                'markdown',
-                'json',
-                'javascript',
-                'typescript',
-                'html',
-                'css',
-                'xml',
-                'yaml',
-                'python',
-                'java',
-                'cpp',
-                'csharp',
-                'go',
-                'rust',
-                'shell',
-                'sql',
-                'ini'
-            ]
-        })
+        new MonacoWebpackPlugin()
     ]
 };
 

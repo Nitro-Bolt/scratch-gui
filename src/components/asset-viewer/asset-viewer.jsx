@@ -44,7 +44,7 @@ const messages = defineMessages({
 });
 
 const AssetViewerComponent = props => (
-    <div className={styles.viewerContainer}>
+    <div className={`${styles.viewerContainer} ${props.isTextEditable ? styles.textMode : ''}`}>
         {props.isTextEditable ? (
             <React.Fragment>
                 <div className={styles.editorHeaderRow}>
