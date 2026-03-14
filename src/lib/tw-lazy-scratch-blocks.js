@@ -13,9 +13,9 @@ const load = () => {
     if (_ScratchBlocks) {
         return Promise.resolve();
     }
-    return import(/* webpackChunkName: "sb" */ 'scratch-blocks')
+    return import(/* webpackChunkName: "blockly" */ 'blockly')
         .then(m => {
-            _ScratchBlocks = m.default;
+            _ScratchBlocks = m;
             return _ScratchBlocks;
         });
 };

@@ -142,9 +142,9 @@ class Blocks extends React.Component {
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
 
-        this.ScratchBlocks.FieldColourSlider.activateEyedropper_ = this.props.onActivateColorPicker;
+        // this.ScratchBlocks.FieldColourSlider.activateEyedropper_ = this.props.onActivateColorPicker;
         this.ScratchBlocks.Procedures.externalProcedureDefCallback = this.props.onActivateCustomProcedures;
-        this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
+        this.ScratchBlocks.setLocale(this.props.locale);
 
         const Msg = this.ScratchBlocks.Msg;
         Msg.PROCEDURES_RETURN = this.props.intl.formatMessage(messages.PROCEDURES_RETURN, {
@@ -172,7 +172,7 @@ class Blocks extends React.Component {
         // Register buttons under new callback keys for creating variables,
         // lists, and procedures from extensions.
 
-        const toolboxWorkspace = this.workspace.getFlyout().getWorkspace();
+        const toolboxWorkspace = this.workspace.toolbox.getFlyout().getWorkspace();
 
         const varListButtonCallback = type =>
             (() => this.ScratchBlocks.Variables.createVariable(this.workspace, null, type));
@@ -205,14 +205,14 @@ class Blocks extends React.Component {
         // we actually never want the workspace to enable "refresh toolbox" - this basically re-renders the
         // entire toolbox every time we reset the workspace.  We call updateToolbox as a part of
         // componentDidUpdate so the toolbox will still correctly be updated
-        this.setToolboxRefreshEnabled = this.workspace.setToolboxRefreshEnabled.bind(this.workspace);
-        this.workspace.setToolboxRefreshEnabled = () => {
-            this.setToolboxRefreshEnabled(false);
-        };
+        // this.setToolboxRefreshEnabled = this.workspace.setToolboxRefreshEnabled.bind(this.workspace);
+        // this.workspace.setToolboxRefreshEnabled = () => {
+        //     this.setToolboxRefreshEnabled(false);
+        // };
 
         // @todo change this when blockly supports UI events
-        addFunctionListener(this.workspace, 'translate', this.onWorkspaceMetricsChange);
-        addFunctionListener(this.workspace, 'zoom', this.onWorkspaceMetricsChange);
+        // addFunctionListener(this.workspace, 'translate', this.onWorkspaceMetricsChange);
+        // addFunctionListener(this.workspace, 'zoom', this.onWorkspaceMetricsChange);
 
         this.props.vm.setCompilerOptions({
             warpTimer: true
@@ -304,24 +304,25 @@ class Blocks extends React.Component {
         }, 0);
     }
     setLocale () {
-        this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
+        this.ScratchBlocks.setLocale(this.props.locale);
         this.props.vm.setLocale(this.props.locale, this.props.messages)
             .then(() => {
                 if (this.unmounted) return;
-                this.workspace.getFlyout().setRecyclingEnabled(false);
+                // this.workspace.getFlyout().setRecyclingEnabled(false);
                 this.props.vm.refreshWorkspace();
                 this.requestToolboxUpdate();
-                this.withToolboxUpdates(() => {
-                    this.workspace.getFlyout().setRecyclingEnabled(true);
-                });
+                // this.withToolboxUpdates(() => {
+                //     this.workspace.getFlyout().setRecyclingEnabled(true);
+                // });
             });
     }
 
     updateToolbox () {
         this.toolboxUpdateTimeout = false;
 
-        const categoryId = this.workspace.toolbox_.getSelectedCategoryId();
-        const offset = this.workspace.toolbox_.getCategoryScrollOffset();
+        // const categoryId = this.workspace.toolbox.getSelectedCategoryId();
+        const categoryId = this.workspace.toolbox.getPreviouslySelectedItem().getId();
+        const offset = this.workspace.toolbox.getCategoryScrollOffset();
         this.workspace.updateToolbox(this.props.toolboxXML);
         this._renderedToolboxXML = this.props.toolboxXML;
 
@@ -330,12 +331,12 @@ class Blocks extends React.Component {
         // Using the setter function will rerender the entire toolbox which we just rendered.
         this.workspace.toolboxRefreshEnabled_ = true;
 
-        const currentCategoryPos = this.workspace.toolbox_.getCategoryPositionById(categoryId);
-        const currentCategoryLen = this.workspace.toolbox_.getCategoryLengthById(categoryId);
+        const currentCategoryPos = this.workspace.toolbox.getCategoryPositionById(categoryId);
+        const currentCategoryLen = this.workspace.toolbox.getCategoryLengthById(categoryId);
         if (offset < currentCategoryLen) {
-            this.workspace.toolbox_.setFlyoutScrollPos(currentCategoryPos + offset);
+            this.workspace.toolbox.setFlyoutScrollPos(currentCategoryPos + offset);
         } else {
-            this.workspace.toolbox_.setFlyoutScrollPos(currentCategoryPos);
+            this.workspace.toolbox.setFlyoutScrollPos(currentCategoryPos);
         }
 
         const queue = this.toolboxUpdateQueue;
@@ -354,7 +355,7 @@ class Blocks extends React.Component {
 
     attachVM () {
         this.workspace.addChangeListener(this.props.vm.blockListener);
-        this.flyoutWorkspace = this.workspace
+        this.flyoutWorkspace = this.workspace.toolbox
             .getFlyout()
             .getWorkspace();
         this.flyoutWorkspace.addChangeListener(this.props.vm.flyoutBlockListener);
@@ -398,7 +399,7 @@ class Blocks extends React.Component {
 
     updateToolboxBlockValue (id, value) {
         this.withToolboxUpdates(() => {
-            const block = this.workspace
+            const block = this.workspace.toolbox
                 .getFlyout()
                 .getWorkspace()
                 .getBlockById(id);
@@ -409,7 +410,7 @@ class Blocks extends React.Component {
     }
 
     onTargetsUpdate () {
-        if (this.props.vm.editingTarget && this.workspace.getFlyout()) {
+        if (this.props.vm.editingTarget && this.workspace.toolbox.getFlyout()) {
             ['glide', 'move', 'set'].forEach(prefix => {
                 this.updateToolboxBlockValue(`${prefix}x`, Math.round(this.props.vm.editingTarget.x).toString());
                 this.updateToolboxBlockValue(`${prefix}y`, Math.round(this.props.vm.editingTarget.y).toString());
@@ -487,7 +488,7 @@ class Blocks extends React.Component {
 
         // Remove and reattach the workspace listener (but allow flyout events)
         this.workspace.removeChangeListener(this.props.vm.blockListener);
-        const dom = this.ScratchBlocks.Xml.textToDom(data.xml);
+        const dom = this.ScratchBlocks.utils.xml.textToDom(data.xml);
         try {
             this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, this.workspace);
         } catch (error) {
@@ -524,7 +525,7 @@ class Blocks extends React.Component {
         // Update the checkboxes of the relevant monitors.
         // TODO: What about monitors that have fields? See todo in scratch-vm blocks.js changeBlock:
         // https://github.com/LLK/scratch-vm/blob/2373f9483edaf705f11d62662f7bb2a57fbb5e28/src/engine/blocks.js#L569-L576
-        const flyout = this.workspace.getFlyout();
+        const flyout = this.workspace.toolbox.getFlyout();
         for (const monitor of monitors.values()) {
             const blockId = monitor.get('id');
             const isVisible = monitor.get('visible');

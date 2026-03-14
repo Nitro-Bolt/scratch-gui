@@ -117,11 +117,11 @@ const base = {
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: 'node_modules/scratch-blocks/media',
+                    from: 'node_modules/blockly/media',
                     to: 'static/blocks-media/default'
                 },
                 {
-                    from: 'node_modules/scratch-blocks/media',
+                    from: 'node_modules/blockly/media',
                     to: 'static/blocks-media/high-contrast'
                 },
                 {
