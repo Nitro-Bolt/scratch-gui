@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import log from '../lib/log';
 import sharedMessages from './shared-messages';
 import FileSystemAPI from './tw-filesystem-api';
-import {isMobile} from './pm-mobile';
+import {isTypeFilterAvailable} from './pm-mature-fs-available';
 import {setFileHandle} from '../reducers/tw';
 import JSZip from 'jszip';
 
@@ -109,8 +109,8 @@ const SBFileUploaderHOC = function (WrappedComponent) {
                 // create <input> element and add it to DOM
                 this.inputElement = document.createElement('input');
                 
-                // pm: Some bad mobile devices block any file type (iOS)
-                if (!isMobile()) {
+                // pm: Some bad browsers block any file type (Safari) so we need to only add .accept for those which can handle it properly
+                if (isTypeFilterAvailable()) {
                     this.inputElement.accept = '.sb,.sb2,.sb3,.pm,.pmp,.snail,.dino';
                 }
                 

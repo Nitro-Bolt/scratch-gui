@@ -7,6 +7,8 @@ import LowPassEffect from './effects/lowpass-effect.js';
 import HighPassEffect from './effects/highpass-effect.js';
 import ReverbEffect from './effects/reverb-effect.js';
 import BitCrushEffect from './effects/bit-crush-effect.js';
+import MegaphoneEffect from './effects/megaphone-effect.js';
+import TrembleEffect from './effects/tremble-effect.js';
 
 const effectTypes = {
     ROBOT: 'robot',
@@ -24,6 +26,8 @@ const effectTypes = {
     REVERB: 'reverb',
     LOWPITCH: 'lower pitch',
     HIGHPITCH: 'higher pitch',
+    MEGAPHONE: 'megaphone',
+    TREMBLE: 'tremble',
 };
 
 const centsToFrequency = (cents) => {
@@ -240,6 +244,14 @@ class AudioEffects {
             case effectTypes.HIGHPITCH:
                 this.source.detune.setValueAtTime(50, this.adjustedTrimStartSeconds);
                 this.source.detune.setValueAtTime(0, this.adjustedTrimEndSeconds);
+                break;
+            case effectTypes.MEGAPHONE:
+                ({input, output} = new MegaphoneEffect(this.audioContext,
+                    this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+                break;
+            case effectTypes.TREMBLE:
+                ({input, output} = new TrembleEffect(this.audioContext,
+                    this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
                 break;
             default:
                 if (Object.prototype.hasOwnProperty.call(this.options, "pitch")) {

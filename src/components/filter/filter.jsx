@@ -12,6 +12,7 @@ import styles from './filter.css';
 const FilterComponent = props => {
     const {
         className,
+        onCaseSensitive,
         onChange,
         onClear,
         placeholderText,
@@ -37,16 +38,16 @@ const FilterComponent = props => {
                 value={filterQuery}
                 onChange={onChange}
             />
-            {/*<button
+            <button
                 className={styles.aaIconWrapper}
-                onClick={() => {isCaseSensitive = !isCaseSensitive}}
+                onClick={onCaseSensitive}
             >
                 <TWRenderRecoloredImage
                     className={styles.aaIcon}
                     src={caseSensitiveIcon}
                     draggable={false}
                 />
-            </button>*/}
+            </button>
             <div
                 className={styles.xIconWrapper}
                 onClick={onClear}
@@ -65,6 +66,7 @@ FilterComponent.propTypes = {
     className: PropTypes.string,
     filterQuery: PropTypes.string,
     inputClassName: PropTypes.string,
+    onCaseSensitive: PropTypes.func,
     onChange: PropTypes.func,
     onClear: PropTypes.func,
     placeholderText: PropTypes.string

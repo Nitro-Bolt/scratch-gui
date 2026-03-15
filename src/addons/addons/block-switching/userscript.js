@@ -354,10 +354,61 @@ export default async function ({ addon, console, msg }) {
         {
           opcode: "looks_nextbackdrop",
         },
+        {
+          opcode: "looks_switchcostumeto",
+          createInputs: {
+            COSTUME: {
+              shadowType: "looks_costume",
+              value: "",
+            },
+          },
+        },
+      ];
+      blockSwitches["looks_switchcostumeto"] = [
+        noopSwitch,
+        {
+          opcode: "looks_nextcostume",
+        },
+        {
+          opcode: "looks_switchbackdropto",
+          createInputs: {
+            BACKDROP: {
+              shadowType: "looks_backdrops",
+              value: "",
+            },
+          },
+        },
+      ];
+      blockSwitches["looks_switchbackdropto"] = [
+        noopSwitch,
+        {
+          opcode: "looks_switchbackdroptoandwait",
+        },
+        {
+          opcode: "looks_nextbackdrop",
+        },
+        {
+          opcode: "looks_switchcostumeto",
+          createInputs: {
+            COSTUME: {
+              shadowType: "looks_costume",
+              value: "",
+            },
+          },
+        },
       ];
       blockSwitches["looks_nextbackdrop"] = [
         {
           opcode: "looks_nextcostume",
+        },
+        {
+          opcode: "looks_switchbackdropto",
+          createInputs: {
+            BACKDROP: {
+              shadowType: "looks_backdrops",
+              value: "",
+            },
+          },
         },
         noopSwitch,
       ];
@@ -1668,15 +1719,17 @@ export default async function ({ addon, console, msg }) {
           const valueElement = document.createElement("value");
           valueElement.setAttribute("name", inputName);
 
-          const shadowElement = document.createElement("shadow");
-          shadowElement.setAttribute("type", inputData.shadowType);
+          if (inputData.shadowType) {
+            const shadowElement = document.createElement("shadow");
+            shadowElement.setAttribute("type", inputData.shadowType);
 
-          const shadowFieldElement = document.createElement("field");
-          shadowFieldElement.setAttribute("name", getShadowFieldName(inputData.shadowType));
-          shadowFieldElement.innerText = callIfFunction(inputData.value);
+            const shadowFieldElement = document.createElement("field");
+            shadowFieldElement.setAttribute("name", getShadowFieldName(inputData.shadowType));
+            shadowFieldElement.innerText = callIfFunction(inputData.value);
 
-          shadowElement.appendChild(shadowFieldElement);
-          valueElement.appendChild(shadowElement);
+            shadowElement.appendChild(shadowFieldElement);
+            valueElement.appendChild(shadowElement);
+          }
           xml.appendChild(valueElement);
         }
       }

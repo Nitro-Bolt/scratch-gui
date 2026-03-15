@@ -466,8 +466,12 @@ export default async function ({ addon, console, msg }) {
             stageHeaderStageSizeGroup.style.display = "";
         }
 
-        if (spriteSelectorContainer.contains(container)) {
-            spriteSelectorContainer.removeChild(container);
+        if ('contains' in spriteSelectorContainer) {
+            if (spriteSelectorContainer.contains(container)) {
+                spriteSelectorContainer.removeChild(container);
+            }
+        } else {
+            spriteSelectorContainer.removeChild(container); // attempt to remove the container without the check
         }
     }
 

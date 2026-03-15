@@ -55,6 +55,7 @@ class LibraryComponent extends React.Component {
         super(props);
         bindAll(this, [
             'handleClose',
+            'handleFilterCaseSensitive',
             'handleFilterChange',
             'handleFilterClear',
             'handleMouseEnter',
@@ -73,6 +74,7 @@ class LibraryComponent extends React.Component {
         this.state = {
             playingItem: null,
             filterQuery: '',
+            isFilterCaseSensitive: false,
             selectedTags: [],
             favorites: [],
             collapsed: false,
@@ -230,6 +232,11 @@ class LibraryComponent extends React.Component {
             });
         }
     }
+    handleFilterCaseSensitive () {
+        this.setState({
+            isFilterCaseSensitive: !this.state.isFilterCaseSensitive
+        })
+    }
     handleFilterChange (event) {
         if (this.state.playingItem === null) {
             this.setState({
@@ -259,6 +266,7 @@ class LibraryComponent extends React.Component {
 
         const no_tags = this.state.selectedTags.length === 0;
         const no_query = this.state.filterQuery === "";
+        const isCaseSen = this.state.isFilterCaseSensitive
         if (no_tags && no_query) return data;
 
         return data.filter(dataItem => {
@@ -278,7 +286,7 @@ class LibraryComponent extends React.Component {
 
             tags = tags.join("\n");
 
-            const query = this.state.filterQuery.toLowerCase();
+            const query = isCaseSen ? this.state.filterQuery : this.state.filterQuery.toLowerCase();
 
             return tags.includes(query)
         });

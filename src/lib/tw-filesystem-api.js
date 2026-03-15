@@ -1,10 +1,10 @@
-import { isMobile } from './pm-mobile';
+import { isApiAvailable, isTypeFilterAvailable } from './pm-mature-fs-available';
 
-const available = () => !!window.showSaveFilePicker;
+const available = isApiAvailable;
 
 const showSaveFilePicker = fileName => window.showSaveFilePicker({
     suggestedName: fileName,
-    ...(isMobile() ? {} : {
+    ...(isTypeFilterAvailable() ? {} : {
         types: [
             {
                 description: 'DinosaurMod Project',
@@ -38,7 +38,7 @@ const showSaveFilePicker = fileName => window.showSaveFilePicker({
 const showOpenFilePicker = async () => {
     const [handle] = await window.showOpenFilePicker({
         multiple: false,
-        ...(isMobile() ? {} : {
+        ...(isTypeFilterAvailable() ? {} : {
             types: [
                 {
                     description: 'Supported Files',

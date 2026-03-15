@@ -48,7 +48,7 @@ export default async function ({ addon, console, msg }) {
         }
       };
 
-      if (value.length !== 0) {
+      if (value && value.length !== 0) {
         const copyButton = document.createElement("img");
         copyButton.setAttribute("role", "button");
         copyButton.setAttribute("tabindex", "0");

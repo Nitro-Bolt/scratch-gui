@@ -16,6 +16,7 @@ import {SOUND_BYTE_LIMIT} from '../../lib/audio/audio-util.js';
 import styles from './sound-editor.css';
 
 import playIcon from './icon--play.svg';
+import pauseIcon from './icon--pause.svg';
 import stopIcon from './icon--stop.svg';
 import redoIcon from '!../../lib/tw-recolor/build!./icon--redo.svg';
 import undoIcon from '!../../lib/tw-recolor/build!./icon--undo.svg';
@@ -29,6 +30,8 @@ import robotIcon from './icon--robot.svg';
 import echoIcon from './icon--echo.svg';
 import highpassIcon from './icon--highpass.svg';
 import lowpassIcon from './icon--lowpass.svg';
+import megaphoneIcon from './icon--megaphone.svg';
+import trembleIcon from './icon--tremble.svg';
 import reverseIcon from './icon--reverse.svg';
 import fadeOutIcon from './icon--fade-out.svg';
 import fadeInIcon from './icon--fade-in.svg';
@@ -60,6 +63,16 @@ const messages = defineMessages({
         id: 'gui.soundEditor.play',
         description: 'Title of the button to start playing the sound',
         defaultMessage: 'Play'
+    },
+    pause: {
+        id: 'gui.soundEditor.pause',
+        description: 'Title of the button to pause the sound',
+        defaultMessage: 'Pause'
+    },
+    resume: {
+        id: 'gui.soundEditor.resume',
+        description: 'Title of the button to resume the sound',
+        defaultMessage: 'Resume'
     },
     stop: {
         id: 'gui.soundEditor.stop',
@@ -304,7 +317,13 @@ const SoundEditor = props => (
             </div>
         </div>
         <div className={classNames(styles.row, styles.rowReverse)}>
-            <div className={classNames(styles.roundButtonOuter, styles.inputGroup)}>
+            <div
+                className={classNames(styles.roundButtonOuter, styles.inputGroup)}
+                style={{
+                    display: 'flex',
+                    gap: '8px'
+                }}
+            >
                 {props.playhead ? (
                     <button
                         className={classNames(styles.roundButton, styles.stopButtonn)}
@@ -439,6 +458,18 @@ const SoundEditor = props => (
                     title={"Lower Pitch"}
                     onClick={props.onLowerPitch}
                 />
+                <IconButton
+                    className={styles.effectButton}
+                    img={megaphoneIcon}
+                    title={"Megaphone"}
+                    onClick={props.onMegaphone}
+                />
+                <IconButton
+                    className={styles.effectButton}
+                    img={trembleIcon}
+                    title={"Tremble"}
+                    onClick={props.onTremble}
+                />
             </div>
         </div>
         <div className={styles.infoRow}>
@@ -533,6 +564,8 @@ SoundEditor.propTypes = {
     onBitCrush: PropTypes.func.isRequired,
     onHigherPitch: PropTypes.func.isRequired,
     onLowerPitch: PropTypes.func.isRequired,
+    onMegaphone: PropTypes.func.isRequired,
+    onTremble: PropTypes.func.isRequired,
     onFaster: PropTypes.func.isRequired,
     onModifySound: PropTypes.func.isRequired,
     onFormatSound: PropTypes.func.isRequired,
