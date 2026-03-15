@@ -417,6 +417,22 @@ const control = function (isInitialSetup, isStage, targetId, colors) {
                 </shadow>
             </value>
         </block>
+        <block type="control_foreach_in_range">
+          <value name="ITEM">
+            <shadow type="control_foreach_in_range_item">
+            </shadow>
+          </value>
+          <value name="FROM">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+          <value name="TO">
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
+          </value>
+        </block>
         <block id="forever" type="control_forever"/>
         ${blockSeparator}
         <block type="control_if"/>
@@ -722,6 +738,13 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
                 </shadow>
             </value>
         </block>
+        <block type="operator_typeof">
+            <value name="VALUE">
+                <shadow type="text">
+                    <field name="TEXT">${apple}</field>
+                </shadow>
+            </value>
+        </block>
         ${categorySeparator}
     </category>
     `;
@@ -866,6 +889,16 @@ const json = function (colors) {
                     <field name="TEXT">${bar}</field>
                 </shadow>
             </value>
+        </block>
+        <block type="json_foreach" id="json_foreach">
+          <value name="VALUE">
+            <shadow type="json_foreach_value">
+            </shadow>
+          </value>
+          <value name="INDEX">
+            <shadow type="json_foreach_index">
+            </shadow>
+          </value>
         </block>
         ${categorySeparator}
     </category>
