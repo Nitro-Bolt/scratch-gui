@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
+import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
 import {defineMessages, injectIntl, intlShape, FormattedMessage} from 'react-intl';
 
 import booleanInputIcon from './icon--boolean-input.svg';
@@ -216,9 +217,8 @@ const CustomProcedures = props => {
                 </Box>
                 <div className={styles.checkboxRow}>
                     <label>
-                        <input
+                        <FancyCheckbox
                             checked={props.warp}
-                            type="checkbox"
                             onChange={props.onToggleWarp}
                         />
                         <FormattedMessage
