@@ -305,7 +305,9 @@ class LibraryComponent extends React.Component {
                         [styles.withFilterBar]: this.props.filterable || this.props.tags
                     })}
                     ref={this.setFilteredDataRef}
-                    onClickCapture={e => { this._lastClickWasShift = e.shiftKey; }}
+                    onClickCapture={e => {
+                        this._lastClickWasShift = e.shiftKey;
+                    }}
                 >
                     {filteredData && this.getFilteredData().map((dataItem, index) => (
                         dataItem === '---' ? (

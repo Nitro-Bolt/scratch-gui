@@ -124,7 +124,7 @@ class Blocks extends React.Component {
             'onWorkspaceMetricsChange',
             'setBlocks',
             'setLocale',
-            'onExtensionAPI',
+            'onExtensionAPI'
         ]);
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -391,9 +391,9 @@ class Blocks extends React.Component {
         this.props.vm.removeListener('CREATE_UNSANDBOXED_EXTENSION_API', this.onExtensionAPI);
     }
 
-    onExtensionAPI(Scratch) {
-      // Assume's the Scratch.gui handle was ran.
-      Scratch.gui.makeToolboxXML = makeToolboxXML;
+    onExtensionAPI (Scratch) {
+        // Assume's the Scratch.gui handle was ran.
+        Scratch.gui.makeToolboxXML = makeToolboxXML;
     }
 
     updateToolboxBlockValue (id, value) {

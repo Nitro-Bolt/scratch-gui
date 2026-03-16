@@ -22,7 +22,7 @@ import settingsIcon from './icon--settings.svg';
 import styles from './stage-header.css';
 
 import FullscreenAPI from '../../lib/tw-fullscreen-api';
-import { defaultKeyboardShortcuts, registerKeyboardShortcut } from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 const messages = defineMessages({
     largeStageSizeMessage: {

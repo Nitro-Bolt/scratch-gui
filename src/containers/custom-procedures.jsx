@@ -23,8 +23,8 @@ class CustomProcedures extends React.Component {
         this.state = {
             rtlOffset: 0,
             warp: false,
-            colour: "#000000",
-            menuInput: "stringornumber"
+            colour: '#000000',
+            menuInput: 'stringornumber'
         };
     }
     componentWillUnmount () {
@@ -129,26 +129,26 @@ class CustomProcedures extends React.Component {
     handleAddInput () {
         if (this.mutationRoot) {
             switch (this.state.menuInput) {
-                case "stringornumber": // To be split into string and number types on a later date
-                    this.mutationRoot.addStringNumberExternal();
-                    break;
-                case "boolean":
-                    this.mutationRoot.addBooleanExternal();
-                    break;
-                case "object":
-                    this.mutationRoot.addObjectExternal();
-                    break;
-                case "array":
-                    this.mutationRoot.addArrayExternal();
-                    break;
-            };
+            case 'stringornumber': // To be split into string and number types on a later date
+                this.mutationRoot.addStringNumberExternal();
+                break;
+            case 'boolean':
+                this.mutationRoot.addBooleanExternal();
+                break;
+            case 'object':
+                this.mutationRoot.addObjectExternal();
+                break;
+            case 'array':
+                this.mutationRoot.addArrayExternal();
+                break;
+            }
         }
     }
     handleAddColor (element) {
         if (this.mutationRoot) {
-            this.mutationRoot.setColour(element.target.value ?? element.target.getAttribute("color"));
+            this.mutationRoot.setColour(element.target.value ?? element.target.getAttribute('color'));
             this.mutationRoot.updateDisplay_();
-            this.setState({colour: element.target.value ?? element.target.getAttribute("color")});
+            this.setState({colour: element.target.value ?? element.target.getAttribute('color')});
         }
     }
     handleToggleWarp () {

@@ -339,9 +339,9 @@ class MenuBar extends React.Component {
         if (modifier) {
             if (event.key.toLowerCase() === 's') {
                 this.props.handleSaveProject();
-                event.preventDefault();    
+                event.preventDefault();
             } else if (event.key.toLowerCase() === 'o') {
-                event.preventDefault();    
+                event.preventDefault();
                 this.props.onStartSelectingFileUpload();
             }
         }

@@ -765,7 +765,7 @@ const variables = function (isInitialSetup, isStage, targetId, colors) {
 
 const json = function (colors) {
     const object = translate('JSON_OBJECT', '{"key":"value"}');
-    const array = translate('JSON_ARRAY', '["foo","bar"]')
+    const array = translate('JSON_ARRAY', '["foo","bar"]');
     const key = translate('JSON_KEY', 'key');
     const bar = translate('JSON_BAR', 'bar');
     const baz = translate('JSON_BAZ', 'baz');
@@ -1077,36 +1077,38 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
     }
 
     everything.push(xmlClose);
-    if (vm) vm.emit(
-      'MAKE_TOOLBOX_XML', makeToolboxXML.exports, everything,
-      isInitialSetup, isStage, targetId, categoriesXML,
-      costumeName, backdropName, soundName, colors
-    );
+    if (vm) {
+        vm.emit(
+            'MAKE_TOOLBOX_XML', makeToolboxXML.exports, everything,
+            isInitialSetup, isStage, targetId, categoriesXML,
+            costumeName, backdropName, soundName, colors
+        );
+    }
     return everything.join('\n');
 };
 makeToolboxXML.exports = {
-  make: (...args) => makeToolboxXML(...args),
-  translate,
-  xmlEscape,
+    make: (...args) => makeToolboxXML(...args),
+    translate,
+    xmlEscape,
 
-  categorySeparator,
-  blockSeparator,
-  xmlOpen,
-  xmlClose,
-  nbBlocksColours,
-  extraNitroBoltBlocks,
+    categorySeparator,
+    blockSeparator,
+    xmlOpen,
+    xmlClose,
+    nbBlocksColours,
+    extraNitroBoltBlocks,
 
-  motion,
-  looks,
-  sound,
-  events,
-  control,
-  sensing,
-  operators,
-  variables,
-  json,
-  myBlocks,
-  comments
+    motion,
+    looks,
+    sound,
+    events,
+    control,
+    sensing,
+    operators,
+    variables,
+    json,
+    myBlocks,
+    comments
 };
 
 export default makeToolboxXML;
