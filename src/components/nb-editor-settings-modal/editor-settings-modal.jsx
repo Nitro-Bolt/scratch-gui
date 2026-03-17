@@ -310,7 +310,7 @@ const EditorSettingsModal = props => {
                     help={
                         <FormattedMessage
                             id="nb.editorSettings.hiddenCategoriesHelp"
-                            defaultMessage="Choose which categories to show or hide in the block toolbox. Changes take effect on the next page load."
+                            defaultMessage="Choose which default categories to show or hide in the block toolbox."
                         />
                     }
                     primary={
