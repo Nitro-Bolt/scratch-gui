@@ -918,73 +918,6 @@ const myBlocks = function (isInitialSetup, isStage, targetId, colors) {
     `;
 };
 
-const comments = function (colors) {
-    // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
-    return `
-    <category
-        name="%{BKY_CATEGORY_COMMENTS}"
-        id="comments"
-        colour="${colors.primary}"
-        secondaryColour="${colors.tertiary}">
-        <block type="comments_hat">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_command">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_loop">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_reporter">
-            <value name="VALUE">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_boolean">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_object">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_array">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        ${categorySeparator}
-    </category>
-    `;
-};
-
 // eslint-disable-next-line max-len
 const nbBlocksColours = `colourmutprimary="#ff5726" colourmutsecondary="#f34b1a" colourmuttertiary="#e63e0d" colourmutquaternary="#e63e0d"`;
 // eslint-disable-next-line max-len
@@ -1046,7 +979,6 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
     const variablesXML = moveCategory('data') || variables(isInitialSetup, isStage, targetId, colors.data);
     const jsonXML = moveCategory('json') || json(colors.json);
     const myBlocksXML = moveCategory('procedures') || myBlocks(isInitialSetup, isStage, targetId, colors.more);
-    const commentsXML = moveCategory('comments') || comments(colors.comments);
 
     // Always display NitroBolt blocks as the first extension, if it exists,
     // and also add an "is compiled?" block to the top.
@@ -1065,8 +997,7 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
         ['operators', operatorsXML],
         ['data', variablesXML],
         ['json', jsonXML],
-        ['procedures', myBlocksXML],
-        ['comments', commentsXML]
+        ['procedures', myBlocksXML]
     ].filter(([id]) => !hiddenCategories.includes(id));
     
     const visibleXMLs = categoryEntries.map(([, xml]) => xml);
@@ -1117,8 +1048,7 @@ makeToolboxXML.exports = {
     operators,
     variables,
     json,
-    myBlocks,
-    comments
+    myBlocks
 };
 
 export default makeToolboxXML;

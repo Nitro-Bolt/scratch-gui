@@ -71,8 +71,7 @@ const toolbox_categories = [
     {id: 'operators', label: 'Operators'},
     {id: 'data', label: 'Variables'},
     {id: 'json', label: 'JSON'},
-    {id: 'procedures', label: 'My Blocks'},
-    {id: 'comments', label: 'Comments'}
+    {id: 'procedures', label: 'My Blocks'}
 ];
 
 const BufferedInput = BufferedInputHOC(Input);
