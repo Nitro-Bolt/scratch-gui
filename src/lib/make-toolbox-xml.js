@@ -823,7 +823,7 @@ const json = function (colors) {
         <block type="json_value_of_index">
             <value name="INDEX">
                 <shadow type="json_indexmenu">
-                    <field name="NUM">0</field>
+                    <field name="INDEX">0</field>
                 </shadow>
             </value>
         </block>
@@ -846,7 +846,7 @@ const json = function (colors) {
         <block type="json_replace_index">
             <value name="INDEX">
                 <shadow type="json_indexmenu">
-                    <field name="NUM">0</field>
+                    <field name="INDEX">0</field>
                 </shadow>
             </value>
             <value name="ITEM">
@@ -858,7 +858,7 @@ const json = function (colors) {
         <block type="json_delete_index">
             <value name="INDEX">
                 <shadow type="json_indexmenu">
-                    <field name="NUM">0</field>
+                    <field name="INDEX">0</field>
                 </shadow>
             </value>
         </block>
@@ -872,12 +872,12 @@ const json = function (colors) {
         <block type="json_slice_array" id="json_slice_array">
             <value name="START">
                 <shadow type="json_indexmenu">
-                    <field name="NUM">1</field>
+                    <field name="INDEX">1</field>
                 </shadow>
             </value>
             <value name="END">
                 <shadow type="json_indexmenu">
-                    <field name="NUM">2</field>
+                    <field name="INDEX">2</field>
                 </shadow>
             </value>
         </block>
