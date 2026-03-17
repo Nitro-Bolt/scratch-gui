@@ -228,6 +228,19 @@ const CustomProcedures = props => {
                         />
                     </label>
                 </div>
+                <div className={styles.checkboxRow}>
+                    <label>
+                        <FancyCheckbox
+                            checked={props.global}
+                            onChange={props.onToggleGlobal}
+                        />
+                        <FormattedMessage
+                            defaultMessage="For all sprites"
+                            description="Label for checkbox to toggle availability for all sprites"
+                            id="gui.customProcedures.forAllSprites"
+                        />
+                    </label>
+                </div>
                 <Box className={styles.buttonRow}>
                     <button
                         className={styles.cancelButton}
@@ -265,7 +278,9 @@ CustomProcedures.propTypes = {
     onCancel: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     onToggleWarp: PropTypes.func.isRequired,
-    warp: PropTypes.bool.isRequired
+    warp: PropTypes.bool.isRequired,
+    onToggleGlobal: PropTypes.func.isRequired,
+    global: PropTypes.bool.isRequired
 };
 
 export default injectIntl(CustomProcedures);
