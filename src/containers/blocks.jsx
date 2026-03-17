@@ -24,6 +24,7 @@ import {injectExtensionBlockTheme, injectExtensionCategoryTheme} from '../lib/th
 
 import {connect} from 'react-redux';
 import {updateToolbox} from '../reducers/toolbox';
+import {setHiddenCategories} from '../reducers/hidden-categories';
 import {activateColorPicker} from '../reducers/color-picker';
 import {
     closeExtensionLibrary,
@@ -242,7 +243,8 @@ class Blocks extends React.Component {
             this.props.locale !== nextProps.locale ||
             this.props.anyModalVisible !== nextProps.anyModalVisible ||
             this.props.stageSize !== nextProps.stageSize ||
-            this.props.customStageSize !== nextProps.customStageSize
+            this.props.customStageSize !== nextProps.customStageSize ||
+            this.props.hiddenCategories !== nextProps.hiddenCategories
         );
     }
     componentDidUpdate (prevProps) {
@@ -256,6 +258,13 @@ class Blocks extends React.Component {
         // Do not check against prevProps.toolboxXML because that may not have been rendered.
         if (this.props.isVisible && this.props.toolboxXML !== this._renderedToolboxXML) {
             this.requestToolboxUpdate();
+        }
+
+        if (this.props.hiddenCategories !== prevProps.hiddenCategories) {
+            const toolboxXML = this.getToolboxXML();
+            if (toolboxXML) {
+                this.props.updateToolboxState(toolboxXML);
+            }
         }
 
         if (this.props.isVisible === prevProps.isVisible) {
@@ -468,7 +477,8 @@ class Blocks extends React.Component {
                 targetCostumes[targetCostumes.length - 1].name,
                 stageCostumes[stageCostumes.length - 1].name,
                 targetSounds.length > 0 ? targetSounds[targetSounds.length - 1].name : '',
-                this.props.theme.getBlockColors()
+                this.props.theme.getBlockColors(),
+                this.props.hiddenCategories
             );
         } catch {
             return null;
@@ -795,7 +805,8 @@ Blocks.propTypes = {
     vm: PropTypes.instanceOf(VM).isRequired,
     workspaceMetrics: PropTypes.shape({
         targets: PropTypes.objectOf(PropTypes.object)
-    })
+    }),
+    hiddenCategories: PropTypes.arrayOf(PropTypes.string)
 };
 
 Blocks.defaultOptions = {
@@ -833,7 +844,8 @@ const mapStateToProps = state => ({
     toolboxXML: state.scratchGui.toolbox.toolboxXML,
     customProceduresVisible: state.scratchGui.customProcedures.active,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
-    useCatBlocks: isTimeTravel2020(state)
+    useCatBlocks: isTimeTravel2020(state),
+    hiddenCategories: state.scratchGui.hiddenCategories
 });
 
 const mapDispatchToProps = dispatch => ({

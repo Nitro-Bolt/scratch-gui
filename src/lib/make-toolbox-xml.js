@@ -822,7 +822,7 @@ const json = function (colors) {
         ${blockSeparator}
         <block type="json_value_of_index">
             <value name="INDEX">
-                <shadow type="math_number">
+                <shadow type="json_indexmenu">
                     <field name="NUM">0</field>
                 </shadow>
             </value>
@@ -845,8 +845,8 @@ const json = function (colors) {
         </block>
         <block type="json_replace_index">
             <value name="INDEX">
-                <shadow type="math_number">
-                    <field name="NUM">1</field>
+                <shadow type="json_indexmenu">
+                    <field name="NUM">0</field>
                 </shadow>
             </value>
             <value name="ITEM">
@@ -857,7 +857,7 @@ const json = function (colors) {
         </block>
         <block type="json_delete_index">
             <value name="INDEX">
-                <shadow type="math_number">
+                <shadow type="json_indexmenu">
                     <field name="NUM">0</field>
                 </shadow>
             </value>
@@ -871,12 +871,12 @@ const json = function (colors) {
         </block>
         <block type="json_slice_array" id="json_slice_array">
             <value name="START">
-                <shadow type="math_number">
+                <shadow type="json_indexmenu">
                     <field name="NUM">1</field>
                 </shadow>
             </value>
             <value name="END">
-                <shadow type="math_number">
+                <shadow type="json_indexmenu">
                     <field name="NUM">2</field>
                 </shadow>
             </value>
@@ -1012,10 +1012,12 @@ const xmlClose = '</xml>';
  * @param {?string} backdropName - The name of the default selected backdrop dropdown.
  * @param {?string} soundName -  The name of the default selected sound dropdown.
  * @param {?object} colors - The colors for the theme.
+ * @param {?Array.<object>} hiddenCategories - optional array of category IDs to hide.
  * @returns {string} - a ScratchBlocks-style XML document for the contents of the toolbox.
  */
 const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, categoriesXML = [],
-    costumeName = '', backdropName = '', soundName = '', colors = defaultBlockColors) {
+    costumeName = '', backdropName = '', soundName = '', colors = defaultBlockColors,
+    hiddenCategories = []) {
     isStage = isInitialSetup || isStage;
     const gap = [categorySeparator];
 
@@ -1053,19 +1055,27 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
         nitroboltXML = nitroboltXML.replace('<block', `${extraNitroBoltBlocks}<block`);
     }
 
+    const categoryEntries = [
+        ['motion', motionXML],
+        ['looks', looksXML],
+        ['sound', soundXML],
+        ['event', eventsXML],
+        ['control', controlXML],
+        ['sensing', sensingXML],
+        ['operators', operatorsXML],
+        ['data', variablesXML],
+        ['json', jsonXML],
+        ['procedures', myBlocksXML],
+        ['comments', commentsXML]
+    ].filter(([id]) => !hiddenCategories.includes(id));
+    
+    const visibleXMLs = categoryEntries.map(([, xml]) => xml);
+    
     const everything = [
         xmlOpen,
-        motionXML, gap,
-        looksXML, gap,
-        soundXML, gap,
-        eventsXML, gap,
-        controlXML, gap,
-        sensingXML, gap,
-        operatorsXML, gap,
-        variablesXML, gap,
-        jsonXML, gap,
-        myBlocksXML, gap,
-        commentsXML
+        ...visibleXMLs.flatMap((xml, i) => (
+            i < visibleXMLs.length - 1 ? [xml, gap] : [xml]
+        ))
     ];
 
     if (nitroboltXML) {

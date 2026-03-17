@@ -26,6 +26,7 @@ import {defaultKeyboardShortcuts} from '../../lib/nb-keyboard-shortcut.js';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
 import {GUI_DARK, GUI_LIGHT, Theme} from '../../lib/themes/index.js';
+import {setHiddenCategories} from '../../reducers/hidden-categories';
 
 const messages = defineMessages({
     title: {
@@ -59,6 +60,20 @@ const messages = defineMessages({
         defaultMessage: 'Keymap'
     }
 });
+
+const toolbox_categories = [
+    {id: 'motion', label: 'Motion'},
+    {id: 'looks', label: 'Looks'},
+    {id: 'sound', label: 'Sound'},
+    {id: 'event', label: 'Events'},
+    {id: 'control', label: 'Control'},
+    {id: 'sensing', label: 'Sensing'},
+    {id: 'operators', label: 'Operators'},
+    {id: 'data', label: 'Variables'},
+    {id: 'json', label: 'JSON'},
+    {id: 'procedures', label: 'My Blocks'},
+    {id: 'comments', label: 'Comments'}
+];
 
 const BufferedInput = BufferedInputHOC(Input);
 
@@ -283,6 +298,56 @@ const EditorSettingsModal = props => {
                     />}
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={e => props.setPref('disable-compiler', e.target.checked)}
+                />
+                <div className={styles.header}>
+                    <FormattedMessage
+                        id="nb.editorSettings.toolbox"
+                        defaultMessage="Toolbox"
+                    />
+                    <div className={styles.divider} />
+                </div>
+                <Setting
+                    help={
+                        <FormattedMessage
+                            id="nb.editorSettings.hiddenCategoriesHelp"
+                            defaultMessage="Choose which categories to show or hide in the block toolbox. Changes take effect on the next page load."
+                        />
+                    }
+                    primary={
+                        <span className={styles.label}>
+                            <FormattedMessage
+                                id="nb.editorSettings.hiddenCategories"
+                                defaultMessage="Visible categories"
+                            />
+                        </span>
+                    }
+                    secondary={
+                        <div className={styles.categoryGrid}>
+                            {toolbox_categories.map(category => {
+                                const isVisible = !props.hiddenCategories.includes(category.id);
+                                const visibleCount = toolbox_categories.filter(c => !props.hiddenCategories.includes(c.id)).length;
+                                return (
+                                    <label
+                                        key={category.id}
+                                        className={styles.label}
+                                    >
+                                        <FancyCheckbox
+                                            className={styles.checkbox}
+                                            checked={isVisible}
+                                            disabled={isVisible && visibleCount === 1}
+                                            onChange={() => {
+                                                const next = isVisible ?
+                                                    [...props.hiddenCategories, category.id] :
+                                                    props.hiddenCategories.filter(id => id !== category.id);
+                                                props.onSetHiddenCategories(next);
+                                            }}
+                                        />
+                                        {category.label}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                    }
                 />
             </Box>
         },
@@ -571,13 +636,20 @@ EditorSettingsModal.propTypes = {
     setPref: PropTypes.func.isRequired,
     theme: PropTypes.instanceOf(Theme),
     username: PropTypes.string,
-    usernameInvalid: PropTypes.bool
+    usernameInvalid: PropTypes.bool,
+    hiddenCategories: PropTypes.arrayOf(PropTypes.string),
+    onSetHiddenCategories: PropTypes.func.isRequired
+};
+
+EditorSettingsModal.defaultProps = {
+    hiddenCategories: []
 };
 
 const mapStateToProps = state => ({
     theme: state.scratchGui.theme.theme,
     username: state.scratchGui.tw.username,
-    usernameInvalid: state.scratchGui.tw.usernameInvalid
+    usernameInvalid: state.scratchGui.tw.usernameInvalid,
+    hiddenCategories: state.scratchGui.hiddenCategories
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -593,7 +665,8 @@ const mapDispatchToProps = dispatch => ({
     onSetUsername: username => {
         dispatch(setUsername(username));
         dispatch(setUsernameInvalid(false));
-    }
+    },
+    onSetHiddenCategories: hiddenCategories => dispatch(setHiddenCategories(hiddenCategories))
 });
 
 export default connect(

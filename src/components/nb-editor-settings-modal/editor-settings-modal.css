@@ -344,6 +344,11 @@
     margin-right: 0.5rem;
 }
 
+.checkbox:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .help-icon {
     position: relative;
     border: 0;
