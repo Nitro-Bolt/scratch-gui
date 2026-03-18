@@ -120,7 +120,10 @@ class TableMonitorScroller extends React.Component {
         // Skip rendering data for the + button column
         if (columnIndex === this.getColumnCount() + 1) {
             return (
-                <div key={key} style={style} />
+                <div
+                    key={key}
+                    style={style}
+                />
             );
         }
 

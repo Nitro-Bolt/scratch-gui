@@ -206,11 +206,13 @@ class ExtensionLibrary extends React.PureComponent {
                 const sourceGallery = this.state.galleryBySource ? this.state.galleryBySource[source.id] : null;
                 const sourceStatusItems = galleryStatusItems[source.id];
 
+                const extensionsToExclude = ['faceSensing', 'lmscomments'];
+                
                 if (sourceGallery && sourceGallery.status === 'success') {
                     library.push(toLibraryItem(sourceStatusItems.more));
                     library.push(
                         ...sourceGallery.extensions
-                            .filter(i => i.extensionId !== 'faceSensing')
+                            .filter(i => !extensionsToExclude.includes(i.extensionId))
                             .map(i => translateGalleryItem(i, locale))
                             .map(toLibraryItem)
                     );

@@ -74,16 +74,16 @@ const Credits = () => (
             </section>
         )}
         <section>
-                <h2>TurboWarp</h2>
-                <p>
-                    NitroBolt is based on <a href="https://turbowarp.org/">TurboWarp</a>.
-                </p>
-                <p>
+            <h2>TurboWarp</h2>
+            <p>
+                NitroBolt is based on <a href="https://turbowarp.org/">TurboWarp</a>.
+            </p>
+            <p>
                 <a href="https://github.com/sponsors/GarboMuffin">
                     Donate to support TurboWarp
                 </a>
             </p>
-            </section>
+        </section>
         <section>
             <h2>Scratch</h2>
             <p>

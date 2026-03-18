@@ -17,7 +17,6 @@ const BLOCK_COLOR_NAMES = [
     'data_tables',
     'json',
     'more',
-    'comments',
     'addons'
 ];
 

@@ -79,7 +79,7 @@ TableMonitor.propTypes = {
                 PropTypes.oneOfType([
                     PropTypes.number,
                     PropTypes.string
-        ])))
+                ])))
     ]),
     width: PropTypes.number
 };

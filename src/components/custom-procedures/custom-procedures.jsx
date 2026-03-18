@@ -25,19 +25,19 @@ const CustomProcedures = props => {
     const [inputIcon, setInputIcon] = useState(textInputIcon);
     useEffect(() => {
         switch (props.menuOption) {
-            case "stringornumber": // To be split up as string and number types on a later date
-                setInputIcon(textInputIcon);
-                break;
-            case "boolean":
-                setInputIcon(booleanInputIcon);
-                break;
-            case "object":
-                setInputIcon(objectInputIcon);
-                break;
-            case "array":
-                setInputIcon(arrayInputIcon);
-                break;
-        };
+        case 'stringornumber': // To be split up as string and number types on a later date
+            setInputIcon(textInputIcon);
+            break;
+        case 'boolean':
+            setInputIcon(booleanInputIcon);
+            break;
+        case 'object':
+            setInputIcon(objectInputIcon);
+            break;
+        case 'array':
+            setInputIcon(arrayInputIcon);
+            break;
+        }
     }, [props.menuOption]);
 
     return (
@@ -102,7 +102,7 @@ const CustomProcedures = props => {
                         </div>
                     </div>
                 </div>
-                <br></br>
+                <br />
                 <div className={styles.sectionTitle}>
                     <FormattedMessage
                         defaultMessage="Select a color"
@@ -112,7 +112,7 @@ const CustomProcedures = props => {
                 </div>
                 <Box className={styles.colorRow}>
                     <span
-                        style={{ backgroundColor: "#FF6680" }}
+                        style={{backgroundColor: '#FF6680'}}
                         className={styles.colorOption}
                         role="button"
                         color="#FF6680"
@@ -120,7 +120,7 @@ const CustomProcedures = props => {
                         onClick={props.setColor}
                     />
                     <span
-                        style={{ backgroundColor: "#4C97FF" }}
+                        style={{backgroundColor: '#4C97FF'}}
                         className={styles.colorOption}
                         role="button"
                         color="#4C97FF"
@@ -128,7 +128,7 @@ const CustomProcedures = props => {
                         onClick={props.setColor}
                     />
                     <span
-                        style={{ backgroundColor: "#9966FF" }}
+                        style={{backgroundColor: '#9966FF'}}
                         className={styles.colorOption}
                         role="button"
                         color="#9966FF"
@@ -136,7 +136,7 @@ const CustomProcedures = props => {
                         onClick={props.setColor}
                     />
                     <span
-                        style={{ backgroundColor: "#CF63CF" }}
+                        style={{backgroundColor: '#CF63CF'}}
                         className={styles.colorOption}
                         role="button"
                         color="#CF63CF"
@@ -144,7 +144,7 @@ const CustomProcedures = props => {
                         onClick={props.setColor}
                     />
                     <span
-                        style={{ backgroundColor: "#FFBF00" }}
+                        style={{backgroundColor: '#FFBF00'}}
                         className={styles.colorOption}
                         role="button"
                         color="#FFBF00"
@@ -152,7 +152,7 @@ const CustomProcedures = props => {
                         onClick={props.setColor}
                     />
                     <span
-                        style={{ backgroundColor: "#FFAB19" }}
+                        style={{backgroundColor: '#FFAB19'}}
                         className={styles.colorOption}
                         role="button"
                         color="#FFAB19"
@@ -160,7 +160,7 @@ const CustomProcedures = props => {
                         onClick={props.setColor}
                     />
                     <span
-                        style={{ backgroundColor: "#5CB1D6" }}
+                        style={{backgroundColor: '#5CB1D6'}}
                         className={styles.colorOption}
                         role="button"
                         color="#5CB1D6"
@@ -168,7 +168,7 @@ const CustomProcedures = props => {
                         onClick={props.setColor}
                     />
                     <span
-                        style={{ backgroundColor: "#59C059" }}
+                        style={{backgroundColor: '#59C059'}}
                         className={styles.colorOption}
                         role="button"
                         color="#59C059"
@@ -176,7 +176,7 @@ const CustomProcedures = props => {
                         onClick={props.setColor}
                     />
                     <span
-                        style={{ backgroundColor: "#FF8C1A" }}
+                        style={{backgroundColor: '#FF8C1A'}}
                         className={styles.colorOption}
                         role="button"
                         color="#FF8C1A"
@@ -184,7 +184,7 @@ const CustomProcedures = props => {
                         onClick={props.setColor}
                     />
                     <span
-                        style={{ backgroundColor: "#FF661A" }}
+                        style={{backgroundColor: '#FF661A'}}
                         className={styles.colorOption}
                         role="button"
                         color="#FF661A"
@@ -192,23 +192,23 @@ const CustomProcedures = props => {
                         onClick={props.setColor}
                     />
                     <span
-                        style={{ backgroundColor: "#5755D4" }}
+                        style={{backgroundColor: '#66BD5C'}}
+                        className={styles.colorOption}
+                        role="button"
+                        color="#66BD5C"
+                        draggable={false}
+                        onClick={props.setColor}
+                    />
+                    <span
+                        style={{backgroundColor: '#5755D4'}}
                         className={styles.colorOption}
                         role="button"
                         color="#5755D4"
                         draggable={false}
                         onClick={props.setColor}
                     />
-                    <span
-                        style={{ backgroundColor: "#E4DB8C" }}
-                        className={styles.colorOption}
-                        role="button"
-                        color="#E4DB8C"
-                        draggable={false}
-                        onClick={props.setColor}
-                    />
                     <input
-                        style={{ backgroundColor: props.colour }}
+                        style={{backgroundColor: props.colour}}
                         type="color"
                         value={props.colour}
                         className={styles.colorPicker}
