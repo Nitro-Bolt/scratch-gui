@@ -14,6 +14,7 @@ class CustomProcedures extends React.Component {
             'handleAddInput',
             'handleAddColor',
             'handleToggleWarp',
+            'handleToggleGlobal',
             'handlePropagation',
             'handleInputMenuChange',
             'handleCancel',
@@ -23,8 +24,9 @@ class CustomProcedures extends React.Component {
         this.state = {
             rtlOffset: 0,
             warp: false,
-            colour: '#000000',
-            menuInput: 'stringornumber'
+            global: false,
+            colour: "#000000",
+            menuInput: "stringornumber"
         };
     }
     componentWillUnmount () {
@@ -108,7 +110,11 @@ class CustomProcedures extends React.Component {
         this.mutationRoot.domToMutation(this.props.mutator);
         this.mutationRoot.initSvg();
         this.mutationRoot.render();
-        this.setState({warp: this.mutationRoot.getWarp(), colour: this.mutationRoot.colour_});
+        this.setState({
+            warp: this.mutationRoot.getWarp(),
+            global: this.mutationRoot.getGlobal(),
+            colour: this.mutationRoot.colour_
+        });
         // Allow the initial events to run to position this block, then focus.
         setTimeout(() => {
             this.mutationRoot.focusLastEditor_();
@@ -158,6 +164,13 @@ class CustomProcedures extends React.Component {
             this.setState({warp: newWarp});
         }
     }
+    handleToggleGlobal () {
+        if (this.mutationRoot) {
+            const newGlobal = !this.mutationRoot.getGlobal();
+            this.mutationRoot.setGlobal(newGlobal);
+            this.setState({global: newGlobal});
+        }
+    }
     handlePropagation (e) {
         e.stopPropagation();
     }
@@ -168,6 +181,7 @@ class CustomProcedures extends React.Component {
         return (
             <CustomProceduresComponent
                 componentRef={this.setBlocks}
+                global={this.state.global}
                 warp={this.state.warp}
                 colour={this.state.colour}
                 onAddInput={this.handleAddInput}
@@ -179,6 +193,7 @@ class CustomProcedures extends React.Component {
                 onCancel={this.handleCancel}
                 onOk={this.handleOk}
                 onToggleWarp={this.handleToggleWarp}
+                onToggleGlobal={this.handleToggleGlobal}
             />
         );
     }
