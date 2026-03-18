@@ -157,9 +157,6 @@ class Blocks extends React.Component {
         const workspaceConfig = defaultsDeep({},
             this.props.options,
             {
-                vm: this.props.vm
-            },
-            {
                 rtl: this.props.isRtl,
                 toolbox: this.props.toolboxXML,
                 colours: this.props.theme.getBlockColors(),
@@ -170,7 +167,36 @@ class Blocks extends React.Component {
             Blocks.defaultOptions
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
-        this.workspace.vm = this.props.vm;
+
+        if (this.ScratchBlocks.Procedures &&
+            this.ScratchBlocks.Procedures.setProcedureBlocksAcrossTargetsCallback) {
+            this.ScratchBlocks.Procedures.setProcedureBlocksAcrossTargetsCallback(() => {
+                const runtime = this.props.vm && this.props.vm.runtime;
+                if (!runtime || !runtime.targets) {
+                    return [];
+                }
+
+                const procedureBlocks = [];
+                for (let i = 0; i < runtime.targets.length; i++) {
+                    const target = runtime.targets[i];
+                    const blocks = target && target.blocks && target.blocks._blocks;
+                    if (!blocks) continue;
+
+                    for (const blockId in blocks) {
+                        if (!Object.prototype.hasOwnProperty.call(blocks, blockId)) continue;
+                        const block = blocks[blockId];
+                        if (!block) continue;
+                        if (
+                            block.opcode === 'procedures_prototype' ||
+                            block.opcode === this.ScratchBlocks.PROCEDURES_CALL_BLOCK_TYPE
+                        ) {
+                            procedureBlocks.push(block);
+                        }
+                    }
+                }
+                return procedureBlocks;
+            });
+        }
         AddonHooks.blocklyWorkspace = this.workspace;
 
         // Register buttons under new callback keys for creating variables,
@@ -293,6 +319,12 @@ class Blocks extends React.Component {
     componentWillUnmount () {
         this.detachVM();
         this.unmounted = true;
+
+        if (this.ScratchBlocks && this.ScratchBlocks.Procedures &&
+            this.ScratchBlocks.Procedures.setProcedureBlocksAcrossTargetsCallback) {
+            this.ScratchBlocks.Procedures.setProcedureBlocksAcrossTargetsCallback(() => []);
+        }
+
         this.workspace.dispose();
         clearTimeout(this.toolboxUpdateTimeout);
 
@@ -509,6 +541,29 @@ class Blocks extends React.Component {
             }
             log.error(error);
         }
+
+        const allBlocks = this.workspace.getAllBlocks(false);
+        for (let i = 0; i < allBlocks.length; i++) {
+            const block = allBlocks[i];
+            if (block.type === this.ScratchBlocks.PROCEDURES_CALL_BLOCK_TYPE && block.getProcCode) {
+                const procCode = block.getProcCode();
+                if (procCode) {
+                    // Get the latest global procedure mutation from the provider
+                    const globalMutations = this.ScratchBlocks.Procedures.allGlobalProcedureMutations(this.workspace);
+                    for (let j = 0; j < globalMutations.length; j++) {
+                        const mutation = globalMutations[j];
+                        if (this.ScratchBlocks.Names.equals(mutation.getAttribute('proccode'), procCode)) {
+                            // Found the matching procedure, update the call block with the latest mutation
+                            if (block.domToMutation) {
+                                block.domToMutation(mutation);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         this.workspace.addChangeListener(this.props.vm.blockListener);
 
         if (this.props.vm.editingTarget && this.props.workspaceMetrics.targets[this.props.vm.editingTarget.id]) {
@@ -658,29 +713,8 @@ class Blocks extends React.Component {
     handleCustomProceduresClose (data) {
         this.props.onRequestCloseCustomProcedures(data);
         const ws = this.workspace;
-        if (!ws) return;
-
-        const flyout = ws.getFlyout && ws.getFlyout();
-        if (flyout) {
-            flyout.setRecyclingEnabled(false);
-        }
-
-        const toolboxXML = this.getToolboxXML();
-        if (toolboxXML) {
-            this.props.updateToolboxState(toolboxXML);
-        }
-
-        this.requestToolboxUpdate();
-        this.withToolboxUpdates(() => {
-            const refreshedFlyout = ws.getFlyout && ws.getFlyout();
-            ws.refreshToolboxSelection_();
-            if (ws.toolbox_) {
-                ws.toolbox_.scrollToCategoryById('myBlocks');
-            }
-            if (refreshedFlyout) {
-                refreshedFlyout.setRecyclingEnabled(true);
-            }
-        });
+        ws.refreshToolboxSelection_();
+        ws.toolbox_.scrollToCategoryById('myBlocks');
     }
     handleDrop (dragInfo) {
         fetch(dragInfo.payload.bodyUrl)
