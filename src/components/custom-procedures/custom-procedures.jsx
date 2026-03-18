@@ -192,18 +192,18 @@ const CustomProcedures = props => {
                         onClick={props.setColor}
                     />
                     <span
-                        style={{backgroundColor: '#5755D4'}}
+                        style={{backgroundColor: '#66BD5C'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#5755D4"
+                        color="#66BD5C"
                         draggable={false}
                         onClick={props.setColor}
                     />
                     <span
-                        style={{backgroundColor: '#E4DB8C'}}
+                        style={{backgroundColor: '#5755D4'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#E4DB8C"
+                        color="#5755D4"
                         draggable={false}
                         onClick={props.setColor}
                     />
