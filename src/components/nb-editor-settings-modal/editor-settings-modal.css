@@ -436,3 +436,27 @@
 .key-setting > * {
     flex: 1 0;
 }
+
+.collapseButton {
+    display: flex;
+    align-items: center;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.collapseArrow {
+    display: inline-block;
+    width: 0.7rem;
+    margin-left: 0.5rem;
+    aspect-ratio: 1 / 1;
+    transform: rotate(-90deg);
+}
+
+.collapseArrowExpanded {
+    transform: none;
+}

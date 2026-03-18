@@ -13,7 +13,7 @@ const reducer = (state = load(), action) => {
         try {
             localStorage.setItem('nb:hidden-categories', JSON.stringify(action.hiddenCategories));
         } catch {
-            console.warn("Error while trying to save hidden categories.", error);
+            console.warn('Error while trying to save hidden categories.', error);
         }
         return action.hiddenCategories;
     }

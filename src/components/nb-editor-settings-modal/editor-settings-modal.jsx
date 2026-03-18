@@ -27,6 +27,7 @@ import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
 import {GUI_DARK, GUI_LIGHT, Theme} from '../../lib/themes/index.js';
 import {setHiddenCategories} from '../../reducers/hidden-categories';
+import dropdownCaret from '../menu-bar/dropdown-caret.svg';
 
 const messages = defineMessages({
     title: {
@@ -178,6 +179,7 @@ const EditorSettingsModal = props => {
     const [selectedSectionIndex, setSelectedSectionIndex] = useState(0);
     const [windchimeOptOut, setWindchimeOptOut] = useState(localStorage.getItem('tw:windchime_opt_out') === 'true');
     const [dirty, setDirty] = useState(false);
+    const [categoriesExpanded, setCategoriesExpanded] = useState(false);
 
     const sections = [
         {
@@ -313,15 +315,24 @@ const EditorSettingsModal = props => {
                         />
                     }
                     primary={
-                        <span className={styles.label}>
+                        <button
+                            className={classNames(styles.label, styles.collapseButton)}
+                            onClick={() => setCategoriesExpanded(e => !e)}
+                        >
                             <FormattedMessage
                                 id="nb.editorSettings.hiddenCategories"
                                 defaultMessage="Visible categories"
                             />
-                        </span>
+                            <img
+                                className={classNames(styles.collapseArrow, {
+                                    [styles.collapseArrowExpanded]: categoriesExpanded
+                                })}
+                                src={dropdownCaret}
+                            />
+                        </button>
                     }
                     secondary={
-                        <div className={styles.categoryGrid}>
+                        categoriesExpanded && (<div className={styles.categoryGrid}>
                             {toolbox_categories.map(category => {
                                 const isVisible = !props.hiddenCategories.includes(category.id);
                                 const visibleCount = toolbox_categories.filter(c => !props.hiddenCategories.includes(c.id)).length;
@@ -345,7 +356,7 @@ const EditorSettingsModal = props => {
                                     </label>
                                 );
                             })}
-                        </div>
+                        </div>)
                     }
                 />
             </Box>
