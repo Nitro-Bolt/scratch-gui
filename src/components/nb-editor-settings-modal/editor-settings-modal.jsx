@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 import {defineMessages, FormattedMessage, intlShape, injectIntl} from 'react-intl';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import Modal from '../../containers/modal.jsx';
 import styles from './editor-settings-modal.css';
 import Box from '../box/box.jsx';
@@ -25,7 +25,14 @@ import KeyInput from './key-input.jsx';
 import {defaultKeyboardShortcuts} from '../../lib/nb-keyboard-shortcut.js';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
-import {GUI_DARK, GUI_LIGHT, Theme} from '../../lib/themes/index.js';
+import {detectTheme} from '../../lib/themes/themePersistance.js';
+import {GUI_DARK, GUI_LIGHT, Theme, BLOCKS_CUSTOM} from '../../lib/themes/index.js';
+import {
+    BLOCK_COLOR_CATEGORIES,
+    applyBlockColors,
+    loadBlockColors,
+    saveBlockColors
+} from '../../lib/block-color-persistence.js';
 import {setHiddenCategories} from '../../reducers/hidden-categories';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
 
@@ -74,6 +81,34 @@ const toolbox_categories = [
     {id: 'json', label: 'JSON'},
     {id: 'procedures', label: 'My Blocks'}
 ];
+
+const ColorInput = ({value, onPreview, onCommit, className, style}) => {
+    const inputRef = useRef(null);
+    useEffect(() => {
+        const el = inputRef.current;
+        if (!el) return;
+        el.addEventListener('change', onCommit);
+        return () => el.removeEventListener('change', onCommit);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    return (
+        <input
+            ref={inputRef}
+            type="color"
+            value={value}
+            onChange={e => onPreview(e.target.value)}
+            className={className}
+            style={style}
+        />
+    );
+};
+ColorInput.propTypes = {
+    value: PropTypes.string.isRequired,
+    onPreview: PropTypes.func.isRequired,
+    onCommit: PropTypes.func.isRequired,
+    className: PropTypes.string,
+    style: PropTypes.object
+};
 
 const BufferedInput = BufferedInputHOC(Input);
 
@@ -180,6 +215,46 @@ const EditorSettingsModal = props => {
     const [windchimeOptOut, setWindchimeOptOut] = useState(localStorage.getItem('tw:windchime_opt_out') === 'true');
     const [dirty, setDirty] = useState(false);
     const [categoriesExpanded, setCategoriesExpanded] = useState(false);
+    const [blockColors, setBlockColors] = useState(loadBlockColors);
+    const [blockColorsExpanded, setBlockColorsExpanded] = useState(false);
+    const pendingBlockColors = useRef(null);
+
+    useEffect(() => () => {
+        if (pendingBlockColors.current) {
+            commitBlockColors(pendingBlockColors.current);
+            pendingBlockColors.current = null;
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const commitBlockColors = next => {
+        saveBlockColors(next);
+        props.onChangeTheme(props.theme.set('blocks', BLOCKS_CUSTOM));
+    };
+
+    const handleBlockColorPreview = (colorId, value) => {
+        const next = {...blockColors, [colorId]: value};
+        setBlockColors(next);
+        applyBlockColors(next);
+        pendingBlockColors.current = next;
+    };
+
+    const handleBlockColorCommit = colorId => e => {
+        const next = {...blockColors, [colorId]: e.target.value};
+        setBlockColors(next);
+        pendingBlockColors.current = null;
+        commitBlockColors(next);
+    };
+ 
+    const handleResetBlockColors = () => {
+        setBlockColors({});
+        saveBlockColors({});
+        applyBlockColors({});
+        const defaultBlocks = detectTheme().blocks === BLOCKS_CUSTOM
+            ? 'three' 
+            : detectTheme().blocks;
+        props.onChangeTheme(props.theme.set('blocks', defaultBlocks));
+    };
 
     const sections = [
         {
@@ -406,6 +481,69 @@ const EditorSettingsModal = props => {
                         />
                     </button>
                 </p>
+                <Setting
+                    help={
+                        <FormattedMessage
+                            id="nb.editorSettings.blockColorsHelp"
+                            defaultMessage="Customize the primary color of each block category. Changes apply instantly."
+                        />
+                    }
+                    primary={
+                        <button
+                            className={classNames(styles.label, styles.collapseButton)}
+                            onClick={() => setBlockColorsExpanded(e => !e)}
+                        >
+                            <FormattedMessage
+                                id="nb.editorSettings.blockColors"
+                                defaultMessage="Block colors"
+                            />
+                            <img
+                                className={classNames(styles.collapseArrow, {
+                                    [styles.collapseArrowExpanded]: blockColorsExpanded
+                                })}
+                                src={dropdownCaret}
+                            />
+                        </button>
+                    }
+                    secondary={
+                        blockColorsExpanded && (
+                            <div>
+                                <div className={styles.categoryGrid}>
+                                    {BLOCK_COLOR_CATEGORIES.map(cat => {
+                                        const value = blockColors[cat.colorId] || cat.default;
+                                        return (
+                                            <label
+                                                key={cat.colorId}
+                                                className={styles.label}
+                                                style={{ gap: '0.33rem' }}
+                                            >
+                                                <ColorInput
+                                                    value={value}
+                                                    // eslint-disable-next-line react/jsx-no-bind
+                                                    onPreview={v => handleBlockColorPreview(cat.colorId, v)}
+                                                    // eslint-disable-next-line react/jsx-no-bind
+                                                    onCommit={handleBlockColorCommit(cat.colorId)}
+                                                    className={styles.colorInput}
+                                                />
+                                                <span>{cat.label}</span>
+                                            </label>
+                                        );
+                                    })}
+                                </div>
+                                <button
+                                    className={styles.button}
+                                    onClick={handleResetBlockColors}
+                                    style={{marginTop: '8px'}}
+                                >
+                                    <FormattedMessage
+                                        id="nb.editorSettings.resetBlockColors"
+                                        defaultMessage="Reset to defaults"
+                                    />
+                                </button>
+                            </div>
+                        )
+                    }
+                />
                 <BooleanSetting
                     value={props.theme.gui === GUI_DARK}
                     label={<FormattedMessage
