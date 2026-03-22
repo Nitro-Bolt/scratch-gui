@@ -1,0 +1,36 @@
+@import "../../css/z-index.css";
+
+.debugger-container-overlay {
+    position: fixed;
+    pointer-events: none;
+    z-index: $z-index-card;
+}
+
+.debugger-container {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    width: 36rem;
+    height: 25rem;
+    border-radius: 5px;
+    background-color: red;
+    pointer-events: auto;
+}
+
+.debugger-header {
+    display: flex;
+    height: 3rem;
+    width: 100%;
+    align-items: center;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background-color: blue
+}
+
+.close-button {
+    position: absolute;
+    cursor: pointer;
+    padding: 0.5rem;
+    right: 0
+}
