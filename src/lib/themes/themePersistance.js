@@ -87,8 +87,7 @@ const persistTheme = theme => {
     if (theme.gui !== systemPreferences.gui) {
         nonDefaultSettings.gui = theme.gui;
     }
-    // custom blocks are managed by addon at runtime, don't save here
-    if (theme.blocks !== systemPreferences.blocks && theme.blocks !== BLOCKS_CUSTOM) {
+    if (theme.blocks !== systemPreferences.blocks) {
         nonDefaultSettings.blocks = theme.blocks;
     }
 

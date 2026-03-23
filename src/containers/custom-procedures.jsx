@@ -25,8 +25,8 @@ class CustomProcedures extends React.Component {
             rtlOffset: 0,
             warp: false,
             global: false,
-            colour: "#000000",
-            menuInput: "stringornumber"
+            colour: '#000000',
+            menuInput: 'stringornumber'
         };
     }
     componentWillUnmount () {
