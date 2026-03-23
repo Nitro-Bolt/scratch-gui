@@ -7,6 +7,7 @@ import AssetPanel from '../components/asset-panel/asset-panel.jsx';
 import AssetViewer from './asset-viewer.jsx';
 
 import fileUploadIcon from '../components/action-menu/icon--file-upload.svg';
+import addNewTxtFileIcon from '../components/asset-panel/icon--add-new-txt-file.svg';
 
 import DragConstants from '../lib/drag-constants';
 import {handleFileUpload, assetUpload} from '../lib/file-uploader.js';
@@ -35,6 +36,7 @@ class AssetTab extends React.Component {
             'handleDuplicateAsset',
             'handleExportAsset',
             'handleNewAsset',
+            'handleCreateBlankTextAsset',
             'handleFileUploadClick',
             'handleAssetUpload',
             'handleDrop',
@@ -63,6 +65,39 @@ class AssetTab extends React.Component {
         const sprite = this.props.vm.editingTarget.sprite;
         const assets = sprite.assets ? sprite.assets : [];
         this.setState({selectedAssetIndex: Math.max(assets.length - 1, 0)});
+    }
+
+    handleCreateBlankTextAsset () {
+        const {vm, intl} = this.props;
+        if (!vm.editingTarget || !vm.runtime || !vm.runtime.storage) {
+            return;
+        }
+
+        const storage = vm.runtime.storage;
+        const targetId = vm.editingTarget.id;
+        const AssetType = structuredClone(storage.AssetType.Asset);
+        AssetType.contentType = 'text/plain';
+
+        const extension = 'txt';
+        const asset = storage.createAsset(
+            AssetType,
+            extension,
+            new TextEncoder().encode(''),
+            null,
+            true
+        );
+
+        const newAsset = {
+            name: intl.formatMessage(messages.newTextFileName),
+            dataFormat: extension,
+            contentType: 'text/plain',
+            lastModified: Date.now(),
+            asset,
+            md5: `${asset.assetId}.${extension}`,
+            assetId: asset.assetId
+        };
+
+        vm.addAsset(newAsset, targetId).then(this.handleNewAsset);
     }
 
     handleDeleteAsset (assetIndex) {
@@ -166,14 +201,6 @@ class AssetTab extends React.Component {
             }
         )) : [];
 
-        const messages = defineMessages({
-            fileUploadAsset: {
-                defaultMessage: 'Upload Asset',
-                description: 'Button to upload asset from file in the editor tab',
-                id: 'gui.assetTab.fileUploadAsset'
-            }
-        });
-
         const selectedAsset = sprite.assets[this.state.selectedAssetIndex];
 
         return (
@@ -182,6 +209,10 @@ class AssetTab extends React.Component {
                     title: intl.formatMessage(messages.fileUploadAsset),
                     img: fileUploadIcon,
                     onClick: this.handleFileUploadClick
+                }, {
+                    title: intl.formatMessage(messages.newTextFile),
+                    img: addNewTxtFileIcon,
+                    onClick: this.handleCreateBlankTextAsset
                 }]}
                 dragType={DragConstants.ASSET}
                 isRtl={isRtl}
@@ -210,6 +241,24 @@ class AssetTab extends React.Component {
         );
     }
 }
+
+const messages = defineMessages({
+    fileUploadAsset: {
+        defaultMessage: 'Upload Asset',
+        description: 'Button to upload asset from file in the editor tab',
+        id: 'gui.assetTab.fileUploadAsset'
+    },
+    newTextFile: {
+        defaultMessage: 'New Text File',
+        description: 'Button to create a blank text file in the asset tab',
+        id: 'gui.assetTab.newTextFile'
+    },
+    newTextFileName: {
+        defaultMessage: 'file',
+        description: 'Default name for new blank text files in the asset tab',
+        id: 'gui.assetTab.newTextFileName'
+    }
+});
 
 AssetTab.propTypes = {
     dispatchUpdateRestore: PropTypes.func,
