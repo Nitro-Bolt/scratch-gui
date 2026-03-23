@@ -164,7 +164,7 @@ const mapDispatchToProps = dispatch => ({
         persistTheme(theme);
     },
     onClickSettings: () => {
-        dispatch(openEditorSettingsModal(2));
+        dispatch(openEditorSettingsModal(3));
         dispatch(closeSettingsMenu());
     },
     onOpenMenu: () => dispatch(openBlocksThemeMenu())
