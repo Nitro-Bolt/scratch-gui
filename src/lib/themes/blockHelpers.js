@@ -1,4 +1,4 @@
-import {BLOCKS_THREE,BLOCKS_CUSTOM} from '.';
+import {BLOCKS_THREE, BLOCKS_CUSTOM} from '.';
 
 const getBlockIconURI = extensionIcons => {
     if (!extensionIcons) return null;

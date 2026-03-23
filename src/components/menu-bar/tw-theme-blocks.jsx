@@ -17,7 +17,7 @@ import highContrastIcon from './tw-blocks-high-contrast.svg';
 import darkIcon from './tw-blocks-dark.svg';
 import customIcon from './tw-blocks-custom.svg';
 import openLinkIcon from './tw-open-link.svg';
-import { openEditorSettingsModal } from '../../reducers/modals.js';
+import {openEditorSettingsModal} from '../../reducers/modals.js';
 
 const options = defineMessages({
     [BLOCKS_THREE]: {
@@ -133,7 +133,7 @@ const BlocksThemeMenu = ({
                     isSelected={theme.blocks === i}
                     // eslint-disable-next-line react/jsx-no-bind
                     onClick={() => {
-                        if (i !== BLOCKS_CUSTOM) onChangeTheme(theme.set('blocks', i))
+                        if (i !== BLOCKS_CUSTOM) onChangeTheme(theme.set('blocks', i));
                         else onClickSettings();
                     }}
                 />

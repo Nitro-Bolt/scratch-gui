@@ -235,9 +235,9 @@ const EditorSettingsModal = props => {
         setBlockColors({});
         saveBlockColors({});
         applyBlockColors({});
-        const defaultBlocks = detectTheme().blocks === BLOCKS_CUSTOM
-            ? 'three' 
-            : detectTheme().blocks;
+        const defaultBlocks = detectTheme().blocks === BLOCKS_CUSTOM ?
+            'three' :
+            detectTheme().blocks;
         props.onChangeTheme(props.theme.set('blocks', defaultBlocks));
     };
 
@@ -500,7 +500,7 @@ const EditorSettingsModal = props => {
                                             <label
                                                 key={cat.colorId}
                                                 className={styles.label}
-                                                style={{ gap: '0.33rem', width: 'fit-content' }}
+                                                style={{gap: '0.33rem', width: 'fit-content'}}
                                             >
                                                 <ColorPicker
                                                     value={value}
@@ -511,7 +511,7 @@ const EditorSettingsModal = props => {
                                                     className={styles.colorInput}
                                                     showIcon={false}
                                                     label={false}
-                                                    size={"1.8rem"}
+                                                    size={'1.8rem'}
                                                 />
                                                 <span>{cat.label}</span>
                                             </label>

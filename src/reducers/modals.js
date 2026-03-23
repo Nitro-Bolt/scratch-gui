@@ -51,7 +51,7 @@ const reducer = function (state, action) {
         return Object.assign({}, state, {
             [action.modal]: true,
             ...(action.modal === MODAL_EDITOR_SETTINGS && {
-            editorSettingsModalTab: action.tab ?? 0
+                editorSettingsModalTab: action.tab ?? 0
             })
         });
     case CLOSE_MODAL:

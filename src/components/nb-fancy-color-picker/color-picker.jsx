@@ -15,7 +15,7 @@ const ColorPicker = ({value, onChange, onClick, onCommit, label, showIcon, class
         return () => el.removeEventListener('change', onCommit);
     }, []);
     
-    useEffect(() => {                          
+    useEffect(() => {
         const el = inputRef.current;
         if (!el || !onClick) return;
         el.addEventListener('click', onClick);
