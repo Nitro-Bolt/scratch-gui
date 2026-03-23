@@ -35,6 +35,7 @@ import {
 } from '../../lib/block-color-persistence.js';
 import {setHiddenCategories} from '../../reducers/hidden-categories';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
+import ColorPicker from '../forms/color-picker.jsx';
 
 const messages = defineMessages({
     title: {
@@ -81,34 +82,6 @@ const toolbox_categories = [
     {id: 'json', label: 'JSON'},
     {id: 'procedures', label: 'My Blocks'}
 ];
-
-const ColorInput = ({value, onPreview, onCommit, className, style}) => {
-    const inputRef = useRef(null);
-    useEffect(() => {
-        const el = inputRef.current;
-        if (!el) return;
-        el.addEventListener('change', onCommit);
-        return () => el.removeEventListener('change', onCommit);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    return (
-        <input
-            ref={inputRef}
-            type="color"
-            value={value}
-            onChange={e => onPreview(e.target.value)}
-            className={className}
-            style={style}
-        />
-    );
-};
-ColorInput.propTypes = {
-    value: PropTypes.string.isRequired,
-    onPreview: PropTypes.func.isRequired,
-    onCommit: PropTypes.func.isRequired,
-    className: PropTypes.string,
-    style: PropTypes.object
-};
 
 const BufferedInput = BufferedInputHOC(Input);
 
@@ -211,12 +184,15 @@ BooleanSetting.propTypes = {
 };
 
 const EditorSettingsModal = props => {
-    const [selectedSectionIndex, setSelectedSectionIndex] = useState(0);
+    const [selectedSectionIndex, setSelectedSectionIndex] = useState(props.activeTab ?? 0);
     const [windchimeOptOut, setWindchimeOptOut] = useState(localStorage.getItem('tw:windchime_opt_out') === 'true');
     const [dirty, setDirty] = useState(false);
     const [categoriesExpanded, setCategoriesExpanded] = useState(false);
     const [blockColors, setBlockColors] = useState(loadBlockColors);
     const [blockColorsExpanded, setBlockColorsExpanded] = useState(false);
+
+    const latestBlockColors = useRef(blockColors);
+    latestBlockColors.current = blockColors;
     const pendingBlockColors = useRef(null);
 
     useEffect(() => () => {
@@ -227,20 +203,29 @@ const EditorSettingsModal = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        if (props.theme.blocks !== BLOCKS_CUSTOM) {
+            setBlockColors({});
+            saveBlockColors({});
+            applyBlockColors({});
+            pendingBlockColors.current = null;
+        }
+    }, [props.theme.blocks]);
+
     const commitBlockColors = next => {
         saveBlockColors(next);
         props.onChangeTheme(props.theme.set('blocks', BLOCKS_CUSTOM));
     };
 
     const handleBlockColorPreview = (colorId, value) => {
-        const next = {...blockColors, [colorId]: value};
+        const next = {...latestBlockColors.current, [colorId]: value};
         setBlockColors(next);
         applyBlockColors(next);
         pendingBlockColors.current = next;
     };
 
     const handleBlockColorCommit = colorId => e => {
-        const next = {...blockColors, [colorId]: e.target.value};
+        const next = {...latestBlockColors.current, [colorId]: e.target.value};
         setBlockColors(next);
         pendingBlockColors.current = null;
         commitBlockColors(next);
@@ -485,7 +470,7 @@ const EditorSettingsModal = props => {
                     help={
                         <FormattedMessage
                             id="nb.editorSettings.blockColorsHelp"
-                            defaultMessage="Customize the primary color of each block category. Changes apply instantly."
+                            defaultMessage="Customize the primary color of each block category."
                         />
                     }
                     primary={
@@ -515,15 +500,18 @@ const EditorSettingsModal = props => {
                                             <label
                                                 key={cat.colorId}
                                                 className={styles.label}
-                                                style={{ gap: '0.33rem' }}
+                                                style={{ gap: '0.33rem', width: 'fit-content' }}
                                             >
-                                                <ColorInput
+                                                <ColorPicker
                                                     value={value}
                                                     // eslint-disable-next-line react/jsx-no-bind
-                                                    onPreview={v => handleBlockColorPreview(cat.colorId, v)}
+                                                    onChange={v => handleBlockColorPreview(cat.colorId, v)}
                                                     // eslint-disable-next-line react/jsx-no-bind
                                                     onCommit={handleBlockColorCommit(cat.colorId)}
                                                     className={styles.colorInput}
+                                                    showIcon={false}
+                                                    label={false}
+                                                    size={"1.8rem"}
                                                 />
                                                 <span>{cat.label}</span>
                                             </label>
@@ -786,7 +774,8 @@ EditorSettingsModal.propTypes = {
     username: PropTypes.string,
     usernameInvalid: PropTypes.bool,
     hiddenCategories: PropTypes.arrayOf(PropTypes.string),
-    onSetHiddenCategories: PropTypes.func.isRequired
+    onSetHiddenCategories: PropTypes.func.isRequired,
+    activeTab: PropTypes.number
 };
 
 EditorSettingsModal.defaultProps = {
@@ -797,12 +786,12 @@ const mapStateToProps = state => ({
     theme: state.scratchGui.theme.theme,
     username: state.scratchGui.tw.username,
     usernameInvalid: state.scratchGui.tw.usernameInvalid,
-    hiddenCategories: state.scratchGui.hiddenCategories
+    hiddenCategories: state.scratchGui.hiddenCategories,
+    activeTab: state.scratchGui.modals.editorSettingsModalTab
 });
 
 const mapDispatchToProps = dispatch => ({
     onChangeTheme: theme => {
-        console.log(theme);
         dispatch(setTheme(theme));
         persistTheme(theme);
     },

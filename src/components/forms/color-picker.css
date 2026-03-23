@@ -1,0 +1,70 @@
+@import "../../css/colors.css";
+@import "../../css/units.css";
+
+.color-picker-root {
+    display: flex;
+    flex-direction: column;
+    gap: calc($space * 1);
+}
+
+.label {
+    font-weight: bold;
+    font-size: larger;
+    padding: calc($space * 1);
+}
+
+.color-row {
+    display: flex;
+    align-items: center;
+}
+
+.color-picker-wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+.color-picker {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    border: 2px solid $ui-black-transparent;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    padding: calc($space * 1);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.color-picker::-moz-color-swatch {
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+}
+
+.color-picker:hover,
+.color-picker:focus-visible {
+    border-color: $looks-secondary;
+    box-shadow: 0 0 0 4px $looks-transparent;
+    outline: none;
+}
+
+.palette-icon {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    pointer-events: none;
+    transform: translate(-22%, -95%);
+}

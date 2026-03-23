@@ -65,7 +65,7 @@ const SettingsMenu = ({
                 {canChangeTheme && (
                     <React.Fragment>
                         <TWGuiThemeMenu />
-                        <TWBlocksThemeMenu />
+                        <TWBlocksThemeMenu onClickSettings={onClickSettings} />
                         <TWAccentThemeMenu />
                     </React.Fragment>
                 )}

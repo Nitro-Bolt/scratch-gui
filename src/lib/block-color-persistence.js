@@ -16,6 +16,7 @@ export const BLOCK_COLOR_CATEGORIES = [
     { colorId: "operators", label: "Operators", default: "#59C059" },
     { colorId: "data", label: "Variables", default: "#FF8C1A" },
     { colorId: "data_lists", label: "Lists", default: "#FF661A" },
+    { colorId: "data_tables", label: "Tables", default: "#66BD5C" },
     { colorId: "json", label: "JSON", default: "#5755D4" },
     { colorId: "more", label: "My Blocks", default: "#FF6680" },
     { colorId: "pen", label: "Extensions", default: "#0FBD8C" },
@@ -75,7 +76,4 @@ export const applyBlockColors = (overrides) => {
     BLOCKS_MAP[BLOCKS_CUSTOM].colors = buildBlockColorMap(overrides);
 };
 
-const _stored = loadBlockColors();
-if (Object.keys(_stored).length > 0) {
-    applyBlockColors(_stored);
-}
+applyBlockColors(loadBlockColors());

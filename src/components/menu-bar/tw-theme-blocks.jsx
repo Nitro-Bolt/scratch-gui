@@ -17,6 +17,7 @@ import highContrastIcon from './tw-blocks-high-contrast.svg';
 import darkIcon from './tw-blocks-dark.svg';
 import customIcon from './tw-blocks-custom.svg';
 import openLinkIcon from './tw-open-link.svg';
+import { openEditorSettingsModal } from '../../reducers/modals.js';
 
 const options = defineMessages({
     [BLOCKS_THREE]: {
@@ -35,8 +36,8 @@ const options = defineMessages({
         id: 'tw.blockColors.dark'
     },
     [BLOCKS_CUSTOM]: {
-        defaultMessage: 'Customized in Editor Settings',
-        description: 'Open editor settings for more customization',
+        defaultMessage: 'Customize in Editor Settings',
+        description: 'Link to open editor settings for more customization',
         id: 'tw.blockColors.custom'
     }
 });
@@ -72,6 +73,15 @@ const ThemeMenuItem = ({id, disabled, isSelected, onClick}) => (
             />
             <ThemeIcon id={id} />
             <FormattedMessage {...options[id]} />
+            {id === BLOCKS_CUSTOM && (
+                <img
+                    width={20}
+                    height={20}
+                    className={styles.openLink}
+                    src={openLinkIcon}
+                    draggable={false}
+                />
+            )}
         </div>
     </MenuItem>
 );
@@ -87,6 +97,7 @@ const BlocksThemeMenu = ({
     isOpen,
     isRtl,
     onChangeTheme,
+    onClickSettings,
     onOpenMenu,
     theme
 }) => (
@@ -114,7 +125,7 @@ const BlocksThemeMenu = ({
                 BLOCKS_THREE,
                 BLOCKS_HIGH_CONTRAST,
                 BLOCKS_DARK,
-                theme.blocks === BLOCKS_CUSTOM && BLOCKS_CUSTOM
+                BLOCKS_CUSTOM
             ].filter(Boolean).map(i => (
                 <ThemeMenuItem
                     key={i}
@@ -123,6 +134,7 @@ const BlocksThemeMenu = ({
                     // eslint-disable-next-line react/jsx-no-bind
                     onClick={() => {
                         if (i !== BLOCKS_CUSTOM) onChangeTheme(theme.set('blocks', i))
+                        else onClickSettings();
                     }}
                 />
             ))}
@@ -134,6 +146,7 @@ BlocksThemeMenu.propTypes = {
     isOpen: PropTypes.bool,
     isRtl: PropTypes.bool,
     onChangeTheme: PropTypes.func,
+    onClickTheme: PropTypes.func,
     onOpenMenu: PropTypes.func,
     theme: PropTypes.instanceOf(Theme)
 };
@@ -149,6 +162,10 @@ const mapDispatchToProps = dispatch => ({
         dispatch(setTheme(theme));
         dispatch(closeSettingsMenu());
         persistTheme(theme);
+    },
+    onClickSettings: () => {
+        dispatch(openEditorSettingsModal(2));
+        dispatch(closeSettingsMenu());
     },
     onOpenMenu: () => dispatch(openBlocksThemeMenu())
 });
