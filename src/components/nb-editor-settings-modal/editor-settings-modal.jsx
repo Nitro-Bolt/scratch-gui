@@ -27,6 +27,7 @@ import {setTheme} from '../../reducers/theme.js';
 import {persistTheme} from '../../lib/themes/themePersistance.js';
 import {GUI_DARK, GUI_LIGHT, Theme} from '../../lib/themes/index.js';
 import {setHiddenCategories} from '../../reducers/hidden-categories';
+import {unrestrictUnsandboxed} from '../../lib/nb-preferences.js';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
 
 const messages = defineMessages({
@@ -43,6 +44,10 @@ const messages = defineMessages({
     general: {
         id: 'nb.editorSettings.generalSection',
         defaultMessage: 'General'
+    },
+    security: {
+        id: 'nb.editorSettings.securitySection',
+        defaultMessage: 'Security'
     },
     addons: {
         id: 'nb.editorSettings.addonsSection',
@@ -358,6 +363,25 @@ const EditorSettingsModal = props => {
                             })}
                         </div>)
                     }
+                />
+            </Box>
+        },
+        {
+            title: messages.security,
+            content: <Box>
+                <BooleanSetting
+                    value={!!props.prefs[unrestrictUnsandboxed]}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.unrestrictUnsandboxed"
+                        defaultMessage="Allow all extensions to load unsandboxed"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.unrestrictUnsandboxedHelp"
+                        // eslint-disable-next-line max-len
+                        defaultMessage="Disables extension security prompts and runs all extensions without the sandbox, including extension imports, URL parameter extensions, and project-loaded extensions. This is dangerous and should only be enabled if you fully trust all loaded extensions."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => props.setPref(unrestrictUnsandboxed, e.target.checked)}
                 />
             </Box>
         },

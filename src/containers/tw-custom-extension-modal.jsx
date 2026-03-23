@@ -7,6 +7,7 @@ import CustomExtensionModalComponent from '../components/tw-custom-extension-mod
 import {closeCustomExtensionModal} from '../reducers/modals';
 import {manuallyTrustExtension, isTrustedExtension} from './tw-security-manager.jsx';
 import {getPersistedUnsandboxed, setPersistedUnsandboxed} from '../lib/tw-persisted-unsandboxed.js';
+import {getNBPreference, unrestrictUnsandboxed} from '../lib/nb-preferences.js';
 
 /**
  * @param {Blob} blob Blob
@@ -124,8 +125,9 @@ class CustomExtensionModal extends React.Component {
         this.handleClose();
         try {
             const urls = await this.getExtensionURLs();
+            const shouldUnsandboxAll = getNBPreference(unrestrictUnsandboxed, false) === true;
 
-            if (this.state.type !== 'url') {
+            if (!shouldUnsandboxAll && this.state.type !== 'url') {
                 setPersistedUnsandboxed(this.state.unsandboxed);
                 if (this.state.unsandboxed) {
                     for (const url of urls) {
