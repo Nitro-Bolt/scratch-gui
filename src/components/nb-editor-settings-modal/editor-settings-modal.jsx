@@ -35,7 +35,7 @@ import {
 } from '../../lib/block-color-persistence.js';
 import {setHiddenCategories} from '../../reducers/hidden-categories';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
-import ColorPicker from '../forms/color-picker.jsx';
+import ColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 
 const messages = defineMessages({
     title: {
