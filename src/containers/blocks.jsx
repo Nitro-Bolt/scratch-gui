@@ -158,9 +158,6 @@ class Blocks extends React.Component {
         const workspaceConfig = defaultsDeep({},
             this.props.options,
             {
-                vm: this.props.vm
-            },
-            {
                 rtl: this.props.isRtl,
                 toolbox: this.props.toolboxXML,
                 colours: this.props.theme.getBlockColors(),
@@ -171,7 +168,6 @@ class Blocks extends React.Component {
             Blocks.defaultOptions
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
-        this.workspace.vm = this.props.vm;
         AddonHooks.blocklyWorkspace = this.workspace;
 
         // Register buttons under new callback keys for creating variables,
@@ -668,29 +664,8 @@ class Blocks extends React.Component {
     handleCustomProceduresClose (data) {
         this.props.onRequestCloseCustomProcedures(data);
         const ws = this.workspace;
-        if (!ws) return;
-
-        const flyout = ws.getFlyout && ws.getFlyout();
-        if (flyout) {
-            flyout.setRecyclingEnabled(false);
-        }
-
-        const toolboxXML = this.getToolboxXML();
-        if (toolboxXML) {
-            this.props.updateToolboxState(toolboxXML);
-        }
-
-        this.requestToolboxUpdate();
-        this.withToolboxUpdates(() => {
-            const refreshedFlyout = ws.getFlyout && ws.getFlyout();
-            ws.refreshToolboxSelection_();
-            if (ws.toolbox_) {
-                ws.toolbox_.scrollToCategoryById('myBlocks');
-            }
-            if (refreshedFlyout) {
-                refreshedFlyout.setRecyclingEnabled(true);
-            }
-        });
+        ws.refreshToolboxSelection_();
+        ws.toolbox_.scrollToCategoryById('myBlocks');
     }
     handleDrop (dragInfo) {
         fetch(dragInfo.payload.bodyUrl)
