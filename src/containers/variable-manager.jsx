@@ -26,7 +26,6 @@ class VariableManager extends React.Component {
     }
 
     setEditingVariable (inputType, varType, id, value) {
-        console.log(value);
         this.setState({
             editingVariable: {
                 inputType: inputType,
