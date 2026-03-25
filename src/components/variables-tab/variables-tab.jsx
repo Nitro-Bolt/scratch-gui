@@ -34,7 +34,13 @@ const messages = defineMessages({
         description:
             'Label for a clone followed by a space. Will be used like: "Clone 1", "Clone 2", etc...',
         defaultMessage: 'Clone '
+    },
+    sendBroadcast: {
+        id: 'gui.variableManager.sendBroadcast',
+        description: 'Label for a button used to send broadcasts',
+        defaultMessage: 'Send Broadcast'
     }
+
 });
 
 const Variables = ({
@@ -42,6 +48,7 @@ const Variables = ({
     variables,
     editingVariable,
     setEditingVariable,
+    onSendBroadcast,
     onSubmitEdit,
     onKeyDown,
     optNameReadonly = false
@@ -67,6 +74,29 @@ const Variables = ({
         };
 
         switch (currentVar.type) {
+        case 'broadcast_msg':
+            final.push(
+                <div
+                    className={styles.variableItem}
+                    key={id}
+                    style={{gridTemplateColumns: '1fr auto'}}
+                >
+                    <input
+                        value={name}
+                        onChange={handleOnNameChange}
+                        onBlur={onSubmitEdit}
+                        onKeyDown={onKeyDown}
+
+                        // TODO: Make renaming work when "rename broadcasts" addon is nativized
+                        readOnly
+                    />
+                    <button onClick={event => onSendBroadcast(event, id)}>
+                        {intl.formatMessage(messages.sendBroadcast)}
+                    </button>
+                </div>
+
+            );
+            break;
         case 'list':
             final.push(
                 <div key={id} className={classNames(styles.variableItem, styles.listItem)}>
@@ -158,6 +188,7 @@ Variables.propTypes = {
         value: PropTypes.string
     }),
     setEditingVariable: PropTypes.func,
+    onSendBroadcast: PropTypes.func,
     onKeyDown: PropTypes.func,
     onSubmitEdit: PropTypes.func,
     optNameReadonly: PropTypes.bool
@@ -202,6 +233,7 @@ const VariableTab = props => {
                         variables={props.globalVariables}
                         editingVariable={props.editingVariable}
                         setEditingVariable={props.setEditingVariable}
+                        onSendBroadcast={props.handleSendBroadcast}
                         onKeyDown={props.handleKeyDown}
                         onSubmitEdit={props.handleSubmitEdit}
                     />
@@ -275,6 +307,7 @@ VariableTab.propTypes = {
     }),
     handleSpriteHighlighting: PropTypes.func,
     setEditingVariable: PropTypes.func,
+    handleSendBroadcast: PropTypes.func,
     handleKeyDown: PropTypes.func,
     handleSubmitEdit: PropTypes.func
 };

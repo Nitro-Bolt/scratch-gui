@@ -64,6 +64,7 @@
     border: none;
     background: var(--input-background);
     outline: 1px solid var(--ui-black-transparent);
+    border-radius: 0.25rem;
 
     &:focus {
         box-shadow: 0px 0px 0px 4px var(--looks-transparent);
@@ -75,8 +76,22 @@
     }
 }
 
-.variable-item input {
-    border-radius: 0.25rem;
+.variable-item button {
+    background: var(--ui-white);
+    transition: none;
+
+    &:focus {
+        box-shadow: none;
+        outline: 1px solid var(--ui-black-transparent);
+    }
+
+    &:hover {
+        outline: 1px solid var(--ui-black-transparent);
+    }
+
+    &:active {
+        background: var(--looks-light-transparent);
+    }
 }
 
 [dir="ltr"] .variable-item * {
@@ -91,6 +106,7 @@
     background: var(--ui-white);
     outline: none;
     box-shadow: none;
+    cursor: not-allowed;
 }
 
 .list-item {

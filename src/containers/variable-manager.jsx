@@ -15,6 +15,7 @@ class VariableManager extends React.Component {
         bindAll(this, [
             'setEditingVariable',
             'onHighlightTarget',
+            'onSendBroadcast',
             'onKeyDown',
             'onSubmitEdit'
         ]);
@@ -38,6 +39,16 @@ class VariableManager extends React.Component {
 
     onHighlightTarget (id) {
         this.props.dispatchHighlightTarget(id);
+    }
+
+    onSendBroadcast (event, id) {
+        const broadcastVar = this.props.vm.runtime.getTargetForStage().lookupBroadcastMsg(id);
+        if (broadcastVar) {
+            const broadcastOption = broadcastVar.name;
+            this.props.vm.runtime.startHats('event_whenbroadcastreceived', {
+                BROADCAST_OPTION: broadcastOption
+            });
+        }
     }
 
     onKeyDown (event, optTargetId) {
@@ -124,6 +135,7 @@ class VariableManager extends React.Component {
                 editingVariable={this.state.editingVariable}
                 setEditingVariable={this.setEditingVariable}
                 handleSpriteHighlighting={this.onHighlightTarget}
+                handleSendBroadcast={this.onSendBroadcast}
                 handleKeyDown={this.onKeyDown}
                 handleSubmitEdit={this.onSubmitEdit}
             />
