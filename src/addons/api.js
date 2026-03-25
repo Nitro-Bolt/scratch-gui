@@ -983,6 +983,26 @@ SettingsStore.addEventListener('addon-changed', e => {
     }
 });
 
+SettingsStore.addEventListener('setting-changed', e => {
+    const {addonId, settingId, reloadRequired, value} = e.detail;
+    if (reloadRequired) {
+        return; 
+    }
+    const runner = AddonRunner.instances.find(i => i.id === addonId);
+    if (settingId === 'enabled') {
+        if (value) {
+            if (runner) {
+                runner.dynamicEnable();
+            } else {
+                runAddon(addonId);
+            }
+        } else if (runner) {
+            runner.dynamicDisable();
+        }
+    } else if (runner) {
+        runner.settingsChanged();
+    }
+});
 for (const id of Object.keys(addons)) {
     if (!SettingsStore.getAddonEnabled(id)) {
         continue;

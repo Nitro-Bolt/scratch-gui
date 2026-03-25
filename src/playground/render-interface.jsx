@@ -72,6 +72,14 @@ if (AddonChannels.changeChannel) {
     });
 }
 
+// BroadcastChannel won't deliver messages back to the same browsing context
+window.addEventListener('addon-settings-changed', e => {
+    SettingsStore.setStoreWithVersionCheck(e.detail);
+});
+window.addEventListener('addon-settings-reload', () => {
+    location.reload();
+});
+
 runAddons();
 
 const Footer = () => (
