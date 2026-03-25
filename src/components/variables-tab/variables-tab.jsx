@@ -37,10 +37,6 @@ const messages = defineMessages({
     }
 });
 
-function transpose (table) {
-    return table[0].map((col, i) => table.map(row => row[i]));
-}
-
 const Variables = ({
     intl,
     variables,
