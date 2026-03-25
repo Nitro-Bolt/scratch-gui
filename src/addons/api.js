@@ -986,7 +986,7 @@ SettingsStore.addEventListener('addon-changed', e => {
 SettingsStore.addEventListener('setting-changed', e => {
     const {addonId, settingId, reloadRequired, value} = e.detail;
     if (reloadRequired) {
-        return; 
+        return;
     }
     const runner = AddonRunner.instances.find(i => i.id === addonId);
     if (settingId === 'enabled') {
