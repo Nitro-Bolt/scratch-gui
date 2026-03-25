@@ -39,6 +39,7 @@ import vmManagerHOC from '../lib/vm-manager-hoc.jsx';
 import cloudManagerHOC from '../lib/cloud-manager-hoc.jsx';
 
 import GUIComponent from '../components/gui/gui.jsx';
+import '../lib/block-color-persistence';
 import {setIsScratchDesktop} from '../lib/isScratchDesktop.js';
 import TWFullScreenResizerHOC from '../lib/tw-fullscreen-resizer-hoc.jsx';
 import TWThemeManagerHOC from './tw-theme-manager-hoc.jsx';

@@ -6,6 +6,7 @@ import bindAll from 'lodash.bindall';
 import SecurityManagerModal from '../components/tw-security-manager-modal/security-manager-modal.jsx';
 import SecurityModals from '../lib/tw-security-manager-constants';
 import {getPersistedUnsandboxed, setPersistedUnsandboxed} from '../lib/tw-persisted-unsandboxed.js';
+import {getNBPreference, unrestrictUnsandboxed} from '../lib/nb-preferences.js';
 
 /* eslint-disable require-atomic-updates */
 
@@ -18,12 +19,16 @@ const manuallyTrustExtension = url => {
     extensionsTrustedByUser.add(url);
 };
 
+const shouldTrustAllExtensions = () => getNBPreference(unrestrictUnsandboxed, false) === true;
+
 /**
  * Trusted extensions are loaded automatically and without a sandbox.
  * @param {string} url URL as a string.
  * @returns {boolean} True if the extension can is trusted
  */
 const isTrustedExtension = url => (
+    shouldTrustAllExtensions() ||
+
     // Always trust our official extension repostiory.
     url.startsWith('https://extensions.nitrobolt.org/') ||
     url.startsWith('https://extensions.turbowarp.org/') ||
@@ -256,6 +261,10 @@ class TWSecurityManagerComponent extends React.Component {
      * @returns {Promise<boolean>} Whether the extension can be loaded
      */
     async canLoadExtensionFromProject (url) {
+        if (shouldTrustAllExtensions()) {
+            log.info(`Loading extension ${url} automatically without security prompt`);
+            return true;
+        }
         if (isTrustedExtension(url)) {
             log.info(`Loading extension ${url} automatically`);
             return true;

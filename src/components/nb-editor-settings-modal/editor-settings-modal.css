@@ -460,3 +460,18 @@
 .collapseArrowExpanded {
     transform: none;
 }
+
+.colorInput {
+    padding: 0;
+    width: 32px;
+    height: 24px;
+    border: none;
+    cursor: pointer;
+    background: none;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem 0.25rem;
+}

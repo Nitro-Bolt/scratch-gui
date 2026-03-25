@@ -72,7 +72,7 @@ const BLOCKS_MAP = {
         colors: blocksThree.blockColors,
         extensions: {},
         customExtensionColors: {},
-        useForStage: false
+        useForStage: true
     }
 };
 
