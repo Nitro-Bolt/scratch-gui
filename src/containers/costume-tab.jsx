@@ -79,6 +79,8 @@ class CostumeTab extends React.Component {
             'handleDeleteCostume',
             'handleDuplicateCostume',
             'handleExportCostume',
+            'handleMoveToTop',
+            'handleMoveToBottom',
             'handleNewCostume',
             'handleNewBlankCostume',
             'handleSurpriseCostume',
@@ -148,6 +150,17 @@ class CostumeTab extends React.Component {
             this.props.vm.getExportedCostume(item)
         ], {type: item.asset.assetType.contentType});
         downloadBlob(`${item.name}.${item.asset.dataFormat}`, blob);
+    }
+    handleMoveToTop (costumeIndex) {
+        this.props.vm.editingTarget.reorderCostume(costumeIndex, 0);
+        this.props.vm.editingTarget.setCostume(0);
+        this.setState({selectedCostumeIndex: 0});
+    }
+    handleMoveToBottom (costumeIndex) {
+        const lastCostumeIndex = this.props.vm.editingTarget.sprite.costumes.length - 1;
+        this.props.vm.editingTarget.reorderCostume(costumeIndex, lastCostumeIndex);
+        this.props.vm.editingTarget.setCostume(lastCostumeIndex);
+        this.setState({selectedCostumeIndex: lastCostumeIndex});
     }
     handleNewCostume (costume, fromCostumeLibrary, targetId) {
         const costumes = Array.isArray(costume) ? costume : [costume];
@@ -316,6 +329,8 @@ class CostumeTab extends React.Component {
                 onDuplicateClick={this.handleDuplicateCostume}
                 onExportClick={this.handleExportCostume}
                 onItemClick={this.handleSelectCostume}
+                onMoveToTopClick={this.handleMoveToTop}
+                onMoveToBottomClick={this.handleMoveToBottom}
             >
                 {target.costumes ?
                     <PaintEditorWrapper

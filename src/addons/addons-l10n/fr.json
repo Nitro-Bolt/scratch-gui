@@ -232,7 +232,6 @@
     "editor-extra-keys/enter-key": "entrée",
     "move-to-top-bottom/bottom": "Déplacé en bas",
     "move-to-top-bottom/top": "Déplacé en haut",
-    "move-to-top-layer/move-to-front-layer": "passer à la couche avant",
     "rename-broadcasts/RENAME_BROADCAST": "Renommer le message",
     "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Renommer le message",
     "rename-broadcasts/RENAME_BROADCAST_TITLE": "Renommer tous les messages \"{name}\" en :",

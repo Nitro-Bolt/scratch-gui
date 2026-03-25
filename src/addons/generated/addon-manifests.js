@@ -3,7 +3,7 @@ import _cat_blocks from "../addons/cat-blocks/_manifest_entry.js";
 import _editor_devtools from "../addons/editor-devtools/_manifest_entry.js";
 import _find_bar from "../addons/find-bar/_manifest_entry.js";
 import _middle_click_popup from "../addons/middle-click-popup/_manifest_entry.js";
-import _jump_to_def from "../addons/jump-to-def/_manifest_entry.js";
+//import _jump_to_def from "../addons/jump-to-def/_manifest_entry.js";
 import _reorder_custom_inputs from "../addons/reorder-custom-inputs/_manifest_entry.js";
 import _editor_searchable_dropdowns from "../addons/editor-searchable-dropdowns/_manifest_entry.js";
 import _data_category_tweaks_v2 from "../addons/data-category-tweaks-v2/_manifest_entry.js";
@@ -25,7 +25,7 @@ import _paint_snap from "../addons/paint-snap/_manifest_entry.js";
 import _default_costume_editor_color from "../addons/default-costume-editor-color/_manifest_entry.js";
 import _bitmap_copy from "../addons/bitmap-copy/_manifest_entry.js";
 import _2d_color_picker from "../addons/2d-color-picker/_manifest_entry.js";
-import _paint_skew from "../addons/paint-skew/_manifest_entry.js";
+//import _paint_skew from "../addons/paint-skew/_manifest_entry.js";
 import _better_img_uploads from "../addons/better-img-uploads/_manifest_entry.js";
 import _pick_colors_from_stage from "../addons/pick-colors-from-stage/_manifest_entry.js";
 import _custom_block_shape from "../addons/custom-block-shape/_manifest_entry.js";
@@ -54,13 +54,13 @@ import _remove_curved_stage_border from "../addons/remove-curved-stage-border/_m
 import _transparent_orphans from "../addons/transparent-orphans/_manifest_entry.js";
 import _paint_by_default from "../addons/paint-by-default/_manifest_entry.js";
 import _block_cherry_picking from "../addons/block-cherry-picking/_manifest_entry.js";
-import _hide_new_variables from "../addons/hide-new-variables/_manifest_entry.js";
+//import _hide_new_variables from "../addons/hide-new-variables/_manifest_entry.js";
 import _editor_extra_keys from "../addons/editor-extra-keys/_manifest_entry.js";
 import _hide_delete_button from "../addons/hide-delete-button/_manifest_entry.js";
 import _no_script_bumping from "../addons/no-script-bumping/_manifest_entry.js";
 import _disable_stage_drag_select from "../addons/disable-stage-drag-select/_manifest_entry.js";
-import _move_to_top_bottom from "../addons/move-to-top-bottom/_manifest_entry.js";
-import _move_to_top_layer from "../addons/move-to-top-layer/_manifest_entry.js";
+//import _move_to_top_bottom from "../addons/move-to-top-bottom/_manifest_entry.js";
+//import _move_to_top_layer from "../addons/move-to-top-layer/_manifest_entry.js";
 import _disable_paste_offset from "../addons/disable-paste-offset/_manifest_entry.js";
 import _block_duplicate from "../addons/block-duplicate/_manifest_entry.js";
 import _rename_broadcasts from "../addons/rename-broadcasts/_manifest_entry.js";
@@ -82,7 +82,7 @@ export default {
   "editor-devtools": _editor_devtools,
   "find-bar": _find_bar,
   "middle-click-popup": _middle_click_popup,
-  "jump-to-def": _jump_to_def,
+  //"jump-to-def": _jump_to_def,
   "reorder-custom-inputs": _reorder_custom_inputs,
   "editor-searchable-dropdowns": _editor_searchable_dropdowns,
   "data-category-tweaks-v2": _data_category_tweaks_v2,
@@ -104,7 +104,7 @@ export default {
   "default-costume-editor-color": _default_costume_editor_color,
   "bitmap-copy": _bitmap_copy,
   "2d-color-picker": _2d_color_picker,
-  "paint-skew": _paint_skew,
+  //"paint-skew": _paint_skew,
   "better-img-uploads": _better_img_uploads,
   "pick-colors-from-stage": _pick_colors_from_stage,
   "custom-block-shape": _custom_block_shape,
@@ -133,13 +133,13 @@ export default {
   "transparent-orphans": _transparent_orphans,
   "paint-by-default": _paint_by_default,
   "block-cherry-picking": _block_cherry_picking,
-  "hide-new-variables": _hide_new_variables,
+  //"hide-new-variables": _hide_new_variables,
   "editor-extra-keys": _editor_extra_keys,
   "hide-delete-button": _hide_delete_button,
   "no-script-bumping": _no_script_bumping,
   "disable-stage-drag-select": _disable_stage_drag_select,
-  "move-to-top-bottom": _move_to_top_bottom,
-  "move-to-top-layer": _move_to_top_layer,
+  //"move-to-top-bottom": _move_to_top_bottom,
+  //"move-to-top-layer": _move_to_top_layer,
   "disable-paste-offset": _disable_paste_offset,
   "block-duplicate": _block_duplicate,
   "rename-broadcasts": _rename_broadcasts,

@@ -228,7 +228,6 @@
     "blocks2image/export_selected_to_SVG": "Exportar bloque como SVG",
     "move-to-top-bottom/bottom": "mover al fondo",
     "move-to-top-bottom/top": "movar a la cima",
-    "move-to-top-layer/move-to-front-layer": "mover a capa delantera",
     "rename-broadcasts/RENAME_BROADCAST": "Renombrar mensaje",
     "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Renombrar Mensaje",
     "rename-broadcasts/RENAME_BROADCAST_TITLE": "Renombrar todos los mensajes \"{name}\" a:",
