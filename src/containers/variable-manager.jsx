@@ -13,10 +13,10 @@ class VariableManager extends React.Component {
         super(props);
 
         bindAll(this, [
+            'setEditingVariable',
             'onHighlightTarget',
-            'onInputChange',
             'onKeyDown',
-            'onSubmitEditedVariable'
+            'onSubmitEdit'
         ]);
 
         this.state = {
@@ -24,27 +24,27 @@ class VariableManager extends React.Component {
         };
     }
 
-    onHighlightTarget (id) {
-        this.props.dispatchHighlightTarget(id);
-    }
-
-    onInputChange (event, inputType, variable) {
+    setEditingVariable (inputType, varType, id, value) {
+        console.log(value);
         this.setState({
             editingVariable: {
-                id: variable.id,
-                type: inputType,
-                value: event.target.value
+                inputType: inputType,
+                varType: varType,
+                id: id,
+                value: value
             }
         });
     }
 
-    onKeyDown (event, inputType, variable, optTargetId) {
-        if (
-            event.key === 'Enter' && (variable.type === '' || inputType === 'name' || event.shiftKey)
-        ) this.onSubmitEditedVariable(event, variable, optTargetId);
+    onHighlightTarget (id) {
+        this.props.dispatchHighlightTarget(id);
     }
 
-    onSubmitEditedVariable (event, variable, optTargetId) {
+    onKeyDown (event, optTargetId) {
+        if (event.key === 'Enter' && !event.shiftKey) this.onSubmitEdit(event, optTargetId);
+    }
+
+    onSubmitEdit (event, optTargetId) {
         event.preventDefault();
         const vm = this.props.vm;
         const workspace = Blockly.getMainWorkspace();
@@ -52,16 +52,14 @@ class VariableManager extends React.Component {
         const editingVariable = this.state.editingVariable;
         if (Object.keys(editingVariable).length === 0) return;
 
-        const variableId = this.state.editingVariable.id;
-        if (!variableId) return;
-        if (variableId !== variable.id) return;
+        const variable = this.state.editingVariable;
 
         const target = optTargetId ?
             vm.runtime.targets.find(t => t.id === optTargetId) :
-            vm.runtime.targets.find(t => t.variables[variableId]);
+            vm.runtime.targets.find(t => t.variables[variable.id]);
         if (!target) return;
 
-        switch (this.state.editingVariable.type) {
+        switch (this.state.editingVariable.inputType) {
         // https://github.com/PenguinMod/penguinmod.github.io/blob/8feeec6ba93a3e1e5e4004c9354440c099c115fb/src/containers/variables-tab.jsx#L162
         case 'name': {
             let newName = editingVariable.value;
@@ -81,11 +79,11 @@ class VariableManager extends React.Component {
             let nameAlreadyUsed = false;
             if (target.isStage) {
             // Global variables must not conflict with any global variables or local variables in any sprite.
-                const existingNames = vm.runtime.getAllVarNamesOfType(variable.type);
+                const existingNames = vm.runtime.getAllVarNamesOfType(variable.varType);
                 nameAlreadyUsed = existingNames.includes(newName);
             } else {
             // Local variables must not conflict with any global variables or local variables in this sprite.
-                nameAlreadyUsed = !!workspace.getVariable(newName, variable.type);
+                nameAlreadyUsed = !!workspace.getVariable(newName, variable.varType);
             }
             if (nameAlreadyUsed) return;
 
@@ -95,11 +93,14 @@ class VariableManager extends React.Component {
         case 'value': {
             const newValue = editingVariable.value;
 
-            if (variable.type === 'list') {
+            if (variable.varType === 'list') {
                 const makeSureNotEmpty = newValue === '' ? [] : newValue.split('\n');
-                vm.setVariableValue(target.id, variableId, makeSureNotEmpty);
+                vm.setVariableValue(target.id, variable.id, makeSureNotEmpty);
+            } else if (variable.varType === 'table') {
+                const makeSureNotEmpty = newValue === '' ? [] : newValue.split('\n').map(i => i.split(','));
+                vm.setVariableValue(target.id, variable.id, makeSureNotEmpty);
             } else {
-                vm.setVariableValue(target.id, variableId, newValue);
+                vm.setVariableValue(target.id, variable.id, newValue);
             }
             break;
         }
@@ -116,15 +117,15 @@ class VariableManager extends React.Component {
         return (
             <VariableTab
                 isRtl={this.props.isRtl}
-                globalVariables={this.props.globalVariables}
-                clones={this.props.localVariables}
-                editingVariable={this.state.editingVariable}
-                handleSpriteHighlighting={this.onHighlightTarget}
-                handleInputChange={this.onInputChange}
-                handleKeyDown={this.onKeyDown}
-                handleSubmitEditedVariable={this.onSubmitEditedVariable}
                 intl={this.props.intl}
                 isStage={this.props.isStage}
+                globalVariables={this.props.globalVariables}
+                clones={this.props.clones}
+                editingVariable={this.state.editingVariable}
+                setEditingVariable={this.setEditingVariable}
+                handleSpriteHighlighting={this.onHighlightTarget}
+                handleKeyDown={this.onKeyDown}
+                handleSubmitEdit={this.onSubmitEdit}
             />
         );
     }
@@ -141,17 +142,16 @@ VariableManager.propTypes = {
             value: PropTypes.string
         })
     }),
-    localVariables: PropTypes.shape([
+    clones: PropTypes.arrayOf(
         PropTypes.shape({
-            id: PropTypes.string,
+            id: PropTypes.string, // Clone id
             variables: PropTypes.shape({
-                [PropTypes.string]: PropTypes.shape({
-                    id: PropTypes.string,
-                    value: PropTypes.string
-                })
+                name: PropTypes.string,
+                id: PropTypes.string,
+                value: PropTypes.any
             })
         })
-    ]),
+    ),
     isStage: PropTypes.bool
 
 };
@@ -159,12 +159,8 @@ VariableManager.propTypes = {
 const mapStateToProps = ({locales, scratchGui}) => ({
     isRtl: locales.isRtl,
     isStage: scratchGui.vm.editingTarget.isStage,
-    globalVariables: scratchGui.targets.stage.variables,
-    localVariables: scratchGui.vm.editingTarget.sprite.clones.map(({id, variables}) => ({
-        id: id,
-        variables: variables
-    }))
-
+    globalVariables: structuredClone(scratchGui.targets.stage.variables),
+    clones: scratchGui.vm.editingTarget.sprite.clones.map(({id, variables}) => ({id, variables}))
 });
 
 const mapDispatchToProps = dispatch => ({
