@@ -477,7 +477,7 @@ class Blocks extends React.Component {
                 stageCostumes[stageCostumes.length - 1].name,
                 targetSounds.length > 0 ? targetSounds[targetSounds.length - 1].name : '',
                 this.props.theme.getBlockColors(),
-                this.props.hiddenCategories
+                this.props.hiddenCategories || []
             );
         } catch {
             return null;
@@ -844,7 +844,7 @@ const mapStateToProps = state => ({
     customProceduresVisible: state.scratchGui.customProcedures.active,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
     useCatBlocks: isTimeTravel2020(state),
-    hiddenCategories: state.scratchGui.preferences['hidden-categories'] || []
+    hiddenCategories: state.scratchGui.preferences['hidden-categories']
 });
 
 const mapDispatchToProps = dispatch => ({
