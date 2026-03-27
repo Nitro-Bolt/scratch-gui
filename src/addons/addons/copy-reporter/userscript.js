@@ -21,7 +21,7 @@ export default async function ({ addon, console, msg }) {
   const ScratchBlocks = await addon.tab.traps.getBlockly();
 
   // https://github.com/scratchfoundation/scratch-blocks/blob/893c7e7ad5bfb416eaed75d9a1c93bdce84e36ab/core/workspace_svg.js#L979
-  ScratchBlocks.WorkspaceSvg.prototype.reportValue = function (id, value) {
+  ScratchBlocks.WorkspaceSvg.prototype.reportValue = function (id, value, error = false) {
     let block = this.getBlockById(id);
     if (!block) {
       throw "Tried to report value on block that does not exist.";
@@ -34,6 +34,9 @@ export default async function ({ addon, console, msg }) {
 
     let valueReportBox = document.createElement("div");
     valueReportBox.setAttribute("class", "valueReportBox");
+    if (error) {
+      valueReportBox.classList.add('errorReportBox');
+    }
     valueReportBox.innerText = value;
     if (!addon.self.disabled) {
       // use to get focus and event priority
@@ -63,8 +66,8 @@ export default async function ({ addon, console, msg }) {
     contentDiv.appendChild(valueReportBox);
 
     ScratchBlocks.DropDownDiv.setColour(
-      ScratchBlocks.Colours.valueReportBackground,
-      ScratchBlocks.Colours.valueReportBorder
+      ScratchBlocks.Colours[!error ? 'valueReportBackground' : 'errorReportBackground'],
+      ScratchBlocks.Colours[!error ? 'valueReportBorder' : 'errorReportBorder']
     );
     ScratchBlocks.DropDownDiv.showPositionedByBlock(this, block);
   };
