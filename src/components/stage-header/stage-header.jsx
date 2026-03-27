@@ -78,7 +78,7 @@ const StageHeaderComponent = function (props) {
         onSetStageFull,
         onOpenSettings,
         isEmbedded,
-        prefs,
+        preferences,
         stageSize,
         stageSizeMode,
         vm
@@ -89,7 +89,7 @@ const StageHeaderComponent = function (props) {
     const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen || isEmbedded);
 
     registerKeyboardShortcut(
-        prefs['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen'],
+        preferences['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen'],
         () => (isFullScreen ? onSetStageUnFullScreen() : onSetStageFullScreen())
     );
 
@@ -152,10 +152,7 @@ const StageHeaderComponent = function (props) {
                     className={styles.stageMenuWrapper}
                     style={{width: stageDimensions.width}}
                 >
-                    <Controls
-                        vm={vm}
-                        prefs={prefs}
-                    />
+                    <Controls vm={vm} />
                     <div
                         className={styles.fullscreenButtonsRow}
                         key="fullscreen" // addons require the HTML element to be not be re-used by in-editor buttons
@@ -210,7 +207,6 @@ const StageHeaderComponent = function (props) {
                 <Box className={styles.stageMenuWrapper}>
                     <Controls
                         vm={vm}
-                        prefs={prefs}
                         isSmall={stageSizeMode === STAGE_SIZE_MODES.small}
                     />
                     <div
@@ -263,7 +259,7 @@ StageHeaderComponent.propTypes = {
     onSetStageFull: PropTypes.func.isRequired,
     onOpenSettings: PropTypes.func.isRequired,
     isEmbedded: PropTypes.bool.isRequired,
-    prefs: PropTypes.any,
+    preferences: PropTypes.object.isRequired,
     stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)),
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
     vm: PropTypes.instanceOf(VM).isRequired

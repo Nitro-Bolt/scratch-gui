@@ -24,7 +24,6 @@ import {injectExtensionBlockTheme, injectExtensionCategoryTheme} from '../lib/th
 
 import {connect} from 'react-redux';
 import {updateToolbox} from '../reducers/toolbox';
-import {setHiddenCategories} from '../reducers/hidden-categories';
 import {activateColorPicker} from '../reducers/color-picker';
 import {
     closeExtensionLibrary,
@@ -845,7 +844,7 @@ const mapStateToProps = state => ({
     customProceduresVisible: state.scratchGui.customProcedures.active,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
     useCatBlocks: isTimeTravel2020(state),
-    hiddenCategories: state.scratchGui.hiddenCategories
+    hiddenCategories: state.scratchGui.preferences['hidden-categories'] || []
 });
 
 const mapDispatchToProps = dispatch => ({

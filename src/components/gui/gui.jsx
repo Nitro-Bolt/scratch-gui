@@ -175,20 +175,12 @@ const GUIComponent = props => {
     if (children) {
         return <Box {...componentProps}>{children}</Box>;
     }
-
-    const [prefs, setPrefs] = useState(JSON.parse(localStorage.getItem('nb:preferences') ?? '{}'));
-    const backpackVisible = (_backpackVisible ?? true) && !prefs['hide-backpack'];
-    const feedbackVisible = !prefs['hide-feedback'];
+    const backpackVisible = (_backpackVisible ?? true) && !props.preferences['hide-backpack'];
+    const feedbackVisible = !props.preferences['hide-feedback'];
     useEffect(() => vm.setCompilerOptions({
-        enabled: !prefs['disable-compiler']
+        enabled: !props.preferences['disable-compiler']
     }), []);
 
-    const setPref = (preference, value) => {
-        const p = {...prefs};
-        p[preference] = value;
-        setPrefs(p);
-        localStorage.setItem('nb:preferences', JSON.stringify(p));
-    };
 
     const tabClassNames = {
         tabs: styles.tabs,
@@ -205,7 +197,7 @@ const GUIComponent = props => {
         Math.max(0, customStageSize.width - FIXED_WIDTH)
     );
 
-    for (const i in Array(10).fill(null)) {
+    for (let i = 0; i < 10; i++) {
         registerKeyboardShortcut({
             key: i,
             ctrl: true
@@ -215,12 +207,12 @@ const GUIComponent = props => {
     }
     
     registerKeyboardShortcut(
-        prefs['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings'],
+        props.preferences['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings'],
         onEditorSettings
     );
 
     registerKeyboardShortcut(
-        prefs['keybind-open-extensions'] ?? defaultKeyboardShortcuts['open-extensions'],
+        props.preferences['keybind-open-extensions'] ?? defaultKeyboardShortcuts['open-extensions'],
         onExtensionButtonClick
     );
 
@@ -241,11 +233,7 @@ const GUIComponent = props => {
                 {settingsModalVisible && <TWSettingsModal />}
                 {customExtensionModalVisible && <TWCustomExtensionModal />}
                 {customAccentModalVisible && <NBCustomAccentModal />}
-                {editorSettingsModalVisible && <NBEditorSettingsModal
-                    prefs={prefs}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    setPref={setPref}
-                />}
+                {editorSettingsModalVisible && <NBEditorSettingsModal />}
                 {extensionManagerModalVisible && <NBExtensionManagerModal />}
                 {fontsModalVisible && <TWFontsModal />}
                 {unknownPlatformModalVisible && <TWUnknownPlatformModal />}
@@ -273,7 +261,6 @@ const GUIComponent = props => {
                     isRtl={isRtl}
                     loading={loading}
                     stageSize={STAGE_SIZE_MODES.full}
-                    prefs={prefs}
                     vm={vm}
                 >
                     {alertsVisible ? (
@@ -400,7 +387,7 @@ const GUIComponent = props => {
                                         classNames(
                                             tabClassNames.tabList,
                                             {
-                                                [styles.compact]: prefs['compact-tabs']
+                                                [styles.compact]: props.preferences['compact-tabs']
                                             }
                                         )
                                     }
@@ -513,10 +500,7 @@ const GUIComponent = props => {
                                 </TabPanel>
                             </Tabs>
                             {backpackVisible ? (
-                                <Backpack
-                                    host={backpackHost}
-                                    prefs={prefs}
-                                />
+                                <Backpack host={backpackHost} />
                             ) : null}
                         </Box>
 
@@ -526,12 +510,10 @@ const GUIComponent = props => {
                                 isRendererSupported={isRendererSupported()}
                                 isRtl={isRtl}
                                 stageSize={stageSize}
-                                prefs={prefs}
                                 vm={vm}
                             />
                             <Box className={styles.targetWrapper}>
                                 <TargetPane
-                                    prefs={prefs}
                                     stageSize={stageSize}
                                     vm={vm}
                                 />
@@ -613,6 +595,7 @@ GUIComponent.propTypes = {
     onTelemetryModalOptIn: PropTypes.func,
     onTelemetryModalOptOut: PropTypes.func,
     onToggleLoginOpen: PropTypes.func,
+    preferences: PropTypes.object,
     renderLogin: PropTypes.func,
     securityManager: PropTypes.shape({}),
     showComingSoon: PropTypes.bool,
@@ -665,7 +648,8 @@ const mapStateToProps = state => ({
     // This is the button's mode, as opposed to the actual current state
     blocksId: state.scratchGui.timeTravel.year.toString(),
     stageSizeMode: state.scratchGui.stageSize.stageSize,
-    theme: state.scratchGui.theme.theme
+    theme: state.scratchGui.theme.theme,
+    preferences: state.scratchGui.preferences
 });
 
 export default injectIntl(connect(

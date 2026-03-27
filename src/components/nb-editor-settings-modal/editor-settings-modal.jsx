@@ -15,6 +15,7 @@ import Input from '../forms/input.jsx';
 import BufferedInputHOC from '../forms/buffered-input-hoc.jsx';
 import {onExportSettings} from '../../playground/addon-settings.jsx';
 import {closeEditorSettingsModal, openCustomAccentModal} from '../../reducers/modals.js';
+import {setPreference} from '../../reducers/preferences.js';
 import {connect} from 'react-redux';
 import helpIcon from './help-icon.svg';
 import {APP_NAME} from '../../lib/brand.js';
@@ -246,6 +247,8 @@ const EditorSettingsModal = props => {
         props.onChangeTheme(props.theme.set('blocks', defaultBlocks));
     };
 
+    const hiddenCategories = props.preferences['hidden-categories'] || [];
+
     const sections = [
         {
             title: messages.general,
@@ -350,7 +353,7 @@ const EditorSettingsModal = props => {
                     <div className={styles.divider} />
                 </div>
                 <BooleanSetting
-                    value={!!props.prefs['disable-compiler']}
+                    value={!!props.preferences['disable-compiler']}
                     label={<FormattedMessage
                         id="nb.editorSettings.disableCompiler"
                         defaultMessage="Always disable compiler"
@@ -363,7 +366,7 @@ const EditorSettingsModal = props => {
                         }}
                     />}
                     // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => props.setPref('disable-compiler', e.target.checked)}
+                    onChange={e => props.onSetPreference('disable-compiler', e.target.checked)}
                 />
                 <div className={styles.header}>
                     <FormattedMessage
@@ -399,8 +402,8 @@ const EditorSettingsModal = props => {
                     secondary={
                         categoriesExpanded && (<div className={styles.categoryGrid}>
                             {toolbox_categories.map(category => {
-                                const isVisible = !props.hiddenCategories.includes(category.id);
-                                const visibleCount = toolbox_categories.filter(c => !props.hiddenCategories.includes(c.id)).length;
+                                const isVisible = !hiddenCategories.includes(category.id);
+                                const visibleCount = toolbox_categories.filter(c => !hiddenCategories.includes(c.id)).length;
                                 return (
                                     <label
                                         key={category.id}
@@ -412,9 +415,9 @@ const EditorSettingsModal = props => {
                                             disabled={isVisible && visibleCount === 1}
                                             onChange={() => {
                                                 const next = isVisible ?
-                                                    [...props.hiddenCategories, category.id] :
-                                                    props.hiddenCategories.filter(id => id !== category.id);
-                                                props.onSetHiddenCategories(next);
+                                                    [...hiddenCategories, category.id] :
+                                                    hiddenCategories.filter(id => id !== category.id);
+                                                props.onSetPreference('hidden-categories', next);
                                             }}
                                         />
                                         {category.label}
@@ -430,7 +433,7 @@ const EditorSettingsModal = props => {
             title: messages.security,
             content: <Box>
                 <BooleanSetting
-                    value={!!props.prefs[unrestrictUnsandboxed]}
+                    value={!!props.preferences[unrestrictUnsandboxed]}
                     label={<FormattedMessage
                         id="nb.editorSettings.unrestrictUnsandboxed"
                         defaultMessage="Allow all extensions to load unsandboxed"
@@ -441,7 +444,7 @@ const EditorSettingsModal = props => {
                         defaultMessage="Disables extension security prompts and runs all extensions without the sandbox, including extension imports, URL parameter extensions, and project-loaded extensions. This is dangerous and should only be enabled if you fully trust all loaded extensions."
                     />}
                     // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => props.setPref(unrestrictUnsandboxed, e.target.checked)}
+                    onChange={e => props.onSetPreference(unrestrictUnsandboxed, e.target.checked)}
                 />
             </Box>
         },
@@ -458,7 +461,7 @@ const EditorSettingsModal = props => {
             title: messages.display,
             content: <Box>
                 <BooleanSetting
-                    value={!!props.prefs['compact-tabs']}
+                    value={!!props.preferences['compact-tabs']}
                     label={<FormattedMessage
                         id="nb.editorSettings.compactTabs"
                         defaultMessage="Compact tabs"
@@ -469,7 +472,7 @@ const EditorSettingsModal = props => {
                     />}
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={e => {
-                        props.setPref('compact-tabs', e.target.checked);
+                        props.onSetPreference('compact-tabs', e.target.checked);
                     }}
                 />
                 <div className={styles.header}>
@@ -577,7 +580,7 @@ const EditorSettingsModal = props => {
                     <div className={styles.divider} />
                 </div>
                 <BooleanSetting
-                    value={!!props.prefs['hide-backpack']}
+                    value={!!props.preferences['hide-backpack']}
                     label={<FormattedMessage
                         id="nb.editorSettings.hideBackpack"
                         defaultMessage="Hide backpack"
@@ -588,13 +591,13 @@ const EditorSettingsModal = props => {
                     />}
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={e => {
-                        props.setPref('hide-backpack', e.target.checked);
+                        props.onSetPreference('hide-backpack', e.target.checked);
                         // resizes block palette and stuff
                         requestAnimationFrame(() => dispatchEvent(new Event('resize')));
                     }}
                 />
                 <BooleanSetting
-                    value={!!props.prefs['hide-feedback']}
+                    value={!!props.preferences['hide-feedback']}
                     label={<FormattedMessage
                         id="nb.editorSettings.hideFeedback"
                         defaultMessage="Hide feedback button"
@@ -604,7 +607,7 @@ const EditorSettingsModal = props => {
                         defaultMessage="Removes the feedback button from the top of the screen."
                     />}
                     // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => props.setPref('hide-feedback', e.target.checked)}
+                    onChange={e => props.onSetPreference('hide-feedback', e.target.checked)}
                 />
             </Box>
         },
@@ -628,8 +631,8 @@ const EditorSettingsModal = props => {
                         id="nb.editorSettings.keymap.openBackpack"
                     />
                     <KeyInput
-                        onChange={shortcut => props.setPref('keybind-open-backpack', shortcut.toJSON())}
-                        shortcut={props.prefs['keybind-open-backpack'] ?? defaultKeyboardShortcuts['open-backpack']}
+                        onChange={shortcut => props.onSetPreference('keybind-open-backpack', shortcut.toJSON())}
+                        shortcut={props.preferences['keybind-open-backpack'] ?? defaultKeyboardShortcuts['open-backpack']}
                     />
                 </Box>
                 <Box className={styles.keySetting}>
@@ -638,8 +641,8 @@ const EditorSettingsModal = props => {
                         id="nb.editorSettings.keymap.openEditorSettings"
                     />
                     <KeyInput
-                        onChange={shortcut => props.setPref('keybind-open-editor-settings', shortcut.toJSON())}
-                        shortcut={props.prefs['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings']}
+                        onChange={shortcut => props.onSetPreference('keybind-open-editor-settings', shortcut.toJSON())}
+                        shortcut={props.preferences['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings']}
                     />
                 </Box>
                 <Box className={styles.keySetting}>
@@ -648,8 +651,8 @@ const EditorSettingsModal = props => {
                         id="nb.editorSettings.keymap.openExtentions"
                     />
                     <KeyInput
-                        onChange={shortcut => props.setPref('keybind-open-extensions', shortcut.toJSON())}
-                        shortcut={props.prefs['keybind-open-extensions'] ?? defaultKeyboardShortcuts['open-extensions']}
+                        onChange={shortcut => props.onSetPreference('keybind-open-extensions', shortcut.toJSON())}
+                        shortcut={props.preferences['keybind-open-extensions'] ?? defaultKeyboardShortcuts['open-extensions']}
                     />
                 </Box>
                 <div className={styles.header}>
@@ -665,8 +668,8 @@ const EditorSettingsModal = props => {
                         id="nb.editorSettings.keymap.startProject"
                     />
                     <KeyInput
-                        onChange={shortcut => props.setPref('keybind-start-project', shortcut.toJSON())}
-                        shortcut={props.prefs['keybind-start-project'] ?? defaultKeyboardShortcuts['start-project']}
+                        onChange={shortcut => props.onSetPreference('keybind-start-project', shortcut.toJSON())}
+                        shortcut={props.preferences['keybind-start-project'] ?? defaultKeyboardShortcuts['start-project']}
                     />
                 </Box>
                 <Box className={styles.keySetting}>
@@ -675,8 +678,8 @@ const EditorSettingsModal = props => {
                         id="nb.editorSettings.keymap.stopProject"
                     />
                     <KeyInput
-                        onChange={shortcut => props.setPref('keybind-stop-project', shortcut.toJSON())}
-                        shortcut={props.prefs['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project']}
+                        onChange={shortcut => props.onSetPreference('keybind-stop-project', shortcut.toJSON())}
+                        shortcut={props.preferences['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project']}
                     />
                 </Box>
                 <Box className={styles.keySetting}>
@@ -685,8 +688,8 @@ const EditorSettingsModal = props => {
                         id="nb.editorSettings.keymap.projectFullScreen"
                     />
                     <KeyInput
-                        onChange={shortcut => props.setPref('keybind-project-full-screen', shortcut.toJSON())}
-                        shortcut={props.prefs['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen']}
+                        onChange={shortcut => props.onSetPreference('keybind-project-full-screen', shortcut.toJSON())}
+                        shortcut={props.preferences['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen']}
                     />
                 </Box>
                 <div className={styles.header}>
@@ -702,8 +705,8 @@ const EditorSettingsModal = props => {
                         id="nb.editorSettings.keymap.changeSpriteName"
                     />
                     <KeyInput
-                        onChange={shortcut => props.setPref('keybind-change-sprite-name', shortcut.toJSON())}
-                        shortcut={props.prefs['keybind-change-sprite-name'] ?? defaultKeyboardShortcuts['change-sprite-name']}
+                        onChange={shortcut => props.onSetPreference('keybind-change-sprite-name', shortcut.toJSON())}
+                        shortcut={props.preferences['keybind-change-sprite-name'] ?? defaultKeyboardShortcuts['change-sprite-name']}
                     />
                 </Box>
                 <Box className={styles.keySetting}>
@@ -712,8 +715,8 @@ const EditorSettingsModal = props => {
                         id="nb.editorSettings.keymap.spriteVisibility"
                     />
                     <KeyInput
-                        onChange={shortcut => props.setPref('keybind-toggle-sprite-visibility', shortcut.toJSON())}
-                        shortcut={props.prefs['keybind-toggle-sprite-visibility'] ?? defaultKeyboardShortcuts['toggle-sprite-visibility']}
+                        onChange={shortcut => props.onSetPreference('keybind-toggle-sprite-visibility', shortcut.toJSON())}
+                        shortcut={props.preferences['keybind-toggle-sprite-visibility'] ?? defaultKeyboardShortcuts['toggle-sprite-visibility']}
                     />
                 </Box>
             </Box>
@@ -792,13 +795,11 @@ EditorSettingsModal.propTypes = {
     onChangeTheme: PropTypes.func,
     onOpenAccentManager: PropTypes.func.isRequired,
     onSetUsername: PropTypes.func,
-    prefs: PropTypes.any,
-    setPref: PropTypes.func.isRequired,
+    preferences: PropTypes.object.isRequired,
+    onSetPreference: PropTypes.func.isRequired,
     theme: PropTypes.instanceOf(Theme),
     username: PropTypes.string,
     usernameInvalid: PropTypes.bool,
-    hiddenCategories: PropTypes.arrayOf(PropTypes.string),
-    onSetHiddenCategories: PropTypes.func.isRequired,
     activeTab: PropTypes.number
 };
 
@@ -810,11 +811,12 @@ const mapStateToProps = state => ({
     theme: state.scratchGui.theme.theme,
     username: state.scratchGui.tw.username,
     usernameInvalid: state.scratchGui.tw.usernameInvalid,
-    hiddenCategories: state.scratchGui.hiddenCategories,
-    activeTab: state.scratchGui.modals.editorSettingsModalTab
+    activeTab: state.scratchGui.modals.editorSettingsModalTab,
+    preferences: state.scratchGui.preferences
 });
 
 const mapDispatchToProps = dispatch => ({
+    onSetPreference: (key, value) => dispatch(setPreference(key, value)),
     onChangeTheme: theme => {
         dispatch(setTheme(theme));
         persistTheme(theme);

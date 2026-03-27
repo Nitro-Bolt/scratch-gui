@@ -275,6 +275,7 @@ const mapStateToProps = state => ({
     hoveredTarget: state.scratchGui.hoveredTarget,
     isFullScreen: state.scratchGui.mode.isFullScreen,
     isRtl: state.locales.isRtl,
+    preferences: state.scratchGui.preferences,
     spriteLibraryVisible: state.scratchGui.modals.spriteLibrary,
     sprites: state.scratchGui.targets.sprites,
     stage: state.scratchGui.targets.stage,
