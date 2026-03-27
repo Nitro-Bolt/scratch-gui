@@ -49,7 +49,6 @@ const addons = [
     'block-switching',
     'load-extensions',
     'custom-zoom',
-    'copy-reporter',
     'initialise-sprite-position',
     'blocks2image',
     'remove-curved-stage-border',

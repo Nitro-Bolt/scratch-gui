@@ -47,7 +47,6 @@ import _folders from "../addons/folders/_manifest_entry.js";
 import _block_switching from "../addons/block-switching/_manifest_entry.js";
 import _load_extensions from "../addons/load-extensions/_manifest_entry.js";
 import _custom_zoom from "../addons/custom-zoom/_manifest_entry.js";
-import _copy_reporter from "../addons/copy-reporter/_manifest_entry.js";
 import _initialise_sprite_position from "../addons/initialise-sprite-position/_manifest_entry.js";
 import _blocks2image from "../addons/blocks2image/_manifest_entry.js";
 import _remove_curved_stage_border from "../addons/remove-curved-stage-border/_manifest_entry.js";
@@ -126,7 +125,6 @@ export default {
   "block-switching": _block_switching,
   "load-extensions": _load_extensions,
   "custom-zoom": _custom_zoom,
-  "copy-reporter": _copy_reporter,
   "initialise-sprite-position": _initialise_sprite_position,
   "blocks2image": _blocks2image,
   "remove-curved-stage-border": _remove_curved_stage_border,
