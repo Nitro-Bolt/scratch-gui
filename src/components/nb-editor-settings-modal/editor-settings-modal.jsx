@@ -35,7 +35,6 @@ import {
     saveBlockColors
 } from '../../lib/block-color-persistence.js';
 import {setHiddenCategories} from '../../reducers/hidden-categories';
-import {unrestrictUnsandboxed} from '../../lib/nb-preferences.js';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
 import ColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 
@@ -433,7 +432,7 @@ const EditorSettingsModal = props => {
             title: messages.security,
             content: <Box>
                 <BooleanSetting
-                    value={!!props.preferences[unrestrictUnsandboxed]}
+                    value={!!props.preferences['unrestrict-sandbox']}
                     label={<FormattedMessage
                         id="nb.editorSettings.unrestrictUnsandboxed"
                         defaultMessage="Allow all extensions to load unsandboxed"
@@ -444,7 +443,7 @@ const EditorSettingsModal = props => {
                         defaultMessage="Disables extension security prompts and runs all extensions without the sandbox, including extension imports, URL parameter extensions, and project-loaded extensions. This is dangerous and should only be enabled if you fully trust all loaded extensions."
                     />}
                     // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => props.onSetPreference(unrestrictUnsandboxed, e.target.checked)}
+                    onChange={e => props.onSetPreference('unrestrict-sandbox', e.target.checked)}
                 />
             </Box>
         },

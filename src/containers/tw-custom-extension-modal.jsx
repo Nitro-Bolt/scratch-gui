@@ -7,7 +7,6 @@ import CustomExtensionModalComponent from '../components/tw-custom-extension-mod
 import {closeCustomExtensionModal} from '../reducers/modals';
 import {manuallyTrustExtension, isTrustedExtension} from './tw-security-manager.jsx';
 import {getPersistedUnsandboxed, setPersistedUnsandboxed} from '../lib/tw-persisted-unsandboxed.js';
-import {getNBPreference, unrestrictUnsandboxed} from '../lib/nb-preferences.js';
 
 /**
  * @param {Blob} blob Blob
@@ -125,7 +124,7 @@ class CustomExtensionModal extends React.Component {
         this.handleClose();
         try {
             const urls = await this.getExtensionURLs();
-            const shouldUnsandboxAll = getNBPreference(unrestrictUnsandboxed, false) === true;
+            const shouldUnsandboxAll = this.props.preferences['unrestrict-sandbox'] === true;
 
             if (!shouldUnsandboxAll && this.state.type !== 'url') {
                 setPersistedUnsandboxed(this.state.unsandboxed);
@@ -194,7 +193,7 @@ class CustomExtensionModal extends React.Component {
 
     isUnsandboxed () {
         if (this.state.type === 'url') {
-            return isTrustedExtension(this.state.url);
+            return isTrustedExtension(this.state.url) || this.props.preferences['unrestrict-sandbox'];
         }
         return this.state.unsandboxed;
     }
@@ -242,11 +241,13 @@ CustomExtensionModal.propTypes = {
         extensionManager: PropTypes.shape({
             loadExtensionURL: PropTypes.func
         })
-    })
+    }),
+    preferences: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-    vm: state.scratchGui.vm
+    vm: state.scratchGui.vm,
+    preferences: state.scratchGui.preferences
 });
 
 const mapDispatchToProps = dispatch => ({
