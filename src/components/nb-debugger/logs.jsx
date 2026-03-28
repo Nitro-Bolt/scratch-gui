@@ -4,10 +4,10 @@ import styles from './logs.css';
 
 import downloadBlob from '../../lib/download-blob';
 
-import deleteIcon from './icon--delete.svg';
-import downloadIcon from './icon--download.svg';
-import warningIcon from './icon--warning.svg';
-import errorIcon from './icon--error.svg';
+import deleteIcon from './icons/icon--delete.svg';
+import downloadIcon from './icons/icon--download.svg';
+import warningIcon from './icons/icon--warning.svg';
+import errorIcon from './icons/icon--error.svg';
 
 const handleExportLogs = logs => {
     let exported = '';

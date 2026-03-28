@@ -5,11 +5,11 @@ import TabButton from './tab-button.jsx';
 
 import LogsTab from './logs.jsx';
 
-import closeIcon from './icon--close.svg';
-import darkCloseIcon from './icon--close-dark.svg';
-import threadsIcon from './icon--threads.svg';
-import logsIcon from './icon--logs.svg';
-import performanceIcon from './icon--performance.svg';
+import closeIcon from './icons/icon--close.svg';
+import darkCloseIcon from './icons/icon--close-dark.svg';
+import threadsIcon from './icons/icon--threads.svg';
+import logsIcon from './icons/icon--logs.svg';
+import performanceIcon from './icons/icon--performance.svg';
 
 import styles from './debugger.css';
 
