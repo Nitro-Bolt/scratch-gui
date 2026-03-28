@@ -1,0 +1,50 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    overflow-y: auto
+}
+
+.log {
+    display: flex;
+    align-items: center;
+    padding: 0.2rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.log.error {
+    background-color: rgba(255, 0, 0, 0.20);
+    border-bottom: 2px solid rgba(255, 0, 0, 0.30);
+}
+
+.log.warning {
+    background-color: rgba(255, 255, 0, 0.20);
+    border-bottom: 2px solid rgba(255, 255, 0, 0.30);
+}
+
+.log > img {
+    margin-right: 0.25rem;
+}
+
+.log > span {
+    font-size: 0.9rem;
+    justify-self: center;
+}
+
+.log > .sprite-name {
+    margin-left: auto;
+}
+
+.button-container > button {
+    display: inline-flex;
+    margin: 0.25rem;
+    align-items: center;
+    justify-content: center
+}
+
+.noLogs {
+    margin: auto;
+    font-style: italic;
+    opacity: 0.75;
+}

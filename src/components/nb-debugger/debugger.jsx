@@ -3,6 +3,8 @@ import Draggable from 'react-draggable';
 
 import TabButton from './tab-button.jsx';
 
+import LogsTab from './logs.jsx';
+
 import closeIcon from './icon--close.svg';
 import darkCloseIcon from './icon--close-dark.svg';
 import threadsIcon from './icon--threads.svg';
@@ -90,6 +92,13 @@ const DebuggerComponent = props => {
                         height={16}
                     />
                 </div>
+                {props.tab === 0 ? (
+                    <LogsTab
+                        onClearLogs={props.onClearLogs}
+                        onSelectTarget={props.onSelectTarget}
+                        logs={props.logs}
+                    />
+                ) : null}
             </div>
         </Draggable>
     </div>

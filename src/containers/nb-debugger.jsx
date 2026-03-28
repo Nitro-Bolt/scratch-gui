@@ -10,8 +10,10 @@ import {
     dragDebugger,
     startDrag,
     endDrag,
-    setTab
+    setTab,
+    clearLogs
 } from '../reducers/debugger';
+import {activateTab, BLOCKS_TAB_INDEX} from '../reducers/editor-tab.js';
 
 
 class NBDebugger extends React.Component {
@@ -19,7 +21,8 @@ class NBDebugger extends React.Component {
         super(props);
         bindAll(this, [
             'handleCompileOptionsChange',
-            'handleCloseCompilerWarning'
+            'handleCloseCompilerWarning',
+            'handleSelectTarget'
         ]);
         this.state = {
             compilerEnabled: props.vm.runtime.compilerOptions.enabled,
@@ -36,6 +39,11 @@ class NBDebugger extends React.Component {
         this.setState({closedCompilerWarning: true});
     }
 
+    handleSelectTarget (target) {
+        this.props.vm.setEditingTarget(target.id);
+        this.props.onActivateCodeTab();
+    }
+
     componentDidMount () {
         this.props.vm.on('COMPILER_OPTIONS_CHANGED', this.handleCompileOptionsChange);
     }
@@ -49,6 +57,7 @@ class NBDebugger extends React.Component {
             <DebuggerComponent
                 showCompilerWarning={this.state.compilerEnabled && !this.state.closedCompilerWarning}
                 onCloseCompilerWarning={this.handleCloseCompilerWarning}
+                onSelectTarget={this.handleSelectTarget}
                 {...this.props}
             />
         );
@@ -66,6 +75,8 @@ NBDebugger.propTypes = {
     onStartDrag: PropTypes.func.isRequired,
     onEndDrag: PropTypes.func.isRequired,
     onTabClick: PropTypes.func.isRequired,
+    onClearLogs: PropTypes.func.isRequired,
+    onActivateCodeTab: PropTypes.func.isRequired,
     darkMode: PropTypes.bool.isRequired
 };
 
@@ -75,6 +86,7 @@ const mapStateToProps = state => ({
     y: state.scratchGui.debugger.y,
     tab: state.scratchGui.debugger.tab,
     dragging: state.scratchGui.debugger.dragging,
+    logs: state.scratchGui.debugger.logs,
     darkMode: state.scratchGui.theme.theme.gui === 'dark'
 });
 
@@ -83,7 +95,9 @@ const mapDispatchToProps = dispatch => ({
     onDrag: (_, data) => dispatch(dragDebugger(data.x, data.y)),
     onStartDrag: () => dispatch(startDrag()),
     onEndDrag: () => dispatch(endDrag()),
-    onTabClick: tabIndex => dispatch(setTab(tabIndex))
+    onTabClick: tabIndex => dispatch(setTab(tabIndex)),
+    onClearLogs: () => dispatch(clearLogs()),
+    onActivateCodeTab: () => dispatch(activateTab(BLOCKS_TAB_INDEX))
 });
 
 export default connect(

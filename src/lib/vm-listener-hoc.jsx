@@ -26,6 +26,7 @@ import {setCustomStageSize} from '../reducers/custom-stage-size';
 import {openUnknownPlatformModal} from '../reducers/modals';
 import implementGuiAPI from './tw-extension-gui-api';
 import {BLOCKS_TAB_INDEX} from '../reducers/editor-tab';
+import {openDebugger, setTab, pushLog} from '../reducers/debugger';
 
 let compileErrorCounter = 0;
 
@@ -77,6 +78,9 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.on('STAGE_SIZE_CHANGED', this.props.onStageSizeChanged);
             this.props.vm.on('CREATE_UNSANDBOXED_EXTENSION_API', implementGuiAPI);
             this.props.vm.runtime.on('PLATFORM_MISMATCH', this.props.onPlatformMismatch);
+            // nb: add handlers for our events
+            this.props.vm.runtime.on('DEBUGGER_BREAKPOINT', this.props.onDebuggerBreakpoint);
+            this.props.vm.runtime.on('DEBUGGER_LOG', this.props.onDebuggerLog);
         }
         componentDidMount () {
             if (this.props.attachKeyboardEvents) {
@@ -126,6 +130,8 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.off('STAGE_SIZE_CHANGED', this.props.onStageSizeChanged);
             this.props.vm.off('CREATE_UNSANDBOXED_EXTENSION_API', implementGuiAPI);
             this.props.vm.runtime.off('PLATFORM_MISMATCH', this.props.onPlatformMismatch);
+            this.props.vm.runtime.off('DEBUGGER_BREAKPOINT', this.props.onDebuggerBreakpoint);
+            this.props.vm.runtime.off('DEBUGGER_LOG', this.props.onDebuggerLog);
         }
         handleCloudDataUpdate (hasCloudVariables) {
             if (this.props.hasCloudVariables !== hasCloudVariables) {
@@ -352,7 +358,12 @@ const vmListenerHOC = function (WrappedComponent) {
         },
         onMicListeningUpdate: listening => {
             dispatch(updateMicIndicator(listening));
-        }
+        },
+        onDebuggerBreakpoint: () => {
+            dispatch(setTab(0 /* Console tab of debugger */));
+            dispatch(openDebugger());
+        },
+        onDebuggerLog: (type, message, target) => dispatch(pushLog(type, message, target))
     });
     return connect(
         mapStateToProps,

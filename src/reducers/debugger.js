@@ -5,9 +5,13 @@ const START_DRAG = 'scratch-gui/debugger/START_DRAG';
 const END_DRAG = 'scratch-gui/debugger/END_DRAG';
 const SET_TAB = 'scratch-gui/debugger/SET_TAB';
 
+const PUSH_LOG = 'scratch-gui/debugger/PUSH_LOG';
+const CLEAR_LOGS = 'scratch-gui/debugger/CLEAR_LOGS';
+
 const initialState = {
     visible: false,
     dragging: false,
+    logs: [],
     tab: 0,
     x: 0,
     y: 0,
@@ -43,6 +47,18 @@ const reducer = function (state, action) {
         return Object.assign({}, state, {
             tab: action.tabIndex
         });
+    case PUSH_LOG:
+        return Object.assign({}, state, {
+            logs: [...state.logs, {
+                type: action.logType,
+                message: action.message,
+                target: action.target
+            }]
+        });
+    case CLEAR_LOGS:
+        return Object.assign({}, state, {
+            logs: []
+        });
     default:
         return state;
     }
@@ -72,6 +88,14 @@ const setTab = function (tabIndex) {
     return {type: SET_TAB, tabIndex}
 };
 
+const pushLog = function (logType, message, target) {
+    return {type: PUSH_LOG, logType, message, target};
+};
+
+const clearLogs = function () {
+    return {type: CLEAR_LOGS};
+}
+
 export {
     reducer as default,
     initialState as debuggerInitialState,
@@ -80,5 +104,7 @@ export {
     dragDebugger,
     startDrag,
     endDrag,
-    setTab
+    setTab,
+    pushLog,
+    clearLogs
 };
