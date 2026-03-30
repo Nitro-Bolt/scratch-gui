@@ -1,3 +1,6 @@
+@import "../../css/colors.css";
+@import "../../css/filters.css";
+
 .container {
     display: flex;
     flex-direction: column;
@@ -38,13 +41,25 @@
 
 .button-container > button {
     display: inline-flex;
+    background-color: $menu-bar-background;
+    filter: $filter-icon-white;
+    border: none;
+    border-radius: 4px;
+    color: white;
     margin: 0.25rem;
     align-items: center;
-    justify-content: center
+    justify-content: center;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 14px
+}
+
+.button-container > button > img {
+    margin: 0.2rem;
 }
 
 .noLogs {
     margin: auto;
     font-style: italic;
-    opacity: 0.75;
+    opacity: 0.5;
 }

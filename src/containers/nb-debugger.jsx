@@ -22,11 +22,13 @@ class NBDebugger extends React.Component {
         bindAll(this, [
             'handleCompileOptionsChange',
             'handleCloseCompilerWarning',
+            'handleRuntimeStep',
             'handleSelectTarget'
         ]);
         this.state = {
             compilerEnabled: props.vm.runtime.compilerOptions.enabled,
-            closedCompilerWarning: false
+            closedCompilerWarning: false,
+            threads: []
         };
     }
 
@@ -39,6 +41,10 @@ class NBDebugger extends React.Component {
         this.setState({closedCompilerWarning: true});
     }
 
+    handleRuntimeStep () {
+        this.setState({threads: this.props.vm.runtime.threads});
+    }
+
     handleSelectTarget (target) {
         this.props.vm.setEditingTarget(target.id);
         this.props.onActivateCodeTab();
@@ -46,10 +52,12 @@ class NBDebugger extends React.Component {
 
     componentDidMount () {
         this.props.vm.on('COMPILER_OPTIONS_CHANGED', this.handleCompileOptionsChange);
+        this.props.vm.runtime.on('RUNTIME_STEP_END', this.handleRuntimeStep);
     }
 
     componentWillUnmount () {
         this.props.vm.off('COMPILER_OPTIONS_CHANGED', this.handleCompileOptionsChange);
+        this.props.vm.runtime.off('RUNTIME_STEP_END', this.handleRuntimeStep);
     }
 
     render () {
@@ -58,6 +66,7 @@ class NBDebugger extends React.Component {
                 showCompilerWarning={this.state.compilerEnabled && !this.state.closedCompilerWarning}
                 onCloseCompilerWarning={this.handleCloseCompilerWarning}
                 onSelectTarget={this.handleSelectTarget}
+                threads={this.state.threads}
                 {...this.props}
             />
         );
@@ -77,7 +86,6 @@ NBDebugger.propTypes = {
     onTabClick: PropTypes.func.isRequired,
     onClearLogs: PropTypes.func.isRequired,
     onActivateCodeTab: PropTypes.func.isRequired,
-    darkMode: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -87,7 +95,6 @@ const mapStateToProps = state => ({
     tab: state.scratchGui.debugger.tab,
     dragging: state.scratchGui.debugger.dragging,
     logs: state.scratchGui.debugger.logs,
-    darkMode: state.scratchGui.theme.theme.gui === 'dark'
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -12,7 +12,7 @@ const TabButton = ({
 }) => (
     <div
         onClick={onClick}
-        className={selected ?classNames(styles.tabButton, styles.selected) : styles.tabButton}
+        className={selected ? classNames(styles.tabButton, styles.selected) : styles.tabButton}
     >
         {icon &&
             <img

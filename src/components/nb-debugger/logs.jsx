@@ -41,32 +41,30 @@ const Log = props => {
     );
 };
 
-const LogsTab = props => {
-    return (
-        <div className={styles.container}>
-            {props.logs.length > 0 ? props.logs.map((log, i) => (
-                <Log
-                    key={i}
-                    type={log.type}
-                    message={log.message}
-                    target={log.target}
-                    onSelectTarget={() => props.onSelectTarget(log.target)}
-                />
-            )) : (
-                <h3 className={styles.noLogs}>No logs to display</h3>
-            )}
-            <div className={styles.buttonContainer}>
-                <button onClick={props.onClearLogs}>
-                    <img src={deleteIcon} />
-                    <span>Clear</span>
-                </button>
-                <button onClick={() => handleExportLogs(props.logs)}>
-                    <img src={downloadIcon} />
-                    <span>Export</span>
-                </button>
-            </div>
+const LogsTab = props => (
+    <div className={styles.container}>
+        {props.logs.length > 0 ? props.logs.map((log, i) => (
+            <Log
+                key={i}
+                type={log.type}
+                message={log.message}
+                target={log.target}
+                onSelectTarget={() => props.onSelectTarget(log.target)}
+            />
+        )) : (
+            <h3 className={styles.noLogs}>No logs to display</h3>
+        )}
+        <div className={styles.buttonContainer}>
+            <button onClick={props.onClearLogs}>
+                <img src={deleteIcon} />
+                <span>Clear</span>
+            </button>
+            <button onClick={() => handleExportLogs(props.logs)}>
+                <img src={downloadIcon} />
+                <span>Export</span>
+            </button>
         </div>
-    );
-};
+    </div>
+);
 
 export default LogsTab;

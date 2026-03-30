@@ -4,9 +4,9 @@ import Draggable from 'react-draggable';
 import TabButton from './tab-button.jsx';
 
 import LogsTab from './logs.jsx';
+import ThreadsTab from './threads.jsx';
 
 import closeIcon from './icons/icon--close.svg';
-import darkCloseIcon from './icons/icon--close-dark.svg';
 import threadsIcon from './icons/icon--threads.svg';
 import logsIcon from './icons/icon--logs.svg';
 import performanceIcon from './icons/icon--performance.svg';
@@ -86,7 +86,7 @@ const DebuggerComponent = props => {
                 >
                     <span>Warning: The debugger works best when the compiler is disabled.</span>
                     <img
-                        src={props.darkMode ? closeIcon : darkCloseIcon}
+                        src={closeIcon}
                         onClick={props.onCloseCompilerWarning}
                         width={16}
                         height={16}
@@ -98,11 +98,17 @@ const DebuggerComponent = props => {
                         onSelectTarget={props.onSelectTarget}
                         logs={props.logs}
                     />
+                ) : props.tab === 1 ? (
+                    <ThreadsTab
+                        vm={props.vm}
+                        onSelectTarget={props.onSelectTarget}
+                        threads={props.threads}
+                    />
                 ) : null}
             </div>
         </Draggable>
     </div>
-   )
+   );
 };
 
 export default DebuggerComponent;

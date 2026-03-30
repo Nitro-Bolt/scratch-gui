@@ -1,4 +1,5 @@
 @import "../../css/colors.css";
+@import "../../css/filters.css";
 @import "../../css/z-index.css";
 
 .debugger-container-overlay {
@@ -47,7 +48,8 @@
     cursor: pointer;
     margin-right: 0.25rem;
     margin-top: 0.10rem;
-    right: 0
+    right: 0;
+    filter: $filter-icon-white
 }
 
 .tab-button {
