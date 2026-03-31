@@ -79,7 +79,7 @@ const Controls = function (props) {
                 title={intl.formatMessage(messages.pauseTitle)}
                 onClick={onPauseClick}
             />
-            {paused && //!props.compilerEnabled &&
+            {paused && !props.compilerEnabled &&
                 <Step
                     title={intl.formatMessage(messages.stepTitle)}
                     onClick={onStepClick}
