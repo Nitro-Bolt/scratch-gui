@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="18" width="18">
+  <!-- Play triangle -->
+  <polygon points="2,2 2,16 11.5,9" fill="#ffae00" stroke="#d89400" stroke-width="0.75" stroke-linejoin="round"/>
+  <!-- Vertical bar -->
+  <rect x="13" y="2" width="3.5" height="14" rx="0.75" fill="#ffae00" stroke="#d89400" stroke-width="0.75"/>
+</svg>

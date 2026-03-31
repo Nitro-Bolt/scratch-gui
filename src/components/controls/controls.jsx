@@ -4,6 +4,8 @@ import React from 'react';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
 import GreenFlag from '../green-flag/green-flag.jsx';
+import Pause from '../pause/pause.jsx';
+import Step from '../step/step.jsx';
 import StopAll from '../stop-all/stop-all.jsx';
 import TurboMode from '../turbo-mode/turbo-mode.jsx';
 import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.jsx';
@@ -16,6 +18,16 @@ const messages = defineMessages({
         id: 'gui.controls.go',
         defaultMessage: 'Go',
         description: 'Green flag button title'
+    },
+    pauseTitle: {
+        id: 'gui.controls.pause',
+        defaultMessage: 'Pause',
+        description: 'Pause button title'
+    },
+    stepTitle: {
+        id: 'gui.controls.step',
+        defaultMessage: 'Step',
+        description: 'Step button title'
     },
     stopTitle: {
         id: 'gui.controls.stop',
@@ -30,11 +42,14 @@ const Controls = function (props) {
         className,
         intl,
         onGreenFlagClick,
+        onPauseClick,
+        onStepClick,
         onStopAllClick,
         turbo,
         framerate,
         interpolation,
         isSmall,
+        paused,
         prefs,
         ...componentProps
     } = props;
@@ -59,6 +74,17 @@ const Controls = function (props) {
                 title={intl.formatMessage(messages.goTitle)}
                 onClick={onGreenFlagClick}
             />
+            <Pause
+                paused={paused}
+                title={intl.formatMessage(messages.pauseTitle)}
+                onClick={onPauseClick}
+            />
+            {paused && //!props.compilerEnabled &&
+                <Step
+                    title={intl.formatMessage(messages.stepTitle)}
+                    onClick={onStepClick}
+                />
+            }
             <StopAll
                 active={active}
                 title={intl.formatMessage(messages.stopTitle)}
@@ -80,6 +106,7 @@ const Controls = function (props) {
 Controls.propTypes = {
     active: PropTypes.bool,
     className: PropTypes.string,
+    compilerEnabled: PropTypes.bool.isRequired,
     intl: intlShape.isRequired,
     onGreenFlagClick: PropTypes.func.isRequired,
     onStopAllClick: PropTypes.func.isRequired,

@@ -383,13 +383,13 @@ export const setup = (addon) => {
   vm = addon.tab.traps.vm;
 
   const originalStepThreads = vm.runtime.sequencer.stepThreads;
-  vm.runtime.sequencer.stepThreads = function () {
+  vm.runtime.sequencer.stepThreads = function (...args) {
     if (isPaused()) {
       for (const thread of this.runtime.threads) {
         ensurePausedThreadIsStillPaused(thread);
       }
     }
-    return originalStepThreads.call(this);
+    return originalStepThreads.call(this, ...args);
   };
 
   // Unpause when green flag
