@@ -54,7 +54,7 @@ const Packager = () => (
         rel="noopener noreferrer"
     >
         {/* Should not be translated */}
-        {'NitroBolt Packager'}
+        {'PenguinBolt Packager'}
     </a>
 );
 

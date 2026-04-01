@@ -64,19 +64,19 @@ const Credits = () => (
                 The {APP_NAME} project is made possible by the work of many volunteers.
             </p>
         </section>
-        {APP_NAME !== 'NitroBolt' && (
+        {APP_NAME !== 'PenguinBolt' && (
             // Be kind and considerate. Don't remove this :)
             <section>
-                <h2>NitroBolt</h2>
+                <h2>PenguinBolt</h2>
                 <p>
-                    {APP_NAME} is based on <a href="https://github.com/Nitro-Bolt">NitroBolt</a>.
+                    {APP_NAME} is based on <a href="https://github.com/Nitro-Bolt">PenguinBolt</a>.
                 </p>
             </section>
         )}
         <section>
             <h2>TurboWarp</h2>
             <p>
-                NitroBolt is based on <a href="https://turbowarp.org/">TurboWarp</a>.
+                PenguinBolt is based on <a href="https://turbowarp.org/">TurboWarp</a>.
             </p>
             <p>
                 <a href="https://github.com/sponsors/GarboMuffin">
@@ -96,7 +96,7 @@ const Credits = () => (
             </p>
         </section>
         <section>
-            <h2>NitroBolt Team</h2>
+            <h2>PenguinBolt Team</h2>
             <UserList users={UserData.team} />
         </section>
         <section>

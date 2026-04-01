@@ -14,6 +14,7 @@ import {
     ACCENT_RED,
     ACCENT_PURPLE,
     ACCENT_BLUE,
+    ACCENT_CYAN,
     ACCENT_RAINBOW,
     ACCENT_CUSTOM,
     ACCENT_MAP,
@@ -46,6 +47,11 @@ const options = defineMessages({
         defaultMessage: 'Blue',
         description: 'Name of the blue color scheme. Matches Scratch before the high contrast update.',
         id: 'tw.accent.blue'
+    },
+    [ACCENT_CYAN]: {
+        defaultMessage: 'Cyan',
+        description: 'Name of the cyan color scheme.',
+        id: 'tw.accent.cyan'
     },
     [ACCENT_RAINBOW]: {
         defaultMessage: 'Rainbow',

@@ -89,7 +89,7 @@ const Footer = () => (
                 <FormattedMessage
                     // eslint-disable-next-line max-len
                     defaultMessage="{APP_NAME} is not affiliated with Scratch, the Scratch Team, or the Scratch Foundation."
-                    description="Disclaimer that NitroBolt is not connected to Scratch"
+                    description="Disclaimer that PenguinBolt is not connected to Scratch"
                     id="tw.footer.disclaimer"
                     values={{
                         APP_NAME
@@ -130,11 +130,11 @@ const Footer = () => (
                 <div className={styles.footerSection}>
                     <a href="https://desktop.nitrobolt.org/">
                         {/* Do not translate */}
-                        {'NitroBolt Desktop'}
+                        {'PenguinBolt Desktop'}
                     </a>
                     <a href="https://packager.nitrobolt.org/">
                         {/* Do not translate */}
-                        {'NitroBolt Packager'}
+                        {'PenguinBolt Packager'}
                     </a>
                     <a href="https://docs.turbowarp.org/embedding">
                         <FormattedMessage
@@ -159,7 +159,7 @@ const Footer = () => (
                     </a>
                 </div>
                 <div className={styles.footerSection}>
-                    <a href="https://scratch.mit.edu/users/CubesterYT/#comments">
+                    <a href="https://api.nitrobolt.org/sex">
                         <FormattedMessage
                             defaultMessage="Feedback & Bugs"
                             description="Link to feedback/bugs page"
@@ -328,7 +328,7 @@ class Interface extends React.Component {
                                     <FormattedMessage
                                         // eslint-disable-next-line max-len
                                         defaultMessage="{APP_NAME} is a TurboWarp mod with many changes that builds upon and enhances TurboWarp with many useful features. We do not guarantee projects made here will be backwards compatible with Scratch or TurboWarp."
-                                        description="Description of NitroBolt on the homepage"
+                                        description="Description of PenguinBolt on the homepage"
                                         id="tw.home.description"
                                         values={{
                                             APP_NAME
