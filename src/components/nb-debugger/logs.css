@@ -42,7 +42,6 @@
 .button-container > button {
     display: inline-flex;
     background-color: $menu-bar-background;
-    filter: $filter-icon-white;
     border: none;
     border-radius: 4px;
     color: white;

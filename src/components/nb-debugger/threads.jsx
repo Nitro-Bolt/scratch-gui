@@ -6,7 +6,7 @@ import deleteIcon from './icons/icon--delete.svg';
 import pauseIcon from './icons/icon--pause.svg';
 import playIcon from './icons/icon--play.svg';
 
-const Thread = props => (
+const Thread = React.memo(props => (
     <div className={styles.thread}>
         <div className={styles.buttons}>
             <a onClick={props.onSelectTarget}>
@@ -29,9 +29,9 @@ const Thread = props => (
             </span>
         </div>
     </div>
-);
+));
 
-const ThreadsTab = props => {
+const ThreadsTab = React.memo(props => {
     return (
         <div className={styles.container}>
             {props.threads.length > 0 ? props.threads.map((thread, i) => (
@@ -47,6 +47,6 @@ const ThreadsTab = props => {
             )}
         </div>
     );
-};
+});
 
 export default ThreadsTab;

@@ -24,7 +24,7 @@ const handleExportLogs = logs => {
     downloadBlob('logs.txt', blob);
 };
 
-const Log = props => {
+const Log = React.memo(props => {
     const icon = props.type === 'warning' ? warningIcon : errorIcon;
     return (
         <div className={classNames(styles.log, styles[props.type])}>
@@ -39,9 +39,9 @@ const Log = props => {
             }
         </div>
     );
-};
+});
 
-const LogsTab = props => (
+const LogsTab = React.memo(props => (
     <div className={styles.container}>
         {props.logs.length > 0 ? props.logs.map((log, i) => (
             <Log
@@ -65,6 +65,6 @@ const LogsTab = props => (
             </button>
         </div>
     </div>
-);
+));
 
 export default LogsTab;

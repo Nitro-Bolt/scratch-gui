@@ -1,0 +1,55 @@
+@import "../../css/colors.css";
+@import "../../css/filters.css";
+
+.container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 8px 12px;
+    overflow-y: auto;
+}
+
+.buttons {
+    display: flex;
+    width: max-content;
+    border-radius: 5px;
+    background-color: $menu-bar-background;
+    overflow: hidden;
+}
+
+.buttons:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.buttons:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px
+}
+
+.chart-button {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: transparent
+}
+
+.chart-button:hover {
+    background-color: $ui-black-transparent;
+}
+
+.chart-button > span {
+    color: $menu-bar-foreground;
+    font-size: 0.8rem;
+    font-weight: bold
+}
+
+.chart-button.selected {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.chart {
+    margin-top: auto;
+    margin-bottom: 12px;
+}

@@ -5,6 +5,8 @@ const START_DRAG = 'scratch-gui/debugger/START_DRAG';
 const END_DRAG = 'scratch-gui/debugger/END_DRAG';
 const SET_TAB = 'scratch-gui/debugger/SET_TAB';
 
+const SET_PERFORMANCE_CHART = 'scratch-gui/debugger/SET_PERFORMANCE_CHART';
+
 const PUSH_LOG = 'scratch-gui/debugger/PUSH_LOG';
 const CLEAR_LOGS = 'scratch-gui/debugger/CLEAR_LOGS';
 
@@ -12,6 +14,7 @@ const initialState = {
     visible: false,
     dragging: false,
     logs: [],
+    performanceChart: 0,
     tab: 0,
     x: 0,
     y: 0,
@@ -46,6 +49,10 @@ const reducer = function (state, action) {
     case SET_TAB:
         return Object.assign({}, state, {
             tab: action.tabIndex
+        });
+    case SET_PERFORMANCE_CHART:
+        return Object.assign({}, state, {
+            performanceChart: action.chartIndex
         });
     case PUSH_LOG:
         return Object.assign({}, state, {
@@ -88,6 +95,10 @@ const setTab = function (tabIndex) {
     return {type: SET_TAB, tabIndex}
 };
 
+const setPerformanceChart = function (chartIndex) {
+    return {type: SET_PERFORMANCE_CHART, chartIndex};
+};
+
 const pushLog = function (logType, message, target) {
     return {type: PUSH_LOG, logType, message, target};
 };
@@ -105,6 +116,7 @@ export {
     startDrag,
     endDrag,
     setTab,
+    setPerformanceChart,
     pushLog,
     clearLogs
 };

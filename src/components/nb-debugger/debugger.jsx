@@ -5,6 +5,7 @@ import TabButton from './tab-button.jsx';
 
 import LogsTab from './logs.jsx';
 import ThreadsTab from './threads.jsx';
+import PerformanceTab from './performance.jsx';
 
 import closeIcon from './icons/icon--close.svg';
 import threadsIcon from './icons/icon--threads.svg';
@@ -13,7 +14,7 @@ import performanceIcon from './icons/icon--performance.svg';
 
 import styles from './debugger.css';
 
-const DebuggerComponent = props => {
+const DebuggerComponent = React.memo(props => {
     let {x, y} = props;
     const cardHorizontalDragOffset = 400; // ~80% of card width
     const cardVerticalDragOffset = 257;// ~80% of card height, if expanded
@@ -104,11 +105,20 @@ const DebuggerComponent = props => {
                         onSelectTarget={props.onSelectTarget}
                         threads={props.threads}
                     />
+                ) : props.tab === 2 ? (
+                    <PerformanceTab
+                        chartIndex={props.performanceChart}
+                        onSelectChartIndex={props.onSelectPerformanceChart}
+                        fpsData={props.fpsData}
+                        cloneData={props.cloneData}
+                        memoryData={props.memoryData}
+                        vm={props.vm}
+                    />
                 ) : null}
             </div>
         </Draggable>
     </div>
    );
-};
+});
 
 export default DebuggerComponent;
