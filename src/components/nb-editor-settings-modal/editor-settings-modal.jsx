@@ -472,6 +472,20 @@ const EditorSettingsModal = props => {
                         props.setPref('compact-tabs', e.target.checked);
                     }}
                 />
+                <BooleanSetting
+                    value={!!props.preferences['enable-debugger']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.enableDebugger"
+                        defaultMessage="Enable debugger"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.enableDebuggerHelp"
+                        defaultMessage="Enables a debugger panel and extension that allows you to inspect logs and performance."
+                    />}
+                    onChange={e => {
+                        props.onSetPreference('enable-debugger', e.target.checked);
+                    }}
+                />
                 <div className={styles.header}>
                     <FormattedMessage
                         id="nb.editorSettings.theme"

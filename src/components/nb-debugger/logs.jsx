@@ -25,10 +25,10 @@ const handleExportLogs = logs => {
 };
 
 const Log = React.memo(props => {
-    const icon = props.type === 'warning' ? warningIcon : errorIcon;
+    const icon = props.type === 'warn' ? warningIcon : errorIcon;
     return (
         <div className={classNames(styles.log, styles[props.type])}>
-            {props.type &&
+            {props.type && props.type !== 'log' &&
                 <img src={icon} />
             }
             <span>{props.message}</span>
