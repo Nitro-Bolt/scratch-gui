@@ -26,7 +26,7 @@ import {setCustomStageSize} from '../reducers/custom-stage-size';
 import {openUnknownPlatformModal} from '../reducers/modals';
 import implementGuiAPI from './tw-extension-gui-api';
 import {BLOCKS_TAB_INDEX} from '../reducers/editor-tab';
-import {openDebugger, setTab, pushLog} from '../reducers/debugger';
+import {openDebugger, setTab, pushLog, clearLogs} from '../reducers/debugger';
 
 let compileErrorCounter = 0;
 
@@ -82,6 +82,7 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.runtime.on('PLATFORM_MISMATCH', this.props.onPlatformMismatch);
             // nb: add handlers for our events
             this.props.vm.runtime.on('DEBUGGER_BREAKPOINT', this.props.onDebuggerBreakpoint);
+            this.props.vm.runtime.on('DEBUGGER_CLEAR', this.props.onDebuggerClear);
             this.props.vm.runtime.on('DEBUGGER_LOG', this.props.onDebuggerLog);
         }
         componentDidMount () {
@@ -133,6 +134,7 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.off('CREATE_UNSANDBOXED_EXTENSION_API', implementGuiAPI);
             this.props.vm.runtime.off('PLATFORM_MISMATCH', this.props.onPlatformMismatch);
             this.props.vm.runtime.off('DEBUGGER_BREAKPOINT', this.props.onDebuggerBreakpoint);
+            this.props.vm.runtime.off('DEBUGGER_CLEAR', this.props.onDebuggerClear);
             this.props.vm.runtime.off('DEBUGGER_LOG', this.props.onDebuggerLog);
         }
         handleCloudDataUpdate (hasCloudVariables) {
@@ -367,6 +369,7 @@ const vmListenerHOC = function (WrappedComponent) {
             dispatch(setTab(0 /* Console tab of debugger */));
             dispatch(openDebugger());
         },
+        onDebuggerClear: () => dispatch(clearLogs()),
         onDebuggerLog: (type, message, target) => dispatch(pushLog(type, message, target))
     });
     return connect(
