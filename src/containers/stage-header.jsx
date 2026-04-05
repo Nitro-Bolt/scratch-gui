@@ -6,6 +6,7 @@ import {STAGE_DISPLAY_SCALE_METADATA, STAGE_DISPLAY_SIZES, STAGE_SIZE_MODES} fro
 import {setStageSize} from '../reducers/stage-size';
 import {setFullScreen} from '../reducers/mode';
 import {openSettingsModal} from '../reducers/modals';
+import {openDebugger} from '../reducers/debugger';
 
 import {connect} from 'react-redux';
 
@@ -101,7 +102,8 @@ const mapDispatchToProps = dispatch => ({
     onSetStageFull: () => dispatch(setStageSize(STAGE_SIZE_MODES.full)),
     onSetStageFullScreen: () => dispatch(setFullScreen(true)),
     onSetStageUnFullScreen: () => dispatch(setFullScreen(false)),
-    onOpenSettings: () => dispatch(openSettingsModal())
+    onOpenSettings: () => dispatch(openSettingsModal()),
+    onOpenDebugger: () => dispatch(openDebugger())
 });
 
 export default connect(

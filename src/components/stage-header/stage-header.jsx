@@ -18,6 +18,7 @@ import largeStageIcon from '!../../lib/tw-recolor/build!./icon--large-stage.svg'
 import smallStageIcon from '!../../lib/tw-recolor/build!./icon--small-stage.svg';
 import fullStageIcon from '!../../lib/tw-recolor/build!./icon--full-stage.svg';
 import settingsIcon from './icon--settings.svg';
+import debuggerIcon from './icon--debugger.svg';
 
 import styles from './stage-header.css';
 
@@ -59,6 +60,11 @@ const messages = defineMessages({
         defaultMessage: 'Open advanced settings',
         description: 'Button to open advanced settings in embeds',
         id: 'tw.openAdvanced'
+    },
+    openDebuggerMessage: {
+        defaultMessage: 'Open debugger',
+        description: 'Button to open the debugger panel',
+        id: 'nb.openDebugger'
     }
 });
 
@@ -77,6 +83,7 @@ const StageHeaderComponent = function (props) {
         onSetStageSmall,
         onSetStageFull,
         onOpenSettings,
+        onOpenDebugger,
         isEmbedded,
         prefs,
         stageSize,
@@ -217,6 +224,19 @@ const StageHeaderComponent = function (props) {
                         className={styles.stageSizeRow}
                         key="editor" // addons require the HTML element to be not be re-used by in-editor buttons
                     >
+                        {props.preferences['enable-debugger'] === true &&
+                            <Button
+                                className={styles.stageButton}
+                                onClick={onOpenDebugger}
+                            >
+                                <img
+                                    alt={props.intl.formatMessage(messages.openDebuggerMessage)}
+                                    className={styles.stageButtonIcon}
+                                    draggable={false}
+                                    src={debuggerIcon}
+                                />
+                            </Button>
+                        }
                         {stageControls}
                         <div>
                             <Button
@@ -262,6 +282,7 @@ StageHeaderComponent.propTypes = {
     onSetStageSmall: PropTypes.func.isRequired,
     onSetStageFull: PropTypes.func.isRequired,
     onOpenSettings: PropTypes.func.isRequired,
+    onOpenDebugger: PropTypes.func.isRequired,
     isEmbedded: PropTypes.bool.isRequired,
     prefs: PropTypes.any,
     stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)),
