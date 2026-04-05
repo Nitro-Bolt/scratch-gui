@@ -918,27 +918,6 @@ const myBlocks = function (isInitialSetup, isStage, targetId, colors) {
     `;
 };
 
-const debuggerBlocks = function (isInitialSetup, isStage, targetId, colors) {
-    // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
-    return `
-    <category
-        name="%{BKY_CATEGORY_DEBUGGER}"
-        id="debugger"
-        colour="${colors.primary}"
-        secondaryColour="${colors.tertiary}">
-    <block type="debugger_breakpoint">
-    </block>
-    <block type="debugger_console">
-        <value name="VALUE">
-            <shadow type="text">
-                <field name="TEXT"></field>
-            </shadow>
-        </value>
-    </block>
-    </category>
-    `;
-};
-
 // eslint-disable-next-line max-len
 const nbBlocksColours = `colourmutprimary="#ff5726" colourmutsecondary="#f34b1a" colourmuttertiary="#e63e0d" colourmutquaternary="#e63e0d"`;
 // eslint-disable-next-line max-len
@@ -1000,7 +979,6 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
     const variablesXML = moveCategory('data') || variables(isInitialSetup, isStage, targetId, colors.data);
     const jsonXML = moveCategory('json') || json(colors.json);
     const myBlocksXML = moveCategory('procedures') || myBlocks(isInitialSetup, isStage, targetId, colors.more);
-    const debuggerXML = moveCategory('debugger') || debuggerBlocks(isInitialSetup, isStage, targetId, colors.operators);
 
     // Always display NitroBolt blocks as the first extension, if it exists,
     // and also add an "is compiled?" block to the top.
@@ -1019,8 +997,7 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
         ['operators', operatorsXML],
         ['data', variablesXML],
         ['json', jsonXML],
-        ['procedures', myBlocksXML],
-        ['debugger', debuggerXML]
+        ['procedures', myBlocksXML]
     ].filter(([id]) => !hiddenCategories.includes(id));
     
     const visibleXMLs = categoryEntries.map(([, xml]) => xml);
