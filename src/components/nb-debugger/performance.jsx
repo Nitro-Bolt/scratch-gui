@@ -1,8 +1,17 @@
 import React from 'react';
 import classNames from 'classnames';
-import {Sparklines, SparklinesLine, SparklinesCurve} from 'react-sparklines';
+import ReactTooltip from 'react-tooltip';
+import {Sparklines, SparklinesLine} from 'react-sparklines';
 
 import styles from './performance.css';
+
+const formatBytes = bytes => {
+    console.log(bytes);
+    if (!bytes || bytes < 0) return "0B";
+    const units = ["B", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return `${(bytes / 1024 ** i).toFixed(1).replace(/\.0$/, "")}${units[i]}`;
+};
 
 const ChartButton = props => (
     <button
@@ -21,7 +30,13 @@ const PerformanceTab = React.memo(props => {
 
     const max = props.chartIndex === 0 ?
         props.vm.runtime.frameLoop.framerate : props.chartIndex === 1 ?
-        props.vm.runtime.runtimeOptions.maxClones : undefined;
+        props.vm.runtime.runtimeOptions.maxClones : Math.max(...data, 1);
+
+    const label = props.chartIndex === 0 ?
+        'FPS' : props.chartIndex === 1 ?
+        'Clones' : null
+
+    const segmentWidth = data.length > 1 ? 100 / (data.length - 1) : 100;
 
     return (
         <div className={styles.container}>
@@ -48,9 +63,29 @@ const PerformanceTab = React.memo(props => {
                     max={max}
                     min={0}
                 >
-                    <SparklinesCurve color="var(--looks-secondary)" />
+                    <SparklinesLine color="var(--looks-secondary)" />
                 </Sparklines>
+                <div className={styles.hitArea}>
+                    {data.map((value, i) => (
+                        <div
+                            key={i}
+                            className={styles.hitSlice}
+                            data-tip={props.chartIndex === 2 ? formatBytes(value) : `${value} ${label}`}
+                            data-for="perf-chart-tooltip"
+                            style={{
+                                left: `${(i - 0.5) * segmentWidth}%`,
+                                width: `${segmentWidth}%`,
+                                top: `${(1 - value / max) * 100}%`
+                            }}
+                        />
+                    ))}
+                </div>
             </div>
+            <ReactTooltip
+                id="perf-chart-tooltip"
+                effect="solid"
+                place="top"
+            />
         </div>
     );
 });

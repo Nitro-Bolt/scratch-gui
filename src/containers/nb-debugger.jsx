@@ -85,7 +85,7 @@ class NBDebugger extends React.Component {
 
             if (this.props.tab === 2) {
                 this.sampleMemory = this.getVmMemory();
-                console.log(formatBytes(this.sampleMemory));
+                console.log(this.sampleMemory);
                 this.memoryData.copyWithin(0, 1);
                 this.memoryData[19] = this.sampleMemory;
                 this.setState({

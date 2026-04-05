@@ -6,7 +6,7 @@
     flex-direction: column;
     flex: 1;
     padding: 8px 12px;
-    overflow-y: auto;
+    overflow: none;
 }
 
 .buttons {
@@ -50,6 +50,25 @@
 }
 
 .chart {
+    position: relative;
     margin-top: auto;
     margin-bottom: 12px;
+}
+
+.chart > svg > g > circle {
+    fill-opacity: 0.20 !important
+}
+
+.hit-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.hit-slice {
+    position: absolute;
+    height: 12px;
+    transform: translateY(-50%);
 }
