@@ -10,6 +10,8 @@ const SET_PERFORMANCE_CHART = 'scratch-gui/debugger/SET_PERFORMANCE_CHART';
 const PUSH_LOG = 'scratch-gui/debugger/PUSH_LOG';
 const CLEAR_LOGS = 'scratch-gui/debugger/CLEAR_LOGS';
 
+const MAX_LOGS = 1000;
+
 const initialState = {
     visible: false,
     dragging: false,
@@ -55,12 +57,16 @@ const reducer = function (state, action) {
             performanceChart: action.chartIndex
         });
     case PUSH_LOG:
+        const newLogs = [...state.logs, {
+            type: action.logType,
+            message: action.message,
+            target: action.target
+        }];
+        if (newLogs.length > MAX_LOGS) {
+            newLogs.shift();
+        }
         return Object.assign({}, state, {
-            logs: [...state.logs, {
-                type: action.logType,
-                message: action.message,
-                target: action.target
-            }]
+            logs: newLogs
         });
     case CLEAR_LOGS:
         return Object.assign({}, state, {
