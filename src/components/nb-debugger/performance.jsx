@@ -23,14 +23,15 @@ const ChartButton = props => (
 );
 
 const PerformanceTab = React.memo(props => {
+    const maxClones = props.vm.runtime.runtimeOptions.maxClones;
     const data = props.chartIndex === 0 ?
         props.fpsData : props.chartIndex === 1 ?
         props.cloneData : props.chartIndex === 2 ?
         props.memoryData : [];
 
     const max = props.chartIndex === 0 ?
-        props.vm.runtime.frameLoop.framerate : props.chartIndex === 1 ?
-        props.vm.runtime.runtimeOptions.maxClones : Math.max(...data, 1);
+        props.vm.runtime.frameLoop.framerate : props.chartIndex === 1 && maxClones !== Infinity ?
+        maxClones : Math.max(...data, 1);
 
     const label = props.chartIndex === 0 ?
         'FPS' : props.chartIndex === 1 ?
