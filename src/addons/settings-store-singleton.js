@@ -7,5 +7,6 @@ if (urlParameters.has('addons')) {
 } else {
     settingStore.readLocalStorage();
 }
+settingStore.loadCustomAddons();
 
 export default settingStore;

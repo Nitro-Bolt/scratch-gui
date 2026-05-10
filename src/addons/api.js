@@ -14,6 +14,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { getCustomAddons, storeAddon, removeAddon } from '../lib/nb-custom-addons.js';
+import { TextDecoder } from '../lib/tw-text-encoder.js';
 import IntlMessageFormat from 'intl-messageformat';
 import SettingsStore from './settings-store-singleton';
 import dataURLToBlob from '../lib/data-uri-to-blob';
@@ -34,6 +36,16 @@ import reduxInstance from './redux';
 
 const escapeHTML = str => str.replace(/([<>'"&])/g, (_, l) => `&#${l.charCodeAt(0)};`);
 const kebabCaseToCamelCase = str => str.replace(/-([a-z])/g, g => g[1].toUpperCase());
+
+const arrayBufferToDataURI = buffer => {
+    const blob = new Blob([buffer]);
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(blob);
+    });
+}
 
 let _scratchClassNames = null;
 const getScratchClassNames = () => {
@@ -728,9 +740,8 @@ class Self extends EventTargetShim {
 }
 
 class AddonRunner {
-    constructor (id) {
+    constructor (id, manifest) {
         AddonRunner.instances.push(this);
-        const manifest = addons[id];
 
         this.id = id;
         this.manifest = manifest;
@@ -910,8 +921,15 @@ class AddonRunner {
             await untilInEditor();
         }
 
-        const mod = await addonEntries[this.id]();
-        this.resources = mod.resources;
+        if (this.manifest.resources) {
+            this.resources = {};
+            for (const [path, arr] of Object.entries(this.manifest.resources)) {
+                this.resources[path] = await arrayBufferToDataURI(arr);
+            }
+        } else if (addonEntries[this.id]) {
+            const mod = await addonEntries[this.id]();
+            this.resources = mod.resources;
+        }
 
         if (!this.manifest.noTranslations) {
             await addonMessagesPromise;
@@ -949,6 +967,12 @@ class AddonRunner {
                 if (!SettingsStore.evaluateCondition(userscript.if)) {
                     continue;
                 }
+                if (userscript instanceof ArrayBuffer) {
+                    const str = new TextDecoder().decode(userscript);
+                    const fn = new Function('return (' + str + ')');
+                    fn()(this.publicAPI);
+                    continue;
+                }
                 const fn = this.resources[userscript.url];
                 fn(this.publicAPI);
             }
@@ -959,8 +983,8 @@ class AddonRunner {
 }
 AddonRunner.instances = [];
 
-const runAddon = addonId => {
-    const runner = new AddonRunner(addonId);
+const runAddon = (addonId, manifest) => {
+    const runner = new AddonRunner(addonId, manifest);
     runner.run();
 };
 
@@ -974,7 +998,7 @@ SettingsStore.addEventListener('addon-changed', e => {
         if (runner) {
             runner.dynamicEnable();
         } else {
-            runAddon(addonId);
+            runAddon(addonId, addons[addonId]);
         }
     } else if (e.detail.dynamicDisable) {
         if (runner) {
@@ -994,7 +1018,7 @@ SettingsStore.addEventListener('setting-changed', e => {
             if (runner) {
                 runner.dynamicEnable();
             } else {
-                runAddon(addonId);
+                runAddon(addonId, addons[addonId]);
             }
         } else if (runner) {
             runner.dynamicDisable();
@@ -1007,5 +1031,11 @@ for (const id of Object.keys(addons)) {
     if (!SettingsStore.getAddonEnabled(id)) {
         continue;
     }
-    runAddon(id);
+    runAddon(id, addons[id]);
 }
+
+getCustomAddons().then(customAddons => {
+    for (const customAddon of customAddons) {
+        runAddon(customAddon.id, customAddon);
+    }
+});
