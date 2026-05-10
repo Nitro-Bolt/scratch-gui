@@ -122,8 +122,25 @@ const removeAddon = async id => {
     });
 };
 
+const _subscribers = new Set();
+
+const subscribeToCustomAddons = callback => {
+    _subscribers.add(callback);
+    getCustomAddons().then(addons => {
+        if (_subscribers.has(callback)) {
+            callback(addons);
+        }
+    });
+};
+
+const unsubscribeFromCustomAddons = callback => {
+    _subscribers.delete(callback);
+};
+
 export {
     getCustomAddons,
     storeAddon,
-    removeAddon
+    removeAddon,
+    subscribeToCustomAddons,
+    unsubscribeFromCustomAddons
 };

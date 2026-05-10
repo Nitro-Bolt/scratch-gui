@@ -32,8 +32,10 @@ import brushImage from './icons/brush.svg';
 import undoImage from './icons/undo.svg';
 import expandImageBlack from './icons/expand.svg';
 import infoImage from './icons/info.svg';
+import trashImage from './icons/trash.svg';
 import TWFancyCheckbox from '../../components/tw-fancy-checkbox/checkbox.jsx';
 import styles from './settings.css';
+import { getCustomAddons, storeAddon, removeAddon, subscribeToCustomAddons, unsubscribeFromCustomAddons } from '../../lib/nb-custom-addons.js';
 import {detectTheme} from '../../lib/themes/themePersistance.js';
 import {applyGuiColors} from '../../lib/themes/guiHelpers.js';
 import {APP_NAME} from '../../lib/brand.js';
@@ -559,7 +561,8 @@ const Addon = ({
     id,
     settings,
     manifest,
-    extended
+    extended,
+    onRemove
 }) => (
     <div className={classNames(styles.addon, {[styles.addonDirty]: settings.dirty})}>
         <div className={styles.addonHeader}>
@@ -611,18 +614,32 @@ const Addon = ({
             <div className={styles.addonOperations}>
                 {settings.enabled && manifest.settings && (
                     <button
-                        className={styles.resetButton}
+                        className={styles.addonButton}
                         onClick={() => SettingsStore.resetAddon(id)}
                         title={settingsTranslations.reset}
                     >
                         <img
                             src={undoImage}
-                            className={styles.resetButtonImage}
+                            className={styles.addonButtonImage}
                             alt={settingsTranslations.reset}
                             draggable={false}
                         />
                     </button>
                 )}
+                {onRemove &&
+                    <button
+                        className={styles.addonButton}
+                        onClick={onRemove}
+                        title={settingsTranslations.remove}
+                    >
+                        <img
+                            src={trashImage}
+                            className={styles.addonButtonImage}
+                            alt={settingsTranslations.remove}
+                            draggable={false}
+                        />
+                    </button>
+                }
             </div>
         </div>
         {settings.enabled && (
@@ -745,13 +762,14 @@ UnsupportedAddons.propTypes = {
 };
 
 const InternalAddonList = ({addons, extended}) => (
-    addons.map(({id, manifest, state}) => (
+    addons.map(({id, manifest, state, onRemove}) => (
         <Addon
             key={id}
             id={id}
             settings={state}
             manifest={manifest}
             extended={extended}
+            onRemove={onRemove}
         />
     ))
 );
@@ -883,6 +901,12 @@ class AddonList extends React.Component {
         }
         return (
             <div>
+                <AddonGroup
+                    label={settingsTranslations.groupImported}
+                    open={true}
+                    addons={this.props.customAddons}
+                    extended={this.props.extended}
+                />
                 {Object.entries(groupedAddons).map(([id, {label, addons, open}]) => (
                     <AddonGroup
                         key={id}
@@ -914,11 +938,13 @@ class AddonSettingsComponent extends React.Component {
         this.handleResetAll = this.handleResetAll.bind(this);
         this.handleExport = this.handleExport.bind(this);
         this.handleImport = this.handleImport.bind(this);
+        this.handleImportAddon = this.handleImport.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.handleClickSearchButton = this.handleClickSearchButton.bind(this);
         this.handleClickVersion = this.handleClickVersion.bind(this);
         this.handleExternalSettingsChanged = this.handleExternalSettingsChanged.bind(this);
+        this.handleCustomAddonsLoaded = this.handleCustomAddonsLoaded.bind(this);
         this.searchRef = this.searchRef.bind(this);
         this.searchBar = null;
         this.state = {
@@ -926,6 +952,7 @@ class AddonSettingsComponent extends React.Component {
             dirty: false,
             search: props.onDirty ? '' : getInitialSearch(),
             extended: false,
+            customAddons: [],
             ...this.readFullAddonState()
         };
     }
@@ -937,6 +964,8 @@ class AddonSettingsComponent extends React.Component {
         }
         // BroadcastChannel won't fire in the same browsing context
         window.addEventListener('addon-settings-changed', this.handleExternalSettingsChanged);
+        // Load custom addons
+        subscribeToCustomAddons(this.handleCustomAddonsLoaded);
     }
     componentDidUpdate (prevProps, prevState) {
         if (this.state.search !== prevState.search) {
@@ -944,12 +973,17 @@ class AddonSettingsComponent extends React.Component {
         }
     }
     componentWillUnmount () {
+        unsubscribeFromCustomAddons(this.handleCustomAddonsLoaded);
         SettingsStore.removeEventListener('setting-changed', this.handleSettingStoreChanged);
         document.body.removeEventListener('keydown', this.handleKeyDown);
         if (Channels.changeChannel) {
             Channels.changeChannel.removeEventListener('message', this.handleExternalSettingsChanged);
         }
         window.removeEventListener('addon-settings-changed', this.handleExternalSettingsChanged);
+    }
+    handleCustomAddonsLoaded (customAddons) {
+        this.setState(Object.fromEntries(customAddons.map(item => [item.id, item])));
+        this.setState({customAddons});
     }
     handleExternalSettingsChanged () {
         SettingsStore.readLocalStorage();
@@ -1052,6 +1086,32 @@ class AddonSettingsComponent extends React.Component {
             }
         });
     }
+    handleImportAddon () {
+        const fileSelector = document.createElement('input');
+        fileSelector.type = 'file';
+        fileSelector.accept = '.zip';
+        document.body.appendChild(fileSelector);
+        fileSelector.click();
+        document.body.removeChild(fileSelector);
+        fileSelector.addEventListener('change', async () => {
+            const file = fileSelector.files[0];
+            if (!file) {
+                return;
+            }
+            try {
+                const arr = await file.arrayBuffer();
+                await storeAddon(arr);
+                const newAddons = await getCustomAddons();
+                this.setState({
+                    customAddons: newAddons,
+                    ...Object.fromEntries(newAddons.map(item => [item.id, item]))
+                });
+            } catch (e) {
+                console.error(e);
+                alert(e);
+            }
+        });
+    }
     handleSearch (e) {
         const value = e.target.value;
         this.setState({
@@ -1099,6 +1159,26 @@ class AddonSettingsComponent extends React.Component {
             id,
             manifest
         }));
+        const customAddons = this.state.customAddons.map(addon => ({
+            imported: true,
+            id: addon.id,
+            manifest: addon,
+            state: this.state[addon.id],
+            onRemove: async () => {
+                if (!confirm(`Are you sure you want to remove ${addon.name}`)) {
+                    return;
+                }
+
+                await removeAddon(addon.id);
+                this.setState(prevState => {
+                    const { [addon.id]: _, customAddons, ...rest } = prevState;
+                    return {
+                        ...rest,
+                        customAddons: customAddons.filter(c => c.id !== addon.id)
+                    };
+                });
+            }
+        }));
         return (
             <div className={styles.container}>
                 <div className={styles.header}>
@@ -1118,11 +1198,17 @@ class AddonSettingsComponent extends React.Component {
                                 onClick={this.handleClickSearchButton}
                             />
                         </div>
+                        <button
+                                className={classNames(styles.button, styles.importAddonButton)}
+                                onClick={this.handleImportAddon}
+                            >
+                                    {settingsTranslations.importAddon}
+                        </button>
                         <a
                             href="https://scratch.mit.edu/users/CubesterYT/#comments"
                             target="_blank"
                             rel="noreferrer"
-                            className={styles.feedbackButtonOuter}
+                            className={classNames(styles.feedbackButtonOuter, styles.button)}
                         >
                             <span className={styles.feedbackButtonInner}>
                                 {settingsTranslations.addonFeedback}
@@ -1139,6 +1225,7 @@ class AddonSettingsComponent extends React.Component {
                     {!this.state.loading && (
                         <div className={styles.section}>
                             <AddonList
+                                customAddons={customAddons}
                                 addons={addonState}
                                 search={this.state.search}
                                 extended={this.state.extended}

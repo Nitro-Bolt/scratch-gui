@@ -129,6 +129,18 @@ body {
     background-image: url("./icons/clear.svg") !important;
 }
 
+.import-addon-button {
+    color: inherit;
+    height: 16px;
+    margin-left: 10px;
+    padding: 10px;
+    background-color: transparent;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    box-sizing: content-box;
+}
+
 .feedback-button-outer {
     background: $ui-secondary;
     border: 1px solid $ui-black-transparent;
@@ -257,21 +269,21 @@ body {
     align-items: center;
 }
 
-.reset-button {
+.addon-button {
     display: flex;
     border-radius: 4px;
     cursor: pointer;
     border: none;
     background-color: transparent;
 }
-.reset-button:hover {
+.addon-button:hover {
     background: $ui-black-transparent;
 }
-.reset-button:active, .reset-button:focus-within {
+.addon-button:active, .addon-button:focus-within {
     outline: none;
     box-shadow: 0 0 0 3px $looks-transparent;
 }
-.reset-button-image {
+.addon-button-image {
     padding: 1px 0;
     height: 16px;
     width: 16px;
