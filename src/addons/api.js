@@ -1036,6 +1036,9 @@ for (const id of Object.keys(addons)) {
 
 getCustomAddons().then(customAddons => {
     for (const customAddon of customAddons) {
+        if (!SettingsStore.getAddonEnabled(customAddon.id)) {
+            continue;
+        }
         runAddon(customAddon.id, customAddon);
     }
 });

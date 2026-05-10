@@ -134,6 +134,11 @@ class SettingsStore extends EventTargetShim {
             this.store[addon.id] = {};
         }
     }
+    
+    createAddonStore (id, addon) {
+        this.addons[id] = addon;
+        this.store[id] = {};
+    }
 
     readLocalStorage () {
         const base = this.store;

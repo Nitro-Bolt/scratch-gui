@@ -564,7 +564,7 @@ const Addon = ({
     extended,
     onRemove
 }) => (
-    <div className={classNames(styles.addon, {[styles.addonDirty]: settings.dirty})}>
+    <div className={styles.addon}>
         <div className={styles.addonHeader}>
             <label className={styles.addonTitle}>
                 <div className={styles.addonSwitch}>
@@ -875,14 +875,20 @@ const addonToSearchItem = ({id, manifest}) => {
 class AddonList extends React.Component {
     constructor (props) {
         super(props);
-        this.search = new Search(this.props.addons.map(addonToSearchItem));
-        this.groups = [];
+        this.allAddons = [...props.addons, ...props.customAddons];
+        this.search = new Search(this.allAddons.map(addonToSearchItem));
+    }
+    componentDidUpdate (prevProps) {
+        if (prevProps.customAddons !== this.props.customAddons) {
+            this.allAddons = [...this.props.addons, ...this.props.customAddons];
+            this.search = new Search(this.allAddons.map(addonToSearchItem));
+        }
     }
     render () {
         if (this.props.search) {
             const addons = this.search.search(this.props.search)
                 .slice(0, 20)
-                .map(({index}) => this.props.addons[index]);
+                .map(({index}) => this.allAddons[index]);
             if (addons.length === 0) {
                 return (
                     <div className={styles.noResults}>
@@ -938,7 +944,7 @@ class AddonSettingsComponent extends React.Component {
         this.handleResetAll = this.handleResetAll.bind(this);
         this.handleExport = this.handleExport.bind(this);
         this.handleImport = this.handleImport.bind(this);
-        this.handleImportAddon = this.handleImport.bind(this);
+        this.handleImportAddon = this.handleImportAddon.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.handleClickSearchButton = this.handleClickSearchButton.bind(this);
@@ -982,7 +988,14 @@ class AddonSettingsComponent extends React.Component {
         window.removeEventListener('addon-settings-changed', this.handleExternalSettingsChanged);
     }
     handleCustomAddonsLoaded (customAddons) {
-        this.setState(Object.fromEntries(customAddons.map(item => [item.id, item])));
+        this.setState(
+            Object.fromEntries(customAddons.map(item => 
+                [item.id, {
+                    enabled: SettingsStore.getAddonEnabled(item.id),
+                    dirty: false
+                }]
+            ))
+        );
         this.setState({customAddons});
     }
     handleExternalSettingsChanged () {
@@ -1100,11 +1113,14 @@ class AddonSettingsComponent extends React.Component {
             }
             try {
                 const arr = await file.arrayBuffer();
-                await storeAddon(arr);
-                const newAddons = await getCustomAddons();
+                const newAddon = await storeAddon(arr);
+                SettingsStore.createAddonStore(newAddon.id, newAddon);
                 this.setState({
-                    customAddons: newAddons,
-                    ...Object.fromEntries(newAddons.map(item => [item.id, item]))
+                    customAddons: [...this.state.customAddons, newAddon],
+                    [newAddon.id]: {
+                        enabled: SettingsStore.getAddonEnabled(newAddon.id),
+                        dirty: false
+                    }
                 });
             } catch (e) {
                 console.error(e);
