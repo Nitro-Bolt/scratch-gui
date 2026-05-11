@@ -23,6 +23,7 @@
   "export": "Export settings",
   "import": "Import settings",
   "importAddon": "Import addon",
+  "removeAddonAlert": "Are you sure you want to remove {addon}?",
   "unsupported": "Some addons are not available in this browser:",
   "addonFeedback": "Addon Feedback",
   "enableDangerous": "This addon is dangerous and may intentionally DISABLE features. Most users SHOULD NOT enable this addon. Are you sure you want to enable it?"

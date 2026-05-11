@@ -1181,7 +1181,7 @@ class AddonSettingsComponent extends React.Component {
             manifest: addon,
             state: this.state[addon.id],
             onRemove: async () => {
-                if (!confirm(`Are you sure you want to remove ${addon.name}`)) {
+                if (!confirm(settingsTranslations.removeAddonAlert.replace('{addon}', addon.name))) {
                     return;
                 }
 
