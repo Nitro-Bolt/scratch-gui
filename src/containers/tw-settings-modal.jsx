@@ -29,6 +29,7 @@ class UsernameModal extends React.Component {
             'handleWarpTimerChange',
             'handleStageWidthChange',
             'handleStageHeightChange',
+            'handleStageSwapChange',
             'handleStagePresetUsed',
             'handleDisableCompilerChange',
             'handleStoreProjectOptions',
@@ -96,6 +97,9 @@ class UsernameModal extends React.Component {
     handleStageHeightChange (value) {
         this.props.vm.setStageSize(this.props.customStageSize.width, value);
     }
+    handleStageSwapChange () {
+        this.props.vm.setStageSize(this.props.customStageSize.height, this.props.customStageSize.width);
+    }
     handleStagePresetUsed (widescreen) {
         switch (widescreen) {
             case 1:
@@ -138,6 +142,7 @@ class UsernameModal extends React.Component {
                 onWarpTimerChange={this.handleWarpTimerChange}
                 onStageWidthChange={this.handleStageWidthChange}
                 onStageHeightChange={this.handleStageHeightChange}
+                onStageSwapChange={this.handleStageSwapChange}
                 onStagePresetUsed={this.handleStagePresetUsed}
                 onDisableCompilerChange={this.handleDisableCompilerChange}
                 stageWidth={this.props.customStageSize.width}

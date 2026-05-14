@@ -121,6 +121,7 @@ class Blocks extends React.Component {
             'handleOpenSoundRecorder',
             'handlePromptStart',
             'handleCustomPrompt',
+            'handleCreateCustomPromptUtility',
             'handlePromptCallback',
             'handlePromptClose',
             'handleCustomProceduresClose',
@@ -628,9 +629,10 @@ class Blocks extends React.Component {
      *      dontClose:boolean?,
      *      callback:function():void
      * }>?} buttons Buttons to place onto the modal. `role` makes the button callback run for other types of interactions.
+     * @param {() -> ()} handleCallback A callback that runs when the modal is created, with more internal handles passed into it.
      * @returns {Promise<HTMLElement>}
      */
-    handleCustomPrompt (config, styles, buttons) {
+    handleCustomPrompt (config, styles, buttons, handleCallback) {
         return new Promise((resolve, reject) => {
             /* validate arguments */
             if (config && isObject(config)) {
@@ -647,20 +649,36 @@ class Blocks extends React.Component {
 
             // create the callback for when the node is created. an HTML element (or modal) with ref={functionHere} will run the function with the HTMLElement as 1st arg
             const thisPromptId = uid();
+            const customPromptObject = {
+                id: thisPromptId,
+                config, styles, buttons
+            };
             this.customModalRefs.set(thisPromptId, (node) => {
                 resolve(node);
+
+                // dont bother creating the util if handleCallback is undefined
+                if (typeof handleCallback !== "function") return;
+                const handle = this.handleCreateCustomPromptUtility(customPromptObject);
+                handleCallback(handle);
             })
 
             // Setting state with this info will cause blocks.jsx to re-render, rendering the modal before any code after setState can run.
             // However, the callback & ref are not be usable until slightly later. this is why ref is set to a callback above.
             // This is one of many reasons why React is pretty stupid.
             this.setState({
-                customPrompts: this.state.customPrompts.concat({
-                    id: thisPromptId,
-                    config, styles, buttons
-                })
+                customPrompts: this.state.customPrompts.concat(customPromptObject)
             });
         });
+    }
+    handleCreateCustomPromptUtility (customPromptObject) {
+        const handle = {};
+        handle.customPromptObject = customPromptObject;
+        handle.closePrompt = () => {
+            return this.setState({
+                customPrompts: this.state.customPrompts.filter(prompt => prompt !== customPromptObject)
+            });
+        };
+        return handle;
     }
     handleConnectionModalStart (extensionId) {
         this.props.onOpenConnectionModal(extensionId);

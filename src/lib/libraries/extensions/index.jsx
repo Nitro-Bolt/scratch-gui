@@ -1521,6 +1521,17 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'Integers',
+        extensionId: 'jwInt',
+        iconURL: 'https://studio.penguinmod.com/static/assets/50f828904ccdd230ddc926615b2922f1.svg',
+        insetIconURL: PenguinmodThumb,
+        customInsetColor: '#00c3ff',
+        tags: ['penguinmod', 'math'],
+        description: 'Large integers with zero precision loss.',
+        extDeveloper: 'jwklong',
+        featured: true
+    },
+    {
         name: (
             <FormattedMessage
                 defaultMessage="TurboWarp Blocks"
