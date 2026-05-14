@@ -344,6 +344,16 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                 </value>
             </block>
             <block type="looks_nextbackdrop"/>
+            <block type="looks_getinputofbackdrop">
+                <value name="INPUT">
+                    <shadow type="looks_getinput_menu"/>
+                </value>
+                <value name="COSTUME">
+                    <shadow type="looks_backdrops">
+                        <field name="BACKDROP">${backdropName}</field>
+                    </shadow>
+                </value>
+            </block>
         ` : `
             <label text="Costumes\/Backdrops"></label>
             <block id="${targetId}_switchcostumeto" type="looks_switchcostumeto">
@@ -379,6 +389,16 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                 </value>
             </block>
             <block type="looks_nextbackdrop"/>
+            <block type="looks_getinputofbackdrop">
+                <value name="INPUT">
+                    <shadow type="looks_getinput_menu"/>
+                </value>
+                <value name="COSTUME">
+                    <shadow type="looks_backdrops">
+                        <field name="BACKDROP">${backdropName}</field>
+                    </shadow>
+                </value>
+            </block>
             ${blockSeparator}
             <block type="looks_changesizeby">
                 <value name="CHANGE">
@@ -790,6 +810,21 @@ const control = function (isInitialSetup, isStage) {
                 </shadow>
             </value>
         </block>
+        <block type="control_from_to">
+            <value name="FROM">
+                <shadow type="math_integer">
+                    <field name="NUM">1</field>
+                </shadow>
+            </value>
+            <value name="TO">
+                <shadow type="math_integer">
+                    <field name="NUM">10</field>
+                </shadow>
+            </value>
+            <value name="SHADOW">
+                <shadow type="control_from_to_index" />
+            </value>
+        </block>
         ${blockSeparator}
         <block type="control_all_at_once"/>
         ${blockSeparator}
@@ -1072,6 +1107,7 @@ const sensing = function (isInitialSetup, isStage, targetId) {
             </value>
         </block>
         ${blockSeparator}
+        <block id="online" type="sensing_online"/>
         <button text="${helpManual}" callbackKey="OPEN_USERNAME_DOCS" />
         <block type="sensing_username"/>
         <block type="sensing_loggedin"/>
@@ -1723,16 +1759,6 @@ const liveTests = function (isLiveTest, targetId, soundName, backdropName) {
                 </shadow>
             </value>
         </block>
-        <block type="looks_getinputofbackdrop">
-                <value name="INPUT">
-                    <shadow type="looks_getinput_menu"/>
-                </value>
-                <value name="COSTUME">
-                    <shadow type="looks_backdrops">
-                        <field name="BACKDROP">${backdropName}</field>
-                    </shadow>
-                </value>
-            </block>
         ${blockSeparator}
         <block type="control_fieldbutton"></block>
         <block type="motion_mutatorCheckboxTest"></block>

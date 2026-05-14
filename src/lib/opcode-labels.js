@@ -298,6 +298,11 @@ const messages = defineMessages({
         description: 'Label for the logged in monitor when shown on the stage',
         id: 'pm.opcodeLabels.loggedin'
     },
+    sensing_online: {
+        defaultMessage: 'online',
+        description: 'Label for the online monitor when shown on the stage',
+        id: 'gui.opcodeLabels.online'
+    },
 
     // Control
     control_get_counter: {
@@ -368,6 +373,7 @@ class OpcodeLabels {
             sensing_getdragmode: {category: 'sensing'},
             sensing_dayssince2000: {category: 'sensing'},
             sensing_loggedin: {category: 'sensing'},
+            sensing_online: {category: 'sensing'},
 
             // Control
             control_get_counter: {category: 'control'}
@@ -481,6 +487,7 @@ class OpcodeLabels {
         this._opcodeMap.sensing_getdragmode.labelFn = () => this._translator(messages.sensing_getdragmode);
         this._opcodeMap.sensing_dayssince2000.labelFn = () => this._translator(messages.sensing_dayssince2000);
         this._opcodeMap.sensing_loggedin.labelFn = () => this._translator(messages.sensing_loggedin);
+        this._opcodeMap.sensing_online.labelFn = () => this._translator(messages.sensing_online);
 
         // Control
         this._opcodeMap.control_get_counter.labelFn = () => this._translator(messages.control_get_counter);
