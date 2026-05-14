@@ -425,7 +425,7 @@ const CustomStageSize = ({
                         }}
                         step="1"
                     >
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="19.46414" height="19.46414" viewBox="0,0,19.46414,19.46414">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="19.46414" height="19.46414" viewBox="0,0,19.46414,19.46414">
                             <g transform="translate(-230.26793,-169.26793)">
                                 <g stroke="none" stroke-miterlimit="10">
                                     <path d="M230.26793,189.73207v-19.46414h19.46414v19.46414z" fill-opacity="0.00392" fill="#ffffff" fill-rule="nonzero" stroke-width="0"></path>
