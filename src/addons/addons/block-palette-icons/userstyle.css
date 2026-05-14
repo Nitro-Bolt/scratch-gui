@@ -43,7 +43,7 @@
 }
 
 .scratchCategoryId-selectors .scratchCategoryItemBubble::after {
-  background-image: url(icons/list_icon.svg);
+  background-image: url(icons/menusNew_icon.svg);
 }
 
 .scratchCategoryId-variables .scratchCategoryItemBubble::after {
