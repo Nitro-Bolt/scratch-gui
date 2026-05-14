@@ -355,7 +355,7 @@ class SpriteInfo extends React.Component {
                                 />
                             </div>
                         </div>
-                        <div className={classNames(styles.group, styles.largerInput)}>
+                        {/*<div className={classNames(styles.group, styles.largerInput)}>
                             <Label
                                 secondary
                                 above={labelAbove}
@@ -371,7 +371,7 @@ class SpriteInfo extends React.Component {
                                     onSubmit={this.props.onChangeLayer}
                                 />
                             </Label>
-                        </div>
+                        </div>*/}
                     </div>{/*
                     <div className={classNames(styles.group, styles.largerInput)}>
                         <Label
