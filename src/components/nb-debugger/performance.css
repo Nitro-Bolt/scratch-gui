@@ -49,7 +49,31 @@
     background-color: rgba(0, 0, 0, 0.25);
 }
 
+.chart-quantities {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    opacity: 0.5;
+    width: 3rem;
+    flex-shrink: 0;
+}
+
+.chart-quantities > p {
+    text-overflow: ellipsis;
+}
+
+[dir="ltr"] .chart-quantities {
+    text-align: right;
+}
+
+[dir="rtl"] .chart-quantities {
+    text-align: left;
+}
+
 .chart {
+    display: flex;
+    flex-direction: row;
     position: relative;
     margin-top: auto;
     margin-bottom: 12px;

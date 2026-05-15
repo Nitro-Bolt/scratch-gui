@@ -52,12 +52,14 @@
 }
 
 [dir="ltr"] .stage-size-toggle-group,
-[dir="ltr"] .settings-button {
+[dir="ltr"] .settings-button, 
+[dir="ltr"] .debugger-button {
     margin-right: .2rem;
 }
 
 [dir="rtl"] .stage-size-toggle-group,
-[dir="rtl"] .settings-button {
+[dir="rtl"] .settings-button, 
+[dir="rtl"] .debugger-button {
     margin-left: .2rem;
 }
 

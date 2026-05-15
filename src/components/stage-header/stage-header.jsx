@@ -224,18 +224,20 @@ const StageHeaderComponent = function (props) {
                         className={styles.stageSizeRow}
                         key="editor" // addons require the HTML element to be not be re-used by in-editor buttons
                     >
-                        {props.preferences['enable-debugger'] === true &&
-                            <Button
-                                className={styles.stageButton}
-                                onClick={onOpenDebugger}
-                            >
-                                <img
-                                    alt={props.intl.formatMessage(messages.openDebuggerMessage)}
-                                    className={styles.stageButtonIcon}
-                                    draggable={false}
-                                    src={debuggerIcon}
-                                />
-                            </Button>
+                        {props.prefs['enable-debugger'] === true &&
+                            <div>
+                                <Button
+                                    className={classNames(styles.debuggerButton, styles.stageButton)}
+                                    onClick={onOpenDebugger}
+                                >
+                                    <img
+                                        alt={props.intl.formatMessage(messages.openDebuggerMessage)}
+                                        className={styles.stageButtonIcon}
+                                        draggable={false}
+                                        src={debuggerIcon}
+                                    />
+                                </Button>
+                            </div>
                         }
                         {stageControls}
                         <div>

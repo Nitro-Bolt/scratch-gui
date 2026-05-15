@@ -473,7 +473,7 @@ const EditorSettingsModal = props => {
                     }}
                 />
                 <BooleanSetting
-                    value={!!props.preferences['enable-debugger']}
+                    value={!!props.prefs['enable-debugger']}
                     label={<FormattedMessage
                         id="nb.editorSettings.enableDebugger"
                         defaultMessage="Enable debugger"
@@ -483,7 +483,7 @@ const EditorSettingsModal = props => {
                         defaultMessage="Enables a debugger panel and extension that allows you to inspect logs and performance."
                     />}
                     onChange={e => {
-                        props.onSetPreference('enable-debugger', e.target.checked);
+                        props.setPref('enable-debugger', e.target.checked);
                     }}
                 />
                 <div className={styles.header}>

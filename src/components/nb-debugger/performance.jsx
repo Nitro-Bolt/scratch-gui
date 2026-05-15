@@ -39,6 +39,20 @@ const PerformanceTab = React.memo(props => {
 
     const segmentWidth = data.length > 1 ? 100 / (data.length - 1) : 100;
 
+    const chartQuantities = (amount = 5) => {
+        const labels = Array.from({length: amount}, (_, i) => {
+            const fraction = (amount - 1 - i) / (amount - 1);
+            const value = Math.round(max * fraction);
+            return props.chartIndex === 2 ? formatBytes(value) : value;
+        });
+    
+        return (
+            <div className={styles.chartQuantities}>
+                {labels.map((val, i) => <p key={i}>{val}</p>)}
+            </div>
+        );
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.buttons}>
@@ -59,10 +73,12 @@ const PerformanceTab = React.memo(props => {
                 />
             </div>
             <div className={styles.chart}>
+                {chartQuantities()}
                 <Sparklines
                     data={data}
                     max={max}
                     min={0}
+                    height={115}
                 >
                     <SparklinesLine color="var(--looks-secondary)" />
                 </Sparklines>
