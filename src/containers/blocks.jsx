@@ -24,7 +24,6 @@ import {injectExtensionBlockTheme, injectExtensionCategoryTheme} from '../lib/th
 
 import {connect} from 'react-redux';
 import {updateToolbox} from '../reducers/toolbox';
-import {setHiddenCategories} from '../reducers/hidden-categories';
 import {activateColorPicker} from '../reducers/color-picker';
 import {
     closeExtensionLibrary,
@@ -454,7 +453,7 @@ class Blocks extends React.Component {
         this.workspace.glowBlock(data.id, false);
     }
     onVisualReport (data) {
-        this.workspace.reportValue(data.id, data.value);
+        this.workspace.reportValue(data.id, data.value, data.error);
     }
     getToolboxXML () {
         // Use try/catch because this requires digging pretty deep into the VM
@@ -478,7 +477,7 @@ class Blocks extends React.Component {
                 stageCostumes[stageCostumes.length - 1].name,
                 targetSounds.length > 0 ? targetSounds[targetSounds.length - 1].name : '',
                 this.props.theme.getBlockColors(),
-                this.props.hiddenCategories
+                this.props.hiddenCategories || []
             );
         } catch {
             return null;
@@ -845,7 +844,7 @@ const mapStateToProps = state => ({
     customProceduresVisible: state.scratchGui.customProcedures.active,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
     useCatBlocks: isTimeTravel2020(state),
-    hiddenCategories: state.scratchGui.hiddenCategories
+    hiddenCategories: state.scratchGui.preferences['hidden-categories']
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -23,6 +23,8 @@ class SpriteSelectorItem extends React.PureComponent {
             'handleDuplicate',
             'handleExport',
             'handleRename',
+            'handleMoveToTop',
+            'handleMoveToBottom',
             'handleMouseEnter',
             'handleMouseLeave',
             'handleMouseDown',
@@ -86,8 +88,9 @@ class SpriteSelectorItem extends React.PureComponent {
     }
     handleClick (e) {
         e.preventDefault();
+        const shouldGoToFront = e.shiftKey;
         if (!this.noClick) {
-            this.props.onClick(this.props.id);
+            this.props.onClick(this.props.id, shouldGoToFront);
         }
     }
     handleDelete (e) {
@@ -106,6 +109,14 @@ class SpriteSelectorItem extends React.PureComponent {
         e.stopPropagation();
         this.props.onRenameButtonClick(this.props.id);
     }
+    handleMoveToTop (e) {
+        e.stopPropagation();
+        this.props.onMoveToTopButtonClick(this.props.id);
+    }
+    handleMoveToBottom (e) {
+        e.stopPropagation();
+        this.props.onMoveToBottomButtonClick(this.props.id);
+    }
     handleMouseLeave () {
         this.props.dispatchSetHoveredSprite(null);
     }
@@ -122,11 +133,14 @@ class SpriteSelectorItem extends React.PureComponent {
             asset,
             id,
             index,
+            totalItems,
             onClick,
             onDeleteButtonClick,
             onDuplicateButtonClick,
             onExportButtonClick,
             onRenameButtonClick,
+            onMoveToTopButtonClick,
+            onMoveToBottomButtonClick,
             dragPayload,
             receivedBlocks,
             costumeURL,
@@ -144,6 +158,8 @@ class SpriteSelectorItem extends React.PureComponent {
                 onDuplicateButtonClick={onDuplicateButtonClick ? this.handleDuplicate : null}
                 onExportButtonClick={onExportButtonClick ? this.handleExport : null}
                 onRenameButtonClick={onRenameButtonClick ? this.handleRename : null}
+                onMoveToTopButtonClick={onMoveToTopButtonClick && index !== 0 ? this.handleMoveToTop : null}
+                onMoveToBottomButtonClick={onMoveToBottomButtonClick && index !== totalItems - 1 ? this.handleMoveToBottom : null}
                 onMouseDown={this.handleMouseDown}
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
@@ -166,6 +182,7 @@ SpriteSelectorItem.propTypes = {
     id: PropTypes.any,
     index: PropTypes.number,
     // eslint-disable-next-line react/forbid-prop-types
+    totalItems: PropTypes.number,
     name: PropTypes.any,
     onClick: PropTypes.func,
     onDeleteButtonClick: PropTypes.func,
@@ -173,6 +190,8 @@ SpriteSelectorItem.propTypes = {
     onDrag: PropTypes.func.isRequired,
     onDuplicateButtonClick: PropTypes.func,
     onExportButtonClick: PropTypes.func,
+    onMoveToTopButtonClick: PropTypes.func,
+    onMoveToBottomButtonClick: PropTypes.func,
     receivedBlocks: PropTypes.bool.isRequired,
     selected: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired

@@ -1,10 +1,12 @@
+/* eslint-disable max-len */
+/* eslint-disable react/jsx-max-props-per-line */
 import React from 'react';
 import styles from './variables-tab.css';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import dropdownCaret from './dropdown-caret.svg';
 import {safeStringify} from '../../lib/tw-safe-stringify.js';
+import RichDropdown from '../rich-dropdown/dropdown.jsx';
 
 const messages = defineMessages({
     forThisSprite: {
@@ -32,87 +34,110 @@ const messages = defineMessages({
         description:
             'Label for a clone followed by a space. Will be used like: "Clone 1", "Clone 2", etc...',
         defaultMessage: 'Clone '
+    },
+    sendBroadcast: {
+        id: 'gui.variableManager.sendBroadcast',
+        description: 'Label for a button used to send broadcasts',
+        defaultMessage: 'Send Broadcast'
     }
+
 });
 
-const _dropdownCaretElement = isCollapsed => (
-    <img
-        src={dropdownCaret}
-        draggable={false}
-        width={8}
-        height={5}
-        style={{
-            transform: `rotate(${isCollapsed ? -90 : 0}deg)`,
-            filter: 'var(--filter-icon-black)',
-            verticalAlign: 'middle'
-        }}
-    />
-);
-
 const Variables = ({
-    variables, optCloneId, optNameReadonly = false, intl, editingVariable, handleInputChange, handleKeyDown, handleSubmitEditedVariable
+    intl,
+    variables,
+    editingVariable,
+    setEditingVariable,
+    onSendBroadcast,
+    onSubmitEdit,
+    onKeyDown,
+    optNameReadonly = false
 }) => {
     const final = [];
     for (const id in variables) {
         const currentVar = variables[id];
         const isEditingCurrentVar = editingVariable.id === currentVar.id;
 
-        const currentVarName = isEditingCurrentVar && editingVariable.type === 'name' ?
+        const name = isEditingCurrentVar && editingVariable.inputType === 'name' ?
             editingVariable.value :
             currentVar.name;
-        const currentVarValue = isEditingCurrentVar && editingVariable.type === 'value' ?
+        const value = isEditingCurrentVar && editingVariable.inputType === 'value' ?
             editingVariable.value :
             currentVar.value;
 
-        const valueHandlers = {
-            onChange: e => handleInputChange(e, 'value', currentVar),
-            onKeyDown: e => handleKeyDown(e, 'value', currentVar, optCloneId),
-            onBlur: e => handleSubmitEditedVariable(e, currentVar, optCloneId)
-
+        const handleOnNameChange = event => {
+            setEditingVariable('name', currentVar.type, id, event.target.value);
         };
 
-        const nameHandlers = {
-            onChange: e => handleInputChange(e, 'name', currentVar),
-            onKeyDown: e => handleKeyDown(e, 'name', currentVar, optCloneId),
-            onBlur: e => handleSubmitEditedVariable(e, currentVar, optCloneId)
-
+        const handleOnValueChange = event => {
+            setEditingVariable('value', currentVar.type, id, event.target.value);
         };
+
         switch (currentVar.type) {
-        case 'list':
+        case 'broadcast_msg':
             final.push(
                 <div
+                    className={styles.variableItem}
                     key={id}
-                    style={{
-                        border: '1px solid var(--ui-black-transparent)',
-                        padding: '0.5rem',
-                        marginBottom: '0.5rem',
-                        borderLeftWidth: '2px'
-                    }}
+                    style={{gridTemplateColumns: '1fr auto'}}
                 >
-                    <div
-                        className={styles.variableItem}
-                        style={{
-                            gridTemplateRows: 'auto auto',
-                            gridTemplateColumns: 'auto'
-                        }}
-                    >
-                        <input
-                            value={currentVarName}
-                            onChange={nameHandlers.onChange}
-                            onKeyDown={nameHandlers.onKeyDown}
-                            onBlur={nameHandlers.onBlur}
-                            readOnly={optNameReadonly}
-                        />
-                        <textarea
-                            rows="5"
-                            value={
-                                Array.isArray(currentVarValue) ? currentVarValue.map(i => (safeStringify(i))).join('\n') : currentVarValue
-                            }
-                            onChange={valueHandlers.onChange}
-                            onKeyDown={valueHandlers.onKeyDown}
-                            onBlur={valueHandlers.onBlur}
-                        />
-                    </div>
+                    <input
+                        value={name}
+                        onChange={handleOnNameChange}
+                        onBlur={onSubmitEdit}
+                        onKeyDown={onKeyDown}
+
+                        // TODO: Make renaming work when "rename broadcasts" addon is nativized
+                        readOnly
+                    />
+                    <button onClick={event => onSendBroadcast(event, id)}>
+                        {intl.formatMessage(messages.sendBroadcast)}
+                    </button>
+                </div>
+
+            );
+            break;
+        case 'list':
+            final.push(
+                <div key={id} className={classNames(styles.variableItem, styles.listItem)}>
+                    <input
+                        value={name}
+                        onChange={handleOnNameChange}
+                        onBlur={onSubmitEdit}
+                        onKeyDown={onKeyDown}
+                        readOnly={optNameReadonly}
+                    />
+                    <textarea
+                        rows="5"
+                        value={
+                            Array.isArray(value) ? value.map(i => (safeStringify(i))).join('\n') : value
+                        }
+                        onChange={handleOnValueChange}
+                        onBlur={onSubmitEdit}
+                        onKeyDown={onKeyDown}
+                    />
+                </div>
+            );
+            break;
+        case 'table':
+            final.push(
+                <div key={id} className={classNames(styles.variableItem, styles.listItem)}>
+                    <input
+                        value={name}
+                        onChange={handleOnNameChange}
+                        onBlur={onSubmitEdit}
+                        onKeyDown={onKeyDown}
+                        readOnly={optNameReadonly}
+                    />
+                    <textarea
+                        rows="5"
+                        value={
+                            Array.isArray(value) ? value.map(i => i.join(',')).join('\n') : value
+                        }
+                        onChange={handleOnValueChange}
+                        onBlur={onSubmitEdit}
+                        onKeyDown={onKeyDown}
+                    />
                 </div>
             );
             break;
@@ -123,17 +148,17 @@ const Variables = ({
                     key={id}
                 >
                     <input
-                        value={currentVarName}
-                        onChange={nameHandlers.onChange}
-                        onKeyDown={nameHandlers.onKeyDown}
-                        onBlur={nameHandlers.onBlur}
+                        value={name}
+                        onChange={handleOnNameChange}
+                        onBlur={onSubmitEdit}
+                        onKeyDown={onKeyDown}
                         readOnly={optNameReadonly}
                     />
                     <input
-                        value={safeStringify(currentVarValue)}
-                        onChange={valueHandlers.onChange}
-                        onKeyDown={valueHandlers.onKeyDown}
-                        onBlur={valueHandlers.onBlur}
+                        value={safeStringify(value)}
+                        onChange={handleOnValueChange}
+                        onBlur={onSubmitEdit}
+                        onKeyDown={onKeyDown}
                     />
                 </div>
             );
@@ -147,34 +172,32 @@ const Variables = ({
     );
 };
 
-const VariableDropdown = function ({label, children}) {
-    const [isCollapsed, setIsCollapsed] = React.useState(false);
-
-    return (
-        <div
-            className={classNames(styles.variableDropdown, {
-                [styles.variableDropdownCollapsed]: isCollapsed
-            })}
-        >
-            <div
-                className={styles.variableDropdownHeader}
-                onClick={() => setIsCollapsed(!isCollapsed)}
-            >
-                {_dropdownCaretElement(isCollapsed)}
-                <span>{label}</span>
-            </div>
-            {isCollapsed ? (
-                ''
-            ) : (
-                <div className={styles.variableDropdownBody}>{children}</div>
-            )}
-        </div>
-    );
+Variables.propTypes = {
+    intl: intlShape,
+    variables: PropTypes.shape({
+        [PropTypes.string]: PropTypes.shape({
+            name: PropTypes.string,
+            id: PropTypes.string,
+            value: PropTypes.any
+        })
+    }),
+    editingVariable: PropTypes.shape({
+        inputType: PropTypes.oneOf(['name', 'value']),
+        varType: PropTypes.string,
+        id: PropTypes.string,
+        value: PropTypes.string
+    }),
+    setEditingVariable: PropTypes.func,
+    onSendBroadcast: PropTypes.func,
+    onKeyDown: PropTypes.func,
+    onSubmitEdit: PropTypes.func,
+    optNameReadonly: PropTypes.bool
 };
+
 
 const LocalVariables = ({isStage, label, clones, variables}) => (
     isStage ? '' : (
-        <VariableDropdown label={label}>
+        <RichDropdown label={label}>
             <div className={styles.localVariablesSelector}>
                 <div className={styles.clonesSelectorItemsWrapper}>
                     { clones }
@@ -183,7 +206,7 @@ const LocalVariables = ({isStage, label, clones, variables}) => (
                     { variables }
                 </div>
             </div>
-        </VariableDropdown>
+        </RichDropdown>
     )
 );
 
@@ -202,24 +225,26 @@ const VariableTab = props => {
     return (
         <div className={styles.wrapper}>
             <div className={styles.container}>
-                <VariableDropdown
+                <RichDropdown
                     label={props.intl.formatMessage(messages.forAllSprites)}
                 >
                     <Variables
-                        variables={props.globalVariables}
                         intl={props.intl}
+                        variables={props.globalVariables}
                         editingVariable={props.editingVariable}
-                        handleInputChange={props.handleInputChange}
-                        handleKeyDown={props.handleKeyDown}
-                        handleSubmitEditedVariable={props.handleSubmitEditedVariable}
+                        setEditingVariable={props.setEditingVariable}
+                        onSendBroadcast={props.handleSendBroadcast}
+                        onKeyDown={props.handleKeyDown}
+                        onSubmitEdit={props.handleSubmitEdit}
                     />
-                </VariableDropdown>
+                </RichDropdown>
 
                 <LocalVariables
                     isStage={props.isStage}
                     label={props.intl.formatMessage(messages.forThisSprite)}
                     clones={props.clones.map(({id}, i) => (
                         <div
+                            key={id}
                             className={classNames(styles.clonesSelectorItem, {
                                 [styles.isSelected]: selectedClone === i
                             })}
@@ -227,7 +252,6 @@ const VariableTab = props => {
                                 props.handleSpriteHighlighting(id);
                                 setSelectedClone(i);
                             }}
-                            key={id}
                         >
                             <span className={styles.variableName}>
                                 {i === 0 ?
@@ -240,14 +264,13 @@ const VariableTab = props => {
                     ))}
                     variables={
                         <Variables
-                            variables={selectedCloneObject.variables}
-                            optCloneId={selectedCloneObject.id}
-                            optNameReadonly={props.clones.length > 1}
                             intl={props.intl}
+                            variables={selectedCloneObject.variables}
                             editingVariable={props.editingVariable}
-                            handleInputChange={props.handleInputChange}
-                            handleKeyDown={props.handleKeyDown}
-                            handleSubmitEditedVariable={props.handleSubmitEditedVariable}
+                            setEditingVariable={props.setEditingVariable}
+                            onSubmitEdit={props.handleSubmitEdit}
+                            onKeyDown={event => props.handleKeyDown(event, selectedCloneObject.id)}
+                            optNameReadonly={props.clones.length > 1}
                         />
                     }
                 />
@@ -277,14 +300,16 @@ VariableTab.propTypes = {
         })
     ),
     editingVariable: PropTypes.shape({
+        inputType: PropTypes.oneOf(['name', 'value']),
+        varType: PropTypes.string,
         id: PropTypes.string,
-        type: PropTypes.oneOf(['name', 'value']),
         value: PropTypes.string
     }),
     handleSpriteHighlighting: PropTypes.func,
-    handleInputChange: PropTypes.func,
+    setEditingVariable: PropTypes.func,
+    handleSendBroadcast: PropTypes.func,
     handleKeyDown: PropTypes.func,
-    handleSubmitEditedVariable: PropTypes.func
+    handleSubmitEdit: PropTypes.func
 };
 
 export default injectIntl(VariableTab);

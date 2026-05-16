@@ -71,6 +71,7 @@ class Controls extends React.Component {
         const {
             vm, // eslint-disable-line no-unused-vars
             isStarted, // eslint-disable-line no-unused-vars
+            preferences,
             projectRunning,
             projectPaused,
             turbo,
@@ -83,6 +84,7 @@ class Controls extends React.Component {
                 compilerEnabled={this.state.compilerEnabled}
                 turbo={turbo}
                 paused={projectPaused}
+                preferences={preferences}
                 onGreenFlagClick={this.handleGreenFlagClick}
                 onPauseClick={this.handlePauseClick}
                 onStepClick={this.handleStepClick}
@@ -94,6 +96,7 @@ class Controls extends React.Component {
 
 Controls.propTypes = {
     isStarted: PropTypes.bool.isRequired,
+    preferences: PropTypes.object.isRequired,
     projectRunning: PropTypes.bool.isRequired,
     projectPaused: PropTypes.bool.isRequired,
     turbo: PropTypes.bool.isRequired,
@@ -105,6 +108,7 @@ Controls.propTypes = {
 
 const mapStateToProps = state => ({
     isStarted: state.scratchGui.vmStatus.started,
+    preferences: state.scratchGui.preferences,
     projectRunning: state.scratchGui.vmStatus.running,
     projectPaused: state.scratchGui.vmStatus.paused,
     framerate: state.scratchGui.tw.framerate,

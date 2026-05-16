@@ -883,6 +883,8 @@ const json = function (colors) {
         </block>
         <block type="json_merge_array">
         </block>
+        <block type="json_reverse_array">
+        </block>
         <block type="json_has_item">
             <value name="ITEM">
                 <shadow type="text">

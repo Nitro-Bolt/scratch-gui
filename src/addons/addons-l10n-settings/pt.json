@@ -262,7 +262,6 @@
     "disable-stage-drag-select/@name": "Atores não arrastáveis no editor",
     "move-to-top-bottom/@info-developer-tools": "Este addon fazia parte do addon \"ferramentas de desenvolvedor\" mas foi movido para cá.",
     "move-to-top-bottom/@name": "Mover fantasia ao topo ou ao fundo da lista",
-    "move-to-top-layer/@name": "Mover sprite para camada da frente",
     "disable-paste-offset/@description": "Cola itens copiados em sua posição original ao invés de movê-los no editor de fantasia.",
     "disable-paste-offset/@name": "Não mover itens colados",
     "block-duplicate/@description": "Duplique um script rapidamente arrastando-o enquanto segura a tecla Alt. Segure Ctrl junto para duplicar só um único bloco ao invés da pilha inteira conectada.",

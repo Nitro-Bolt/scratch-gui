@@ -276,7 +276,7 @@ class Backpack extends React.Component {
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
                 onToggle={this.props.host ? this.handleToggle : null}
-                prefs={this.props.prefs}
+                preferences={this.props.preferences}
             />
         );
     }
@@ -286,7 +286,7 @@ Backpack.propTypes = {
     intl: intlShape,
     host: PropTypes.string,
     token: PropTypes.string,
-    prefs: PropTypes.any,
+    preferences: PropTypes.object,
     username: PropTypes.string,
     vm: PropTypes.instanceOf(VM)
 };
@@ -313,6 +313,7 @@ const mapStateToProps = state => Object.assign(
     {
         dragInfo: state.scratchGui.assetDrag,
         vm: state.scratchGui.vm,
+        preferences: state.scratchGui.preferences,
         blockDrag: state.scratchGui.blockDrag
     },
     getTokenAndUsername(state)

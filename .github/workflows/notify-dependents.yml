@@ -1,0 +1,20 @@
+name: Notify Dependents
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+    inputs: {}
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger desktop update
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.CASCADE_PAT }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/Nitro-Bolt/desktop/dispatches \
+            -d '{"event_type":"upstream-updated","client_payload":{"source":"scratch-gui"}}'

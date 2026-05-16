@@ -6,7 +6,6 @@ import bindAll from 'lodash.bindall';
 import SecurityManagerModal from '../components/tw-security-manager-modal/security-manager-modal.jsx';
 import SecurityModals from '../lib/tw-security-manager-constants';
 import {getPersistedUnsandboxed, setPersistedUnsandboxed} from '../lib/tw-persisted-unsandboxed.js';
-import {getNBPreference, unrestrictUnsandboxed} from '../lib/nb-preferences.js';
 
 /* eslint-disable require-atomic-updates */
 
@@ -19,16 +18,12 @@ const manuallyTrustExtension = url => {
     extensionsTrustedByUser.add(url);
 };
 
-const shouldTrustAllExtensions = () => getNBPreference(unrestrictUnsandboxed, false) === true;
-
 /**
  * Trusted extensions are loaded automatically and without a sandbox.
  * @param {string} url URL as a string.
  * @returns {boolean} True if the extension can is trusted
  */
 const isTrustedExtension = url => (
-    shouldTrustAllExtensions() ||
-
     // Always trust our official extension repostiory.
     url.startsWith('https://extensions.nitrobolt.org/') ||
     url.startsWith('https://extensions.turbowarp.org/') ||
@@ -57,7 +52,6 @@ const embedHostsTrustedByUser = new Set();
  */
 const isAlwaysTrustedForFetching = parsed => (
     // If we would trust loading an extension from here, we can trust loading resources too.
-    isTrustedExtension(parsed.href) ||
 
     // Any TurboWarp service such as trampoline
     parsed.origin === 'https://turbowarp.org' ||
@@ -239,6 +233,10 @@ class TWSecurityManagerComponent extends React.Component {
      * @returns {string} The VM worker mode to use
      */
     getSandboxMode (url) {
+        if (this.shouldTrustAllExtensions()) {
+            log.info(`Loading extension ${url} automatically without security prompt`);
+            return 'unsandboxed';
+        }
         if (isTrustedExtension(url)) {
             log.info(`Loading extension ${url} unsandboxed`);
             return 'unsandboxed';
@@ -256,12 +254,16 @@ class TWSecurityManagerComponent extends React.Component {
         }));
     }
 
+    shouldTrustAllExtensions () {
+        return this.props.preferences['unrestrict-sandbox'] === true;
+    }
+
     /**
      * @param {string} url The extension's URL
      * @returns {Promise<boolean>} Whether the extension can be loaded
      */
     async canLoadExtensionFromProject (url) {
-        if (shouldTrustAllExtensions()) {
+        if (this.shouldTrustAllExtensions()) {
             log.info(`Loading extension ${url} automatically without security prompt`);
             return true;
         }
@@ -299,7 +301,7 @@ class TWSecurityManagerComponent extends React.Component {
         if (!parsed) {
             return false;
         }
-        if (isAlwaysTrustedForFetching(parsed)) {
+        if (this.shouldTrustAllExtensions() || isAlwaysTrustedForFetching(parsed)) {
             return true;
         }
         const {showModal, releaseLock} = await this.acquireModalLock();
@@ -473,6 +475,7 @@ TWSecurityManagerComponent.propTypes = {
             ).isRequired
         }).isRequired
     }).isRequired,
+    preferences: PropTypes.object,
     securityManager: PropTypes.shape(Object.fromEntries(SECURITY_MANAGER_METHODS.map(i => [i, PropTypes.func])))
 };
 
@@ -481,7 +484,8 @@ TWSecurityManagerComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-    vm: state.scratchGui.vm
+    vm: state.scratchGui.vm,
+    preferences: state.scratchGui.preferences
 });
 
 const mapDispatchToProps = () => ({});

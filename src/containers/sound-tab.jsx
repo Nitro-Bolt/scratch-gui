@@ -49,6 +49,8 @@ class SoundTab extends React.Component {
             'handleDeleteSound',
             'handleDuplicateSound',
             'handleExportSound',
+            'handleMoveToTop',
+            'handleMoveToBottom',
             'handleNewSound',
             'handleSurpriseSound',
             'handleFileUploadClick',
@@ -101,6 +103,17 @@ class SoundTab extends React.Component {
         this.props.vm.duplicateSound(soundIndex).then(() => {
             this.setState({selectedSoundIndex: soundIndex + 1});
         });
+    }
+
+    handleMoveToTop (soundIndex) {
+        this.props.vm.editingTarget.reorderSound(soundIndex, 0);
+        this.setState({selectedSoundIndex: 0});
+    }
+
+    handleMoveToBottom (soundIndex) {
+        const lastSoundIndex = this.props.vm.editingTarget.sprite.sounds.length - 1;
+        this.props.vm.editingTarget.reorderSound(soundIndex, lastSoundIndex);
+        this.setState({selectedSoundIndex: lastSoundIndex});
     }
 
     handleNewSound () {
@@ -260,6 +273,8 @@ class SoundTab extends React.Component {
                 onDuplicateClick={this.handleDuplicateSound}
                 onExportClick={this.handleExportSound}
                 onItemClick={this.handleSelectSound}
+                onMoveToTopClick={this.handleMoveToTop}
+                onMoveToBottomClick={this.handleMoveToBottom}
             >
                 {sprite.sounds && sprite.sounds[this.state.selectedSoundIndex] ? (
                     isSupported ? (
