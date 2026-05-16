@@ -34,6 +34,8 @@ import reduxInstance from './redux';
 
 /* eslint-disable no-console */
 
+const noop = () => {};
+
 const escapeHTML = str => str.replace(/([<>'"&])/g, (_, l) => `&#${l.charCodeAt(0)};`);
 const kebabCaseToCamelCase = str => str.replace(/-([a-z])/g, g => g[1].toUpperCase());
 
@@ -212,6 +214,9 @@ class Tab extends EventTargetShim {
         this.traps = {
             get vm () {
                 return reduxInstance.state.scratchGui.vm;
+            },
+            get redux () {
+                return reduxInstance;
             },
             getBlockly: () => {
                 if (AddonHooks.blockly) {
@@ -685,6 +690,16 @@ class Tab extends EventTargetShim {
         return modal.prompt(this, ...args);
     }
 
+    // For custom addons
+    // todo: these need better names
+    betterConfirm (message) {
+        return modal.confirm(this, 'Confirm', message, {useEditorClasses: true});
+    }
+
+    betterPrompt (message, defaultValue) {
+        return modal.prompt(this, 'Prompt', message, defaultValue, {useEditorClasses: true});
+    }
+
     recolorable () {
         // this is some pretty awful code that makes a *lot* of assumptions about how addons work
 
@@ -740,10 +755,11 @@ class Self extends EventTargetShim {
 }
 
 class AddonRunner {
-    constructor (id, manifest) {
+    constructor (id, manifest, isCustom) {
         AddonRunner.instances.push(this);
 
         this.id = id;
+        this.isCustom = isCustom;
         this.manifest = manifest;
         this.messageCache = {};
         this.loading = true;
@@ -753,17 +769,55 @@ class AddonRunner {
          */
         this.resources = null;
 
-        this.publicAPI = {
-            global,
-            console,
-            addon: {
-                tab: new Tab(id),
-                settings: new Settings(id, manifest),
-                self: new Self(id, this.getResource.bind(this))
-            },
-            msg: this.msg.bind(this),
-            safeMsg: this.safeMsg.bind(this)
-        };
+        if (isCustom) {
+            // Provide a slightly more developer-friendly API for custom addons
+            const tab = new Tab(id);
+            this.publicAPI = {
+                addon: {
+                    settings: new Settings(id, manifest),
+                    traps: tab.traps,
+                    editorDirection: tab.direction,
+                    editorMode: tab.editorMode,
+                    waitForElement: tab.waitForElement.bind(tab),
+                    createModal: tab.createModal.bind(tab),
+                    confirm: tab.betterConfirm.bind(tab),
+                    prompt: tab.betterPrompt.bind(tab),
+                    getResource: this.getResource.bind(this),
+                    onEnabled: noop,
+                    onDisabled: noop,
+                }
+            };
+            console.log(this.publicAPI);
+        } else {
+            this.publicAPI = {
+                global,
+                console,
+                addon: {
+                    tab: new Tab(id),
+                    settings: new Settings(id, manifest),
+                    self: new Self(id, this.getResource.bind(this))
+                },
+                msg: this.msg.bind(this),
+                safeMsg: this.safeMsg.bind(this)
+            };
+        }
+    }
+
+    // Functions to handle API changes between regular and custom addons
+    getDisabled () {
+        if (this.isCustom) {
+            return this.publicAPI.addon.disabled;
+        } else {
+            return this.publicAPI.addon.self.disabled;
+        }
+    }
+
+    setDisabled (value) {
+        if (this.isCustom) {
+            this.publicAPI.addon.disabled = value;
+        } else {
+            this.publicAPI.addon.self.disabled = value;
+        }
     }
 
     _msg (key, vars, handler) {
@@ -900,9 +954,13 @@ class AddonRunner {
         // This order is important. We need to update styles before calling the addon's dynamic
         // toggle event. We also need to update `disabled` before we can update styles because
         // the ConditionalStyle callbacks are implemented using the API.
-        this.publicAPI.addon.self.disabled = false;
+        this.setDisabled(false);
         this.updateAllStyles();
-        this.publicAPI.addon.self.dispatchEvent(new CustomEvent('reenabled'));
+        if (this.isCustom) {
+            this.publicAPI.addon.onEnabled();
+        } else {
+            this.publicAPI.addon.self.dispatchEvent(new CustomEvent('reenabled'));
+        }
     }
 
     dynamicDisable () {
@@ -911,9 +969,13 @@ class AddonRunner {
         }
 
         // See comment in dynamicEnable().
-        this.publicAPI.addon.self.disabled = true;
+        this.setDisabled(true);
         this.updateAllStyles();
-        this.publicAPI.addon.self.dispatchEvent(new CustomEvent('disabled'));
+        if (this.isCustom) {
+            this.publicAPI.addon.onDisabled();
+        } else {
+            this.publicAPI.addon.self.dispatchEvent(new CustomEvent('disabled'));
+        }
     }
 
     async run () {
@@ -944,7 +1006,7 @@ class AddonRunner {
                 const userstyle = this.manifest.userstyles[i];
                 const userstylePrecedence = baseStylePrecedence + i;
                 const userstyleCondition = () => (
-                    !this.publicAPI.addon.self.disabled &&
+                    !this.getDisabled() &&
                     SettingsStore.evaluateCondition(this.id, userstyle.if)
                 );
 
@@ -958,7 +1020,7 @@ class AddonRunner {
 
         const disabledCSS = `.${getDisplayNoneWhileDisabledClass(this.id)}{display:none !important;}`;
         const disabledStylesheet = conditionalStyles.create(`_disabled/${this.id}`, disabledCSS);
-        disabledStylesheet.addDependent(this.id, baseStylePrecedence, () => this.publicAPI.addon.self.disabled);
+        disabledStylesheet.addDependent(this.id, baseStylePrecedence, () => this.getDisabled());
 
         this.updateCssVariables();
 
@@ -967,14 +1029,15 @@ class AddonRunner {
                 if (!SettingsStore.evaluateCondition(userscript.if)) {
                     continue;
                 }
-                if (userscript instanceof ArrayBuffer) {
+                if (this.isCustom) {
+                    // Resources are stored as ArrayBuffers
                     const str = new TextDecoder().decode(userscript);
-                    const fn = new Function('return (' + str + ')');
-                    fn()(this.publicAPI);
-                    continue;
+                    const fn = new Function('addon', str);
+                    fn(this.publicAPI.addon);
+                } else {
+                    const fn = this.resources[userscript.url];
+                    fn(this.publicAPI);
                 }
-                const fn = this.resources[userscript.url];
-                fn(this.publicAPI);
             }
         }
 
@@ -983,8 +1046,8 @@ class AddonRunner {
 }
 AddonRunner.instances = [];
 
-const runAddon = (addonId, manifest) => {
-    const runner = new AddonRunner(addonId, manifest);
+const runAddon = (addonId, manifest, isCustom) => {
+    const runner = new AddonRunner(addonId, manifest, isCustom);
     runner.run();
 };
 
@@ -998,7 +1061,7 @@ SettingsStore.addEventListener('addon-changed', e => {
         if (runner) {
             runner.dynamicEnable();
         } else {
-            runAddon(addonId, addons[addonId]);
+            runAddon(addonId, addons[addonId], false);
         }
     } else if (e.detail.dynamicDisable) {
         if (runner) {
@@ -1018,7 +1081,7 @@ SettingsStore.addEventListener('setting-changed', e => {
             if (runner) {
                 runner.dynamicEnable();
             } else {
-                runAddon(addonId, addons[addonId]);
+                runAddon(addonId, addons[addonId], false);
             }
         } else if (runner) {
             runner.dynamicDisable();
@@ -1031,7 +1094,7 @@ for (const id of Object.keys(addons)) {
     if (!SettingsStore.getAddonEnabled(id)) {
         continue;
     }
-    runAddon(id, addons[id]);
+    runAddon(id, addons[id], false);
 }
 
 getCustomAddons().then(customAddons => {
@@ -1039,6 +1102,6 @@ getCustomAddons().then(customAddons => {
         if (!SettingsStore.getAddonEnabled(customAddon.id)) {
             continue;
         }
-        runAddon(customAddon.id, customAddon);
+        runAddon(customAddon.id, customAddon, true);
     }
 });

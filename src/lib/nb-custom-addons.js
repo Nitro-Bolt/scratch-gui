@@ -68,8 +68,10 @@ const loadAddon = async file => {
     const manifestString = await zip.file('manifest.json').async('string');
     const manifest = JSON.parse(manifestString);
 
+    let userscriptPaths = [];
     manifest.userscripts = await Promise.all(
         manifest.userscripts.map(userscript => {
+            userscriptPaths.push(userscript.url);
             const file = zip.file(userscript.url);
             return file.async('arraybuffer');
         })
@@ -78,9 +80,12 @@ const loadAddon = async file => {
     manifest.resources = Object.create(null);
     await Promise.all(
         Object.entries(zip.files).map(async ([path, file]) => {
-            const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-            console.debug(path, normalizedPath, file);
-            manifest.resources[path] = await file.async('arraybuffer');
+            if (
+                !userscriptPaths.includes(path) &&
+                path !== 'manifest.json' &&
+                // Zip file's made with macOS can include these useless files
+                !path.startsWith('__MACOSX')
+            ) manifest.resources[path] = await file.async('arraybuffer');
         })
     );
 
