@@ -45,6 +45,9 @@ class Controls extends React.Component {
                 }
             }
         } else {
+            if (this.props.vm.runtime.paused) {
+                this.props.vm.runtime.resume();
+            }
             if (!this.props.isStarted) {
                 this.props.vm.start();
             }

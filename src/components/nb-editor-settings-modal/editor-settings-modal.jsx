@@ -485,7 +485,7 @@ const EditorSettingsModal = props => {
                         defaultMessage="Enables a debugger panel and extension that allows you to inspect logs and performance."
                     />}
                     onChange={e => {
-                        props.setPref('enable-debugger', e.target.checked);
+                        props.setPreference('enable-debugger', e.target.checked);
                     }}
                 />
                 <div className={styles.header}>
