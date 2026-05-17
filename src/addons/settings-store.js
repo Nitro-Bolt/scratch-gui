@@ -111,7 +111,7 @@ const asArray = v => {
 class SettingsStore extends EventTargetShim {
     constructor () {
         super();
-        this.addons = addons;
+        this.addons = {...addons};
         this.store = this.createEmptyStore();
         this.remote = false;
     }

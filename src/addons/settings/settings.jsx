@@ -35,7 +35,7 @@ import infoImage from './icons/info.svg';
 import trashImage from './icons/trash.svg';
 import TWFancyCheckbox from '../../components/tw-fancy-checkbox/checkbox.jsx';
 import styles from './settings.css';
-import { getCustomAddons, storeAddon, removeAddon, subscribeToCustomAddons, unsubscribeFromCustomAddons } from '../../lib/nb-custom-addons.js';
+import { getCustomAddons, storeAddon, removeAddon } from '../../lib/nb-custom-addons.js';
 import {detectTheme} from '../../lib/themes/themePersistance.js';
 import {applyGuiColors} from '../../lib/themes/guiHelpers.js';
 import {APP_NAME} from '../../lib/brand.js';
@@ -970,8 +970,10 @@ class AddonSettingsComponent extends React.Component {
         }
         // BroadcastChannel won't fire in the same browsing context
         window.addEventListener('addon-settings-changed', this.handleExternalSettingsChanged);
+
         // Load custom addons
-        subscribeToCustomAddons(this.handleCustomAddonsLoaded);
+        this._isMounted = true;
+        getCustomAddons().then(this.handleCustomAddonsLoaded);
     }
     componentDidUpdate (prevProps, prevState) {
         if (this.state.search !== prevState.search) {
@@ -979,24 +981,30 @@ class AddonSettingsComponent extends React.Component {
         }
     }
     componentWillUnmount () {
-        unsubscribeFromCustomAddons(this.handleCustomAddonsLoaded);
         SettingsStore.removeEventListener('setting-changed', this.handleSettingStoreChanged);
         document.body.removeEventListener('keydown', this.handleKeyDown);
         if (Channels.changeChannel) {
             Channels.changeChannel.removeEventListener('message', this.handleExternalSettingsChanged);
         }
         window.removeEventListener('addon-settings-changed', this.handleExternalSettingsChanged);
+        this._isMounted = false;
     }
     handleCustomAddonsLoaded (customAddons) {
-        this.setState(
-            Object.fromEntries(customAddons.map(item => 
-                [item.id, {
-                    enabled: SettingsStore.getAddonEnabled(item.id),
-                    dirty: false
-                }]
-            ))
-        );
-        this.setState({customAddons});
+        if (!this._isMounted) return;
+        const addonEntries = customAddons.map((item) => {
+            const addonState = {
+                enabled: SettingsStore.getAddonEnabled(item.id),
+                dirty: false
+            };
+            if (item.settings) {
+                for (const setting of item.settings) {
+                    addonState[setting.id] = SettingsStore.getAddonSetting(item.id, setting.id);
+                }
+            }
+            return [item.id, addonState];
+        });
+
+        this.setState({customAddons, ...Object.fromEntries(addonEntries)});
     }
     handleExternalSettingsChanged () {
         SettingsStore.readLocalStorage();

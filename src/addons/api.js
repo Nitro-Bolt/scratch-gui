@@ -786,8 +786,7 @@ class AddonRunner {
                     onEnabled: noop,
                     onDisabled: noop,
                 }
-            };
-            console.log(this.publicAPI);
+            }
         } else {
             this.publicAPI = {
                 global,
@@ -1070,7 +1069,7 @@ SettingsStore.addEventListener('addon-changed', e => {
     }
 });
 
-SettingsStore.addEventListener('setting-changed', e => {
+SettingsStore.addEventListener('setting-changed', async e => {
     const {addonId, settingId, reloadRequired, value} = e.detail;
     if (reloadRequired) {
         return;
@@ -1081,7 +1080,12 @@ SettingsStore.addEventListener('setting-changed', e => {
             if (runner) {
                 runner.dynamicEnable();
             } else {
-                runAddon(addonId, addons[addonId], false);
+                if (addons[addonId]) {
+                    runAddon(addonId, addons[addonId], false);
+                } else {
+                    const customAddons = await getCustomAddons();
+                    runAddon(addonId, customAddons.find(c => c.id === addonId), true);
+                }
             }
         } else if (runner) {
             runner.dynamicDisable();
