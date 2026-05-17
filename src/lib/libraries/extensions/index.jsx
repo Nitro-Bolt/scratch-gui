@@ -753,6 +753,16 @@ const menuItems = [
         featured: true
     },
     {
+        name: 'Keys+',
+        extensionId: 'https://raw.githubusercontent.com/Dinosaurmod/extensions/refs/heads/main/src/extensions/keys-plus-extension.js',
+        iconURL: 'https://raw.githubusercontent.com/Dinosaurmod/extensions/refs/heads/main/src/icons/keysPlus.png',
+        tags: ['categoryexpansion', 'dinosaurmod'],
+        description: 'Detect more keys when they are pressed or hit and make certain keys typable.',
+        extDeveloper: 'MrIncredibleMaker',
+        inspiredExt: 'Typable Tab Key Extension and More Keys Events (by julmik6478) Extension',
+        featured: true
+    },
+    {
         name: 'Tweening',
         extensionId: 'jgTween',
         credits: 'easings.net & Arrow',
@@ -892,6 +902,7 @@ const menuItems = [
         tags: ['turbowarp'],
         description: 'Create disposable runtime or thread variables.',
         insetIconURL: turbowarpIcon,
+        customInsetColor: '#ff4d4d',
         credits: 'LilyMakesThings',
         featured: true
     },
@@ -924,14 +935,6 @@ const menuItems = [
         customInsetColor: '#ff4d4d',
         tags: ['turbowarp'],
         description: 'Only render or stamp certain RGB channels.',
-        featured: true
-    },
-    {
-        name: 'Typable Tab Key',
-        extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/typable-tab-character.js',
-        iconURL: defaultExtensionIcon,
-        tags: ['dinosaurmod'],
-        description: 'Gives the ability of typing the tab character.',
         featured: true
     },
     {
@@ -1919,6 +1922,14 @@ if (IsLocal || IsLiveTests) {
             iconURL: 'https://extensions.turbowarp.org/images/fetch.svg',
             description: "get and post stuff, i guess.",
             featured: true,
+        },
+        {
+            name: 'Typable Tab Key',
+            extensionId: 'https://gabsthecuriouskid.github.io/DinosaurModExtensions/extensions/typable-tab-character.js',
+            iconURL: defaultExtensionIcon,
+            tags: ['dinosaurmod'],
+            description: 'Replaced by the Keys+ Extension. Gives the ability of typing the tab character.',
+            featured: true
         },
         {
             name: 'Easy Save',

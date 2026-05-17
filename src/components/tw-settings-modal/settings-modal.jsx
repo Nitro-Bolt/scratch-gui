@@ -417,7 +417,7 @@ const CustomStageSize = ({
                     />
                     <button
                         onClick={onStageSwapChange}
-                        className={styles.customStageSizeInput}
+                        className={classNames(styles.customStageSizeInput, styles.customStageSizeButtonDifferent)}
                         style={{
                             "width": "50px",
                             "borderRadius": "8px",
