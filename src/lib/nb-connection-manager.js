@@ -241,10 +241,31 @@ class NBConnectionManager extends EventEmitter {
     }
     this.username = username;
     this.peer = new Peer(connectionSettings ?? {
-      host: 'localhost',
-      port: 1296,
+      host: 'api.nitrobolt.org',
+      port: 80,
       path: '/peerjs',
-      debug: 3
+      debug: 3,
+      config: {
+        iceServers: [
+          {
+            urls: "turn:dellr630.derpygamer2142.com:3478", // temporary url
+            username: "nitrobolt",
+            credential: "somethingsecure"
+          },
+          {
+            urls: "stun:stun.l.google.com:19302"
+          },
+          { // additional default peerjs servers
+            urls: [
+              "turn:eu-0.turn.peerjs.com:3478",
+              "turn:us-0.turn.peerjs.com:3478",
+            ],
+            username: "peerjs",
+            credential: "peerjsp",
+          },
+        ],
+        sdpSemantics: "unified-plan"
+      }
     });
 
     this.peer.on('open', id => {
