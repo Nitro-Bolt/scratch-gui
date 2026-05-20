@@ -14,10 +14,12 @@ import modalReducer, {modalsInitialState} from './modals';
 import modeReducer, {modeInitialState} from './mode';
 import monitorReducer, {monitorsInitialState} from './monitors';
 import monitorLayoutReducer, {monitorLayoutInitialState} from './monitor-layout';
+import preferencesReducer, {preferencesInitialState} from './preferences.js';
 import projectChangedReducer, {projectChangedInitialState} from './project-changed';
 import projectStateReducer, {projectStateInitialState} from './project-state';
 import projectTitleReducer, {projectTitleInitialState} from './project-title';
 import fontsLoadedReducer, {fontsLoadedInitialState} from './fonts-loaded';
+import hiddenCategories from './hidden-categories';
 import restoreDeletionReducer, {restoreDeletionInitialState} from './restore-deletion';
 import stageSizeReducer, {stageSizeInitialState} from './stage-size';
 import targetReducer, {targetsInitialState} from './targets';
@@ -54,6 +56,7 @@ const guiInitialState = {
     modals: modalsInitialState,
     monitors: monitorsInitialState,
     monitorLayout: monitorLayoutInitialState,
+    preferences: preferencesInitialState,
     projectChanged: projectChangedInitialState,
     projectState: projectStateInitialState,
     projectTitle: projectTitleInitialState,
@@ -159,11 +162,13 @@ const guiReducer = combineReducers({
     micIndicator: micIndicatorReducer,
     modals: modalReducer,
     monitors: monitorReducer,
+    preferences: preferencesReducer,
     monitorLayout: monitorLayoutReducer,
     projectChanged: projectChangedReducer,
     projectState: projectStateReducer,
     projectTitle: projectTitleReducer,
     fontsLoaded: fontsLoadedReducer,
+    hiddenCategories,
     restoreDeletion: restoreDeletionReducer,
     targets: targetReducer,
     theme: themeReducer,

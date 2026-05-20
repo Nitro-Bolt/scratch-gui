@@ -100,10 +100,15 @@ class TargetPane extends React.Component {
             downloadBlob(`${spriteName}.sprite3`, content);
         });
     }
-    handleSelectSprite (id) {
+    // This function is called in containers/sprite-selector-item
+    handleSelectSprite (id, shouldGoToFront) {
         this.props.vm.setEditingTarget(id);
         if (this.props.stage && id !== this.props.stage.id) {
             this.props.onHighlightTarget(id);
+
+            if (shouldGoToFront) {
+                this.props.vm.runtime.getTargetById(id).goToFront();
+            }
         }
     }
     async handleSurpriseSpriteClick () {
@@ -272,6 +277,7 @@ const mapStateToProps = state => ({
     hoveredTarget: state.scratchGui.hoveredTarget,
     isFullScreen: state.scratchGui.mode.isFullScreen,
     isRtl: state.locales.isRtl,
+    preferences: state.scratchGui.preferences,
     spriteLibraryVisible: state.scratchGui.modals.spriteLibrary,
     sprites: state.scratchGui.targets.sprites,
     stage: state.scratchGui.targets.stage,

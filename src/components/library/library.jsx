@@ -82,7 +82,9 @@ class LibraryComponent extends React.Component {
         }
     }
     handleSelect (id) {
-        this.handleClose();
+        if (!this._lastClickWasShift) {
+            this.handleClose();
+        }
         this.props.onItemSelected(this.getFilteredData()[id]);
     }
     readFavoritesFromStorage () {
@@ -303,6 +305,9 @@ class LibraryComponent extends React.Component {
                         [styles.withFilterBar]: this.props.filterable || this.props.tags
                     })}
                     ref={this.setFilteredDataRef}
+                    onClickCapture={e => {
+                        this._lastClickWasShift = e.shiftKey;
+                    }}
                 >
                     {filteredData && this.getFilteredData().map((dataItem, index) => (
                         dataItem === '---' ? (

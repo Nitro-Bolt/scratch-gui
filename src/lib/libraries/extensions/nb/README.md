@@ -1,6 +1,6 @@
 # Image attribution
 
-## tw.svg
+## nb.svg
 
 Tool icon is from https://svgsilh.com/ru/image/1294338.html under public domain.
 

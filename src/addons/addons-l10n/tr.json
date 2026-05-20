@@ -243,7 +243,6 @@
     "blocks2image/export_selected_to_SVG": "Bloğu SVG olarak dışa aktar",
     "move-to-top-bottom/bottom": "en alta taşı",
     "move-to-top-bottom/top": "en üste taşı",
-    "move-to-top-layer/move-to-front-layer": "ön katmana götür",
     "rename-broadcasts/RENAME_BROADCAST": "Mesajı yeniden adlandır",
     "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Mesajı Yeniden Adlandır",
     "rename-broadcasts/RENAME_BROADCAST_TITLE": "Tüm \"{name}\" mesajlarını şu şekilde yeniden adlandır:",

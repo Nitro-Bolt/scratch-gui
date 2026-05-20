@@ -63,9 +63,9 @@ const Backpack = ({
     onMouseEnter,
     onMouseLeave,
     onMore,
-    prefs
+    preferences
 }) => {
-    registerKeyboardShortcut(prefs['keybind-open-backpack'] ?? defaultKeyboardShortcuts['open-backpack'], onToggle);
+    registerKeyboardShortcut(preferences['keybind-open-backpack'] ?? defaultKeyboardShortcuts['open-backpack'], onToggle);
     return (
         <div className={styles.backpackContainer}>
             <div
@@ -189,7 +189,7 @@ Backpack.propTypes = {
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
     onToggle: PropTypes.func,
-    prefs: PropTypes.any,
+    preferences: PropTypes.object,
     showMore: PropTypes.bool
 };
 

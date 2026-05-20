@@ -177,9 +177,9 @@ class TableMonitor extends React.Component {
         const {vm, targetId, id: variableId} = this.props;
         const currentValue = getVariableValue(vm, targetId, variableId);
         const newTableValue = this.cloneTableValue(currentValue);
-        const columnCount = newTableValue.length > 0 && Array.isArray(newTableValue[0])
-            ? newTableValue[0].length
-            : 1;
+        const columnCount = newTableValue.length > 0 && Array.isArray(newTableValue[0]) ?
+            newTableValue[0].length :
+            1;
         const newRow = Array(columnCount).fill('');
         newTableValue.push(newRow);
         setVariableValue(vm, targetId, variableId, newTableValue);
@@ -301,7 +301,7 @@ TableMonitor.propTypes = {
             PropTypes.oneOfType([
                 PropTypes.number,
                 PropTypes.string
-    ]))),
+            ]))),
     vm: PropTypes.instanceOf(VM),
     width: PropTypes.number,
     x: PropTypes.number,

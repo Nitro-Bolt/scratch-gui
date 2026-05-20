@@ -18,12 +18,12 @@ import VM from 'scratch-vm';
 const availableModes = opcode => (
     monitorModes.filter(t => {
         switch (opcode) {
-            case 'data_variable':
-                return t !== 'list' && t !== 'table';
-            case 'data_listcontents':
-                return t === 'list';
-            case 'data_tablecontents':
-                return t === 'table';
+        case 'data_variable':
+            return t !== 'list' && t !== 'table';
+        case 'data_listcontents':
+            return t === 'list';
+        case 'data_tablecontents':
+            return t === 'table';
         }
         return t !== 'slider' && t !== 'list' && t !== 'table';
     })
@@ -300,7 +300,7 @@ Monitor.propTypes = {
                 PropTypes.oneOfType([
                     PropTypes.number,
                     PropTypes.string
-        ])))
+                ])))
     ]), // eslint-disable-line react/no-unused-prop-types
     vm: PropTypes.instanceOf(VM),
     width: PropTypes.number,

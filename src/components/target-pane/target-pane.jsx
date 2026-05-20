@@ -40,7 +40,7 @@ const TargetPane = ({
     onSelectSprite,
     onSpriteUpload,
     onSurpriseSpriteClick,
-    prefs,
+    preferences,
     raiseSprites,
     stage,
     stageSize,
@@ -78,7 +78,7 @@ const TargetPane = ({
             onSelectSprite={onSelectSprite}
             onSpriteUpload={onSpriteUpload}
             onSurpriseSpriteClick={onSurpriseSpriteClick}
-            prefs={prefs}
+            preferences={preferences}
         />
         <div className={styles.stageSelectorWrapper}>
             {stage.id && <StageSelector
@@ -155,7 +155,7 @@ TargetPane.propTypes = {
     onSelectSprite: PropTypes.func,
     onSpriteUpload: PropTypes.func,
     onSurpriseSpriteClick: PropTypes.func,
-    prefs: PropTypes.any,
+    preferences: PropTypes.object,
     raiseSprites: PropTypes.bool,
     spriteLibraryVisible: PropTypes.bool,
     sprites: PropTypes.objectOf(spriteShape),

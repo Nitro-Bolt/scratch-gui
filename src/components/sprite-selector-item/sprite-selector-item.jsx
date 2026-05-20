@@ -54,7 +54,7 @@ const SpriteSelectorItem = props => (
                 onClick={props.onDeleteButtonClick}
             />
         ) : null }
-        {props.onDuplicateButtonClick || props.onDeleteButtonClick || props.onExportButtonClick ? (
+        {props.onDuplicateButtonClick || props.onDeleteButtonClick || props.onExportButtonClick || props.onMoveToTopButtonClick || props.onMoveToBottomButtonClick ? (
             <ContextMenu id={`${props.name}-${contextMenuId++}`}>
                 {props.onDuplicateButtonClick ? (
                     <MenuItem onClick={props.onDuplicateButtonClick}>
@@ -80,6 +80,24 @@ const SpriteSelectorItem = props => (
                             defaultMessage="rename"
                             description="Menu item to rename an item"
                             id="tw.spriteSelectorItem.rename"
+                        />
+                    </MenuItem>
+                ) : null}
+                {props.onMoveToTopButtonClick ? (
+                    <MenuItem onClick={props.onMoveToTopButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="move to top"
+                            description="Menu item to move an item to the top of the list"
+                            id="tw.spriteSelectorItem.contextMenuMoveToTop"
+                        />
+                    </MenuItem>
+                ) : null}
+                {props.onMoveToBottomButtonClick ? (
+                    <MenuItem onClick={props.onMoveToBottomButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="move to bottom"
+                            description="Menu item to move an item to the bottom of the list"
+                            id="tw.spriteSelectorItem.contextMenuMoveToBottom"
                         />
                     </MenuItem>
                 ) : null}
@@ -110,6 +128,8 @@ SpriteSelectorItem.propTypes = {
     onDuplicateButtonClick: PropTypes.func,
     onExportButtonClick: PropTypes.func,
     onRenameButtonClick: PropTypes.func,
+    onMoveToTopButtonClick: PropTypes.func,
+    onMoveToBottomButtonClick: PropTypes.func,
     onMouseDown: PropTypes.func,
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,

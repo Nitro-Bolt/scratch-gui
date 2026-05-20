@@ -35,17 +35,17 @@ const Controls = function (props) {
         framerate,
         interpolation,
         isSmall,
-        prefs,
+        preferences,
         ...componentProps
     } = props;
 
     registerKeyboardShortcut(
-        prefs['keybind-start-project'] ?? defaultKeyboardShortcuts['start-project'],
+        preferences['keybind-start-project'] ?? defaultKeyboardShortcuts['start-project'],
         onGreenFlagClick
     );
 
     registerKeyboardShortcut(
-        prefs['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project'],
+        preferences['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project'],
         onStopAllClick
     );
 
@@ -87,7 +87,7 @@ Controls.propTypes = {
     interpolation: PropTypes.bool,
     isSmall: PropTypes.bool,
     turbo: PropTypes.bool,
-    prefs: PropTypes.any
+    preferences: PropTypes.object
 };
 
 Controls.defaultProps = {

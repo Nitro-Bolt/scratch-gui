@@ -47,13 +47,6 @@ import styles from './interface.css';
 
 const isInvalidEmbed = window.parent !== window;
 
-const handleClickAddonSettings = addonId => {
-    // addonId might be a string of the addon to focus on, undefined, or an event (treat like undefined)
-    const path = process.env.ROUTING_STYLE === 'wildcard' ? 'addons' : 'addons.html';
-    const url = `${process.env.ROOT}${path}${typeof addonId === 'string' ? `#${addonId}` : ''}`;
-    window.open(url);
-};
-
 const messages = defineMessages({
     defaultTitle: {
         defaultMessage: 'Beyond Limitations', // TODO: Temporary?
@@ -78,6 +71,14 @@ if (AddonChannels.changeChannel) {
         SettingsStore.setStoreWithVersionCheck(e.data);
     });
 }
+
+// BroadcastChannel won't deliver messages back to the same browsing context
+window.addEventListener('addon-settings-changed', e => {
+    SettingsStore.setStoreWithVersionCheck(e.detail);
+});
+window.addEventListener('addon-settings-reload', () => {
+    location.reload();
+});
 
 runAddons();
 
@@ -237,7 +238,6 @@ class Interface extends React.Component {
                             canManageFiles
                             canChangeTheme
                             enableSeeInside
-                            onClickAddonSettings={handleClickAddonSettings}
                         />
                     </div>
                 ) : null}
@@ -249,7 +249,6 @@ class Interface extends React.Component {
                     }) : null}
                 >
                     <GUI
-                        onClickAddonSettings={handleClickAddonSettings}
                         onUpdateProjectTitle={this.handleUpdateProjectTitle}
                         backpackHost="_local_"
                         {...props}

@@ -40,7 +40,8 @@ const initialState = {
     [MODAL_UNKNOWN_PLATFORM]: false,
     [MODAL_INVALID_PROJECT]: false,
     [MODAL_CUSTOM_ACCENT]: false,
-    [MODAL_EDITOR_SETTINGS]: false
+    [MODAL_EDITOR_SETTINGS]: false,
+    editorSettingsModalTab: 0
 };
 
 const reducer = function (state, action) {
@@ -48,7 +49,10 @@ const reducer = function (state, action) {
     switch (action.type) {
     case OPEN_MODAL:
         return Object.assign({}, state, {
-            [action.modal]: true
+            [action.modal]: true,
+            ...(action.modal === MODAL_EDITOR_SETTINGS && {
+                editorSettingsModalTab: action.tab ?? 0
+            })
         });
     case CLOSE_MODAL:
         return Object.assign({}, state, {
@@ -124,8 +128,12 @@ const openInvalidProjectModal = function () {
 const openCustomAccentModal = function () {
     return openModal(MODAL_CUSTOM_ACCENT);
 };
-const openEditorSettingsModal = function () {
-    return openModal(MODAL_EDITOR_SETTINGS);
+const openEditorSettingsModal = function (tab = 0) {
+    return {
+        type: OPEN_MODAL,
+        modal: MODAL_EDITOR_SETTINGS,
+        tab
+    };
 };
 const closeBackdropLibrary = function () {
     return closeModal(MODAL_BACKDROP_LIBRARY);

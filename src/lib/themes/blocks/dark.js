@@ -85,12 +85,6 @@ const blockColors = {
         tertiary: '#FF6680',
         quaternary: '#FF6680'
     },
-    comments: {
-        primary: '#33301F',
-        secondary: '#302D1D',
-        tertiary: '#E4DB8C',
-        quaternary: '#E4DB8C'
-    },
     addons: {
         primary: '#0b3331',
         secondary: '#4C4C4C',

@@ -237,7 +237,6 @@
     "blocks2image/export_selected_to_SVG": "Blokk exportálása SVG-ként",
     "move-to-top-bottom/bottom": "áthelyezés legalulra",
     "move-to-top-bottom/top": "áthelyezés legfelülre",
-    "move-to-top-layer/move-to-front-layer": "kerülj legelőre",
     "rename-broadcasts/RENAME_BROADCAST": "Üzenet átnevezése",
     "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Üzenet Átnevezése",
     "rename-broadcasts/RENAME_BROADCAST_TITLE": "Az összes „{name}” üzenet átnevezése erre:",

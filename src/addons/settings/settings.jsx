@@ -57,7 +57,9 @@ if (locale !== 'en') {
     }
 }
 
-document.title = `${settingsTranslations.title} - ${APP_NAME}`;
+if (document.location.pathname.endsWith('addons.html') || document.location.pathname.endsWith('/addons')) {
+    document.title = `${settingsTranslations.title} - ${APP_NAME}`;
+}
 const theme = detectTheme();
 applyGuiColors(theme);
 
@@ -67,10 +69,14 @@ const postThrottledSettingsChange = store => {
         clearTimeout(_throttleTimeout);
     }
     _throttleTimeout = setTimeout(() => {
-        Channels.changeChannel.postMessage({
+        const msg = {
             version: upstreamMeta.commit,
             store
-        });
+        };
+        if (Channels.changeChannel) {
+            Channels.changeChannel.postMessage(msg);
+        }
+        window.dispatchEvent(new CustomEvent('addon-settings-changed', {detail: msg}));
     }, 100);
 };
 
@@ -912,6 +918,7 @@ class AddonSettingsComponent extends React.Component {
         this.handleSearch = this.handleSearch.bind(this);
         this.handleClickSearchButton = this.handleClickSearchButton.bind(this);
         this.handleClickVersion = this.handleClickVersion.bind(this);
+        this.handleExternalSettingsChanged = this.handleExternalSettingsChanged.bind(this);
         this.searchRef = this.searchRef.bind(this);
         this.searchBar = null;
         this.state = {
@@ -921,16 +928,15 @@ class AddonSettingsComponent extends React.Component {
             extended: false,
             ...this.readFullAddonState()
         };
-        if (Channels.changeChannel) {
-            Channels.changeChannel.addEventListener('message', () => {
-                SettingsStore.readLocalStorage();
-                this.setState(this.readFullAddonState());
-            });
-        }
     }
     componentDidMount () {
         SettingsStore.addEventListener('setting-changed', this.handleSettingStoreChanged);
         document.body.addEventListener('keydown', this.handleKeyDown);
+        if (Channels.changeChannel) {
+            Channels.changeChannel.addEventListener('message', this.handleExternalSettingsChanged);
+        }
+        // BroadcastChannel won't fire in the same browsing context
+        window.addEventListener('addon-settings-changed', this.handleExternalSettingsChanged);
     }
     componentDidUpdate (prevProps, prevState) {
         if (this.state.search !== prevState.search) {
@@ -940,6 +946,14 @@ class AddonSettingsComponent extends React.Component {
     componentWillUnmount () {
         SettingsStore.removeEventListener('setting-changed', this.handleSettingStoreChanged);
         document.body.removeEventListener('keydown', this.handleKeyDown);
+        if (Channels.changeChannel) {
+            Channels.changeChannel.removeEventListener('message', this.handleExternalSettingsChanged);
+        }
+        window.removeEventListener('addon-settings-changed', this.handleExternalSettingsChanged);
+    }
+    handleExternalSettingsChanged () {
+        SettingsStore.readLocalStorage();
+        this.setState(this.readFullAddonState());
     }
     readFullAddonState () {
         const result = {};
@@ -960,8 +974,7 @@ class AddonSettingsComponent extends React.Component {
     }
     handleSettingStoreChanged (e) {
         const {addonId, settingId, value} = e.detail;
-        // If channels are unavailable, every change requires reload.
-        const reloadRequired = e.detail.reloadRequired || !Channels.changeChannel;
+        const reloadRequired = e.detail.reloadRequired;
         this.setState(state => {
             const newState = {
                 [addonId]: {
@@ -982,7 +995,10 @@ class AddonSettingsComponent extends React.Component {
     }
     handleReloadNow () {
         // Value posted does not matter
-        Channels.reloadChannel.postMessage(0);
+        if (Channels.reloadChannel) {
+            Channels.reloadChannel.postMessage(0);
+        }
+        window.dispatchEvent(new CustomEvent('addon-settings-reload'));
         this.setState({
             dirty: false
         });

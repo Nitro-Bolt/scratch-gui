@@ -78,9 +78,9 @@ StageHeader.propTypes = {
     onOpenSettings: PropTypes.func.isRequired,
     // tw: replace showBranding
     isEmbedded: PropTypes.bool.isRequired,
-    prefs: PropTypes.any,
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)).isRequired,
-    vm: PropTypes.instanceOf(VM).isRequired
+    vm: PropTypes.instanceOf(VM).isRequired,
+    preferences: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -92,7 +92,8 @@ const mapStateToProps = state => ({
     // tw: update when dimensions or isWindowFullScreen changes
     isWindowFullScreen: state.scratchGui.tw.isWindowFullScreen,
     dimensions: state.scratchGui.tw.dimensions,
-    isPlayerOnly: state.scratchGui.mode.isPlayerOnly
+    isPlayerOnly: state.scratchGui.mode.isPlayerOnly,
+    preferences: state.scratchGui.preferences
 });
 
 const mapDispatchToProps = dispatch => ({

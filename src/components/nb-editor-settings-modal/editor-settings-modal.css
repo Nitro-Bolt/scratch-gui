@@ -344,6 +344,11 @@
     margin-right: 0.5rem;
 }
 
+.checkbox:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .help-icon {
     position: relative;
     border: 0;
@@ -430,4 +435,43 @@
 
 .key-setting > * {
     flex: 1 0;
+}
+
+.collapseButton {
+    display: flex;
+    align-items: center;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.collapseArrow {
+    display: inline-block;
+    width: 0.7rem;
+    margin-left: 0.5rem;
+    aspect-ratio: 1 / 1;
+    transform: rotate(-90deg);
+}
+
+.collapseArrowExpanded {
+    transform: none;
+}
+
+.colorInput {
+    padding: 0;
+    width: 32px;
+    height: 24px;
+    border: none;
+    cursor: pointer;
+    background: none;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem 0.25rem;
 }

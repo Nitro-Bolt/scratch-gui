@@ -63,7 +63,7 @@ const SpriteSelectorComponent = function (props) {
         onSelectSprite,
         onSpriteUpload,
         onSurpriseSpriteClick,
-        prefs,
+        preferences,
         raised,
         selectedId,
         spriteFileInput,
@@ -78,12 +78,12 @@ const SpriteSelectorComponent = function (props) {
         spriteInfoDisabled = true;
     }
     registerKeyboardShortcut(
-        prefs['keybind-toggle-sprite-visibility'] ?? defaultKeyboardShortcuts['toggle-sprite-visibility'], () => {
+        preferences['keybind-toggle-sprite-visibility'] ?? defaultKeyboardShortcuts['toggle-sprite-visibility'], () => {
             if (!spriteInfoDisabled) onChangeSpriteVisibility(!selectedSprite.visible);
         }
     );
     registerKeyboardShortcut(
-        prefs['keybind-change-sprite-name'] ?? defaultKeyboardShortcuts['change-sprite-name'],
+        preferences['keybind-change-sprite-name'] ?? defaultKeyboardShortcuts['change-sprite-name'],
         () => {
             document.querySelector('[class*="sprite-info_sprite-input_"]').focus();
         }
@@ -183,7 +183,7 @@ SpriteSelectorComponent.propTypes = {
     onSelectSprite: PropTypes.func,
     onSpriteUpload: PropTypes.func,
     onSurpriseSpriteClick: PropTypes.func,
-    prefs: PropTypes.any,
+    preferences: PropTypes.object,
     raised: PropTypes.bool,
     selectedId: PropTypes.string,
     spriteFileInput: PropTypes.func,

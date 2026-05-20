@@ -465,6 +465,38 @@ const control = function (isInitialSetup, isStage, targetId, colors) {
                 </shadow>
             </value>
         </block>
+        <block type="control_foreach_in_range">
+          <value name="ITEM">
+            <shadow type="control_foreach_in_range_item">
+            </shadow>
+          </value>
+          <value name="FROM">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+          <value name="TO">
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="control_foreach_in_range">
+          <value name="ITEM">
+            <shadow type="control_foreach_in_range_item">
+            </shadow>
+          </value>
+          <value name="FROM">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+          <value name="TO">
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
+          </value>
+        </block>
         <block id="forever" type="control_forever"/>
         ${blockSeparator}
         <block type="control_if"/>
@@ -770,6 +802,13 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
                 </shadow>
             </value>
         </block>
+        <block type="operator_typeof">
+            <value name="VALUE">
+                <shadow type="text">
+                    <field name="TEXT">${apple}</field>
+                </shadow>
+            </value>
+        </block>
         ${categorySeparator}
     </category>
     `;
@@ -790,7 +829,7 @@ const variables = function (isInitialSetup, isStage, targetId, colors) {
 
 const json = function (colors) {
     const object = translate('JSON_OBJECT', '{"key":"value"}');
-    const array = translate('JSON_ARRAY', '["foo","bar"]')
+    const array = translate('JSON_ARRAY', '["foo","bar"]');
     const key = translate('JSON_KEY', 'key');
     const bar = translate('JSON_BAR', 'bar');
     const baz = translate('JSON_BAZ', 'baz');
@@ -847,8 +886,8 @@ const json = function (colors) {
         ${blockSeparator}
         <block type="json_value_of_index">
             <value name="INDEX">
-                <shadow type="math_number">
-                    <field name="NUM">0</field>
+                <shadow type="json_indexmenu">
+                    <field name="INDEX">0</field>
                 </shadow>
             </value>
         </block>
@@ -870,8 +909,8 @@ const json = function (colors) {
         </block>
         <block type="json_replace_index">
             <value name="INDEX">
-                <shadow type="math_number">
-                    <field name="NUM">1</field>
+                <shadow type="json_indexmenu">
+                    <field name="INDEX">0</field>
                 </shadow>
             </value>
             <value name="ITEM">
@@ -882,8 +921,8 @@ const json = function (colors) {
         </block>
         <block type="json_delete_index">
             <value name="INDEX">
-                <shadow type="math_number">
-                    <field name="NUM">0</field>
+                <shadow type="json_indexmenu">
+                    <field name="INDEX">0</field>
                 </shadow>
             </value>
         </block>
@@ -896,17 +935,19 @@ const json = function (colors) {
         </block>
         <block type="json_slice_array" id="json_slice_array">
             <value name="START">
-                <shadow type="math_number">
-                    <field name="NUM">1</field>
+                <shadow type="json_indexmenu">
+                    <field name="INDEX">1</field>
                 </shadow>
             </value>
             <value name="END">
-                <shadow type="math_number">
-                    <field name="NUM">2</field>
+                <shadow type="json_indexmenu">
+                    <field name="INDEX">2</field>
                 </shadow>
             </value>
         </block>
         <block type="json_merge_array">
+        </block>
+        <block type="json_reverse_array">
         </block>
         <block type="json_has_item">
             <value name="ITEM">
@@ -914,6 +955,16 @@ const json = function (colors) {
                     <field name="TEXT">${bar}</field>
                 </shadow>
             </value>
+        </block>
+        <block type="json_foreach" id="json_foreach">
+          <value name="VALUE">
+            <shadow type="json_foreach_value">
+            </shadow>
+          </value>
+          <value name="INDEX">
+            <shadow type="json_foreach_index">
+            </shadow>
+          </value>
         </block>
         ${categorySeparator}
     </category>
@@ -929,73 +980,6 @@ const myBlocks = function (isInitialSetup, isStage, targetId, colors) {
         colour="${colors.primary}"
         secondaryColour="${colors.tertiary}"
         custom="PROCEDURE">
-    </category>
-    `;
-};
-
-const comments = function (colors) {
-    // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
-    return `
-    <category
-        name="%{BKY_CATEGORY_COMMENTS}"
-        id="comments"
-        colour="${colors.primary}"
-        secondaryColour="${colors.tertiary}">
-        <block type="comments_hat">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_command">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_loop">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_reporter">
-            <value name="VALUE">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_boolean">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_object">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        <block type="comments_array">
-            <value name="COMMENT">
-                <shadow type="text">
-                    <field name="TEXT"></field>
-                </shadow>
-            </value>
-        </block>
-        ${categorySeparator}
     </category>
     `;
 };
@@ -1028,10 +1012,12 @@ const xmlClose = '</xml>';
  * @param {?string} soundName -  The name of the default selected sound dropdown.
  * @param {?string} assetName - The name of the default selected asset dropdown.
  * @param {?object} colors - The colors for the theme.
+ * @param {?Array.<object>} hiddenCategories - optional array of category IDs to hide.
  * @returns {string} - a ScratchBlocks-style XML document for the contents of the toolbox.
  */
 const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, categoriesXML = [],
-    costumeName = '', backdropName = '', soundName = '', assetName = '', colors = defaultBlockColors) {
+    costumeName = '', backdropName = '', soundName = '', assetName = '', colors = defaultBlockColors,
+    hiddenCategories = []) {
     isStage = isInitialSetup || isStage;
     const gap = [categorySeparator];
 
@@ -1062,7 +1048,6 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
     const variablesXML = moveCategory('data') || variables(isInitialSetup, isStage, targetId, colors.data);
     const jsonXML = moveCategory('json') || json(colors.json);
     const myBlocksXML = moveCategory('procedures') || myBlocks(isInitialSetup, isStage, targetId, colors.more);
-    const commentsXML = moveCategory('comments') || comments(colors.comments);
 
     // Always display NitroBolt blocks as the first extension, if it exists,
     // and also add an "is compiled?" block to the top.
@@ -1071,20 +1056,27 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
         nitroboltXML = nitroboltXML.replace('<block', `${extraNitroBoltBlocks}<block`);
     }
 
+    const categoryEntries = [
+        ['motion', motionXML],
+        ['looks', looksXML],
+        ['sound', soundXML],
+        ['assets', assetsXML],
+        ['event', eventsXML],
+        ['control', controlXML],
+        ['sensing', sensingXML],
+        ['operators', operatorsXML],
+        ['data', variablesXML],
+        ['json', jsonXML],
+        ['procedures', myBlocksXML]
+    ].filter(([id]) => !hiddenCategories.includes(id));
+
+    const visibleXMLs = categoryEntries.map(([, xml]) => xml);
+
     const everything = [
         xmlOpen,
-        motionXML, gap,
-        looksXML, gap,
-        soundXML, gap,
-        assetsXML, gap,
-        eventsXML, gap,
-        controlXML, gap,
-        sensingXML, gap,
-        operatorsXML, gap,
-        variablesXML, gap,
-        jsonXML, gap,
-        myBlocksXML, gap,
-        commentsXML
+        ...visibleXMLs.flatMap((xml, i) => (
+            i < visibleXMLs.length - 1 ? [xml, gap] : [xml]
+        ))
     ];
 
     if (nitroboltXML) {
@@ -1096,37 +1088,38 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
     }
 
     everything.push(xmlClose);
-    if (vm) vm.emit(
-      'MAKE_TOOLBOX_XML', makeToolboxXML.exports, everything,
-      isInitialSetup, isStage, targetId, categoriesXML,
-      costumeName, backdropName, soundName, assetName, colors
-    );
+    if (vm) {
+        vm.emit(
+            'MAKE_TOOLBOX_XML', makeToolboxXML.exports, everything,
+            isInitialSetup, isStage, targetId, categoriesXML,
+            costumeName, backdropName, soundName, assetName, colors
+        );
+    }
     return everything.join('\n');
 };
 makeToolboxXML.exports = {
-  make: (...args) => makeToolboxXML(...args),
-  translate,
-  xmlEscape,
+    make: (...args) => makeToolboxXML(...args),
+    translate,
+    xmlEscape,
 
-  categorySeparator,
-  blockSeparator,
-  xmlOpen,
-  xmlClose,
-  nbBlocksColours,
-  extraNitroBoltBlocks,
+    categorySeparator,
+    blockSeparator,
+    xmlOpen,
+    xmlClose,
+    nbBlocksColours,
+    extraNitroBoltBlocks,
 
-  motion,
-  looks,
-  sound,
-  assets,
-  events,
-  control,
-  sensing,
-  operators,
-  variables,
-  json,
-  myBlocks,
-  comments
+    motion,
+    looks,
+    sound,
+    assets,
+    events,
+    control,
+    sensing,
+    operators,
+    variables,
+    json,
+    myBlocks
 };
 
 export default makeToolboxXML;
