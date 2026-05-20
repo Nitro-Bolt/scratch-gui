@@ -480,7 +480,7 @@ const CustomAccentModalComponent = function (props) {
                             type={"text"}
                             className={styles.inputStretchy}
                             name={"nameInput"}
-                            value={isEditing ? existingAccentProps.name : ""}
+                            defaultValue={isEditing ? existingAccentProps.name : ""}
                         />
                         <Header>
                             Primary Color:
@@ -489,7 +489,7 @@ const CustomAccentModalComponent = function (props) {
                             type={"color"}
                             name={"colorInput"}
                             className={styles.accentIconOuter}
-                            value={isEditing ? existingAccentProps.colors.primary : ""}
+                            defaultValue={isEditing ? existingAccentProps.colors.primary : ""}
                         />
                         <Header>
                             Primary Color (Dark Mode):
@@ -498,7 +498,7 @@ const CustomAccentModalComponent = function (props) {
                             type={"color"}
                             name={"colorInput2"}
                             className={styles.accentIconOuter}
-                            value={isEditing ? existingAccentProps.colors.primaryDark : ""}
+                            defaultValue={isEditing ? existingAccentProps.colors.primaryDark : ""}
                         />
                     </Box>
                     <Box className={classNames(styles.buttonRow, styles.buttonsBackground)}>
