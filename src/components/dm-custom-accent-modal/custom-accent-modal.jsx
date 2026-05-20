@@ -504,7 +504,14 @@ const CustomAccentModalComponent = function (props) {
                     <Box className={classNames(styles.buttonRow, styles.buttonsBackground)}>
                         <button
                             className={styles.cancelButton}
-                            onClick={() => {setIsNewAccUIOpen(false)}}
+                            onClick={() => {
+                                setIsNewAccUIOpen(false)
+                                setEditing(false)
+                                setExistingAccentProps(SavedAccentTemplate("", {
+                                    primaryColor: "",
+                                    primaryColorDark: ""
+                                }, false))
+                            }}
                         >
                             <FormattedMessage
                                 defaultMessage="Cancel"
