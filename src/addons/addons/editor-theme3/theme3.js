@@ -67,6 +67,16 @@ const categories = [
     colorId: "data_lists",
   },
   {
+    categoryId: "tables",
+    settingId: "data-tables-color",
+    colorId: "data_tables",
+  },
+  {
+    categoryId: "json",
+    settingId: "json-color",
+    colorId: "json",
+  },
+  {
     categoryId: "myBlocks",
     settingId: "custom-color",
     colorId: "more",
