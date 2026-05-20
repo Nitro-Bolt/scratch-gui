@@ -9,9 +9,6 @@ import playIcon from './icons/icon--play.svg';
 const Thread = React.memo(props => (
     <div className={styles.thread}>
         <div className={styles.buttons}>
-            <a onClick={props.onSelectTarget}>
-                {props.thread.target.sprite.name}
-            </a>
             <img
                 src={deleteIcon}
                 draggable={false}
@@ -24,6 +21,9 @@ const Thread = React.memo(props => (
                     onClick={() => props.thread.isPaused = !props.thread.isPaused}
                 />
             }
+            <a onClick={props.onSelectTarget}>
+                {props.thread.target.sprite.name}
+            </a>
             <span>
                 {Object.values(props.thread.blockContainer._blocks).filter(b => !b.shadow).length} blocks
             </span>
