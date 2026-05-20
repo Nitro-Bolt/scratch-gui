@@ -4,19 +4,13 @@ import bindAll from 'lodash.bindall';
 import debounce from 'lodash.debounce';
 import VM from 'scratch-vm';
 
+import {formatBytes} from '../lib/tw-bytes-utils.js';
 import getCostumeUrl from '../lib/get-costume-url';
 import getAssetType from '../lib/nb-asset-type.js';
 
 import {connect} from 'react-redux';
 
 import AssetViewerComponent from "../components/asset-viewer/asset-viewer.jsx";
-
-const formatSize = bytes => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(2)} KB`;
-    if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(2)} MB`;
-    return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
-};
 
 class AssetViewer extends React.Component {
     constructor (props) {
@@ -257,7 +251,7 @@ class AssetViewer extends React.Component {
             imageURL = this.props.icon.url;
         }
 
-        const monacoTheme = this.props.theme && this.props.theme.gui === 'dark' ? 'vs-dark' : 'vs';
+        const monacoTheme = this.props.theme.gui === 'dark' ? 'vs-dark' : 'vs';
 
         return (
             <AssetViewerComponent
@@ -314,7 +308,7 @@ const mapStateToProps = (state, {selectedAssetIndex}) => {
         lastModified: assetObject.lastModified ?
             new Date(assetObject.lastModified).toLocaleString() :
             'Unknown',
-        size: formatSize(assetObject.asset.data.byteLength),
+        size: formatBytes(assetObject.asset.data.byteLength),
         assetIndex: index,
         assetId: assetObject.asset.assetId,
         contentType: assetObject.contentType,
