@@ -14,6 +14,7 @@ import editIcon from './edit.svg';
 import deleteIcon from './delete.svg';
 
 import {isUnsupported} from './unsupported-browsers.js';
+import SavedAccentTemplate from '../components/dm-custom-accent-modal/saved-accent-template.js';
 
 /* eslint-disable react/no-multi-comp */
 
@@ -167,16 +168,16 @@ const CustomAccentComponent = props => {
                 alignItems: 'flex-end',
                 flexShrink: '0'
             }}>
-                {/*<div
+                <div
                     className={classNames(styles.iconButton)}
                     type={"edit"}
-                    onClick={() => props.onEditClicked(props.name)}
+                    onClick={() => props.onEditClicked(props.name, props.primaryColor, props.primaryColorDark)}
                 >
                     <img
                         src={editIcon}
                         draggable={"false"}
                     />
-                </div>*/}
+                </div>
                 <div
                     className={classNames(styles.iconButton)}
                     type={"delete"}
@@ -226,6 +227,13 @@ const CustomAccentModalComponent = function (props) {
     const [_, setTick] = useState(0);
     const [isNewAccUIOpen, setIsNewAccUIOpen] = useState(false);
     const [hasAccentsBeenRendered, setHasAccentsBeenRendered] = useState(false);
+    const [isEditing, setEditing] = useState(false);
+    const [existingAccentProps, setExistingAccentProps] = useState(
+        SavedAccentTemplate("", {
+            primaryColor: "",
+            primaryColorDark: ""
+        }, false)
+    );
 
     if (localStorage.getItem(CUSTOM_ACCENTS_KEY) == null) localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify([]));
 
@@ -272,7 +280,14 @@ const CustomAccentModalComponent = function (props) {
                     //primaryColor={"#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}
                     primaryColor={item.colors.primary}
                     primaryColorDark={item.colors.primaryDark}
-                    onEditClicked={props.onEditClicked}
+                    onEditClicked={(name, primaryColor, primaryColorDark) => {
+                        setIsNewAccUIOpen(true)
+                        setEditing(true)
+                        setExistingAccentProps(SavedAccentTemplate(name, {
+                            primaryColor: primaryColor,
+                            primaryColorDark: primaryColorDark
+                        }, false))
+                    }}
                     onDeleteClicked={(name) => {
                         props.onDeleteClicked(name, deleteAccentComponentFromUIwithName);
                     }}
@@ -402,13 +417,33 @@ const CustomAccentModalComponent = function (props) {
                         const formJson = Object.fromEntries(formData.entries());
 
                         setIsNewAccUIOpen(false);
+                        setEditing(false)
+                        setExistingAccentProps(SavedAccentTemplate("", {
+                            primaryColor: "",
+                            primaryColorDark: ""
+                        }, false))
 
-                        props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName, {
-                            name: formJson.nameInput,
-                            primaryColor: formJson.colorInput,
-                            primaryColorDark: formJson.colorInput2
-                        })
+                        if (!isEditing) {
+                            props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName, {
+                                name: formJson.nameInput,
+                                primaryColor: formJson.colorInput,
+                                primaryColorDark: formJson.colorInput2
+                            })
+                        } else {
+                            (async (props, refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName, formJson) => {
+                                props.onDeleteClicked(name, deleteAccentComponentFromUIwithName);
+                                
+                                await new Promise(r => setTimeout(r, 150))
+
+                                props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName, {
+                                    name: formJson.nameInput,
+                                    primaryColor: formJson.colorInput,
+                                    primaryColorDark: formJson.colorInput2
+                                })
+                            })(props, refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName, formJson)
+                        }
                     }}
+                    className={styles.buttonsBackground}
                 >
                     <Box className={styles.body}>
                         {/*<Header>
@@ -420,6 +455,9 @@ const CustomAccentModalComponent = function (props) {
                         >
                             Click here to go back
                         </div>*/}
+                        <h2>
+                            {isEditing ? "Edit Accent: " + existingAccentProps.name : "Create Accent"}
+                        </h2> 
                         <Header>
                             Name:
                         </Header>
@@ -427,6 +465,7 @@ const CustomAccentModalComponent = function (props) {
                             type={"text"}
                             className={styles.inputStretchy}
                             name={"nameInput"}
+                            value={isEditing ? existingAccentProps.name : ""}
                         />
                         <Header>
                             Primary Color:
@@ -435,6 +474,7 @@ const CustomAccentModalComponent = function (props) {
                             type={"color"}
                             name={"colorInput"}
                             className={styles.accentIconOuter}
+                            value={isEditing ? existingAccentProps.colors.primary : ""}
                         />
                         <Header>
                             Primary Color (Dark Mode):
@@ -443,6 +483,7 @@ const CustomAccentModalComponent = function (props) {
                             type={"color"}
                             name={"colorInput2"}
                             className={styles.accentIconOuter}
+                            value={isEditing ? existingAccentProps.colors.primaryDark : ""}
                         />
                     </Box>
                     <Box className={classNames(styles.buttonRow, styles.buttonsBackground)}>
