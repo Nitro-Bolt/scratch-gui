@@ -86,7 +86,7 @@ const AssetViewerComponent = props => (
                         </div>
                     </div>
                 </div>
-                <div className={styles.editorSurface}>
+                <div className={styles.editorSurface} style={{maxWidth: "95%", maxHeight: "67%"}}>
                     <Editor
                         language={props.textLanguage || 'plaintext'}
                         theme={props.monacoTheme || 'vs'}
