@@ -171,7 +171,15 @@ const CustomAccentComponent = props => {
                 <div
                     className={classNames(styles.iconButton)}
                     type={"edit"}
-                    onClick={() => props.onEditClicked(props.name, props.primaryColor, props.primaryColorDark)}
+                    onClick={async () => {
+                        props.onEditClicked(props.name, props.primaryColor, props.primaryColorDark)
+                        await new Promise(r => setTimeout(r, 150))
+                        props.onDeactivated({
+                            name: props.name,
+                            primaryColor: props.primaryColor,
+                            primaryColorDark: props.primaryColorDark
+                        }, props.refreshUI)
+                    }}
                 >
                     <img
                         src={editIcon}
@@ -311,7 +319,14 @@ const CustomAccentModalComponent = function (props) {
                             name={accentData.name}
                             primaryColor={accentData.colors.primary}
                             primaryColorDark={accentData.colors.primaryDark}
-                            onEditClicked={props.onEditClicked}
+                            onEditClicked={(name, primaryColor, primaryColorDark) => {
+                                setIsNewAccUIOpen(true)
+                                setEditing(true)
+                                setExistingAccentProps(SavedAccentTemplate(name, {
+                                    primaryColor: primaryColor,
+                                    primaryColorDark: primaryColorDark
+                                }, false))
+                            }}
                             onDeleteClicked={(name) => {
                                 props.onDeleteClicked(name, deleteAccentComponentFromUIwithName);
                             }}
