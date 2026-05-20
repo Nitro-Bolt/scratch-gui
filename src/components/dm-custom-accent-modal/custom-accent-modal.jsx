@@ -446,8 +446,9 @@ const CustomAccentModalComponent = function (props) {
                             })
                         } else {
                             (async (props, refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName, formJson) => {
-                                props.onDeleteClicked(formJson.nameInput, deleteAccentComponentFromUIwithName);
-                                
+                                props.onDeleteClicked(existingAccentProps.name, deleteAccentComponentFromUIwithName);
+                                refreshUI()
+
                                 await new Promise(r => setTimeout(r, 150))
 
                                 props.onCreateAccentClicked(refreshUI, CustomAccentComponent, addToUI, deleteAccentComponentFromUIwithName, {
