@@ -14,7 +14,7 @@ import editIcon from './edit.svg';
 import deleteIcon from './delete.svg';
 
 import {isUnsupported} from './unsupported-browsers.js';
-import SavedAccentTemplate from '../components/dm-custom-accent-modal/saved-accent-template.js';
+import SavedAccentTemplate from './saved-accent-template.js';
 
 /* eslint-disable react/no-multi-comp */
 
