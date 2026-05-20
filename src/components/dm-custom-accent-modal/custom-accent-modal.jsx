@@ -539,7 +539,7 @@ const CustomAccentModalComponent = function (props) {
 CustomAccentModalComponent.propTypes = {
     intl: intlShape,
     onClose: PropTypes.func,
-    onEditClicked: PropTypes.func.isRequired,
+    //onEditClicked: PropTypes.func.isRequired,
     onDeleteClicked: PropTypes.func.isRequired,
     onCreateAccentClicked: PropTypes.func.isRequired,
     onActivated: PropTypes.func.isRequired,
