@@ -754,7 +754,7 @@ export default async function ({ addon, console, msg }) {
           for (let i = 0; i < vm.editingTarget.sprite.assets.length; i++) {
             const asset = vm.editingTarget.sprite.assets[i];
             if (getFolderFromName(asset.name) === data.folder) {
-              vm.renameAsset(i, setFolderOfName(asset.name, newName, asset.dataFormat));
+              vm.renameAsset(i, setFolderOfName(asset.name, newName), asset.dataFormat);
             }
           }
           fixAssetOrder();
@@ -1251,7 +1251,7 @@ export default async function ({ addon, console, msg }) {
             this.sprite.assets = assets;
           },
           rename: (item, name) => {
-            this.renameAsset(this.sprite.assets.indexOf(item), name);
+            this.renameAsset(this.sprite.assets.indexOf(item), name, item.dataFormat);
           },
           getVMItemFromGUIItem: (item, assets) => {
             const itemData = getItemData(item);
