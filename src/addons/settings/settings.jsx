@@ -44,7 +44,9 @@ import '../../lib/normalize.css';
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/jsx-no-bind */
 
-const locale = detectLocale(Object.keys(messagesByLocale));
+// messagesByLocale only has the non-English strings, so we have to add English as a supported
+// locale so that a non-English device with their editor language set to English gets English.
+const locale = detectLocale(['en', ...Object.keys(messagesByLocale)]);
 document.documentElement.lang = locale;
 
 const addonTranslations = messagesByLocale[locale] ? messagesByLocale[locale]() : {};
