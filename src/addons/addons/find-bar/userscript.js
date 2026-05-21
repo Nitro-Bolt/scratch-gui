@@ -187,7 +187,9 @@ export default async function ({ addon, msg, console }) {
             ? this.getScratchCostumes()
             : this.selectedTab === 2
               ? this.getScratchSounds()
-              : [];
+              : this.selectedTab === 3
+                ? this.getScratchAssets()
+                : [];
 
       this.dropdown.empty();
 
@@ -373,6 +375,21 @@ export default async function ({ addon, msg, console }) {
       return items;
     }
 
+    getScratchAssets() {
+      let assets = this.utils.getEditingTarget().getAssets();
+
+      let items = [];
+
+      let i = 0;
+      for (const asset of assets) {
+        let item = new BlockItem("asset", asset.name, asset.assetId, i);
+        items.push(item);
+        i++;
+      }
+
+      return items;
+    }
+
     getCallsToEvents() {
       const uses = [];
       const alreadyFound = new Set();
@@ -482,6 +499,7 @@ export default async function ({ addon, msg, console }) {
         LIST: "data-lists",
         costume: "looks",
         sound: "sounds",
+        asset: "assets"
       };
       if (proc.cls === "flag") {
         item.className = "sa-find-flag";
@@ -511,7 +529,7 @@ export default async function ({ addon, msg, console }) {
       }
 
       let cls = item.data.cls;
-      if (cls === "costume" || cls === "sound") {
+      if (cls === "costume" || cls === "sound" || cls === "asset") {
         // Viewing costumes/sounds - jump to selected costume/sound
         const assetPanel = document.querySelector("[class^=asset-panel_wrapper]");
         if (assetPanel) {

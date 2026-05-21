@@ -19,6 +19,12 @@ const blockColors = {
         tertiary: '#CF63CF',
         quaternary: '#CF63CF'
     },
+    assets: {
+        primary: '#493300',
+        secondary: '#4C4C4C',
+        tertiary: '#FCB103',
+        quaternary: '#FCB103'
+    },
     control: {
         primary: '#332205',
         secondary: '#4C4C4C',
