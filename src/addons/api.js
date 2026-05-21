@@ -14,6 +14,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { getCustomAddons, storeAddon, removeAddon } from '../lib/nb-custom-addons.js';
+import { TextDecoder } from '../lib/tw-text-encoder.js';
 import IntlMessageFormat from 'intl-messageformat';
 import SettingsStore from './settings-store-singleton';
 import dataURLToBlob from '../lib/data-uri-to-blob';
@@ -32,8 +34,20 @@ import reduxInstance from './redux';
 
 /* eslint-disable no-console */
 
+const noop = () => {};
+
 const escapeHTML = str => str.replace(/([<>'"&])/g, (_, l) => `&#${l.charCodeAt(0)};`);
 const kebabCaseToCamelCase = str => str.replace(/-([a-z])/g, g => g[1].toUpperCase());
+
+const arrayBufferToDataURI = buffer => {
+    const blob = new Blob([buffer]);
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(blob);
+    });
+}
 
 let _scratchClassNames = null;
 const getScratchClassNames = () => {
@@ -200,6 +214,9 @@ class Tab extends EventTargetShim {
         this.traps = {
             get vm () {
                 return reduxInstance.state.scratchGui.vm;
+            },
+            get redux () {
+                return reduxInstance;
             },
             getBlockly: () => {
                 if (AddonHooks.blockly) {
@@ -673,6 +690,16 @@ class Tab extends EventTargetShim {
         return modal.prompt(this, ...args);
     }
 
+    // For custom addons
+    // todo: these need better names
+    betterConfirm (message) {
+        return modal.confirm(this, 'Confirm', message, {useEditorClasses: true});
+    }
+
+    betterPrompt (message, defaultValue) {
+        return modal.prompt(this, 'Prompt', message, defaultValue, {useEditorClasses: true});
+    }
+
     recolorable () {
         // this is some pretty awful code that makes a *lot* of assumptions about how addons work
 
@@ -728,11 +755,11 @@ class Self extends EventTargetShim {
 }
 
 class AddonRunner {
-    constructor (id) {
+    constructor (id, manifest, isCustom) {
         AddonRunner.instances.push(this);
-        const manifest = addons[id];
 
         this.id = id;
+        this.isCustom = isCustom;
         this.manifest = manifest;
         this.messageCache = {};
         this.loading = true;
@@ -742,17 +769,54 @@ class AddonRunner {
          */
         this.resources = null;
 
-        this.publicAPI = {
-            global,
-            console,
-            addon: {
-                tab: new Tab(id),
-                settings: new Settings(id, manifest),
-                self: new Self(id, this.getResource.bind(this))
-            },
-            msg: this.msg.bind(this),
-            safeMsg: this.safeMsg.bind(this)
-        };
+        if (isCustom) {
+            // Provide a slightly more developer-friendly API for custom addons
+            const tab = new Tab(id);
+            this.publicAPI = {
+                addon: {
+                    settings: new Settings(id, manifest),
+                    traps: tab.traps,
+                    editorDirection: tab.direction,
+                    editorMode: tab.editorMode,
+                    waitForElement: tab.waitForElement.bind(tab),
+                    createModal: tab.createModal.bind(tab),
+                    confirm: tab.betterConfirm.bind(tab),
+                    prompt: tab.betterPrompt.bind(tab),
+                    getResource: this.getResource.bind(this),
+                    onEnabled: noop,
+                    onDisabled: noop,
+                }
+            }
+        } else {
+            this.publicAPI = {
+                global,
+                console,
+                addon: {
+                    tab: new Tab(id),
+                    settings: new Settings(id, manifest),
+                    self: new Self(id, this.getResource.bind(this))
+                },
+                msg: this.msg.bind(this),
+                safeMsg: this.safeMsg.bind(this)
+            };
+        }
+    }
+
+    // Functions to handle API changes between regular and custom addons
+    getDisabled () {
+        if (this.isCustom) {
+            return this.publicAPI.addon.disabled;
+        } else {
+            return this.publicAPI.addon.self.disabled;
+        }
+    }
+
+    setDisabled (value) {
+        if (this.isCustom) {
+            this.publicAPI.addon.disabled = value;
+        } else {
+            this.publicAPI.addon.self.disabled = value;
+        }
     }
 
     _msg (key, vars, handler) {
@@ -889,9 +953,13 @@ class AddonRunner {
         // This order is important. We need to update styles before calling the addon's dynamic
         // toggle event. We also need to update `disabled` before we can update styles because
         // the ConditionalStyle callbacks are implemented using the API.
-        this.publicAPI.addon.self.disabled = false;
+        this.setDisabled(false);
         this.updateAllStyles();
-        this.publicAPI.addon.self.dispatchEvent(new CustomEvent('reenabled'));
+        if (this.isCustom) {
+            this.publicAPI.addon.onEnabled();
+        } else {
+            this.publicAPI.addon.self.dispatchEvent(new CustomEvent('reenabled'));
+        }
     }
 
     dynamicDisable () {
@@ -900,9 +968,13 @@ class AddonRunner {
         }
 
         // See comment in dynamicEnable().
-        this.publicAPI.addon.self.disabled = true;
+        this.setDisabled(true);
         this.updateAllStyles();
-        this.publicAPI.addon.self.dispatchEvent(new CustomEvent('disabled'));
+        if (this.isCustom) {
+            this.publicAPI.addon.onDisabled();
+        } else {
+            this.publicAPI.addon.self.dispatchEvent(new CustomEvent('disabled'));
+        }
     }
 
     async run () {
@@ -910,8 +982,15 @@ class AddonRunner {
             await untilInEditor();
         }
 
-        const mod = await addonEntries[this.id]();
-        this.resources = mod.resources;
+        if (this.manifest.resources) {
+            this.resources = {};
+            for (const [path, arr] of Object.entries(this.manifest.resources)) {
+                this.resources[path] = await arrayBufferToDataURI(arr);
+            }
+        } else if (addonEntries[this.id]) {
+            const mod = await addonEntries[this.id]();
+            this.resources = mod.resources;
+        }
 
         if (!this.manifest.noTranslations) {
             await addonMessagesPromise;
@@ -926,7 +1005,7 @@ class AddonRunner {
                 const userstyle = this.manifest.userstyles[i];
                 const userstylePrecedence = baseStylePrecedence + i;
                 const userstyleCondition = () => (
-                    !this.publicAPI.addon.self.disabled &&
+                    !this.getDisabled() &&
                     SettingsStore.evaluateCondition(this.id, userstyle.if)
                 );
 
@@ -940,7 +1019,7 @@ class AddonRunner {
 
         const disabledCSS = `.${getDisplayNoneWhileDisabledClass(this.id)}{display:none !important;}`;
         const disabledStylesheet = conditionalStyles.create(`_disabled/${this.id}`, disabledCSS);
-        disabledStylesheet.addDependent(this.id, baseStylePrecedence, () => this.publicAPI.addon.self.disabled);
+        disabledStylesheet.addDependent(this.id, baseStylePrecedence, () => this.getDisabled());
 
         this.updateCssVariables();
 
@@ -949,8 +1028,15 @@ class AddonRunner {
                 if (!SettingsStore.evaluateCondition(userscript.if)) {
                     continue;
                 }
-                const fn = this.resources[userscript.url];
-                fn(this.publicAPI);
+                if (this.isCustom) {
+                    // Resources are stored as ArrayBuffers
+                    const str = new TextDecoder().decode(userscript);
+                    const fn = new Function('addon', str);
+                    fn(this.publicAPI.addon);
+                } else {
+                    const fn = this.resources[userscript.url];
+                    fn(this.publicAPI);
+                }
             }
         }
 
@@ -959,8 +1045,8 @@ class AddonRunner {
 }
 AddonRunner.instances = [];
 
-const runAddon = addonId => {
-    const runner = new AddonRunner(addonId);
+const runAddon = (addonId, manifest, isCustom) => {
+    const runner = new AddonRunner(addonId, manifest, isCustom);
     runner.run();
 };
 
@@ -974,7 +1060,7 @@ SettingsStore.addEventListener('addon-changed', e => {
         if (runner) {
             runner.dynamicEnable();
         } else {
-            runAddon(addonId);
+            runAddon(addonId, addons[addonId], false);
         }
     } else if (e.detail.dynamicDisable) {
         if (runner) {
@@ -983,7 +1069,7 @@ SettingsStore.addEventListener('addon-changed', e => {
     }
 });
 
-SettingsStore.addEventListener('setting-changed', e => {
+SettingsStore.addEventListener('setting-changed', async e => {
     const {addonId, settingId, reloadRequired, value} = e.detail;
     if (reloadRequired) {
         return;
@@ -994,7 +1080,12 @@ SettingsStore.addEventListener('setting-changed', e => {
             if (runner) {
                 runner.dynamicEnable();
             } else {
-                runAddon(addonId);
+                if (addons[addonId]) {
+                    runAddon(addonId, addons[addonId], false);
+                } else {
+                    const customAddons = await getCustomAddons();
+                    runAddon(addonId, customAddons.find(c => c.id === addonId), true);
+                }
             }
         } else if (runner) {
             runner.dynamicDisable();
@@ -1007,5 +1098,14 @@ for (const id of Object.keys(addons)) {
     if (!SettingsStore.getAddonEnabled(id)) {
         continue;
     }
-    runAddon(id);
+    runAddon(id, addons[id], false);
 }
+
+getCustomAddons().then(customAddons => {
+    for (const customAddon of customAddons) {
+        if (!SettingsStore.getAddonEnabled(customAddon.id)) {
+            continue;
+        }
+        runAddon(customAddon.id, customAddon, true);
+    }
+});
