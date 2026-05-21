@@ -910,7 +910,7 @@ class AddonList extends React.Component {
         return (
             <div>
                 <AddonGroup
-                    label={settingsTranslations.groupImported}
+                    label={settingsTranslations.groupCustom}
                     open={true}
                     addons={this.props.customAddons}
                     extended={this.props.extended}

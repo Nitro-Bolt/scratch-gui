@@ -14,7 +14,7 @@
   "tagTheme": "Theme",
   "tagBeta": "Beta",
   "tagNew": "New!",
-  "groupImported": "Imported ({number})",
+  "groupCustom": "Custom ({number})",
   "groupNew": "New ({number})",
   "groupOthers": "Others ({number})",
   "groupDanger": "Dangerous ({number})",
