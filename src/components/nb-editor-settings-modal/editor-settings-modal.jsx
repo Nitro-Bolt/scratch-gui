@@ -79,6 +79,7 @@ const toolbox_categories = [
     {id: 'motion', label: 'Motion'},
     {id: 'looks', label: 'Looks'},
     {id: 'sound', label: 'Sound'},
+    {id: 'assets', label: 'Assets'},
     {id: 'event', label: 'Events'},
     {id: 'control', label: 'Control'},
     {id: 'sensing', label: 'Sensing'},

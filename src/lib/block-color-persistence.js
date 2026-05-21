@@ -10,6 +10,7 @@ export const BLOCK_COLOR_CATEGORIES = [
     {colorId: 'motion', label: 'Motion', default: '#4C97FF'},
     {colorId: 'looks', label: 'Looks', default: '#9966FF'},
     {colorId: 'sounds', label: 'Sound', default: '#CF63CF'},
+    {colorId: 'assets', label: 'Assets', default: '#FCB103'},
     {colorId: 'event', label: 'Events', default: '#FFBF00'},
     {colorId: 'control', label: 'Control', default: '#FFAB19'},
     {colorId: 'sensing', label: 'Sensing', default: '#5CB1D6'},
