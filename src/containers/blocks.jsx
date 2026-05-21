@@ -467,6 +467,7 @@ class Blocks extends React.Component {
             const stageCostumes = stage.getCostumes();
             const targetCostumes = target.getCostumes();
             const targetSounds = target.getSounds();
+            const targetAssets = target.getAssets();
             const dynamicBlocksXML = injectExtensionCategoryTheme(
                 this.props.vm.runtime.getBlocksXML(target),
                 this.props.theme
@@ -476,6 +477,7 @@ class Blocks extends React.Component {
                 targetCostumes[targetCostumes.length - 1].name,
                 stageCostumes[stageCostumes.length - 1].name,
                 targetSounds.length > 0 ? targetSounds[targetSounds.length - 1].name : '',
+                targetAssets.length > 0 ? targetAssets[targetAssets.length - 1].name : '',
                 this.props.theme.getBlockColors(),
                 this.props.hiddenCategories || []
             );

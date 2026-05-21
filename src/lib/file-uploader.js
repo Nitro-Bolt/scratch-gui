@@ -6,15 +6,23 @@ import convertAudioToWav from './tw-convert-audio-wav.js';
 import log from './log.js';
 
 /**
- * Extract the file name given a string of the form fileName + ext
+ * Extract the file name and file extension given a string of the form fileName + ext
  * @param {string} nameExt File name + extension (e.g. 'my_image.png')
  * @return {string} The name without the extension, or the full name if
  * there was no '.' in the string (e.g. 'my_image')
  */
-const extractFileName = function (nameExt) {
-    // There could be multiple dots, but get the stuff before the first .
-    const nameParts = nameExt.split('.', 1); // we only care about the first .
-    return nameParts[0];
+const extractFileNameAndExtension = function (nameExt) {
+  const lastDotIndex = nameExt.lastIndexOf('.');
+
+  // No extension found, return the name as-is with an empty extension
+  if (lastDotIndex === -1) {
+    return { fileName: nameExt, fileExtension: '' };
+  }
+
+  return {
+    fileName: nameExt.slice(0, lastDotIndex),
+    fileExtension: nameExt.slice(lastDotIndex + 1),
+  };
 };
 
 /**
@@ -37,8 +45,8 @@ const handleFileUpload = function (fileInput, onload, onerror) {
         const reader = new FileReader();
         reader.onload = () => {
             const fileType = file.type;
-            const fileName = extractFileName(file.name);
-            onload(reader.result, fileType, fileName, i, files.length);
+            const { fileName, fileExtension } = extractFileNameAndExtension(file.name);
+            onload(reader.result, fileType, fileName, i, files.length, fileExtension, file.lastModified);
             readFile(i + 1, files);
         };
         reader.onerror = onerror;
@@ -235,6 +243,33 @@ const soundUpload = function (fileData, fileType, storage, handleSound, handleEr
     handleSound(vmSound);
 };
 
+/**
+ * Handles loading an asset using the provided, context-relevant information.
+ * @param {ArrayBuffer} fileData The asset data to load
+ * @param {string} fileName The name of the file
+ * @param {string} fileType The MIME type of this file; This function will exit
+ * early if the fileType is unexpected.
+ * @param {ScratchStorage} storage The ScratchStorage instance to cache the asset data
+ * @param {Function} handleAsset The function to execute on the asset object of type VMAsset
+ * This function should be responsible for adding the asset to the VM
+ * as well as handling other UI flow that should come after adding the asset
+ * @param {Function} handleError The function to execute if there is an error parsing the asset
+ */
+const assetUpload = function (fileData, fileType, fileExtension, storage, handleAsset, handleError) {
+    // Override the asset content type with the file type provided
+    const AssetType = structuredClone(storage.AssetType.Asset);
+    AssetType.contentType = fileType;
+
+    const vmAsset = createVMAsset(
+        storage,
+        AssetType,
+        fileExtension.toLowerCase(),
+        new Uint8Array(fileData)
+    );
+
+    handleAsset(vmAsset);
+};
+
 const spriteUpload = function (fileData, fileType, spriteName, vm, handleSprite, handleError = () => {}) {
     switch (fileType) {
     case '':
@@ -292,5 +327,6 @@ export {
     handleFileUpload,
     costumeUpload,
     soundUpload,
-    spriteUpload
+    spriteUpload,
+    assetUpload
 };
