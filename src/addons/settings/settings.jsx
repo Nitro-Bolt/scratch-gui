@@ -575,7 +575,7 @@ const Addon = ({
                         onChange={value => {
                             if (
                                 !value ||
-                                !manifest.tags.includes('danger') ||
+                                !manifest.tags?.includes('danger') ||
                                 confirm(settingsTranslations.enableDangerous)
                             ) {
                                 SettingsStore.setAddonEnabled(id, value);
@@ -583,7 +583,7 @@ const Addon = ({
                         }}
                     />
                 </div>
-                {manifest.tags.includes('theme') ? (
+                {manifest.tags?.includes('theme') ? (
                     <img
                         className={styles.extensionImage}
                         src={brushImage}
@@ -607,7 +607,9 @@ const Addon = ({
                     </div>
                 )}
             </label>
-            <Tags manifest={manifest} />
+            {manifest.tags &&
+                <Tags manifest={manifest} />
+            }
             {!settings.enabled && (
                 <div className={styles.inlineDescription}>
                     {addonTranslations[`${id}/@description`] || manifest.description}
@@ -859,10 +861,12 @@ const addonToSearchItem = ({id, manifest}) => {
             addText(0.1, addonTranslations[`${id}/@preset-description-${preset.id}`]);
         }
     }
-    for (const tag of manifest.tags) {
-        const key = `tags.${tag}`;
-        if (settingsTranslations[key]) {
-            addText(0.25, settingsTranslations[key]);
+    if (manifest.tags) {
+        for (const tag of manifest.tags) {
+            const key = `tags.${tag}`;
+            if (settingsTranslations[key]) {
+                addText(0.25, settingsTranslations[key]);
+            }
         }
     }
     if (manifest.info) {
