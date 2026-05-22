@@ -690,16 +690,6 @@ class Tab extends EventTargetShim {
         return modal.prompt(this, ...args);
     }
 
-    // For custom addons
-    // todo: these need better names
-    betterConfirm (message) {
-        return modal.confirm(this, 'Confirm', message, {useEditorClasses: true});
-    }
-
-    betterPrompt (message, defaultValue) {
-        return modal.prompt(this, 'Prompt', message, defaultValue, {useEditorClasses: true});
-    }
-
     recolorable () {
         // this is some pretty awful code that makes a *lot* of assumptions about how addons work
 
@@ -769,54 +759,17 @@ class AddonRunner {
          */
         this.resources = null;
 
-        if (isCustom) {
-            // Provide a slightly more developer-friendly API for custom addons
-            const tab = new Tab(id);
-            this.publicAPI = {
-                addon: {
-                    settings: new Settings(id, manifest),
-                    traps: tab.traps,
-                    editorDirection: tab.direction,
-                    editorMode: tab.editorMode,
-                    waitForElement: tab.waitForElement.bind(tab),
-                    createModal: tab.createModal.bind(tab),
-                    confirm: tab.betterConfirm.bind(tab),
-                    prompt: tab.betterPrompt.bind(tab),
-                    getResource: this.getResource.bind(this),
-                    onEnabled: noop,
-                    onDisabled: noop,
-                }
-            }
-        } else {
-            this.publicAPI = {
-                global,
-                console,
-                addon: {
-                    tab: new Tab(id),
-                    settings: new Settings(id, manifest),
-                    self: new Self(id, this.getResource.bind(this))
-                },
-                msg: this.msg.bind(this),
-                safeMsg: this.safeMsg.bind(this)
-            };
-        }
-    }
-
-    // Functions to handle API changes between regular and custom addons
-    getDisabled () {
-        if (this.isCustom) {
-            return this.publicAPI.addon.disabled;
-        } else {
-            return this.publicAPI.addon.self.disabled;
-        }
-    }
-
-    setDisabled (value) {
-        if (this.isCustom) {
-            this.publicAPI.addon.disabled = value;
-        } else {
-            this.publicAPI.addon.self.disabled = value;
-        }
+        this.publicAPI = {
+            global,
+            console,
+            addon: {
+                tab: new Tab(id),
+                settings: new Settings(id, manifest),
+                self: new Self(id, this.getResource.bind(this))
+            },
+            msg: this.msg.bind(this),
+            safeMsg: this.safeMsg.bind(this)
+        };
     }
 
     _msg (key, vars, handler) {
@@ -953,13 +906,10 @@ class AddonRunner {
         // This order is important. We need to update styles before calling the addon's dynamic
         // toggle event. We also need to update `disabled` before we can update styles because
         // the ConditionalStyle callbacks are implemented using the API.
-        this.setDisabled(false);
+        this.publicAPI.addon.self.disabled = false;
         this.updateAllStyles();
-        if (this.isCustom) {
-            this.publicAPI.addon.onEnabled();
-        } else {
-            this.publicAPI.addon.self.dispatchEvent(new CustomEvent('reenabled'));
-        }
+        this.publicAPI.addon.self.dispatchEvent(new CustomEvent('reenabled'));
+    
     }
 
     dynamicDisable () {
@@ -968,13 +918,9 @@ class AddonRunner {
         }
 
         // See comment in dynamicEnable().
-        this.setDisabled(true);
+        this.publicAPI.addon.self.disabled = true;
         this.updateAllStyles();
-        if (this.isCustom) {
-            this.publicAPI.addon.onDisabled();
-        } else {
-            this.publicAPI.addon.self.dispatchEvent(new CustomEvent('disabled'));
-        }
+        this.publicAPI.addon.self.dispatchEvent(new CustomEvent('disabled'));
     }
 
     async run () {
@@ -1005,7 +951,7 @@ class AddonRunner {
                 const userstyle = this.manifest.userstyles[i];
                 const userstylePrecedence = baseStylePrecedence + i;
                 const userstyleCondition = () => (
-                    !this.getDisabled() &&
+                    !this.publicAPI.addon.self.disabled &&
                     SettingsStore.evaluateCondition(this.id, userstyle.if)
                 );
 
@@ -1019,7 +965,7 @@ class AddonRunner {
 
         const disabledCSS = `.${getDisplayNoneWhileDisabledClass(this.id)}{display:none !important;}`;
         const disabledStylesheet = conditionalStyles.create(`_disabled/${this.id}`, disabledCSS);
-        disabledStylesheet.addDependent(this.id, baseStylePrecedence, () => this.getDisabled());
+        disabledStylesheet.addDependent(this.id, baseStylePrecedence, () => this.publicAPI.addon.self.disabled);
 
         this.updateCssVariables();
 
