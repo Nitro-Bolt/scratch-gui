@@ -44,7 +44,6 @@ import TWInvalidProjectModal from '../../containers/tw-invalid-project-modal.jsx
 import TWWindChimeSubmitter from '../../containers/tw-windchime-submitter.jsx';
 
 import {STAGE_SIZE_MODES, FIXED_WIDTH, UNCONSTRAINED_NON_STAGE_WIDTH} from '../../lib/layout-constants';
-import {resolveStageSize} from '../../lib/screen-utils';
 import {Theme} from '../../lib/themes';
 
 import {isRendererSupported, isBrowserSupported} from '../../lib/tw-environment-support-prober';
@@ -159,7 +158,6 @@ const GUIComponent = props => {
         showOpenFilePicker,
         showSaveFilePicker,
         soundsTabVisible,
-        stageSizeMode,
         targetIsStage,
         telemetryModalVisible,
         theme,
@@ -226,8 +224,10 @@ const GUIComponent = props => {
         event.target?.blur?.();
     });
 
-    return (<MediaQuery minWidth={unconstrainedWidth}>{isUnconstrained => {
-        const stageSize = resolveStageSize(stageSizeMode, isUnconstrained);
+    const [resizingStage, setResizingStage] = useState(false);
+    const [stageSize, setStageSize] = useState(480);
+
+    return (<MediaQuery minWidth={unconstrainedWidth}>{() => {
 
         const alwaysEnabledModals = (
             <React.Fragment>
@@ -265,6 +265,7 @@ const GUIComponent = props => {
                     isRtl={isRtl}
                     loading={loading}
                     stageSize={STAGE_SIZE_MODES.full}
+                    setStageSize={setStageSize}
                     vm={vm}
                 >
                     {alertsVisible ? (
@@ -279,8 +280,19 @@ const GUIComponent = props => {
                 dir={isRtl ? 'rtl' : 'ltr'}
                 style={{
                     minWidth: 1024 + Math.max(0, customStageSize.width - 480),
-                    minHeight: 640 + Math.max(0, customStageSize.height - 360)
+                    minHeight: 640 + Math.max(0, customStageSize.height - 360),
+                    cursor: resizingStage ? 'e-resize' : null
                 }}
+                // eslint-disable-next-line react/jsx-no-bind
+                onMouseUp={() => setResizingStage(false)}
+                // eslint-disable-next-line react/jsx-no-bind
+                onMouseMove={event => resizingStage && (() => {
+                    // 14 to place the cursor on the resize bar
+                    let width = document.body.offsetWidth - event.clientX - 14;
+                    if (width < 270 / 2) width = 0;
+                    else width = Math.max(Math.min(width, 800), 270);
+                    setStageSize(width);
+                })()}
                 {...componentProps}
             >
                 {alwaysEnabledModals}
@@ -376,7 +388,7 @@ const GUIComponent = props => {
                     onToggleLoginOpen={onToggleLoginOpen}
                 />
                 <Box className={styles.bodyWrapper}>
-                    <Box className={styles.flexWrapper}>
+                    <Box className={classNames(styles.flexWrapper, stageSize === 0 ? styles.stageHidden : null)}>
                         <Box className={styles.editorWrapper}>
                             <Tabs
                                 forceRenderTabPanel
@@ -525,14 +537,21 @@ const GUIComponent = props => {
                             ) : null}
                         </Box>
 
-                        <Box className={styles.stageResize} />
+                        <Box
+                            className={styles.stageResize}
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onMouseDown={() => setResizingStage(true)}
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onDoubleClick={() => setStageSize(480)}
+                        />
 
-                        <Box className={classNames(styles.stageAndTargetWrapper, styles[stageSize])}>
+                        <Box className={styles.stageAndTargetWrapper}>
                             <StageWrapper
                                 isFullScreen={isFullScreen}
                                 isRendererSupported={isRendererSupported()}
                                 isRtl={isRtl}
                                 stageSize={stageSize}
+                                setStageSize={setStageSize}
                                 vm={vm}
                             />
                             <Box className={styles.targetWrapper}>
@@ -626,7 +645,6 @@ GUIComponent.propTypes = {
     showOpenFilePicker: PropTypes.func,
     showSaveFilePicker: PropTypes.func,
     soundsTabVisible: PropTypes.bool,
-    stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
     targetIsStage: PropTypes.bool,
     telemetryModalVisible: PropTypes.bool,
     theme: PropTypes.instanceOf(Theme),
@@ -662,8 +680,7 @@ GUIComponent.defaultProps = {
     isShared: false,
     isTotallyNormal: false,
     loading: false,
-    showComingSoon: false,
-    stageSizeMode: STAGE_SIZE_MODES.large
+    showComingSoon: false
 };
 
 const mapStateToProps = state => ({
@@ -671,7 +688,6 @@ const mapStateToProps = state => ({
     isWindowFullScreen: state.scratchGui.tw.isWindowFullScreen,
     // This is the button's mode, as opposed to the actual current state
     blocksId: state.scratchGui.timeTravel.year.toString(),
-    stageSizeMode: state.scratchGui.stageSize.stageSize,
     theme: state.scratchGui.theme.theme,
     preferences: state.scratchGui.preferences
 });

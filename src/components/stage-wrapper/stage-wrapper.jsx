@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import VM from 'scratch-vm';
 
 import Box from '../box/box.jsx';
-import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants.js';
 import StageHeader from '../../containers/stage-header.jsx';
 import Stage from '../../containers/stage.jsx';
 import Loader from '../loader/loader.jsx';
@@ -19,7 +18,7 @@ const StageWrapperComponent = function (props) {
         isRendererSupported,
         loading,
         stageSize,
-        prefs,
+        setStageSize,
         vm
     } = props;
 
@@ -36,13 +35,19 @@ const StageWrapperComponent = function (props) {
             )}
             dir={isRtl ? 'rtl' : 'ltr'}
         >
-            <Box className={styles.stageMenuWrapper}>
+            <Box className={classNames(styles.stageMenuWrapper, stageSize === 0 ? styles.stageHidden : null)}>
                 <StageHeader
                     stageSize={stageSize}
+                    setStageSize={setStageSize}
                     vm={vm}
                 />
             </Box>
-            <Box className={styles.stageCanvasWrapper}>
+            <Box
+                className={styles.stageCanvasWrapper}
+                style={{
+                    display: stageSize === 0 && !(isEmbedded || isFullScreen) ? 'none' : null
+                }}
+            >
                 {
                     isRendererSupported ?
                         <Stage
@@ -65,7 +70,8 @@ StageWrapperComponent.propTypes = {
     isRendererSupported: PropTypes.bool.isRequired,
     isRtl: PropTypes.bool.isRequired,
     loading: PropTypes.bool,
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
+    stageSize: PropTypes.number.isRequired,
+    setStageSize: PropTypes.func.isRequired,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 

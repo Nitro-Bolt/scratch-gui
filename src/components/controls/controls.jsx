@@ -35,6 +35,7 @@ const Controls = function (props) {
         framerate,
         interpolation,
         isSmall,
+        isHidden,
         preferences,
         ...componentProps
     } = props;
@@ -50,30 +51,36 @@ const Controls = function (props) {
     );
 
     return (
-        <div
-            className={classNames(styles.controlsContainer, className)}
-            {...componentProps}
-        >
-            <GreenFlag
-                active={active}
-                title={intl.formatMessage(messages.goTitle)}
-                onClick={onGreenFlagClick}
-            />
-            <StopAll
-                active={active}
-                title={intl.formatMessage(messages.stopTitle)}
-                onClick={onStopAllClick}
-            />
-            {turbo ? (
-                <TurboMode isSmall={isSmall} />
-            ) : null}
-            {!isSmall && (
-                <FramerateIndicator
-                    framerate={framerate}
-                    interpolation={interpolation}
+        <>
+            <div
+                className={classNames(styles.controlsContainer, className)}
+                {...componentProps}
+                style={{
+                    display: isHidden ? 'none' : null
+                }}
+            >
+                <GreenFlag
+                    active={active}
+                    title={intl.formatMessage(messages.goTitle)}
+                    onClick={onGreenFlagClick}
                 />
-            )}
-        </div>
+                <StopAll
+                    active={active}
+                    title={intl.formatMessage(messages.stopTitle)}
+                    onClick={onStopAllClick}
+                />
+                {turbo ? (
+                    <TurboMode isSmall={isSmall} />
+                ) : null}
+                {!isSmall && (
+                    <FramerateIndicator
+                        framerate={framerate}
+                        interpolation={interpolation}
+                    />
+                )}
+            </div>
+            {isHidden && <div />}
+        </>
     );
 };
 
@@ -86,6 +93,7 @@ Controls.propTypes = {
     framerate: PropTypes.number,
     interpolation: PropTypes.bool,
     isSmall: PropTypes.bool,
+    isHidden: PropTypes.bool,
     turbo: PropTypes.bool,
     preferences: PropTypes.object
 };

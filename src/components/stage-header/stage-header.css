@@ -37,6 +37,10 @@
     padding-bottom: $space;
 }
 
+.stage-hidden {
+    padding: $space;
+}
+
 .stage-size-row {
     display: flex;
 }

@@ -72,7 +72,7 @@ const getStageDimensions = (stageSize, customStageSize, isFullScreen) => {
 
         stageDimensions.scale = stageDimensions.width / stageDimensions.widthDefault;
     } else {
-        const metadata = STAGE_DISPLAY_SCALE_METADATA[stageSize];
+        const metadata = {width: stageSize};
         if (metadata.width) {
             // Uses a fixed width.
             stageDimensions.width = metadata.width;
@@ -98,7 +98,7 @@ const getStageDimensions = (stageSize, customStageSize, isFullScreen) => {
  * @returns {number} Minimum width to display the stage area of the screen at. May be wider than the stage's actual size
  */
 const getMinWidth = stageSize => {
-    const metadata = STAGE_DISPLAY_SCALE_METADATA[stageSize];
+    const metadata = {width: stageSize};
     if (metadata.width) {
         return metadata.width;
     }

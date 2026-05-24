@@ -797,7 +797,7 @@ Blocks.propTypes = {
         comments: PropTypes.bool,
         collapse: PropTypes.bool
     }),
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
+    stageSize: PropTypes.number.isRequired,
     theme: PropTypes.instanceOf(Theme),
     toolboxXML: PropTypes.string,
     updateMetrics: PropTypes.func,

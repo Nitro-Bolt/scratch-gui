@@ -200,7 +200,7 @@ SpriteSelectorComponent.propTypes = {
             order: PropTypes.number.isRequired
         })
     }),
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired
+    stageSize: PropTypes.number.isRequired
 };
 
 export default injectIntl(SpriteSelectorComponent);

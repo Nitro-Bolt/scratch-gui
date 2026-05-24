@@ -229,7 +229,7 @@
     opacity: 0;
 }
 
-.stage-resize:hover::before {
+.stage-resize:is(:hover, :active)::before {
     opacity: 1;
 }
 
@@ -244,15 +244,11 @@
     */
     display: flex;
     flex-direction: column;
-
-    /* this will only ever be as wide as the stage */
-    flex-basis: 0;
 }
 
-.flex-wrapper::after {
+.flex-wrapper:not(.stage-hidden)::after {
     width: $space;
     content: "";
-    height: 100px;
 }
 
 .target-wrapper {
