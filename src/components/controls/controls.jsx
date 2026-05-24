@@ -79,7 +79,7 @@ const Controls = function (props) {
                     />
                 )}
             </div>
-            {isHidden && <div />}
+            {isHidden && !preferences['stage-left'] && <div />}
         </>
     );
 };

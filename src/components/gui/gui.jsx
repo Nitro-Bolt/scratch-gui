@@ -267,6 +267,7 @@ const GUIComponent = props => {
                     loading={loading}
                     stageSize={STAGE_SIZE_MODES.full}
                     setStageSize={setStageSize}
+                    preferences={props.preferences}
                     vm={vm}
                 >
                     {alertsVisible ? (
@@ -289,7 +290,10 @@ const GUIComponent = props => {
                 // eslint-disable-next-line react/jsx-no-bind
                 onMouseMove={event => resizingStage && (() => {
                     // 14 to place the cursor on the resize bar
-                    let width = document.body.offsetWidth - event.clientX - 14;
+                    // eslint-disable-next-line no-negated-condition, no-extra-boolean-cast
+                    let width = !!props.preferences['stage-left'] ?
+                        event.clientX - 14 :
+                        document.body.offsetWidth - event.clientX - 14;
                     if (width < 100) width = 0;
                     else width = Math.max(Math.min(width, 800), 270);
                     setStageSize(width);
@@ -389,7 +393,12 @@ const GUIComponent = props => {
                     onToggleLoginOpen={onToggleLoginOpen}
                 />
                 <Box className={styles.bodyWrapper}>
-                    <Box className={classNames(styles.flexWrapper, stageSize === 0 ? styles.stageHidden : null)}>
+                    <Box
+                        className={classNames(styles.flexWrapper, stageSize === 0 ? styles.stageHidden : null)}
+                        style={{
+                            flexDirection: props.preferences['stage-left'] ? 'row-reverse' : 'row'
+                        }}
+                    >
                         <Box className={styles.editorWrapper}>
                             <Tabs
                                 forceRenderTabPanel
@@ -404,7 +413,9 @@ const GUIComponent = props => {
                                         classNames(
                                             tabClassNames.tabList,
                                             {
-                                                [styles.compact]: props.preferences['compact-tabs']
+                                                [styles.compact]: props.preferences['compact-tabs'],
+                                                [styles.leftHiddenOffset]: stageSize === 0 &&
+                                                    props.preferences['stage-left']
                                             }
                                         )
                                     }
@@ -553,6 +564,7 @@ const GUIComponent = props => {
                                 isRtl={isRtl}
                                 stageSize={stageSize}
                                 setStageSize={setStageSize}
+                                preferences={props.preferences}
                                 vm={vm}
                             />
                             <Box className={styles.targetWrapper}>

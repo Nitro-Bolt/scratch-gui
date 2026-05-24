@@ -20,6 +20,7 @@ const StageWrapperComponent = function (props) {
         loading,
         stageSize,
         setStageSize,
+        preferences,
         vm
     } = props;
 
@@ -55,6 +56,7 @@ const StageWrapperComponent = function (props) {
                         <Stage
                             isPlayerOnly={isPlayerOnly}
                             stageSize={stageSize}
+                            preferences={preferences}
                             vm={vm}
                         /> :
                         null
@@ -76,6 +78,7 @@ StageWrapperComponent.propTypes = {
     loading: PropTypes.bool,
     stageSize: PropTypes.number.isRequired,
     setStageSize: PropTypes.func.isRequired,
+    preferences: PropTypes.object.isRequired,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 

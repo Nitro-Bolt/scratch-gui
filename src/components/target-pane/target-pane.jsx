@@ -51,7 +51,8 @@ const TargetPane = ({
         className={styles.targetPane}
         {...componentProps}
         style={{
-            display: stageSize === 0 ? 'none' : null
+            display: stageSize === 0 ? 'none' : null,
+            flexDirection: preferences['stage-left'] ? 'row-reverse' : 'row'
         }}
     >
 

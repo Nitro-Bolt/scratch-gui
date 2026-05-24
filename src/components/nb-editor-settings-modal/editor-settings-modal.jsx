@@ -236,7 +236,7 @@ const EditorSettingsModal = props => {
         pendingBlockColors.current = null;
         commitBlockColors(next);
     };
- 
+
     const handleResetBlockColors = () => {
         setBlockColors({});
         saveBlockColors({});
@@ -473,6 +473,21 @@ const EditorSettingsModal = props => {
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={e => {
                         props.onSetPreference('compact-tabs', e.target.checked);
+                    }}
+                />
+                <BooleanSetting
+                    value={!!props.preferences['stage-left']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.stageLeft"
+                        defaultMessage="Stage on left"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.stageLeftHelp"
+                        defaultMessage="Swaps the stage and the block palette."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('stage-left', e.target.checked);
                     }}
                 />
                 <div className={styles.header}>
