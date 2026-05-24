@@ -13,6 +13,7 @@ import styles from './stage-wrapper.css';
 const StageWrapperComponent = function (props) {
     const {
         isEmbedded,
+        isPlayerOnly,
         isFullScreen,
         isRtl,
         isRendererSupported,
@@ -37,6 +38,7 @@ const StageWrapperComponent = function (props) {
         >
             <Box className={classNames(styles.stageMenuWrapper, stageSize === 0 ? styles.stageHidden : null)}>
                 <StageHeader
+                    isPlayerOnly={isPlayerOnly}
                     stageSize={stageSize}
                     setStageSize={setStageSize}
                     vm={vm}
@@ -51,6 +53,7 @@ const StageWrapperComponent = function (props) {
                 {
                     isRendererSupported ?
                         <Stage
+                            isPlayerOnly={isPlayerOnly}
                             stageSize={stageSize}
                             vm={vm}
                         /> :
@@ -66,6 +69,7 @@ const StageWrapperComponent = function (props) {
 
 StageWrapperComponent.propTypes = {
     isEmbedded: PropTypes.bool,
+    isPlayerOnly: PropTypes.bool,
     isFullScreen: PropTypes.bool,
     isRendererSupported: PropTypes.bool.isRequired,
     isRtl: PropTypes.bool.isRequired,

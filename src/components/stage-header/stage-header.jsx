@@ -84,13 +84,12 @@ const StageHeaderComponent = function (props) {
         preferences,
         stageSize,
         setStageSize,
-        stageSizeMode,
         vm
     } = props;
 
     let header = null;
 
-    const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen || isEmbedded);
+    const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen || isEmbedded, isPlayerOnly);
 
     registerKeyboardShortcut(
         preferences['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen'],

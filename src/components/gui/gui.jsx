@@ -259,6 +259,7 @@ const GUIComponent = props => {
                     />
                 ) : null}
                 <StageWrapper
+                    isPlayerOnly
                     isFullScreen={isFullScreen}
                     isEmbedded={isEmbedded}
                     isRendererSupported={isRendererSupported()}

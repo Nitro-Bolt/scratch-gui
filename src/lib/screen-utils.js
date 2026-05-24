@@ -44,15 +44,16 @@ const resolveStageSize = (stageSizeMode, isUnconstrained) => {
  * @param {STAGE_DISPLAY_SIZES} stageSize - the current fully-resolved stage size.
  * @param {{width: number, height: number}} customStageSize Custom stage size
  * @param {boolean} isFullScreen - true if full-screen mode is enabled.
+ * @param {boolean} isEditor - true if in the editor.
  * @return {StageDimensions} - an object describing the dimensions of the stage.
  */
-const getStageDimensions = (stageSize, customStageSize, isFullScreen) => {
+const getStageDimensions = (stageSize, customStageSize, isFullScreen, isPlayerOnly) => {
     const stageDimensions = {
         heightDefault: customStageSize.height,
         widthDefault: customStageSize.width,
-        height: 0,
-        width: 0,
-        scale: 0
+        height: customStageSize.height,
+        width: customStageSize.width,
+        scale: 1
     };
 
     if (isFullScreen) {
@@ -71,7 +72,7 @@ const getStageDimensions = (stageSize, customStageSize, isFullScreen) => {
         }
 
         stageDimensions.scale = stageDimensions.width / stageDimensions.widthDefault;
-    } else {
+    } else if (!isPlayerOnly) {
         const metadata = {width: stageSize};
         if (metadata.width) {
             // Uses a fixed width.
