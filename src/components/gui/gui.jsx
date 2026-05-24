@@ -290,7 +290,7 @@ const GUIComponent = props => {
                 onMouseMove={event => resizingStage && (() => {
                     // 14 to place the cursor on the resize bar
                     let width = document.body.offsetWidth - event.clientX - 14;
-                    if (width < 270 / 2) width = 0;
+                    if (width < 100) width = 0;
                     else width = Math.max(Math.min(width, 800), 270);
                     setStageSize(width);
                 })()}
