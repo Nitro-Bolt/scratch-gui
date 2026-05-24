@@ -72,7 +72,6 @@ export default {
   "expanded-backpack": () => import(/* webpackChunkName: "addon-entry-expanded-backpack" */ "../addons/expanded-backpack/_runtime_entry.js"),
   "script-snap": () => import(/* webpackChunkName: "addon-entry-script-snap" */ "../addons/script-snap/_runtime_entry.js"),
   "fullscreen": () => import(/* webpackChunkName: "addon-entry-fullscreen" */ "../addons/fullscreen/_runtime_entry.js"),
-  "hide-stage": () => import(/* webpackChunkName: "addon-entry-hide-stage" */ "../addons/hide-stage/_runtime_entry.js"),
   "tw-straighten-comments": () => import(/* webpackChunkName: "addon-entry-tw-straighten-comments" */ "../addons/tw-straighten-comments/_runtime_entry.js"),
   "tw-disable-vibration": () => import(/* webpackChunkName: "addon-entry-tw-disable-vibration" */ "../addons/tw-disable-vibration/_runtime_entry.js"),
   "tw-disable-cloud-variables": () => import(/* webpackChunkName: "addon-entry-tw-disable-cloud-variables" */ "../addons/tw-disable-cloud-variables/_runtime_entry.js"),

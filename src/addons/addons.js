@@ -73,7 +73,6 @@ const addons = [
     'expanded-backpack',
     'script-snap',
     'fullscreen',
-    'hide-stage',
     'tw-straighten-comments',
     'tw-remove-backpack',
     'tw-remove-feedback',
