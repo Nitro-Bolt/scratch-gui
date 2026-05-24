@@ -225,7 +225,7 @@
     width: calc($space / 2);
     border-radius: calc($space / 4);
     height: 10rem;
-    background-color: var(--menu-bar-background);
+    background-color: $ui-black-transparent;
     opacity: 0;
 }
 
