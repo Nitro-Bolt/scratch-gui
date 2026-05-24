@@ -209,7 +209,7 @@ const GUIComponent = props => {
             if (i > 0 && i <= 5) props.onActivateTab(parseInt(i, 10) - 1);
         });
     }
-    
+
     registerKeyboardShortcut(
         props.preferences['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings'],
         onEditorSettings
@@ -451,7 +451,7 @@ const GUIComponent = props => {
                                             draggable={false}
                                             src={assetsIcon()}
                                         />
-                                        <FormattedMessage 
+                                        <FormattedMessage
                                             defaultMessage="Assets"
                                             description="Button to get to the assets panel"
                                             id="gui.gui.assetsTab"
@@ -524,6 +524,8 @@ const GUIComponent = props => {
                                 <Backpack host={backpackHost} />
                             ) : null}
                         </Box>
+
+                        <Box className={styles.stageResize} />
 
                         <Box className={classNames(styles.stageAndTargetWrapper, styles[stageSize])}>
                             <StageWrapper

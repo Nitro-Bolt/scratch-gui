@@ -210,6 +210,29 @@
     position: relative;
 }
 
+.stage-resize {
+    width: $space;
+    position: relative;
+    cursor: e-resize;
+}
+
+.stage-resize::before {
+    position: absolute;
+    content: "";
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: calc($space / 2);
+    border-radius: calc($space / 4);
+    height: 10rem;
+    background-color: var(--menu-bar-background);
+    opacity: 0;
+}
+
+.stage-resize:hover::before {
+    opacity: 1;
+}
+
 .stage-and-target-wrapper {
     /*
         Makes rows for children:
@@ -221,12 +244,15 @@
     */
     display: flex;
     flex-direction: column;
-    /* pad entire wrapper to the left and right; allow children to fill width */
-    padding-left: $space;
-    padding-right: $space;
 
     /* this will only ever be as wide as the stage */
     flex-basis: 0;
+}
+
+.flex-wrapper::after {
+    width: $space;
+    content: "";
+    height: 100px;
 }
 
 .target-wrapper {
