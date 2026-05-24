@@ -214,6 +214,7 @@
     width: $space;
     position: relative;
     cursor: e-resize;
+    flex-shrink: 0;
 }
 
 .stage-resize::before {
