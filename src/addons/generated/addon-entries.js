@@ -37,7 +37,6 @@ export default {
   "editor-theme3": () => import(/* webpackChunkName: "addon-entry-editor-theme3" */ "../addons/editor-theme3/_runtime_entry.js"),
   "custom-block-text": () => import(/* webpackChunkName: "addon-entry-custom-block-text" */ "../addons/custom-block-text/_runtime_entry.js"),
   "editor-colored-context-menus": () => import(/* webpackChunkName: "addon-entry-editor-colored-context-menus" */ "../addons/editor-colored-context-menus/_runtime_entry.js"),
-  "editor-stage-left": () => import(/* webpackChunkName: "addon-entry-editor-stage-left" */ "../addons/editor-stage-left/_runtime_entry.js"),
   "editor-buttons-reverse-order": () => import(/* webpackChunkName: "addon-entry-editor-buttons-reverse-order" */ "../addons/editor-buttons-reverse-order/_runtime_entry.js"),
   //"variable-manager": () => import(/* webpackChunkName: "addon-entry-variable-manager" */ "../addons/variable-manager/_runtime_entry.js"),
   "search-sprites": () => import(/* webpackChunkName: "addon-entry-search-sprites" */ "../addons/search-sprites/_runtime_entry.js"),

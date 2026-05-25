@@ -38,7 +38,6 @@ const addons = [
     'editor-theme3',
     'custom-block-text',
     'editor-colored-context-menus',
-    'editor-stage-left',
     'editor-buttons-reverse-order',
     'variable-manager',
     'search-sprites',
