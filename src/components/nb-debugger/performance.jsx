@@ -2,16 +2,9 @@ import React from 'react';
 import classNames from 'classnames';
 import ReactTooltip from 'react-tooltip';
 import {Sparklines, SparklinesLine} from 'react-sparklines';
+import {formatBytesRound} from '../../lib/tw-bytes-utils';
 
 import styles from './performance.css';
-
-const formatBytes = bytes => {
-    console.log(bytes);
-    if (!bytes || bytes < 0) return "0B";
-    const units = ["B", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return `${(bytes / 1024 ** i).toFixed(1).replace(/\.0$/, "")}${units[i]}`;
-};
 
 const ChartButton = props => (
     <button
@@ -43,7 +36,7 @@ const PerformanceTab = React.memo(props => {
         const labels = Array.from({length: amount}, (_, i) => {
             const fraction = (amount - 1 - i) / (amount - 1);
             const value = Math.round(max * fraction);
-            return props.chartIndex === 2 ? formatBytes(value) : value;
+            return props.chartIndex === 2 ? formatBytesRound(value) : value;
         });
     
         return (
@@ -87,7 +80,7 @@ const PerformanceTab = React.memo(props => {
                         <div
                             key={i}
                             className={styles.hitSlice}
-                            data-tip={props.chartIndex === 2 ? formatBytes(value) : `${value} ${label}`}
+                            data-tip={props.chartIndex === 2 ? formatBytesRound(value) : `${value} ${label}`}
                             data-for="perf-chart-tooltip"
                             style={{
                                 left: `${(i - 0.5) * segmentWidth}%`,
