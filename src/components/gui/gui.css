@@ -208,6 +208,24 @@
     display: flex;
 }
 
+.stage-left {
+    flex-direction: row-reverse;
+}
+
+.stage-left :global(:is(.injectionDiv, [class^="asset-panel_wrapper"], [class^="variables-tab_wrapper"])) {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.stage-left.stage-hidden :global(:is(.injectionDiv, [class^="asset-panel_wrapper"], [class^="variables-tab_wrapper"], [class^="selector_wrapper"])) {
+    border-top-left-radius: 0.5rem;
+}
+
+.stage-left :global(:is([class^="gui_extension-button"], [class^="selector_wrapper"], [class^="variables-tab_clones-selector_items-wrapper"])) {
+    border-bottom-left-radius: 0.5rem;
+}
+
 .blocks-wrapper {
     flex-grow: 1;
     position: relative;

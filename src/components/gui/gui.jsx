@@ -394,10 +394,8 @@ const GUIComponent = props => {
                 />
                 <Box className={styles.bodyWrapper}>
                     <Box
-                        className={classNames(styles.flexWrapper, stageSize === 0 ? styles.stageHidden : null)}
-                        style={{
-                            flexDirection: props.preferences['stage-left'] ? 'row-reverse' : 'row'
-                        }}
+                        className={classNames(styles.flexWrapper, stageSize === 0 ? styles.stageHidden : null,
+                            props.preferences['stage-left'] ? styles.stageLeft : null)}
                     >
                         <Box className={styles.editorWrapper}>
                             <Tabs
@@ -496,7 +494,9 @@ const GUIComponent = props => {
                                         />
                                     </Tab>
                                 </TabList>
-                                <TabPanel className={tabClassNames.tabPanel}>
+                                <TabPanel
+                                    className={tabClassNames.tabPanel}
+                                >
                                     <Box className={styles.blocksWrapper}>
                                         <Blocks
                                             key={`${blocksId}/${theme.id}`}
@@ -545,7 +545,10 @@ const GUIComponent = props => {
                                 </TabPanel>
                             </Tabs>
                             {backpackVisible ? (
-                                <Backpack host={backpackHost} />
+                                <Backpack
+                                    host={backpackHost}
+                                    preferences={props.preferences}
+                                />
                             ) : null}
                         </Box>
 
