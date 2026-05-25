@@ -63,7 +63,7 @@ class RecordModal extends React.Component {
         this.setState({playing: false, playhead: null});
     }
     handleBack () {
-        this.setState({playing: false, paused: false, samples: null});
+        this.setState({playing: false, paused: false, samples: null, playhead: null});
     }
     handleSetTrimEnd (trimEnd) {
         this.setState({trimEnd});
