@@ -5,7 +5,7 @@
 .debugger-container-overlay {
     position: fixed;
     pointer-events: none;
-    z-index: $z-index-card;
+    z-index: 10001;
 }
 
 .debugger-container {
