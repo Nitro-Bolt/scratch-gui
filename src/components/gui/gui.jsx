@@ -291,7 +291,7 @@ const GUIComponent = props => {
                 onMouseMove={event => resizingStage && (() => {
                     // 14 to place the cursor on the resize bar
                     // eslint-disable-next-line no-negated-condition, no-extra-boolean-cast
-                    let width = !!props.preferences['stage-left'] ?
+                    let width = !!props.preferences['stage-left'] !== isRtl ?
                         event.clientX - 14 :
                         document.body.offsetWidth - event.clientX - 14;
                     if (width < 100) width = 0;
