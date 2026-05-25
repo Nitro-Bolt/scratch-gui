@@ -472,6 +472,7 @@ class SoundEditor extends React.Component {
                 onSofter={this.effectFactory(effectTypes.SOFTER)}
                 onStop={this.handleStopPlaying}
                 onUndo={this.handleUndo}
+                preferences={this.props.preferences}
             />
         );
     }
@@ -487,6 +488,7 @@ SoundEditor.propTypes = {
     samples: PropTypes.instanceOf(Float32Array),
     soundId: PropTypes.string,
     soundIndex: PropTypes.number,
+    preferences: PropTypes.object,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 

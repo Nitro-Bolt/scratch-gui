@@ -254,6 +254,7 @@ const SoundEditor = props => (
                     data={props.chunkLevels}
                     height={160}
                     width={600}
+                    preferences={props.preferences}
                 />
                 <AudioSelector
                     playhead={props.playhead}
@@ -423,7 +424,8 @@ SoundEditor.propTypes = {
     setRef: PropTypes.func,
     tooLoud: PropTypes.bool.isRequired,
     trimEnd: PropTypes.number,
-    trimStart: PropTypes.number
+    trimStart: PropTypes.number,
+    preferences: PropTypes.object
 };
 
 export default injectIntl(SoundEditor);

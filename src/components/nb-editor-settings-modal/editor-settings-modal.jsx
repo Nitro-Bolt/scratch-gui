@@ -236,7 +236,7 @@ const EditorSettingsModal = props => {
         pendingBlockColors.current = null;
         commitBlockColors(next);
     };
- 
+
     const handleResetBlockColors = () => {
         setBlockColors({});
         saveBlockColors({});
@@ -473,6 +473,21 @@ const EditorSettingsModal = props => {
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={e => {
                         props.onSetPreference('compact-tabs', e.target.checked);
+                    }}
+                />
+                <BooleanSetting
+                    value={props.preferences['waveform-render-type'] === 'sharp'}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.waveformRenderType"
+                        defaultMessage="Sharp waveforms"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.waveformRenderTypeHelp"
+                        defaultMessage="Choose between sharp edges on sound waveforms or soft edges like in Scratch. Sharp edges can offer more detail on large sounds."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('waveform-render-type', e.target.checked ? 'sharp' : 'soft');
                     }}
                 />
                 <div className={styles.header}>

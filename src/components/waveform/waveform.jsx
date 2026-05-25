@@ -10,7 +10,8 @@ class Waveform extends React.PureComponent {
         const {
             width,
             height,
-            data
+            data,
+            preferences
         } = this.props;
 
         // Never want a density of points higher than the number of pixels
@@ -38,7 +39,8 @@ class Waveform extends React.PureComponent {
         ];
         const pathComponents = points.map(([x, y], i) => {
             const [nx, ny] = points[i < points.length - 1 ? i + 1 : 0];
-            return `Q${x} ${y} ${(x + nx) / 2} ${(y + ny) / 2}`;
+            return `${preferences?.['waveform-render-type'] === 'sharp' ?
+                'L' : 'Q'}${x} ${y} ${(x + nx) / 2} ${(y + ny) / 2}`;
         });
 
         return (
@@ -62,7 +64,8 @@ class Waveform extends React.PureComponent {
 Waveform.propTypes = {
     data: PropTypes.arrayOf(PropTypes.number),
     height: PropTypes.number,
-    width: PropTypes.number
+    width: PropTypes.number,
+    preferences: PropTypes.object
 };
 
 export default Waveform;

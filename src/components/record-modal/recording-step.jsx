@@ -60,6 +60,7 @@ const RecordingStep = props => (
                         height={150}
                         level={0}
                         width={440}
+                        preferences={props.preferences}
                     />
                 ) : (
                     <span className={styles.helpText}>
@@ -143,7 +144,8 @@ RecordingStep.propTypes = {
     onPauseRecording: PropTypes.func.isRequired,
     onResumeRecording: PropTypes.func.isRequired,
     recording: PropTypes.bool,
-    paused: PropTypes.bool
+    paused: PropTypes.bool,
+    preferences: PropTypes.object
 };
 
 export default injectIntl(RecordingStep);

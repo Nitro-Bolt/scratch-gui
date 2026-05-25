@@ -116,6 +116,7 @@ class RecordModal extends React.Component {
                 onPauseRecording={this.handlePauseRecording}
                 onResumeRecording={this.handleResumeRecording}
                 onSubmit={this.handleSubmit}
+                preferences={this.props.preferences}
             />
         );
     }
@@ -124,6 +125,7 @@ class RecordModal extends React.Component {
 RecordModal.propTypes = {
     onClose: PropTypes.func,
     onNewSound: PropTypes.func,
+    preferences: PropTypes.object,
     vm: PropTypes.instanceOf(VM)
 };
 
