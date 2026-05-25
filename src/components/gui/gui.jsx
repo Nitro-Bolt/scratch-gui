@@ -555,7 +555,10 @@ const GUIComponent = props => {
                         <Box
                             className={styles.stageResize}
                             // eslint-disable-next-line react/jsx-no-bind
-                            onMouseDown={() => setResizingStage(true)}
+                            onMouseDown={event => {
+                                event.preventDefault();
+                                setResizingStage(true);
+                            }}
                             // eslint-disable-next-line react/jsx-no-bind
                             onDoubleClick={() => setStageSize(480)}
                         />
