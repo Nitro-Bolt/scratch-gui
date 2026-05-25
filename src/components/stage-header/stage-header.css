@@ -87,6 +87,10 @@
     filter: $filter-icon-gray;
 }
 
+.stage-button-icon.stage-left {
+    scale: -1 1;
+}
+
 [dir="rtl"] .stage-button-icon {
     transform: scaleX(-1);
 }

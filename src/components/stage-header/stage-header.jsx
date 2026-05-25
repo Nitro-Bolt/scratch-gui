@@ -178,21 +178,24 @@ const StageHeaderComponent = function (props) {
                             {
                                 handleClick: () => setStageSize(0),
                                 icon: hiddenStageIcon,
-                                iconClassName: styles.stageButtonIcon,
+                                iconClassName: classNames(styles.stageButtonIcon, preferences['stage-left'] ?
+                                    styles.stageLeft : null),
                                 isSelected: stageSize === 0,
                                 title: props.intl.formatMessage(messages.hiddenStageSizeMessage)
                             },
                             {
                                 handleClick: () => setStageSize(270),
                                 icon: smallStageIcon,
-                                iconClassName: styles.stageButtonIcon,
+                                iconClassName: classNames(styles.stageButtonIcon, preferences['stage-left'] ?
+                                    styles.stageLeft : null),
                                 isSelected: stageSize <= 430 && stageSize !== 0,
                                 title: props.intl.formatMessage(messages.smallStageSizeMessage)
                             },
                             {
                                 handleClick: () => setStageSize(480),
                                 icon: showFixedLargeSize ? fullStageIcon : largeStageIcon,
-                                iconClassName: styles.stageButtonIcon,
+                                iconClassName: classNames(styles.stageButtonIcon, preferences['stage-left'] ?
+                                    styles.stageLeft : null),
                                 isSelected: stageSize > 430,
                                 title: props.intl.formatMessage(messages.fullStageSizeMessage)
                             }
