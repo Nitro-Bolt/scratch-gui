@@ -11,7 +11,6 @@ import TWRenderRecoloredImage from '../../lib/tw-recolor/render.jsx';
 import BufferedInputHOC from '../forms/buffered-input-hoc.jsx';
 import AudioSelector from '../../containers/audio-selector.jsx';
 import IconButton from '../icon-button/icon-button.jsx';
-import {SOUND_BYTE_LIMIT} from '../../lib/audio/audio-util.js';
 
 import styles from './sound-editor.css';
 
@@ -377,16 +376,6 @@ const SoundEditor = props => (
                 {` (${formatSoundSize(props.size)})`}
             </div>
         </div>
-        {/* TODO: don't know whether this should be > or >=. Using >= for now to be safe */}
-        {props.size >= SOUND_BYTE_LIMIT && (
-            <div className={classNames(styles.alert, styles.tooLarge)}>
-                <FormattedMessage
-                    defaultMessage="This sound may be too large to upload to Scratch."
-                    description="Message that appears when a sound exceeds the Scratch sound size limit."
-                    id="tw.tooLarge"
-                />
-            </div>
-        )}
         {props.isStereo && (
             <div className={classNames(styles.alert, styles.stereo)}>
                 <FormattedMessage
