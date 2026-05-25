@@ -98,6 +98,7 @@ const DebuggerComponent = React.memo(props => {
                         onClearLogs={props.onClearLogs}
                         onSelectTarget={props.onSelectTarget}
                         logs={props.logs}
+                        sprites={props.sprites}
                     />
                 ) : props.tab === 1 ? (
                     <ThreadsTab

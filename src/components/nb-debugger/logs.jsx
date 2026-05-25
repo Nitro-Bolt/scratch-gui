@@ -63,13 +63,8 @@ const LogsTab = React.memo(props => {
     const [spriteFilter, setSpriteFilter] = useState('all');
     const [typeFilter, setTypeFilter] = useState('all');
 
-    const sprites = useMemo(() => {
-        const names = new Set();
-        props.logs.forEach(log => {
-            if (log.target) names.add(log.target.sprite.name);
-        });
-        return Array.from(names).sort();
-    }, [props.logs]);
+    const sprites = Object.values(props.sprites)
+        .sort((a, b) => a.order - b.order).map(s => s.name);
 
     const filteredLogs = useMemo(() => {
         return props.logs.filter(log => {
@@ -98,12 +93,10 @@ const LogsTab = React.memo(props => {
                     onChange={e => setSpriteFilter(e.target.value)}
                 >
                     <option value="all">All sprites</option>
-                    {sprites.map(name => (
-                        <option key={name} value={name}>{name}</option>
+                    {sprites.map((name, i) => (
+                        <option key={i} value={name}>{name}</option>
                     ))}
-                    {props.logs.some(l => !l.target) &&
-                        <option value="__stage__">Stage</option>
-                    }
+                    <option value="__stage__">Stage</option>
                 </select>
                 <select
                     className={styles.filterSelect}

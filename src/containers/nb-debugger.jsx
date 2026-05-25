@@ -131,6 +131,7 @@ class NBDebugger extends React.Component {
                 onCloseCompilerWarning={this.handleCloseCompilerWarning}
                 onSelectTarget={this.handleSelectTarget}
                 threads={this.state.threads}
+                sprites={this.props.sprites}
                 fpsData={this.state.fpsData}
                 memoryData={this.state.memoryData}
                 cloneData={this.state.cloneData}
@@ -158,6 +159,7 @@ NBDebugger.propTypes = {
 
 const mapStateToProps = state => ({
     vm: state.scratchGui.vm,
+    sprites: state.scratchGui.targets.sprites,
     compilerEnabled: state.scratchGui.tw.compilerOptions.enabled,
     x: state.scratchGui.debugger.x,
     y: state.scratchGui.debugger.y,
