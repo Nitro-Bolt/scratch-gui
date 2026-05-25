@@ -43,8 +43,11 @@ const RecordModal = props => (
             ) : (
                 <RecordingStep
                     recording={props.recording}
+                    paused={props.paused}
                     onRecord={props.onRecord}
                     onStopRecording={props.onStopRecording}
+                    onPauseRecording={props.onPauseRecording}
+                    onResumeRecording={props.onResumeRecording}
                 />
             )}
         </Box>
@@ -64,10 +67,13 @@ RecordModal.propTypes = {
     onSetTrimStart: PropTypes.func.isRequired,
     onStopPlaying: PropTypes.func.isRequired,
     onStopRecording: PropTypes.func.isRequired,
+    onPauseRecording: PropTypes.func.isRequired,
+    onResumeRecording: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     playhead: PropTypes.number,
     playing: PropTypes.bool,
     recording: PropTypes.bool,
+    paused: PropTypes.bool,
     sampleRate: PropTypes.number,
     samples: PropTypes.instanceOf(Float32Array),
     trimEnd: PropTypes.number.isRequired,
