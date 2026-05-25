@@ -62,7 +62,6 @@
     display: flex;
     align-items: flex-end;
     flex-shrink: 0;
-    align-self: end;
 
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 500;
@@ -146,8 +145,14 @@
     filter: grayscale(100%);
 }
 
-.left-hidden-offset {
+[dir="ltr"] .left-hidden-offset {
     width: calc(100% - $space * 18) !important;
+    margin-left: calc($space * 18) !important;
+}
+
+[dir="rtl"] .left-hidden-offset {
+    width: calc(100% - $space * 18) !important;
+    margin-right: calc($space * 18) !important;
 }
 
 .compact .tab span {

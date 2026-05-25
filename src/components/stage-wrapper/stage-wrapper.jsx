@@ -40,6 +40,7 @@ const StageWrapperComponent = function (props) {
             <Box className={classNames(styles.stageMenuWrapper, stageSize === 0 ? styles.stageHidden : null)}>
                 <StageHeader
                     isPlayerOnly={isPlayerOnly}
+                    isRtl={isRtl}
                     stageSize={stageSize}
                     setStageSize={setStageSize}
                     vm={vm}

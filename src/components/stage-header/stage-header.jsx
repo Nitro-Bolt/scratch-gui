@@ -76,6 +76,7 @@ const StageHeaderComponent = function (props) {
         showFixedLargeSize,
         isFullScreen,
         isPlayerOnly,
+        isRtl,
         onKeyPress,
         onSetStageFullScreen,
         onSetStageUnFullScreen,
@@ -205,7 +206,8 @@ const StageHeaderComponent = function (props) {
                 // + 2 px because the stage will have 2 pixels of border around it
                 style={{
                     minWidth: `${stageDimensions.width + 2}px`,
-                    left: preferences['stage-left'] ? 0 : null
+                    left: preferences['stage-left'] && !isRtl ? 0 : null,
+                    right: preferences['stage-left'] && isRtl ? 0 : null
                 }}
             >
                 <Box className={classNames(styles.stageMenuWrapper, stageSize === 0 ? styles.stageHidden : null)}>
@@ -256,6 +258,7 @@ StageHeaderComponent.propTypes = {
     showFixedLargeSize: PropTypes.bool,
     isFullScreen: PropTypes.bool.isRequired,
     isPlayerOnly: PropTypes.bool.isRequired,
+    isRtl: PropTypes.bool.isRequired,
     onKeyPress: PropTypes.func.isRequired,
     onSetStageFullScreen: PropTypes.func.isRequired,
     onSetStageUnFullScreen: PropTypes.func.isRequired,
