@@ -24,6 +24,7 @@ import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
 import DragConstants from '../lib/drag-constants';
 import downloadBlob from '../lib/download-blob';
 import SharedAudioContext from '../lib/audio/shared-audio-context.js';
+import getAssetType from '../lib/nb-asset-type.js';
 
 import {connect} from 'react-redux';
 
@@ -35,7 +36,8 @@ import {
 
 import {
     activateTab,
-    COSTUMES_TAB_INDEX
+    COSTUMES_TAB_INDEX,
+    ASSETS_TAB_INDEX
 } from '../reducers/editor-tab';
 
 import {setRestore} from '../reducers/restore-deletion';
@@ -180,6 +182,29 @@ class SoundTab extends React.Component {
                 md5: dropInfo.payload.body,
                 name: dropInfo.payload.name
             }).then(this.handleNewSound);
+        } else if (dropInfo.dragType === DragConstants.BACKPACK_ASSET) {
+            // Detect if the asset can be added as a sound
+            // If it is not a sound, add it to assets
+            const payload = dropInfo.payload;
+            const type = getAssetType(payload).type;
+            const storage = this.props.vm.runtime.storage;
+            const targetId = this.props.vm.editingTarget.id;
+            if (type === 'sound') {
+                soundUpload(payload.bodyData, payload.mime, storage, sound => {
+                    sound.name = payload.name;
+                    this.props.vm.addSound(sound, targetId)
+                        .then(this.handleNewSound);
+                });
+            } else {
+                this.props.onActivateAssetsTab();
+                this.props.vm.addAsset({
+                    md5: payload.body,
+                    lastModified: payload.lastModified,
+                    contentType: payload.mime,
+                    dataFormat: payload.dataFormat,
+                    name: payload.name
+                });
+            }
         }
     }
 
@@ -306,6 +331,7 @@ SoundTab.propTypes = {
     intl: intlShape,
     isRtl: PropTypes.bool,
     onActivateCostumesTab: PropTypes.func.isRequired,
+    onActivateAssetsTab: PropTypes.func.isRequired,
     onCloseImporting: PropTypes.func.isRequired,
     onNewSoundFromLibraryClick: PropTypes.func.isRequired,
     onNewSoundFromRecordingClick: PropTypes.func.isRequired,
@@ -339,6 +365,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
+    onActivateAssetsTab: () => dispatch(activateTab(ASSETS_TAB_INDEX)),
     onNewSoundFromLibraryClick: e => {
         e.preventDefault();
         dispatch(openSoundLibrary());

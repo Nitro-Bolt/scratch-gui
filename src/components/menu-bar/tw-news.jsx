@@ -1,18 +1,33 @@
 import React from 'react';
-import {APP_NAME} from '../../lib/brand';
 import {isScratchDesktop} from '../../lib/isScratchDesktop';
 import CloseButton from '../close-button/close-button.jsx';
 import styles from './tw-news.css';
 
 const LOCAL_STORAGE_KEY = 'tw:closedNews';
-const NEWS_ID = 'android-fraud';
+const NEWS_ID = 'scratch-vulnerability';
 
-const newsAppliesToUser = () => /android/i.test(navigator.userAgent);
+const newsAppliesToUser = () => false;
 
 const NewsBody = () => (
-    <div className={styles.text}>
-        {/* eslint-disable-next-line max-len */}
-        {`The Google Play Store app calling itself TurboWarp is illegitimate and outdated. If you were misled into installing it, leave a 1 star review, uninstall it, and report it. An official one will exist eventually.`}
+    <div
+        className={styles.text}
+        lang="en"
+    >
+        <div>
+            {/* eslint-disable-next-line max-len */}
+            {'We discovered a critical vulnerability in all versions of Scratch. In the desktop app, opening a malicious project could install ransomware on your computer.'}
+        </div>
+        <div>
+            {/* eslint-disable-next-line max-len */}
+            {'We reported this to Scratch two years ago, but no fix has been released yet. The latest TurboWarp is not affected. '}
+            <a
+                href="https://muffin.ink/blog/scratch-vulnerability-disclosure/"
+                target="_blank"
+                rel="noreferrer"
+            >
+                {'More details on my blog.'}
+            </a>
+        </div>
     </div>
 );
 

@@ -13,6 +13,7 @@ import Blocks from '../../containers/blocks.jsx';
 import CostumeTab from '../../containers/costume-tab.jsx';
 import TargetPane from '../../containers/target-pane.jsx';
 import SoundTab from '../../containers/sound-tab.jsx';
+import AssetTab from '../../containers/asset-tab.jsx';
 import VariableManager from '../../containers/variable-manager.jsx';
 import StageWrapper from '../../containers/stage-wrapper.jsx';
 import Loader from '../loader/loader.jsx';
@@ -54,6 +55,7 @@ import addExtensionIcon from './icon--extensions.svg';
 import codeIcon from '!../../lib/tw-recolor/build!./icon--code.svg';
 import costumesIcon from '!../../lib/tw-recolor/build!./icon--costumes.svg';
 import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
+import assetsIcon from '!../../lib/tw-recolor/build!./icon--assets.svg';
 import variablesIcon from '!../../lib/tw-recolor/build!./icon--variables.svg';
 
 import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
@@ -84,6 +86,7 @@ const GUIComponent = props => {
         accountNavOpen,
         activeTabIndex,
         alertsVisible,
+        assetsTabVisible,
         authorId,
         authorThumbnailUrl,
         authorUsername,
@@ -135,6 +138,7 @@ const GUIComponent = props => {
         onToggleLoginOpen,
         onActivateCostumesTab,
         onActivateSoundsTab,
+        onActivateAssetsTab,
         onActivateVariablesTab,
         onActivateTab,
         onClickLogo,
@@ -204,7 +208,7 @@ const GUIComponent = props => {
             key: i,
             ctrl: true
         }, () => {
-            if (i > 0 && i < 5) props.onActivateTab(parseInt(i, 10) - 1);
+            if (i > 0 && i <= 5) props.onActivateTab(parseInt(i, 10) - 1);
         });
     }
     
@@ -446,6 +450,20 @@ const GUIComponent = props => {
                                     </Tab>
                                     <Tab
                                         className={tabClassNames.tab}
+                                        onClick={onActivateAssetsTab}
+                                    >
+                                        <img
+                                            draggable={false}
+                                            src={assetsIcon()}
+                                        />
+                                        <FormattedMessage 
+                                            defaultMessage="Assets"
+                                            description="Button to get to the assets panel"
+                                            id="gui.gui.assetsTab"
+                                        />
+                                    </Tab>
+                                    <Tab
+                                        className={tabClassNames.tab}
                                         onClick={onActivateVariablesTab}
                                     >
                                         <img
@@ -499,6 +517,9 @@ const GUIComponent = props => {
                                 </TabPanel>
                                 <TabPanel className={tabClassNames.tabPanel}>
                                     {soundsTabVisible ? <SoundTab vm={vm} /> : null}
+                                </TabPanel>
+                                <TabPanel className={tabClassNames.tabPanel}>
+                                    {assetsTabVisible ? <AssetTab vm={vm} /> : null}
                                 </TabPanel>
                                 <TabPanel className={tabClassNames.tabPanel}>
                                     {variablesTabVisible ? <VariableManager vm={vm} /> : null}
@@ -576,6 +597,7 @@ GUIComponent.propTypes = {
     logo: PropTypes.string,
     onActivateCostumesTab: PropTypes.func,
     onActivateSoundsTab: PropTypes.func,
+    onActivateAssetsTab: PropTypes.func,
     onActivateVariablesTab: PropTypes.func,
     onActivateTab: PropTypes.func,
     onClickAccountNav: PropTypes.func,
