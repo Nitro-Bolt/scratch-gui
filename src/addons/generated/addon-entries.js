@@ -13,7 +13,7 @@ export default {
   "mediarecorder": () => import(/* webpackChunkName: "addon-entry-mediarecorder" */ "../addons/mediarecorder/_runtime_entry.js"),
   "drag-drop": () => require("../addons/drag-drop/_runtime_entry.js"),
   "debugger": () => import(/* webpackChunkName: "addon-entry-debugger" */ "../addons/debugger/_runtime_entry.js"),
-  "pause": () => require("../addons/pause/_runtime_entry.js"),
+  //"pause": () => require("../addons/pause/_runtime_entry.js"),
   "mute-project": () => require("../addons/mute-project/_runtime_entry.js"),
   "vol-slider": () => import(/* webpackChunkName: "addon-entry-vol-slider" */ "../addons/vol-slider/_runtime_entry.js"),
   "clones": () => import(/* webpackChunkName: "addon-entry-clones" */ "../addons/clones/_runtime_entry.js"),
