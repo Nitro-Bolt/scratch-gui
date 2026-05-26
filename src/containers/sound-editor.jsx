@@ -51,7 +51,7 @@ class SoundEditor extends React.Component {
         this.state = {
             copyBuffer: null,
             chunkLevels: computeChunkedRMS(this.props.samples),
-            playhead: null, // null is not playing, [0 -> 1] is playing percent
+            playhead: 0, // null is not playing, [0 -> 1] is playing percent
             trimStart: null,
             trimEnd: null,
             playing: false

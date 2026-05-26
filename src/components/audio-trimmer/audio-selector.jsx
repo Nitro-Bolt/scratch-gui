@@ -32,11 +32,11 @@ const AudioSelector = props => (
                 />
             </Box>
         )}
-        {props.playhead ? (
+        {props.playhead !== null && (
             <Playhead
                 playbackPosition={props.playhead}
             />
-        ) : null}
+        )}
     </div>
 );
 
