@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './audio-trimmer.css';
-import playbackCaret from './playback-caret.svg';
+import playheadCaret from './playhead-caret.svg';
 
 const Playhead = props => (
     <>
@@ -21,8 +21,8 @@ const Playhead = props => (
             }}
         >
             <img
-                id="playback-caret"
-                src={playbackCaret}
+                id="playhead-caret"
+                src={playheadCaret}
             />
         </div>
     </>
