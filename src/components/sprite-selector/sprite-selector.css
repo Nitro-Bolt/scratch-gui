@@ -30,7 +30,7 @@
     */
     box-sizing: border-box;
     width: calc((100% / $sprites-per-row ) - $space);
-    max-width: 70.3906px;
+    max-width: 6rem;
     max-height: 4rem;
     min-width: 4rem;
     min-height: 4rem; /* @todo: calc height same as width */
