@@ -263,6 +263,7 @@ const SoundEditor = props => (
                 />
                 <AudioSelector
                     playhead={props.playhead}
+                    onUpdatePlayhead={props.onUpdatePlayhead}
                     trimEnd={props.trimEnd}
                     trimStart={props.trimStart}
                     onPlay={props.onPlay}
@@ -426,6 +427,7 @@ SoundEditor.propTypes = {
     onSofter: PropTypes.func.isRequired,
     onStop: PropTypes.func.isRequired,
     onUndo: PropTypes.func.isRequired,
+    onUpdatePlayhead: PropTypes.func.isRequired,
     playhead: PropTypes.number,
     playing: PropTypes.bool.isRequired,
     setRef: PropTypes.func,

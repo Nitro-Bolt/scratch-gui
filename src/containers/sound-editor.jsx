@@ -139,8 +139,7 @@ class SoundEditor extends React.Component {
         this.audioBufferPlayer.stop();
         this.audioBufferPlayer = new AudioBufferPlayer(samples, sampleRate);
         this.setState({
-            chunkLevels: computeChunkedRMS(samples),
-            playhead: null
+            chunkLevels: computeChunkedRMS(samples)
         });
     }
     submitNewSamples (samples, sampleRate, skipUndo) {
@@ -177,7 +176,7 @@ class SoundEditor extends React.Component {
             this.state.playhead || this.state.trimStart || 0,
             this.state.trimEnd || 1,
             this.handleUpdatePlayhead,
-            this.handleStoppedPlaying);
+            this.handleStopPlaying);
         this.setState({
             playing: true
         });
@@ -187,11 +186,12 @@ class SoundEditor extends React.Component {
         this.setState({playing: false});
     }
     handleStopPlaying () {
-        this.audioBufferPlayer.stop();
         this.handleStoppedPlaying();
+        this.setState({playhead: this.state.trimStart ?? 0});
     }
     handleStoppedPlaying () {
-        this.setState({playhead: null, playing: false});
+        this.audioBufferPlayer.stop();
+        this.setState({playing: false});
     }
     handleUpdatePlayhead (playhead) {
         this.setState({playhead});
@@ -243,7 +243,8 @@ class SoundEditor extends React.Component {
     }
     handleUpdateTrim (trimStart, trimEnd) {
         this.setState({trimStart, trimEnd});
-        this.handleStopPlaying();
+        this.handleStoppedPlaying();
+        if (trimStart !== null) this.handleUpdatePlayhead(trimStart);
     }
     effectFactory (name) {
         return () => this.handleEffect(name);
@@ -483,6 +484,7 @@ class SoundEditor extends React.Component {
                 onSofter={this.effectFactory(effectTypes.SOFTER)}
                 onStop={this.handleStopPlaying}
                 onUndo={this.handleUndo}
+                onUpdatePlayhead={this.handleUpdatePlayhead}
                 preferences={this.props.preferences}
             />
         );

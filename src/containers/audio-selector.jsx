@@ -57,7 +57,8 @@ class AudioSelector extends React.Component {
         const {width, left} = this.containerElement.getBoundingClientRect();
         this.initialTrimEnd = (getEventXY(e).x - left) / width;
         this.initialTrimStart = this.initialTrimEnd;
-        this.props.onSetTrim(this.initialTrimStart, this.initialTrimEnd);
+        // this.props.onSetTrim(this.initialTrimStart, this.initialTrimEnd);
+        this.props.onUpdatePlayhead(this.initialTrimStart);
 
         this.clickStartTime = Date.now();
 
@@ -150,7 +151,8 @@ AudioSelector.propTypes = {
     onSetTrim: PropTypes.func,
     playhead: PropTypes.number,
     trimEnd: PropTypes.number,
-    trimStart: PropTypes.number
+    trimStart: PropTypes.number,
+    onUpdatePlayhead: PropTypes.func
 };
 
 export default AudioSelector;
