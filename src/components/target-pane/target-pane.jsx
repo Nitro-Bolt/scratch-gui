@@ -6,7 +6,6 @@ import VM from 'scratch-vm';
 import SpriteLibrary from '../../containers/sprite-library.jsx';
 import SpriteSelectorComponent from '../sprite-selector/sprite-selector.jsx';
 import StageSelector from '../../containers/stage-selector.jsx';
-import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants';
 
 import styles from './target-pane.css';
 
@@ -51,6 +50,10 @@ const TargetPane = ({
     <div
         className={styles.targetPane}
         {...componentProps}
+        style={{
+            display: stageSize === 0 ? 'none' : null,
+            flexDirection: preferences['stage-left'] ? 'row-reverse' : 'row'
+        }}
     >
 
         <SpriteSelectorComponent
@@ -160,7 +163,7 @@ TargetPane.propTypes = {
     spriteLibraryVisible: PropTypes.bool,
     sprites: PropTypes.objectOf(spriteShape),
     stage: spriteShape,
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
+    stageSize: PropTypes.number.isRequired,
     vm: PropTypes.instanceOf(VM)
 };
 

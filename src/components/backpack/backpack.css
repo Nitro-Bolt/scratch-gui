@@ -21,10 +21,16 @@
 
 [dir="ltr"] .backpack-header {
     border-top-right-radius: $space;
+    left: 0;
 }
 
 [dir="rtl"] .backpack-header {
     border-top-left-radius: $space;
+}
+
+.stage-left .backpack-header {
+    border-top-left-radius: $space;
+    border-top-right-radius: 0;
 }
 
 .backpack-list {
@@ -34,6 +40,11 @@
     align-items: center;
     border-right: 1px solid $ui-black-transparent;
     min-height: 5.5rem;
+}
+
+.stage-left .backpack-list {
+    border-left: 1px solid $ui-black-transparent;
+    border-right: none;
 }
 
 /* Absolute position the inner list to allow scrolling inside flex sized container */

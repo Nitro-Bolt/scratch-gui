@@ -476,6 +476,21 @@ const EditorSettingsModal = props => {
                     }}
                 />
                 <BooleanSetting
+                    value={!!props.preferences['stage-left']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.stageLeft"
+                        defaultMessage="Stage on left"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.stageLeftHelp"
+                        defaultMessage="Swaps the stage and the block palette."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('stage-left', e.target.checked);
+                    }}
+                />
+                <BooleanSetting
                     value={props.preferences['waveform-render-type'] === 'sharp'}
                     label={<FormattedMessage
                         id="nb.editorSettings.waveformRenderType"

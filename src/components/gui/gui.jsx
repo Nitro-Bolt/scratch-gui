@@ -44,7 +44,6 @@ import TWInvalidProjectModal from '../../containers/tw-invalid-project-modal.jsx
 import TWWindChimeSubmitter from '../../containers/tw-windchime-submitter.jsx';
 
 import {STAGE_SIZE_MODES, FIXED_WIDTH, UNCONSTRAINED_NON_STAGE_WIDTH} from '../../lib/layout-constants';
-import {resolveStageSize} from '../../lib/screen-utils';
 import {Theme} from '../../lib/themes';
 
 import {isRendererSupported, isBrowserSupported} from '../../lib/tw-environment-support-prober';
@@ -159,7 +158,6 @@ const GUIComponent = props => {
         showOpenFilePicker,
         showSaveFilePicker,
         soundsTabVisible,
-        stageSizeMode,
         targetIsStage,
         telemetryModalVisible,
         theme,
@@ -226,8 +224,10 @@ const GUIComponent = props => {
         event.target?.blur?.();
     });
 
-    return (<MediaQuery minWidth={unconstrainedWidth}>{isUnconstrained => {
-        const stageSize = resolveStageSize(stageSizeMode, isUnconstrained);
+    const [resizingStage, setResizingStage] = useState(false);
+    const [stageSize, setStageSize] = useState(480);
+
+    return (<MediaQuery minWidth={unconstrainedWidth}>{() => {
 
         const alwaysEnabledModals = (
             <React.Fragment>
@@ -259,12 +259,15 @@ const GUIComponent = props => {
                     />
                 ) : null}
                 <StageWrapper
+                    isPlayerOnly
                     isFullScreen={isFullScreen}
                     isEmbedded={isEmbedded}
                     isRendererSupported={isRendererSupported()}
                     isRtl={isRtl}
                     loading={loading}
                     stageSize={STAGE_SIZE_MODES.full}
+                    setStageSize={setStageSize}
+                    preferences={props.preferences}
                     vm={vm}
                 >
                     {alertsVisible ? (
@@ -279,8 +282,22 @@ const GUIComponent = props => {
                 dir={isRtl ? 'rtl' : 'ltr'}
                 style={{
                     minWidth: 1024 + Math.max(0, customStageSize.width - 480),
-                    minHeight: 640 + Math.max(0, customStageSize.height - 360)
+                    minHeight: 640 + Math.max(0, customStageSize.height - 360),
+                    cursor: resizingStage ? 'e-resize' : null
                 }}
+                // eslint-disable-next-line react/jsx-no-bind
+                onMouseUp={() => setResizingStage(false)}
+                // eslint-disable-next-line react/jsx-no-bind
+                onMouseMove={event => resizingStage && (() => {
+                    // 14 to place the cursor on the resize bar
+                    // eslint-disable-next-line no-negated-condition, no-extra-boolean-cast
+                    let width = !!props.preferences['stage-left'] !== isRtl ?
+                        event.clientX - 14 :
+                        document.body.offsetWidth - event.clientX - 14;
+                    if (width < 100) width = 0;
+                    else width = Math.max(Math.min(width, 800), 270);
+                    setStageSize(width);
+                })()}
                 {...componentProps}
             >
                 {alwaysEnabledModals}
@@ -376,7 +393,10 @@ const GUIComponent = props => {
                     onToggleLoginOpen={onToggleLoginOpen}
                 />
                 <Box className={styles.bodyWrapper}>
-                    <Box className={styles.flexWrapper}>
+                    <Box
+                        className={classNames(styles.flexWrapper, stageSize === 0 ? styles.stageHidden : null,
+                            props.preferences['stage-left'] ? styles.stageLeft : null)}
+                    >
                         <Box className={styles.editorWrapper}>
                             <Tabs
                                 forceRenderTabPanel
@@ -391,7 +411,9 @@ const GUIComponent = props => {
                                         classNames(
                                             tabClassNames.tabList,
                                             {
-                                                [styles.compact]: props.preferences['compact-tabs']
+                                                [styles.compact]: props.preferences['compact-tabs'],
+                                                [styles.leftHiddenOffset]: stageSize === 0 &&
+                                                    props.preferences['stage-left']
                                             }
                                         )
                                     }
@@ -472,7 +494,9 @@ const GUIComponent = props => {
                                         />
                                     </Tab>
                                 </TabList>
-                                <TabPanel className={tabClassNames.tabPanel}>
+                                <TabPanel
+                                    className={tabClassNames.tabPanel}
+                                >
                                     <Box className={styles.blocksWrapper}>
                                         <Blocks
                                             key={`${blocksId}/${theme.id}`}
@@ -524,16 +548,32 @@ const GUIComponent = props => {
                                 </TabPanel>
                             </Tabs>
                             {backpackVisible ? (
-                                <Backpack host={backpackHost} />
+                                <Backpack
+                                    host={backpackHost}
+                                    preferences={props.preferences}
+                                />
                             ) : null}
                         </Box>
 
-                        <Box className={classNames(styles.stageAndTargetWrapper, styles[stageSize])}>
+                        <Box
+                            className={styles.stageResize}
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onMouseDown={event => {
+                                event.preventDefault();
+                                setResizingStage(true);
+                            }}
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onDoubleClick={() => setStageSize(480)}
+                        />
+
+                        <Box className={styles.stageAndTargetWrapper}>
                             <StageWrapper
                                 isFullScreen={isFullScreen}
                                 isRendererSupported={isRendererSupported()}
                                 isRtl={isRtl}
                                 stageSize={stageSize}
+                                setStageSize={setStageSize}
+                                preferences={props.preferences}
                                 vm={vm}
                             />
                             <Box className={styles.targetWrapper}>
@@ -627,7 +667,6 @@ GUIComponent.propTypes = {
     showOpenFilePicker: PropTypes.func,
     showSaveFilePicker: PropTypes.func,
     soundsTabVisible: PropTypes.bool,
-    stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
     targetIsStage: PropTypes.bool,
     telemetryModalVisible: PropTypes.bool,
     theme: PropTypes.instanceOf(Theme),
@@ -663,8 +702,7 @@ GUIComponent.defaultProps = {
     isShared: false,
     isTotallyNormal: false,
     loading: false,
-    showComingSoon: false,
-    stageSizeMode: STAGE_SIZE_MODES.large
+    showComingSoon: false
 };
 
 const mapStateToProps = state => ({
@@ -672,7 +710,6 @@ const mapStateToProps = state => ({
     isWindowFullScreen: state.scratchGui.tw.isWindowFullScreen,
     // This is the button's mode, as opposed to the actual current state
     blocksId: state.scratchGui.timeTravel.year.toString(),
-    stageSizeMode: state.scratchGui.stageSize.stageSize,
     theme: state.scratchGui.theme.theme,
     preferences: state.scratchGui.preferences
 });
