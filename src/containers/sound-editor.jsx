@@ -31,6 +31,7 @@ class SoundEditor extends React.Component {
             'handleStoppedPlaying',
             'handleChangeName',
             'handlePlay',
+            'handlePause',
             'handleStopPlaying',
             'handleUpdatePlayhead',
             'handleDelete',
@@ -52,7 +53,8 @@ class SoundEditor extends React.Component {
             chunkLevels: computeChunkedRMS(this.props.samples),
             playhead: null, // null is not playing, [0 -> 1] is playing percent
             trimStart: null,
-            trimEnd: null
+            trimEnd: null,
+            playing: false
         };
 
         this.redoStack = [];
@@ -92,8 +94,8 @@ class SoundEditor extends React.Component {
         }
         if (event.key === ' ') {
             event.preventDefault();
-            if (this.state.playhead) {
-                this.handleStopPlaying();
+            if (this.state.playing) {
+                this.handlePause();
             } else {
                 this.handlePlay();
             }
@@ -172,17 +174,24 @@ class SoundEditor extends React.Component {
     handlePlay () {
         this.audioBufferPlayer.stop();
         this.audioBufferPlayer.play(
-            this.state.trimStart || 0,
+            this.state.playhead || this.state.trimStart || 0,
             this.state.trimEnd || 1,
             this.handleUpdatePlayhead,
             this.handleStoppedPlaying);
+        this.setState({
+            playing: true
+        });
+    }
+    handlePause () {
+        this.audioBufferPlayer.stop();
+        this.setState({playing: false});
     }
     handleStopPlaying () {
         this.audioBufferPlayer.stop();
         this.handleStoppedPlaying();
     }
     handleStoppedPlaying () {
-        this.setState({playhead: null});
+        this.setState({playhead: null, playing: false});
     }
     handleUpdatePlayhead (playhead) {
         this.setState({playhead});
@@ -447,6 +456,7 @@ class SoundEditor extends React.Component {
                 chunkLevels={this.state.chunkLevels}
                 name={this.props.name}
                 playhead={this.state.playhead}
+                playing={this.state.playing}
                 setRef={this.setRef}
                 tooLoud={this.tooLoud()}
                 trimEnd={this.state.trimEnd}
@@ -464,6 +474,7 @@ class SoundEditor extends React.Component {
                 onMute={this.effectFactory(effectTypes.MUTE)}
                 onPaste={this.handlePaste}
                 onPlay={this.handlePlay}
+                onPause={this.handlePause}
                 onRedo={this.handleRedo}
                 onReverse={this.effectFactory(effectTypes.REVERSE)}
                 onRobot={this.effectFactory(effectTypes.ROBOT)}

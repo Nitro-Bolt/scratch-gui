@@ -15,7 +15,7 @@ import IconButton from '../icon-button/icon-button.jsx';
 import styles from './sound-editor.css';
 
 import playIcon from './icon--play.svg';
-import stopIcon from './icon--stop.svg';
+import pauseIcon from './icon--pause.svg';
 import redoIcon from '!../../lib/tw-recolor/build!./icon--redo.svg';
 import undoIcon from '!../../lib/tw-recolor/build!./icon--undo.svg';
 import fasterIcon from './icon--faster.svg';
@@ -46,6 +46,11 @@ const messages = defineMessages({
         id: 'gui.soundEditor.play',
         description: 'Title of the button to start playing the sound',
         defaultMessage: 'Play'
+    },
+    pause: {
+        id: 'gui.soundEditor.pause',
+        description: 'Title of the button to pause the sound',
+        defaultMessage: 'Pause'
     },
     stop: {
         id: 'gui.soundEditor.stop',
@@ -268,15 +273,15 @@ const SoundEditor = props => (
         </div>
         <div className={classNames(styles.row, styles.rowReverse)}>
             <div className={classNames(styles.roundButtonOuter, styles.inputGroup)}>
-                {props.playhead ? (
+                {props.playing ? (
                     <button
-                        className={classNames(styles.roundButton, styles.stopButtonn)}
-                        title={props.intl.formatMessage(messages.stop)}
-                        onClick={props.onStop}
+                        className={classNames(styles.roundButton, styles.pauseButton)}
+                        title={props.intl.formatMessage(messages.pause)}
+                        onClick={props.onPause}
                     >
                         <img
                             draggable={false}
-                            src={stopIcon}
+                            src={pauseIcon}
                         />
                     </button>
                 ) : (
@@ -411,6 +416,7 @@ SoundEditor.propTypes = {
     onLouder: PropTypes.func.isRequired,
     onMute: PropTypes.func.isRequired,
     onPaste: PropTypes.func.isRequired,
+    onPause: PropTypes.func.isRequired,
     onPlay: PropTypes.func.isRequired,
     onRedo: PropTypes.func.isRequired,
     onReverse: PropTypes.func.isRequired,
@@ -421,6 +427,7 @@ SoundEditor.propTypes = {
     onStop: PropTypes.func.isRequired,
     onUndo: PropTypes.func.isRequired,
     playhead: PropTypes.number,
+    playing: PropTypes.bool.isRequired,
     setRef: PropTypes.func,
     tooLoud: PropTypes.bool.isRequired,
     trimEnd: PropTypes.number,

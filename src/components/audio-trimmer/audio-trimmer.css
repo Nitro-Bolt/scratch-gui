@@ -83,10 +83,18 @@ $hover-scale: 1.25;
     */
     width: 100%;
     height: 100%;
-    border-left: 1px solid $looks-secondary;
-    border-top: none;
-    border-bottom: none;
-    border-right: none;
+    position: relative;
+}
+
+.playhead::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0.125rem;
+    height: 100%;
+    border-radius: 0.125rem;
+    background-color: $looks-secondary;
 }
 
 .right-handle {
