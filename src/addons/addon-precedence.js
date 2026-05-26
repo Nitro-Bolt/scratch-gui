@@ -4,9 +4,7 @@
 // that its order with other unlisted addons does not matter.
 const addonPrecedence = [
     'columns',
-    'editor-stage-left',
-    'editor-theme3',
-    'hide-stage'
+    'editor-theme3'
 ];
 
 /**

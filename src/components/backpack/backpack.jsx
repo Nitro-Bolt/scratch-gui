@@ -67,7 +67,13 @@ const Backpack = ({
 }) => {
     registerKeyboardShortcut(preferences['keybind-open-backpack'] ?? defaultKeyboardShortcuts['open-backpack'], onToggle);
     return (
-        <div className={styles.backpackContainer}>
+        <div
+            className={classNames(styles.backpackContainer,
+                {
+                    [styles.stageLeft]: preferences['stage-left']
+                }
+            )}
+        >
             <div
                 className={styles.backpackHeader}
                 onClick={onToggle}
