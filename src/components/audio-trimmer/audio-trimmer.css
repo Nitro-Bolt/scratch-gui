@@ -46,7 +46,8 @@ $hover-scale: 1.25;
     left: 100%;
     width: 100vw;
     height: 100%;
-    backdrop-filter: brightness(0.6) saturate(1.2);
+    background-color: $page-background;
+    opacity: 0.5;
 }
 
 .start-trim-background .trim-background-mask {
@@ -111,7 +112,8 @@ $hover-scale: 1.25;
     right: 100%;
     width: 100%;
     height: 100%;
-    backdrop-filter: brightness(0.6) saturate(1.2);
+    background-color: $page-background;
+    opacity: 0.5;
 }
 
 .playhead::after {
