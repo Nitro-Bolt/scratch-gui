@@ -262,6 +262,7 @@ class SoundEditor extends React.Component {
     handleTimeStepMouseDown (e) {
         this.handleTimeStepMouseMove(e);
         this.timeStepDragRecognizer.start(e);
+        e.preventDefault();
     }
     handleTimeStepMouseMove (e) {
         const {width, left} = this.timeStepRef.getBoundingClientRect();
