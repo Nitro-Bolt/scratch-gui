@@ -67,6 +67,8 @@
 .time-steps {
     height: 1.5rem;
     width: 100%;
+    position: relative;
+    overflow: hidden;
 
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
@@ -275,6 +277,7 @@ $border-radius: 0.25rem;
 .advanced-info {
 
 }
+
 .time-step {
     border-left: 1px solid $ui-black-transparent;
     height: 1rem;

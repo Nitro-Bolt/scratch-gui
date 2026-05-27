@@ -492,14 +492,14 @@ class SoundEditor extends React.Component {
     }
     setTimeSteps (duration) {
         if (!this.timeStepRef) return;
-        const stepOptions = [0.125, 0.25, 0.5, 1.5, 5, 15, 30, 60];
+        const stepOptions = [0.125, 0.25, 0.5, 2.5, 5, 15, 30, 60];
         const {width} = this.timeStepRef.getBoundingClientRect();
         let stepOption;
         for (let i = stepOptions.length - 1; i >= 0; i--) {
             if (stepOptions[i] * width / duration > 50) stepOption = stepOptions[i];
         }
         this.setState({
-            timeStepCount: Math.floor(width / (stepOption * width / duration)),
+            timeStepCount: Math.ceil(width / (stepOption * width / duration)),
             timeStepWidth: stepOption * width / duration,
             timeStepTime: stepOption
         });
