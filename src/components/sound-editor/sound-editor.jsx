@@ -258,7 +258,21 @@ const SoundEditor = props => (
                 className={styles.timeSteps}
                 ref={props.setTimeStepRef}
                 onMouseDown={props.onTimeStepMouseDown}
-            />
+            >
+                {Array.from({length: props.timeStepCount}).map((_, i) => (
+                    <div
+                        key={i}
+                        className={styles.timeStep}
+                        style={{
+                            translate: `${props.timeStepWidth * i}px 0`
+                        }}
+                    >
+                        {i % 2 === 0 && (
+                            <span>{formatTime(props.timeStepTime * i)}</span>
+                        )}
+                    </div>
+                ))}
+            </div>
             <div className={styles.waveformContainer}>
                 <Waveform
                     data={props.chunkLevels}
@@ -438,6 +452,9 @@ SoundEditor.propTypes = {
     playing: PropTypes.bool.isRequired,
     setRef: PropTypes.func,
     setTimeStepRef: PropTypes.func.isRequired,
+    timeStepCount: PropTypes.number,
+    timeStepWidth: PropTypes.number,
+    timeStepTime: PropTypes.number,
     tooLoud: PropTypes.bool.isRequired,
     trimEnd: PropTypes.number,
     trimStart: PropTypes.number,

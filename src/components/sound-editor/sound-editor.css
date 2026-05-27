@@ -275,6 +275,19 @@ $border-radius: 0.25rem;
 .advanced-info {
 
 }
+.time-step {
+    border-left: 1px solid $ui-black-transparent;
+    height: 1rem;
+    position: absolute;
+    font-size: 0.7rem;
+    pointer-events: none;
+    user-select: none;
+}
+
+.time-step span {
+    opacity: 0.8;
+    margin: 0.2rem;
+}
 
 .alert {
     margin-top: calc(2 * $space);
