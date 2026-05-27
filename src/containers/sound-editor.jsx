@@ -52,7 +52,8 @@ class SoundEditor extends React.Component {
             'handleContainerClick',
             'setRef',
             'setTimeStepRef',
-            'resampleBufferToRate'
+            'resampleBufferToRate',
+            'setTimeSteps'
         ]);
         this.state = {
             copyBuffer: null,
@@ -60,7 +61,10 @@ class SoundEditor extends React.Component {
             playhead: 0, // null is not playing, [0 -> 1] is playing percent
             trimStart: null,
             trimEnd: null,
-            playing: false
+            playing: false,
+            timeStepCount: 0,
+            timeStepWidth: 0,
+            timeStepTime: 0
         };
 
         this.timeStepDragRecognizer = new DragRecognizer({
@@ -69,6 +73,8 @@ class SoundEditor extends React.Component {
             touchDragAngle: 90,
             distanceThreshold: 0
         });
+
+        this.soundResizeObserver = new ResizeObserver(() => this.setTimeSteps(this.props.duration));
 
         this.redoStack = [];
         this.undoStack = [];
@@ -79,12 +85,15 @@ class SoundEditor extends React.Component {
         this.audioBufferPlayer = new AudioBufferPlayer(this.props.samples, this.props.sampleRate);
 
         document.addEventListener('keydown', this.handleKeyPress);
+
+        this.soundResizeObserver.observe(this.timeStepRef);
     }
     componentWillReceiveProps (newProps) {
         if (newProps.soundId !== this.props.soundId) { // A different sound has been selected
             this.redoStack = [];
             this.undoStack = [];
             this.resetState(newProps.samples, newProps.sampleRate);
+            this.setTimeSteps(newProps.duration);
             this.setState({
                 trimStart: null,
                 trimEnd: null
@@ -481,6 +490,20 @@ class SoundEditor extends React.Component {
             this.handleUpdateTrim(null, null);
         }
     }
+    setTimeSteps (duration) {
+        if (!this.timeStepRef) return;
+        const stepOptions = [0.125, 0.25, 0.5, 1, 5, 10, 30, 60];
+        const {width} = this.timeStepRef.getBoundingClientRect();
+        let stepOption;
+        for (let i = stepOptions.length - 1; i >= 0; i--) {
+            if (stepOptions[i] * width / duration > 50) stepOption = stepOptions[i];
+        }
+        this.setState({
+            timeStepCount: Math.floor(width / (stepOption * width / duration)),
+            timeStepWidth: stepOption * width / duration,
+            timeStepTime: stepOption
+        });
+    }
     render () {
         const {effectTypes} = AudioEffects;
         return (
@@ -524,6 +547,9 @@ class SoundEditor extends React.Component {
                 onUndo={this.handleUndo}
                 onUpdatePlayhead={this.handleUpdatePlayhead}
                 onTimeStepMouseDown={this.handleTimeStepMouseDown}
+                timeStepCount={this.state.timeStepCount}
+                timeStepWidth={this.state.timeStepWidth}
+                timeStepTime={this.state.timeStepTime}
                 preferences={this.props.preferences}
             />
         );
