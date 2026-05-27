@@ -56,6 +56,22 @@
     width: 100%;
 }
 
+.audio-container {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 5px;
+}
+
+.time-steps {
+    height: 1.5rem;
+    width: 100%;
+
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
 .waveform-container {
     display: flex;
     justify-content: space-around;
@@ -65,11 +81,10 @@
     position: relative;
 
     background: hsla(300, 53%, 60%, 0.15);
-    border: 1px solid $ui-black-transparent;
-    border-radius: 5px;
 
-    margin-top: 20px;
-    margin-bottom: 20px;
+    border-top: 1px solid $ui-black-transparent;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 $border-radius: 0.25rem;

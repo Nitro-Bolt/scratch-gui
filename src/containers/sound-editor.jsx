@@ -15,6 +15,8 @@ import {
 import AudioEffects from '../lib/audio/audio-effects.js';
 import SoundEditorComponent from '../components/sound-editor/sound-editor.jsx';
 import AudioBufferPlayer from '../lib/audio/audio-buffer-player.js';
+import DragRecognizer from '../lib/drag-recognizer';
+import {getEventXY} from '../lib/touch-utils';
 import log from '../lib/log.js';
 
 const UNDO_STACK_SIZE = 99;
@@ -34,6 +36,9 @@ class SoundEditor extends React.Component {
             'handlePause',
             'handleStopPlaying',
             'handleUpdatePlayhead',
+            'handleTimeStepMouseDown',
+            'handleTimeStepMouseMove',
+            'handleTimeStepMouseUp',
             'handleDelete',
             'handleUpdateTrim',
             'handleEffect',
@@ -46,6 +51,7 @@ class SoundEditor extends React.Component {
             'handleKeyPress',
             'handleContainerClick',
             'setRef',
+            'setTimeStepRef',
             'resampleBufferToRate'
         ]);
         this.state = {
@@ -56,6 +62,13 @@ class SoundEditor extends React.Component {
             trimEnd: null,
             playing: false
         };
+
+        this.timeStepDragRecognizer = new DragRecognizer({
+            onDrag: this.handleTimeStepMouseMove,
+            onDragEnd: this.handleTimeStepMouseUp,
+            touchDragAngle: 90,
+            distanceThreshold: 0
+        });
 
         this.redoStack = [];
         this.undoStack = [];
@@ -245,6 +258,18 @@ class SoundEditor extends React.Component {
         this.setState({trimStart, trimEnd});
         this.handleStoppedPlaying();
         if (trimStart !== null) this.handleUpdatePlayhead(trimStart);
+    }
+    handleTimeStepMouseDown (e) {
+        this.handleTimeStepMouseMove(e);
+        this.timeStepDragRecognizer.start(e);
+    }
+    handleTimeStepMouseMove (e) {
+        const {width, left} = this.timeStepRef.getBoundingClientRect();
+        this.setState({playhead: Math.max(Math.min(((getEventXY(e).x ?? e.x) - left) / width, 1), 0)});
+        this.containerSize = width;
+    }
+    handleTimeStepMouseUp () {
+        this.timeStepDragRecognizer.reset();
     }
     effectFactory (name) {
         return () => this.handleEffect(name);
@@ -438,6 +463,9 @@ class SoundEditor extends React.Component {
     setRef (element) {
         this.ref = element;
     }
+    setTimeStepRef (el) {
+        this.timeStepRef = el;
+    }
     handleContainerClick (e) {
         // If the click is on the sound editor's div (and not any other element), delesect
         if (e.target === this.ref && this.state.trimStart !== null) {
@@ -459,6 +487,7 @@ class SoundEditor extends React.Component {
                 playhead={this.state.playhead}
                 playing={this.state.playing}
                 setRef={this.setRef}
+                setTimeStepRef={this.setTimeStepRef}
                 tooLoud={this.tooLoud()}
                 trimEnd={this.state.trimEnd}
                 trimStart={this.state.trimStart}
@@ -485,6 +514,7 @@ class SoundEditor extends React.Component {
                 onStop={this.handleStopPlaying}
                 onUndo={this.handleUndo}
                 onUpdatePlayhead={this.handleUpdatePlayhead}
+                onTimeStepMouseDown={this.handleTimeStepMouseDown}
                 preferences={this.props.preferences}
             />
         );

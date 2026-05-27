@@ -253,7 +253,12 @@ const SoundEditor = props => (
                 onClick={props.onDelete}
             />
         </div>
-        <div className={styles.row}>
+        <div className={classNames(styles.audioContainer)}>
+            <div
+                className={styles.timeSteps}
+                ref={props.setTimeStepRef}
+                onMouseDown={props.onTimeStepMouseDown}
+            />
             <div className={styles.waveformContainer}>
                 <Waveform
                     data={props.chunkLevels}
@@ -428,9 +433,11 @@ SoundEditor.propTypes = {
     onStop: PropTypes.func.isRequired,
     onUndo: PropTypes.func.isRequired,
     onUpdatePlayhead: PropTypes.func.isRequired,
+    onTimeStepMouseDown: PropTypes.func,
     playhead: PropTypes.number,
     playing: PropTypes.bool.isRequired,
     setRef: PropTypes.func,
+    setTimeStepRef: PropTypes.func.isRequired,
     tooLoud: PropTypes.bool.isRequired,
     trimEnd: PropTypes.number,
     trimStart: PropTypes.number,

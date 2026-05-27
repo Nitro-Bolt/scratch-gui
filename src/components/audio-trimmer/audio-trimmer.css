@@ -79,6 +79,10 @@ $hover-scale: 1.25;
     overflow: hidden;
 }
 
+.playhead-caret-container {
+    pointer-events: none;
+}
+
 .playhead-caret-container img {
     height: 1rem;
     position: absolute;
