@@ -265,7 +265,15 @@ class SoundEditor extends React.Component {
     }
     handleTimeStepMouseMove (e) {
         const {width, left} = this.timeStepRef.getBoundingClientRect();
-        this.setState({playhead: Math.max(Math.min(((getEventXY(e).x ?? e.x) - left) / width, 1), 0)});
+        this.setState({playhead:
+            Math.max(
+                Math.min(
+                    ((getEventXY(e).x ?? e.x) - left) / width,
+                    this.state.trimEnd ?? 1
+                ),
+                this.state.trimStart ?? 0
+            )
+        });
         this.containerSize = width;
     }
     handleTimeStepMouseUp () {
