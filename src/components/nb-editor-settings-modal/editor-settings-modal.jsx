@@ -249,7 +249,7 @@ const EditorSettingsModal = props => {
 
     const handleResetCategoriesVisibility = () => {
         props.onSetPreference('hidden-categories', []);
-    }
+    };
 
     const hiddenCategories = props.preferences['hidden-categories'] || [];
 
@@ -561,15 +561,15 @@ const EditorSettingsModal = props => {
                             })}
                         </div>
                         <button
-                            className={styles.button}
-                            onClick={handleResetCategoriesVisibility}
-                            style={{marginTop: '8px'}}
-                        >
-                            <FormattedMessage
+                                className={styles.button}
+                                onClick={handleResetCategoriesVisibility}
+                                style={{marginTop: '8px'}}
+                            >
+                                <FormattedMessage
                                 id="nb.editorSettings.resetCategoriesVisibility"
                                 defaultMessage="Reset to defaults"
                             />
-                        </button>
+                            </button>
                         </div>)
                     }
                 />

@@ -14,8 +14,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { getCustomAddons, storeAddon, removeAddon } from '../lib/nb-custom-addons.js';
-import { TextDecoder } from '../lib/tw-text-encoder.js';
+import {getCustomAddons, storeAddon, removeAddon} from '../lib/nb-custom-addons.js';
+import {TextDecoder} from '../lib/tw-text-encoder.js';
 import IntlMessageFormat from 'intl-messageformat';
 import SettingsStore from './settings-store-singleton';
 import dataURLToBlob from '../lib/data-uri-to-blob';
@@ -47,7 +47,7 @@ const arrayBufferToDataURI = buffer => {
         reader.onerror = () => reject(reader.error);
         reader.readAsDataURL(blob);
     });
-}
+};
 
 let _scratchClassNames = null;
 const getScratchClassNames = () => {
@@ -1025,13 +1025,11 @@ SettingsStore.addEventListener('setting-changed', async e => {
         if (value) {
             if (runner) {
                 runner.dynamicEnable();
+            } else if (addons[addonId]) {
+                runAddon(addonId, addons[addonId], false);
             } else {
-                if (addons[addonId]) {
-                    runAddon(addonId, addons[addonId], false);
-                } else {
-                    const customAddons = await getCustomAddons();
-                    runAddon(addonId, customAddons.find(c => c.id === addonId), true);
-                }
+                const customAddons = await getCustomAddons();
+                runAddon(addonId, customAddons.find(c => c.id === addonId), true);
             }
         } else if (runner) {
             runner.dynamicDisable();

@@ -255,7 +255,7 @@ class CostumeTab extends React.Component {
             if (type === 'image') {
                 costumeUpload(payload.bodyData, payload.mime, vm, vmCostume => {
                     vmCostume[0].name = payload.name;
-                    this.handleNewCostume(vmCostume, false, vm.editingTarget.id)
+                    this.handleNewCostume(vmCostume, false, vm.editingTarget.id);
                 });
             } else {
                 this.props.onActivateAssetsTab();

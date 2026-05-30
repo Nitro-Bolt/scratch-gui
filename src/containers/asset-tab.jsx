@@ -49,9 +49,9 @@ class AssetTab extends React.Component {
         const assetType = getAssetType(assetObject);
         if (assetType.type === 'image') {
             return {asset: assetObject.asset};
-        } else {
-            return {url: assetType.icon};
         }
+        return {url: assetType.icon};
+        
     }
 
     handleSelectAsset (assetIndex) {
@@ -132,7 +132,7 @@ class AssetTab extends React.Component {
                 dropInfo.index, dropInfo.newIndex);
             this.setState({selectedAssetIndex: dropInfo.newIndex});
         } else if (dropInfo.dragType === DragConstants.BACKPACK_COSTUME) {
-           this.props.vm.addAsset({
+            this.props.vm.addAsset({
                 md5: dropInfo.payload.body,
                 lastModified: Date.now(),
                 contentType: dropInfo.payload.mime,
@@ -140,7 +140,7 @@ class AssetTab extends React.Component {
                 name: dropInfo.payload.name
             }).then(this.handleNewAsset);
         } else if (dropInfo.dragType === DragConstants.BACKPACK_SOUND) {
-           this.props.vm.addAsset({
+            this.props.vm.addAsset({
                 md5: dropInfo.payload.body,
                 lastModified: Date.now(),
                 contentType: dropInfo.payload.mime,
@@ -194,7 +194,7 @@ class AssetTab extends React.Component {
         const assets = sprite.assets ? sprite.assets.map(asset => (
             {
                 name: asset.dataFormat ?
-                    asset.name + '.' + asset.dataFormat : asset.name,
+                    `${asset.name}.${asset.dataFormat}` : asset.name,
                 dragPayload: asset,
                 details: formatSize(asset.asset.data.byteLength),
                 ...this.getAssetIcon(asset)
@@ -227,7 +227,7 @@ class AssetTab extends React.Component {
                 <input
                     multiple
                     ref={this.setFileInput}
-                    style={{ display: 'none' }}
+                    style={{display: 'none'}}
                     type="file"
                     onChange={this.handleAssetUpload}
                 />
@@ -286,7 +286,7 @@ const mapStateToProps = state => ({
     editingTarget: state.scratchGui.targets.editingTarget,
     isRtl: state.locales.isRtl,
     sprites: state.scratchGui.targets.sprites,
-    stage: state.scratchGui.targets.stage,
+    stage: state.scratchGui.targets.stage
 });
 
 const mapDispatchToProps = dispatch => ({
