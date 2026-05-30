@@ -39,6 +39,7 @@ const RecordModal = props => (
                     onSetTrimStart={props.onSetTrimStart}
                     onStopPlaying={props.onStopPlaying}
                     onSubmit={props.onSubmit}
+                    preferences={props.preferences}
                 />
             ) : (
                 <RecordingStep
@@ -48,6 +49,7 @@ const RecordModal = props => (
                     onStopRecording={props.onStopRecording}
                     onPauseRecording={props.onPauseRecording}
                     onResumeRecording={props.onResumeRecording}
+                    preferences={props.preferences}
                 />
             )}
         </Box>
@@ -77,7 +79,8 @@ RecordModal.propTypes = {
     sampleRate: PropTypes.number,
     samples: PropTypes.instanceOf(Float32Array),
     trimEnd: PropTypes.number.isRequired,
-    trimStart: PropTypes.number.isRequired
+    trimStart: PropTypes.number.isRequired,
+    preferences: PropTypes.object
 };
 
 export default injectIntl(RecordModal);

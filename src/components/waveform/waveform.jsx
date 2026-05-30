@@ -44,19 +44,45 @@ class Waveform extends React.PureComponent {
         });
 
         return (
-            <svg
-                className={styles.container}
-                viewBox={`0 0 ${width} ${height}`}
-            >
-                <g transform={`scale(1, -1) translate(0, -${height / 2})`}>
-                    <path
-                        className={styles.waveformPath}
-                        d={`M0 0${pathComponents.join(' ')}Z`}
-                        strokeLinejoin={'round'}
-                        strokeWidth={1}
-                    />
-                </g>
-            </svg>
+            <>
+                <svg
+                    className={styles.container}
+                    viewBox={`0 0 ${width} ${height}`}
+                >
+                    {preferences['waveform-color'] === 'volume' &&
+                        <defs>
+                            <linearGradient id="sound">
+                                {data.map((value, i) => (
+                                    <stop
+                                        offset={`${i / data.length * 100}%`}
+                                        stopColor={`hsl(${120 - (value * 120)} 100% 70%)`}
+                                        key={i}
+                                    />
+                                ))}
+                            </linearGradient>
+                            <linearGradient id="soundOutline">
+                                {data.map((value, i) => (
+                                    <stop
+                                        offset={`${i / data.length * 100}%`}
+                                        stopColor={`hsl(${120 - (value * 120)} 50% 50%)`}
+                                        key={i}
+                                    />
+                                ))}
+                            </linearGradient>
+                        </defs>
+                    }
+                    <g transform={`scale(1, -1) translate(0, -${height / 2})`}>
+                        <path
+                            className={preferences['waveform-color'] === 'volume' ? null : styles.waveformPath}
+                            d={`M0 0${pathComponents.join(' ')}Z`}
+                            strokeLinejoin={'round'}
+                            strokeWidth={1}
+                            fill="url(#sound)"
+                            stroke="url(#soundOutline)"
+                        />
+                    </g>
+                </svg>
+            </>
         );
     }
 }

@@ -505,6 +505,21 @@ const EditorSettingsModal = props => {
                         props.onSetPreference('waveform-render-type', e.target.checked ? 'sharp' : 'soft');
                     }}
                 />
+                <BooleanSetting
+                    value={props.preferences['waveform-color'] === 'volume'}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.waveformColor"
+                        defaultMessage="Waveform volume gradient"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.waveformColorHelp"
+                        defaultMessage="If checked, waveforms will display a volume gradient where green is quieter and red is louder."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('waveform-color', e.target.checked ? 'volume' : null);
+                    }}
+                />
                 <div className={styles.header}>
                     <FormattedMessage
                         id="nb.editorSettings.theme"
