@@ -32,7 +32,6 @@
     }
   },
   "dependencies": {
-    "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@microbit/microbit-universal-hex": "0.2.2",
     "@nitro-bolt/scratch-storage": "^1.0.0",
