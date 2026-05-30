@@ -599,16 +599,6 @@ class Tab extends EventTargetShim {
                 }
 
                 oldShow.call(this, event, items, rtl);
-
-                const blocklyContextMenu = ScratchBlocks.WidgetDiv.DIV.firstChild;
-                items.forEach((item, i) => {
-                    if (i !== 0 && item.separator) {
-                        const itemElt = blocklyContextMenu.children[i];
-                        itemElt.style.paddingTop = '2px';
-                        itemElt.classList.add('sa-blockly-menu-item-border');
-                        itemElt.style.borderTop = '1px solid var(--ui-black-transparent)';
-                    }
-                });
             };
         });
     }
