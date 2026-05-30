@@ -40,6 +40,7 @@ class SoundEditor extends React.Component {
             'handleTimeStepMouseMove',
             'handleTimeStepMouseUp',
             'handleDelete',
+            'handleDeleteInverse',
             'handleUpdateTrim',
             'handleEffect',
             'handleUndo',
@@ -532,6 +533,7 @@ class SoundEditor extends React.Component {
                 onCopy={this.handleCopy}
                 onCopyToNew={this.handleCopyToNew}
                 onDelete={this.handleDelete}
+                onDeleteInverse={this.handleDeleteInverse}
                 onEcho={this.effectFactory(effectTypes.ECHO)}
                 onFadeIn={this.effectFactory(effectTypes.FADEIN)}
                 onFadeOut={this.effectFactory(effectTypes.FADEOUT)}

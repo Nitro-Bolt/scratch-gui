@@ -33,6 +33,7 @@ import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
 import copyIcon from '!../../lib/tw-recolor/build!./icon--copy.svg';
 import pasteIcon from '!../../lib/tw-recolor/build!./icon--paste.svg';
 import copyToNewIcon from '!../../lib/tw-recolor/build!./icon--copy-to-new.svg';
+import trimIcon from '!../../lib/tw-recolor/build!./icon--trim-action.svg';
 
 const BufferedInput = BufferedInputHOC(Input);
 
@@ -76,6 +77,11 @@ const messages = defineMessages({
         id: 'gui.soundEditor.delete',
         description: 'Title of the button to delete the sound',
         defaultMessage: 'Delete'
+    },
+    trim: {
+        id: 'gui.soundEditor.trim',
+        description: 'Title of the button to trim the sound',
+        defaultMessage: 'Trim'
     },
     save: {
         id: 'gui.soundEditor.save',
@@ -251,6 +257,13 @@ const SoundEditor = props => (
                 img={deleteIcon}
                 title={props.intl.formatMessage(messages.delete)}
                 onClick={props.onDelete}
+            />
+            <IconButton
+                className={styles.toolButton}
+                disabled={props.trimStart === null}
+                img={trimIcon}
+                title={props.intl.formatMessage(messages.trim)}
+                onClick={props.onDeleteInverse}
             />
         </div>
         <div className={classNames(styles.audioContainer)}>
@@ -429,6 +442,7 @@ SoundEditor.propTypes = {
     onCopy: PropTypes.func.isRequired,
     onCopyToNew: PropTypes.func.isRequired,
     onDelete: PropTypes.func,
+    onDeleteInverse: PropTypes.func,
     onEcho: PropTypes.func.isRequired,
     onFadeIn: PropTypes.func.isRequired,
     onFadeOut: PropTypes.func.isRequired,
