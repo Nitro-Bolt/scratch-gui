@@ -44,7 +44,6 @@ export default {
   "gamepad": () => import(/* webpackChunkName: "addon-entry-gamepad" */ "../addons/gamepad/_runtime_entry.js"),
   "editor-sounds": () => import(/* webpackChunkName: "addon-entry-editor-sounds" */ "../addons/editor-sounds/_runtime_entry.js"),
   "folders": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/folders/_runtime_entry.js"),
-  "block-switching": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/block-switching/_runtime_entry.js"),
   "load-extensions": () => import(/* webpackChunkName: "addon-entry-load-extensions" */ "../addons/load-extensions/_runtime_entry.js"),
   "custom-zoom": () => import(/* webpackChunkName: "addon-entry-custom-zoom" */ "../addons/custom-zoom/_runtime_entry.js"),
   "initialise-sprite-position": () => import(/* webpackChunkName: "addon-entry-initialise-sprite-position" */ "../addons/initialise-sprite-position/_runtime_entry.js"),
