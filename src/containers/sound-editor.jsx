@@ -154,6 +154,10 @@ class SoundEditor extends React.Component {
             } else if (event.key === 'a') {
                 event.preventDefault();
                 this.handleUpdateTrim(0, 1);
+            } else if (event.key === 'x') {
+                event.preventDefault();
+                this.handleCopy();
+                this.handleDelete();
             }
         }
     }
