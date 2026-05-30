@@ -206,7 +206,7 @@ class ExtensionLibrary extends React.PureComponent {
                 const sourceGallery = this.state.galleryBySource ? this.state.galleryBySource[source.id] : null;
                 const sourceStatusItems = galleryStatusItems[source.id];
 
-                const extensionsToExclude = ['faceSensing', 'lmscomments', 'skyhigh173JSON'];
+                const extensionsToExclude = ['faceSensing', 'lmscomments', 'lmsmcutils', 'skyhigh173JSON'];
                 
                 if (sourceGallery && sourceGallery.status === 'success') {
                     library.push(toLibraryItem(sourceStatusItems.more));
