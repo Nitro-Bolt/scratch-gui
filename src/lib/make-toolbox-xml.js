@@ -782,7 +782,7 @@ const json = function (colors) {
         id="json"
         colour="${colors.primary}"
         secondaryColour="${colors.tertiary}">
-        <block type="json_new_object">
+        <block type="json_object_extendable">
         </block>
         ${blockSeparator}
         <block type="json_get_properties">
@@ -823,7 +823,7 @@ const json = function (colors) {
             </value>
         </block>
         ${blockSeparator}
-        <block type="json_new_array">
+        <block type="json_array_extendable">
         </block>
         ${blockSeparator}
         <block type="json_value_of_index">
