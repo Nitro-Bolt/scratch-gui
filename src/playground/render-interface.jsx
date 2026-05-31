@@ -136,14 +136,14 @@ const Footer = () => (
                         {/* Do not translate */}
                         {'NitroBolt Packager'}
                     </a>
-                    <a href="https://docs.nitrobolt.org/embedding">
+                    <a href="https://docs.nitrobolt.org/website/embedding">
                         <FormattedMessage
                             defaultMessage="Embedding"
                             description="Link in footer to embedding documentation for embedding link"
                             id="tw.footer.embed"
                         />
                     </a>
-                    <a href="https://docs.nitrobolt.org/url-parameters">
+                    <a href="https://docs.nitrobolt.org/website/url-parameters">
                         <FormattedMessage
                             defaultMessage="URL Parameters"
                             description="Link in footer to URL parameters documentation"
