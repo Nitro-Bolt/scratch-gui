@@ -607,18 +607,7 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
         <block type="operator_subtract_extendable" />
         <block type="operator_multiply_extendable" />
         <block type="operator_divide_extendable" />
-        <block type="operator_power">
-            <value name="NUM1">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-            <value name="NUM2">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-        </block>
+        <block type="operator_power_extendable" />
         ${blockSeparator}
         <block type="operator_random">
             <value name="FROM">
