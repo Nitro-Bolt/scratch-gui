@@ -843,13 +843,7 @@ const json = function (colors) {
         </block>
         <block type="json_array_length" id="json_array_length">
         </block>
-        <block type="json_add_item">
-            <value name="ITEM">
-                <shadow type="text">
-                    <field name="TEXT">${bar}</field>
-                </shadow>
-            </value>
-        </block>
+        <block type="json_add_item"/>
         <block type="json_replace_index">
             <value name="INDEX">
                 <shadow type="json_indexmenu">
