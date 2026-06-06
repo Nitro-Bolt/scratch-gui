@@ -608,7 +608,7 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
         <block type="operator_subtract_extendable" />
         <block type="operator_multiply_extendable" />
         <block type="operator_divide_extendable" />
-        <block type="operator_power_extendable" />
+        <block type="operator_power" />
         ${blockSeparator}
         <block type="operator_random">
             <value name="FROM">
@@ -783,7 +783,7 @@ const json = function (colors) {
         id="json"
         colour="${colors.primary}"
         secondaryColour="${colors.tertiary}">
-        <block type="json_object_extendable">
+        <block type="json_object">
         </block>
         ${blockSeparator}
         <block type="json_get_properties">
@@ -814,7 +814,7 @@ const json = function (colors) {
                 </shadow>
             </value>
         </block>
-        <block type="json_merge_object_extendable">
+        <block type="json_merge_object">
         </block>
         <block type="json_has_key">
             <value name="KEY">
@@ -824,7 +824,7 @@ const json = function (colors) {
             </value>
         </block>
         ${blockSeparator}
-        <block type="json_array_extendable">
+        <block type="json_array">
         </block>
         ${blockSeparator}
         <block type="json_value_of_index">
@@ -882,7 +882,7 @@ const json = function (colors) {
                 </shadow>
             </value>
         </block>
-        <block type="json_merge_array_extendable">
+        <block type="json_merge_array">
         </block>
         <block type="json_reverse_array">
         </block>
