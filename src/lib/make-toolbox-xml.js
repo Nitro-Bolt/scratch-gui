@@ -624,15 +624,10 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
         </block>
         ${blockSeparator}
         <block type="operator_lt_extendable"/>
+        <block type="operator_lte"/>
         <block type="operator_equals_extendable"/>
         <block type="operator_gt_extendable"/>
-        <block type="operator_compare">
-            <value name="OPERAND1">
-                <shadow type="text">
-                    <field name="TEXT"/>
-                </shadow>
-            </value>
-        </block>
+        <block type="operator_gte"/>
         ${blockSeparator}
         <block type="operator_and_extendable"/>
         <block type="operator_or_extendable"/>
