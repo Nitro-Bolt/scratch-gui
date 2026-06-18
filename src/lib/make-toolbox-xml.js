@@ -631,6 +631,7 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
         ${blockSeparator}
         <block type="operator_and_extendable"/>
         <block type="operator_or_extendable"/>
+        <block type="operator_xor_extendable"/>
         <block type="operator_not"/>
         ${blockSeparator}
         ${isInitialSetup ? '' : `
