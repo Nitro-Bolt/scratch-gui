@@ -483,8 +483,9 @@ const control = function (isInitialSetup, isStage, targetId, colors) {
         </block>
         <block id="forever" type="control_forever"/>
         ${blockSeparator}
-        <block type="control_if"/>
-        <block type="control_if_else"/>
+        <block type="control_if_extendable"/>
+        <block type="control_if_else_extendable"/>
+        <block type="control_switch"/>
         <block id="wait_until" type="control_wait_until"/>
         <block id="repeat_until" type="control_repeat_until"/>
         <block id="while" type="control_while"/>
@@ -603,66 +604,11 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
         id="operators"
         colour="${colors.primary}"
         secondaryColour="${colors.tertiary}">
-        <block type="operator_add">
-            <value name="NUM1">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-            <value name="NUM2">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-        </block>
-        <block type="operator_subtract">
-            <value name="NUM1">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-            <value name="NUM2">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-        </block>
-        <block type="operator_multiply">
-            <value name="NUM1">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-            <value name="NUM2">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-        </block>
-        <block type="operator_divide">
-            <value name="NUM1">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-            <value name="NUM2">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-        </block>
-        <block type="operator_power">
-            <value name="NUM1">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-            <value name="NUM2">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
-            </value>
-        </block>
+        <block type="operator_add_extendable" />
+        <block type="operator_subtract_extendable" />
+        <block type="operator_multiply_extendable" />
+        <block type="operator_divide_extendable" />
+        <block type="operator_power" />
         ${blockSeparator}
         <block type="operator_random">
             <value name="FROM">
@@ -677,55 +623,26 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
             </value>
         </block>
         ${blockSeparator}
-        <block type="operator_gt">
-            <value name="OPERAND1">
-                <shadow type="text">
-                    <field name="TEXT"/>
-                </shadow>
-            </value>
-            <value name="OPERAND2">
-                <shadow type="text">
-                    <field name="TEXT">50</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="operator_lt">
-            <value name="OPERAND1">
-                <shadow type="text">
-                    <field name="TEXT"/>
-                </shadow>
-            </value>
-            <value name="OPERAND2">
-                <shadow type="text">
-                    <field name="TEXT">50</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="operator_equals">
-            <value name="OPERAND1">
-                <shadow type="text">
-                    <field name="TEXT"/>
-                </shadow>
-            </value>
-            <value name="OPERAND2">
-                <shadow type="text">
-                    <field name="TEXT">50</field>
-                </shadow>
-            </value>
-        </block>
+        <block type="operator_lt_extendable"/>
+        <block type="operator_lte"/>
+        <block type="operator_equals_extendable"/>
+        <block type="operator_gt_extendable"/>
+        <block type="operator_gte"/>
         ${blockSeparator}
-        <block type="operator_and"/>
-        <block type="operator_or"/>
+        <block type="operator_and_extendable"/>
+        <block type="operator_or_extendable"/>
+        <block type="operator_xor_extendable"/>
         <block type="operator_not"/>
         ${blockSeparator}
         ${isInitialSetup ? '' : `
-            <block type="operator_join">
-                <value name="STRING1">
+            <block type="operator_join_extendable">
+                <field name="STRINGS">2</field>
+                <value name="STRINGS_0_STRING">
                     <shadow type="text">
                         <field name="TEXT">${apple} </field>
                     </shadow>
                 </value>
-                <value name="STRING2">
+                <value name="STRINGS_1_STRING">
                     <shadow type="text">
                         <field name="TEXT">${banana}</field>
                     </shadow>
@@ -836,7 +753,7 @@ const json = function (colors) {
         id="json"
         colour="${colors.primary}"
         secondaryColour="${colors.tertiary}">
-        <block type="json_new_object">
+        <block type="json_object">
         </block>
         ${blockSeparator}
         <block type="json_get_properties">
@@ -877,7 +794,7 @@ const json = function (colors) {
             </value>
         </block>
         ${blockSeparator}
-        <block type="json_new_array">
+        <block type="json_array">
         </block>
         ${blockSeparator}
         <block type="json_value_of_index">
@@ -896,13 +813,7 @@ const json = function (colors) {
         </block>
         <block type="json_array_length" id="json_array_length">
         </block>
-        <block type="json_add_item">
-            <value name="ITEM">
-                <shadow type="text">
-                    <field name="TEXT">${bar}</field>
-                </shadow>
-            </value>
-        </block>
+        <block type="json_add_item"/>
         <block type="json_replace_index">
             <value name="INDEX">
                 <shadow type="json_indexmenu">
