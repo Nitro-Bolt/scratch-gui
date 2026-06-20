@@ -912,7 +912,7 @@ Blocks.defaultOptions = {
         toolbox: '#FFFFFF',
         toolboxSelected: '#E9EEF2',
         scrollbar: '#CECDCE',
-        scrollbarHover: '#CECDCE',
+        scrollbarHover: '#EDEBED',
         insertionMarker: '#000000',
         insertionMarkerOpacity: 0.2,
         fieldShadow: 'rgba(255, 255, 255, 0.3)',

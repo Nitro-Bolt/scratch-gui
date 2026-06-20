@@ -400,6 +400,8 @@ body[theme="dark"] [class*=".blocklyScrollbarVertical"],
 body[theme="dark"] [class*=".blocklyScrollbarHorizontal"] {
     fill: #666;
 }
+body[theme="dark"] [class*=".blocklyScrollbarVerticalHover"],
+body[theme="dark"] [class*=".blocklyScrollbarHorizontalHover"],
 body[theme="dark"] [class*=".blocklyScrollbarVertical"]:hover,
 body[theme="dark"] [class*=".blocklyScrollbarHorizontal"]:hover {
     fill: #888;
