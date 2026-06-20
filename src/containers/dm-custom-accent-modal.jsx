@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {closeCustomAccentModal} from '../reducers/modals';
 import {setTheme} from '../reducers/theme';
 import CustomAccentModalComponent from '../components/dm-custom-accent-modal/custom-accent-modal.jsx';
-import SavedAccentTemplate from '../components/dm-custom-accent-modal/saved-accent-template.js';
+import SavedAccentTemplate, {CUSTOM_ACCENTS_KEY} from '../components/dm-custom-accent-modal/saved-accent-template.js';
 import { persistThemeCustom, persistTheme } from '../lib/themes/themePersistance.js'
 import { Theme } from '../lib/themes/index.js'
 import downloadBlob from '../lib/download-blob.js'
@@ -29,8 +29,8 @@ class CustomAccentModal extends React.Component {
         ]);
         this.props = props
         this.accents = 0;
-        this.CUSTOM_ACCENTS_KEY = "tw:accent:customAccents"
-        this.CUSTOM_ACCENTS_KEY_ON = "tw:accent:customAccentsOn"
+        this.CUSTOM_ACCENTS_KEY = CUSTOM_ACCENTS_KEY
+        this.CUSTOM_ACCENTS_KEY_ON = CUSTOM_ACCENTS_KEY + "On"
 
         //if (localStorage) localStorage.pushArrayItem_INTERNAL(this.CUSTOM_ACCENTS_KEY_ON, JSON.stringify([]));
         if (localStorage.getItem(this.CUSTOM_ACCENTS_KEY) == null) localStorage.setItem(this.CUSTOM_ACCENTS_KEY, JSON.stringify([]));

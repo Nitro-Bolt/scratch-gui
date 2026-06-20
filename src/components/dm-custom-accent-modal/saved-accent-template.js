@@ -9,4 +9,9 @@ const savedAccentTemplate = (name, { primaryColor, primaryColorDark }, enabled) 
     }
 }
 
-export default savedAccentTemplate;
+const CUSTOM_ACCENTS_KEY = "tw:accent:customAccents";
+
+export {
+    CUSTOM_ACCENTS_KEY,
+    savedAccentTemplate as default
+};

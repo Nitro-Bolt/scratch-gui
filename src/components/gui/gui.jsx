@@ -288,7 +288,7 @@ const GUIComponent = props => {
                 />
             </ContextMenuWrapTab>
         </Tab>);
-    const filesTab = (<Tab className={classNames(tabClassNames.tab, tabOrder.includes('file') ? null : styles.tabDisabled)} onClick={onActivateFilesTab}>
+    const filesTab = new URLSearchParams(location.search).has('livetests') && (<Tab className={classNames(tabClassNames.tab, tabOrder.includes('file') ? null : styles.tabDisabled)} onClick={onActivateFilesTab}>
             <ContextMenuWrapTab tabId="file">
                 <img
                     draggable={false}
@@ -307,7 +307,7 @@ const GUIComponent = props => {
         costume: costumesTab,
         sound: soundsTab,
         variable: variablesTab,
-        // file: filesTab,
+        file: filesTab,
     };
 
     // For now, rearranging tabs is not supported
@@ -591,7 +591,7 @@ const GUIComponent = props => {
                                                 />
                                             </div>
                                         </MenuItem>}
-                                        {/* {!tabOrder.includes('file') && <MenuItem onClick={() => addTabToEditor('file')}>
+                                        {new URLSearchParams(location.search).has('livetests') && !tabOrder.includes('file') && <MenuItem onClick={() => addTabToEditor('file')}>
                                             <div className={styles.tabAdditionItem}>
                                                 <img
                                                     draggable={false}
@@ -603,7 +603,7 @@ const GUIComponent = props => {
                                                     id="gui.gui.filesTab"
                                                 />
                                             </div>
-                                        </MenuItem>} */}
+                                        </MenuItem>}
                                     </ContextMenu>
 
                                     <div id="sa_addons_after_add_tab_anchor" />

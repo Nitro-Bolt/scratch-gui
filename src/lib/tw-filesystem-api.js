@@ -2,9 +2,10 @@ import { isApiAvailable, isTypeFilterAvailable } from './pm-mature-fs-available'
 
 const available = isApiAvailable;
 
+// pm: Some bad mobile devices block any file type (iOS), so these funcs should allow all files on mobile
 const showSaveFilePicker = fileName => window.showSaveFilePicker({
     suggestedName: fileName,
-    ...(isTypeFilterAvailable() ? {} : {
+    ...(!isTypeFilterAvailable() ? {} : {
         types: [
             {
                 description: 'DinosaurMod Project',
@@ -38,7 +39,7 @@ const showSaveFilePicker = fileName => window.showSaveFilePicker({
 const showOpenFilePicker = async () => {
     const [handle] = await window.showOpenFilePicker({
         multiple: false,
-        ...(isTypeFilterAvailable() ? {} : {
+        ...(!isTypeFilterAvailable() ? {} : {
             types: [
                 {
                     description: 'Supported Files',

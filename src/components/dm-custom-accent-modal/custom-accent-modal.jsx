@@ -14,13 +14,11 @@ import editIcon from './edit.svg';
 import deleteIcon from './delete.svg';
 
 import {isUnsupported} from './unsupported-browsers.js';
-import SavedAccentTemplate from './saved-accent-template.js';
+import SavedAccentTemplate, {CUSTOM_ACCENTS_KEY} from './saved-accent-template.js';
 
 /* eslint-disable react/no-multi-comp */
 
 const BufferedInput = BufferedInputHOC(Input);
-
-const CUSTOM_ACCENTS_KEY = "tw:accent:customAccents";
 
 const messages = defineMessages({
     title: {
@@ -232,6 +230,7 @@ CustomAccentComponent.propTypes = {
 
 const CustomAccentModalComponent = function (props) {
     const [customAccentComponents, setCustomAccentComponents] = useState([]);
+    const [customAccentComponents2, setCustomAccentComponents2] = useState([]);
     const [_, setTick] = useState(0);
     const [isNewAccUIOpen, setIsNewAccUIOpen] = useState(false);
     const [hasAccentsBeenRendered, setHasAccentsBeenRendered] = useState(false);
@@ -271,6 +270,7 @@ const CustomAccentModalComponent = function (props) {
             }
         }*/
         localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify(NEW_CUSTOM_ACCENTS_ARRAY.filter((child) => child.name !== name)))
+        setCustomAccentComponents2((prev) => prev.filter((child) => child.name !== name))
         //alert("Deleted accent: " + name);
     }
 
@@ -279,6 +279,7 @@ const CustomAccentModalComponent = function (props) {
     }
     function reloadComponents(newData) {
         setCustomAccentComponents([])
+        setCustomAccentComponents2([])
 
         newData.forEach((item) => {
             addToUI(
@@ -304,6 +305,12 @@ const CustomAccentModalComponent = function (props) {
                     refreshUI={refreshUI}
                 />
             )
+            setCustomAccentComponents2((prev) => [...prev, 
+                SavedAccentTemplate(item.name, {
+                    primaryColor: item.colors.primary,
+                    primaryColorDark: item.colors.primaryDark
+                }, false)
+            ]);
         })
     }
 
@@ -335,6 +342,12 @@ const CustomAccentModalComponent = function (props) {
                             refreshUI={refreshUI}
                         />
                     )
+                    setCustomAccentComponents2((prev) => [...prev, 
+                        SavedAccentTemplate(accentData.name, {
+                            primaryColor: accentData.colors.primary,
+                            primaryColorDark: accentData.colors.primaryDark
+                        }, false)
+                    ]);
                     //await new Promise(r => setTimeout(r, 1000))
                 }
             }
@@ -348,6 +361,7 @@ const CustomAccentModalComponent = function (props) {
         <Modal
             className={styles.modalContent}
             onRequestClose={(...args) => {
+                localStorage.setItem(CUSTOM_ACCENTS_KEY, JSON.stringify(customAccentComponents2))
                 props.onClose(...args)
             }}
             contentLabel={props.intl.formatMessage(messages.title)}
