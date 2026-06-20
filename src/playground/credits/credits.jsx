@@ -95,7 +95,7 @@ const Credits = () => (
                 <li>Code for "Center" option in Costume editor is from <a href="https://github.com/Nitro-Bolt/scratch-paint/blob/develop/src/containers/mode-tools.jsx#L203-L216">Cubester@Nitro-Bolt</a></li>
                 <li>The 404 page comes from <a href="https://github.com/Snail-ide/snail-ide.github.io/blob/develop/static/404.html">nmsderp@Snail-IDE</a></li>
                 <li>The Settings menu in the menu-bar is from <a href="https://github.com/TurboWarp/scratch-gui/blob/develop/src/components/menu-bar/settings-menu.jsx">GarboMuffin@TurboWarp</a></li>
-                <li>The Collapse/Expand Block and External/Inline Inputs options are from <a href="https://github.com/PenguinMod-Port/scratch-blocks">jwklong@PenguinMod-Port</a></li>
+                <li>The External/Inline Inputs option is from <a href="https://github.com/PenguinMod-Port/scratch-blocks">jwklong@PenguinMod-Port</a></li>
             </ul>
         </section>
         <section>
