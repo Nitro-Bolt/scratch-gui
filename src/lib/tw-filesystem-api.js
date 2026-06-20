@@ -30,6 +30,12 @@ const showSaveFilePicker = fileName => window.showSaveFilePicker({
                 accept: {
                     'application/x.scratch.sb3': '.sb3'
                 }
+            },
+            {
+                description: 'ZIP (file format)',
+                accept: {
+                    'application/x.scratch.sb3': '.zip'
+                }
             }
         ],
         excludeAcceptAllOption: true
@@ -44,7 +50,7 @@ const showOpenFilePicker = async () => {
                 {
                     description: 'Supported Files',
                     accept: {
-                        'application/x.scratch.sb3': ['.dino', '.snail', '.pmp', '.pm', '.sb3', '.sb2', '.sb']
+                        'application/x.scratch.sb3': ['.dino', '.snail', '.pmp', '.pm', '.sb3', '.sb2', '.sb', 'zip']
                     }
                 },
                 {
@@ -69,6 +75,12 @@ const showOpenFilePicker = async () => {
                     description: 'Scratch Project',
                     accept: {
                         'application/x.scratch.sb3': ['.sb3', '.sb2', '.sb']
+                    }
+                },
+                {
+                    description: 'ZIP (file format)',
+                    accept: {
+                        'application/x.scratch.sb3': ['.zip']
                     }
                 }
             ]

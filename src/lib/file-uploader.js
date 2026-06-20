@@ -258,9 +258,6 @@ const spriteUpload = function (fileData, fileType, spriteName, vm, handleSprite,
     switch (fileType) {
     case '':
     case 'application/zip': { // We think this is a .sprite2 or .sprite3 file
-        console.log(fileData) // i want to do something
-        console.log(new Uint8Array(fileData))
-        console.log(fileType)
         handleSprite(new Uint8Array(fileData));
         return;
     }
