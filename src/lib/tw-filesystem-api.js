@@ -50,7 +50,7 @@ const showOpenFilePicker = async () => {
                 {
                     description: 'Supported Files',
                     accept: {
-                        'application/x.scratch.sb3': ['.dino', '.snail', '.pmp', '.pm', '.sb3', '.sb2', '.sb', 'zip']
+                        'application/x.scratch.sb3': ['.dino', '.snail', '.pmp', '.pm', '.sb3', '.sb2', '.sb', '.zip']
                     }
                 },
                 {
