@@ -639,6 +639,11 @@ const pmCodeUsedFrom = [
         image: `https://github.com/Snail-IDE.png`,
         href: `https://github.com/Snail-IDE/`,
     },
+    {
+        text: "PenguinMod-Port",
+        image: `https://github.com/PenguinMod-Port.png`,
+        href: `https://github.com/PenguinMod-Port/`,
+    },
     // TODO: There are 1000% more projects we've used some stuff from but I don't remember
 ];
 

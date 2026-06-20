@@ -919,7 +919,8 @@ Blocks.defaultOptions = {
         dragShadowOpacity: 0.6
     },
     comments: true,
-    collapse: false,
+    collapse: true,
+    externalInputs: true,
     sounds: false
 };
 

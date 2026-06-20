@@ -157,13 +157,13 @@ const Footer = () => (
                             id="tw.footer.credits"
                         />
                     </a>
-                    <a href="https://github.com/sponsors/GarboMuffin">
+                    {/*<a href="https://github.com/sponsors/GarboMuffin">
                         <FormattedMessage
                             defaultMessage="Donate to TurboWarp Developer"
                             description="Donation link in footer"
                             id="tw.footer.donate"
                         />
-                    </a>
+                    </a>*/}
                     <a href="https://penguinmod.com/donate">
                         <FormattedMessage
                             defaultMessage="Donate to Penguinmod"
