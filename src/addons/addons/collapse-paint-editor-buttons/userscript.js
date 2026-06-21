@@ -85,7 +85,7 @@ export default async function({ addon }) {
         await addon.tab.waitForElement("div[class^='paint-editor_editor-container_']", {
             markAsSeen: true,
             reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
-            reduxCondition: (state) => !state.scratchGui.editorTab.activeTabIndex == 1,
+            reduxCondition: (state) => state.scratchGui.editorTab.activeTabIndex == 1,
         });
 
         paintEditorContainer = document.querySelector('[class^="paint-editor_editor-container_"]');

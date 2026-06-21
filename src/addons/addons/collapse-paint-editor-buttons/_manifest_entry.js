@@ -2,7 +2,7 @@
 const manifest = {
     "editorOnly": true,
     "noTranslations": true,
-    "name": "Paint Editor Collapse buttons",
+    "name": "Paint editor collapse buttons",
     "description": "Collapse parts of the paint editor with buttons.",
     "credits": [
         {
@@ -12,7 +12,7 @@ const manifest = {
     ],
     "info": [
         {
-            "text": "This is still a work in progress so there are probably lots of bugs.",
+            "text": "This addon is still a work in progress so there are lots of bugs.",
             "id": "wip"
         }
     ],
@@ -24,6 +24,6 @@ const manifest = {
     "dynamicEnable": true,
     "dynamicDisable": false,
     "tags": ["new", "beta", "dinosaurmod"],
-    "enabledByDefault": true
+    "enabledByDefault": false
 };
 export default manifest;

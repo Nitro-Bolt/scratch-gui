@@ -87,5 +87,5 @@ export default {
   "merge-costumes": () => import(/* webpackChunkName: "addon-entry-merge-costumes" */ "../addons/merge-costumes/_runtime_entry.js"),
   "copy-reporter": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/copy-reporter/_runtime_entry.js"),
   "block-pins": () => import(/* webpackChunkName: "addon-default-entry" */ "../addons/block-pins/_runtime_entry.js"),
-  "collapse-paint-editor-buttons": () => import(/* webpackChunkName: "addon-default-collapse-paint-editor-buttons" */ "../addons/collapse-paint-editor-buttons/_runtime_entry.js"),
+  "collapse-paint-editor-buttons": () => import(/* webpackChunkName: "addon-entry-collapse-paint-editor-buttons" */ "../addons/collapse-paint-editor-buttons/_runtime_entry.js"),
 };
