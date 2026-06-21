@@ -24,12 +24,21 @@ export default async function({ addon }) {
         return button;
     };
 
-    const collapseOptionsButton = createButton("", symbols["up"], () => {collapseFunc("options")}, "sa-collapse-options");
+    function createContainerTemplate() {
+        const collapseOptionsButton = createButton("", symbols["up"], () => {collapseFunc("options")}, "sa-collapse-options");
 
-    const container = document.createElement("div");
-    container.style.display = "flex";
-    container.style.gap = "4px";
-    container.appendChild(collapseOptionsButton);
+        const e = document.createElement("div");
+        container.style.display = "flex";
+        container.style.gap = "4px";
+        container.appendChild(collapseOptionsButton);
+        container.id = "sa-collapse-container";
+
+        return e;
+    };
+
+    // const collapseOptionsButton = createButton("", symbols["up"], () => {collapseFunc("options")}, "sa-collapse-options");
+
+    let container = createContainerTemplate();
 
     addon.tab.displayNoneWhileDisabled(container, {
         display: "flex",
@@ -42,12 +51,12 @@ export default async function({ addon }) {
             collapseStatuses[type] = !status;
             button.innerHTML = symbols[String(!!status)]
             if (!!status) {
-                let paintEditorRows = paintEditorContainerTop.querySelectorAll('[class*="paint-editor_row_"]')
+                let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
                     row.style.display = "none";
                 }
             } else {
-                let paintEditorRows = paintEditorContainerTop.querySelectorAll('[class*="paint-editor_row_"]')
+                let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
                     row.style.display = "";
                 }
@@ -66,10 +75,12 @@ export default async function({ addon }) {
     const CollapseOptionsUnsubscribe = ReduxStore.subscribe(() => {
         if (paintEditorContainerTop) {
             const state = ReduxStore.getState();
-            const newCollapseOptions = paintEditorContainerTop.contains(container);
+            const newCollapseOptions = paintEditorContainerTop.querySelector('div#sa-collapse-container');
 
             if (!newCollapseOptions) {
-                let paintEditorRows = paintEditorContainerTop.querySelectorAll('[class*="paint-editor_row_"]')
+                container = createContainerTemplate();
+                
+                let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
                     insertAfter(row, container)
                     break;
@@ -85,7 +96,7 @@ export default async function({ addon }) {
         await addon.tab.waitForElement("div[class*='paint-editor_editor-container_']", {
             markAsSeen: true,
             reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
-            reduxCondition: (state) => state.scratchGui.editorTab.activeTabIndex == 1,
+            reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
         });
 
         paintEditorContainer = document.querySelector('[class*="paint-editor_editor-container_"]');
@@ -93,7 +104,7 @@ export default async function({ addon }) {
         if (paintEditorContainer) {
             paintEditorContainerTop = document.querySelector('[class*="paint-editor_editor-container-top_"]');
             if (paintEditorContainerTop) {
-                let paintEditorRows = paintEditorContainerTop.querySelector('[class*="paint-editor_row_"]')
+                let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
                     insertAfter(row, container)
                     break;
