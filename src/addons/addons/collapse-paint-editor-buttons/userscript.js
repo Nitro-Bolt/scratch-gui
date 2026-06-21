@@ -116,7 +116,7 @@ export default async function({ addon }) {
                         collapseFunc("options")
                         alreadyChanged = true
                     }
-                    collapseFunc("options", true, false)
+                    collapseFunc("options", true, collapseStatuses["options"])
                     break;
                 }
             }
