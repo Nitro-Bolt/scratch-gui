@@ -12,7 +12,7 @@ export default async function({ addon }) {
     };
 
     let collapseStatuses = {
-        "options": false,
+        "options": true,
     };
 
     function createButton(title, innerhtml, onClick, id) {
@@ -101,6 +101,8 @@ export default async function({ addon }) {
 
     let testContainer;
 
+    let alreadyChanged = false;
+
     while (true) {
         await new Promise(async (r) => {
             while (!testContainer) {
@@ -120,7 +122,10 @@ export default async function({ addon }) {
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
                     insertAfter(row, container)
-                    collapseFunc("options")
+                    if (!alreadyChanged) {
+                        collapseFunc("options")
+                        alreadyChanged = true
+                    }
                     break;
                 }
             }
