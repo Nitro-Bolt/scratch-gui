@@ -32,6 +32,10 @@ export default async function({ addon }) {
         container.style.gap = "4px";
         container.appendChild(collapseOptionsButton);
         container.id = "sa-collapse-container";
+        
+        addon.tab.displayNoneWhileDisabled(container, {
+            display: "flex",
+        });
 
         return e;
     };
@@ -39,10 +43,6 @@ export default async function({ addon }) {
     // const collapseOptionsButton = createButton("", symbols["up"], () => {collapseFunc("options")}, "sa-collapse-options");
 
     let container = createContainerTemplate();
-
-    addon.tab.displayNoneWhileDisabled(container, {
-        display: "flex",
-    });
 
     function collapseFunc(type) {
         let status = collapseStatuses[type];
@@ -79,7 +79,7 @@ export default async function({ addon }) {
 
             if (!newCollapseOptions) {
                 container = createContainerTemplate();
-                
+
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
                     insertAfter(row, container)
