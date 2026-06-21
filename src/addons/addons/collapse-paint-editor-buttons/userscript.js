@@ -24,7 +24,7 @@ export default async function({ addon }) {
         return button;
     };
 
-    const collapseOptionsButton = createIconButton("", symbols["up"], () => {collapseFunc("options")}, "sa-collapse-options");
+    const collapseOptionsButton = createButton("", symbols["up"], () => {collapseFunc("options")}, "sa-collapse-options");
 
     const container = document.createElement("div");
     container.style.display = "flex";
