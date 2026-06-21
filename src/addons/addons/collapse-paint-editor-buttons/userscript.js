@@ -93,11 +93,9 @@ export default async function({ addon }) {
     });
 
     while (true) {
-        await addon.tab.waitForElement("[class*='paint-editor_editor-container_']", {
-            markAsSeen: true,
-            reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
-            reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
-        });
+        while (!document.querySelector('[class*="paint-editor_editor-container_"]')) {
+            await new Promise(r => setTimeout(50, r))
+        };
 
         console.log("element was successfully found. (sa-collapse-paint-editor-button)")
 
