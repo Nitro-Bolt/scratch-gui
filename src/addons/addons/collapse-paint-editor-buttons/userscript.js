@@ -93,7 +93,7 @@ export default async function({ addon }) {
         if (paintEditorContainer) {
             paintEditorContainerTop = document.querySelector('[class^="paint-editor_editor-container-top_"]');
             if (paintEditorContainerTop) {
-                let paintEditorRow = paintEditorContainerTop.querySelector('[class^="paint-editor_row_"]') // test
+                let paintEditorRows = paintEditorContainerTop.querySelector('[class^="paint-editor_row_"]') // test
                 for (const row of paintEditorRows) {
                     insertAfter(row, container)
                     break;
