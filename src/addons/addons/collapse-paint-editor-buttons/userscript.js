@@ -3,14 +3,12 @@ export default async function({ addon }) {
     const vm = addon.tab.traps.vm;
 
     let paintEditorContainer, paintEditorContainerTop;
-
     const symbols = {
         "down": "v",
         "up": "ʌ",
         "true": "v",
         "false": "ʌ"
     };
-
     let collapseStatuses = {
         "options": true,
     };
@@ -23,36 +21,31 @@ export default async function({ addon }) {
         button.addEventListener("click", onClick);
         return button;
     };
-
     function createContainerTemplate() {
         const collapseOptionsButton = createButton("", symbols["up"], () => {collapseFunc("options")}, "sa-collapse-options");
-
         const e = document.createElement("div");
         e.style.display = "flex";
         e.style.gap = "4px";
         e.appendChild(collapseOptionsButton);
         e.id = "sa-collapse-container";
-
         addon.tab.displayNoneWhileDisabled(e, {
             display: "flex",
         });
-
         return e;
     };
 
     const resize = () => window.dispatchEvent(new Event("resize"));
 
     // const collapseOptionsButton = createButton("", symbols["up"], () => {collapseFunc("options")}, "sa-collapse-options");
-
     let container = createContainerTemplate();
 
-    function collapseFunc(type) {
+    function collapseFunc(type, onlyChangeButton = false) {
         let status = collapseStatuses[type];
         let button = document.querySelector(`button#sa-collapse-${type}`);
         if (button) {
-            collapseStatuses[type] = !status;
+            if (!onlyChangeButton) collapseStatuses[type] = !status;
             button.innerHTML = symbols[String(!status)]
-            if (!status) {
+            if (!status && !onlyChangeButton) {
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
                     if (row.id !== `sa-collapse-container`) {
@@ -83,10 +76,8 @@ export default async function({ addon }) {
         if (paintEditorContainerTop) {
             const state = ReduxStore.getState();
             const newCollapseOptions = paintEditorContainerTop.querySelector('div#sa-collapse-container');
-
             if (!newCollapseOptions) {
                 container = createContainerTemplate();
-
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
                     insertAfter(row, container)
@@ -100,7 +91,6 @@ export default async function({ addon }) {
     });
 
     let testContainer;
-
     let alreadyChanged = false;
 
     while (true) {
@@ -111,11 +101,9 @@ export default async function({ addon }) {
             };
             r();
         });
-
         console.log("element was successfully found. (sa-collapse-paint-editor-button)");
 
         paintEditorContainer = document.querySelector('[class*="paint-editor_editor-container_"]');
-
         if (paintEditorContainer) {
             paintEditorContainerTop = document.querySelector('[class*="paint-editor_editor-container-top_"]');
             if (paintEditorContainerTop) {
@@ -126,13 +114,13 @@ export default async function({ addon }) {
                         collapseFunc("options")
                         alreadyChanged = true
                     }
+                    collapseFunc("options", true)
                     break;
                 }
             }
         } else {
             console.warn("paintEditorContainer not found!")
         };
-
         await new Promise(async (r) => {
             while (!!testContainer) {
                 testContainer = document.querySelector('div#sa-collapse-container');

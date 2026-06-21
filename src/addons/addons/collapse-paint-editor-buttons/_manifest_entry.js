@@ -10,12 +10,12 @@ const manifest = {
             "link": "https://scratch.mit.edu/users/MrIncredibleMakerZe/"
         }
     ],
-    "info": [
+    /*"info": [
         {
             "text": "This addon is still a work in progress so there are lots of bugs.",
             "id": "wip"
         }
-    ],
+    ],*/
     "userscripts": [
         {
             "url": "userscript.js"
