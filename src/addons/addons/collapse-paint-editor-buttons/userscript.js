@@ -45,11 +45,12 @@ export default async function({ addon }) {
         if (button) {
             collapseStatuses[type] = !status;
             button.innerHTML = symbols[String(!status)]
-            if (changeButtonTo) {
+            if (changeButtonTo !== undefined) {
                 collapseStatuses[type] = !!changeButtonTo;
-                button.innerHTML = symbols[String(!!changeButtonTo)]
+                button.innerHTML = symbols[String(!!changeButtonTo)];
+                status = !collapseStatuses[type];
             } // override the first code in case "changeButtonTo" is given a value
-            if ((changeButtonTo || !status) && !onlyChangeButton) {
+            if (!status && !onlyChangeButton) {
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
                     if (row.id !== `sa-collapse-container`) {
