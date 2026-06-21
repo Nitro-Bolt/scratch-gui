@@ -42,12 +42,12 @@ export default async function({ addon }) {
             collapseStatuses[type] = !status;
             button.innerHTML = symbols[String(!!status)]
             if (!!status) {
-                let paintEditorRows = paintEditorContainerTop.querySelectorAll('[class^="paint-editor_row_"]')
+                let paintEditorRows = paintEditorContainerTop.querySelectorAll('[class*="paint-editor_row_"]')
                 for (const row of paintEditorRows) {
                     row.style.display = "none";
                 }
             } else {
-                let paintEditorRows = paintEditorContainerTop.querySelectorAll('[class^="paint-editor_row_"]')
+                let paintEditorRows = paintEditorContainerTop.querySelectorAll('[class*="paint-editor_row_"]')
                 for (const row of paintEditorRows) {
                     row.style.display = "";
                 }
@@ -69,7 +69,7 @@ export default async function({ addon }) {
             const newCollapseOptions = paintEditorContainerTop.contains(container);
 
             if (!newCollapseOptions) {
-                let paintEditorRows = paintEditorContainerTop.querySelectorAll('[class^="paint-editor_row_"]')
+                let paintEditorRows = paintEditorContainerTop.querySelectorAll('[class*="paint-editor_row_"]')
                 for (const row of paintEditorRows) {
                     insertAfter(row, container)
                     break;
@@ -82,18 +82,18 @@ export default async function({ addon }) {
     });
 
     while (true) {
-        await addon.tab.waitForElement("div[class^='paint-editor_editor-container_']", {
+        await addon.tab.waitForElement("div[class*='paint-editor_editor-container_']", {
             markAsSeen: true,
             reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
             reduxCondition: (state) => state.scratchGui.editorTab.activeTabIndex == 1,
         });
 
-        paintEditorContainer = document.querySelector('[class^="paint-editor_editor-container_"]');
+        paintEditorContainer = document.querySelector('[class*="paint-editor_editor-container_"]');
 
         if (paintEditorContainer) {
-            paintEditorContainerTop = document.querySelector('[class^="paint-editor_editor-container-top_"]');
+            paintEditorContainerTop = document.querySelector('[class*="paint-editor_editor-container-top_"]');
             if (paintEditorContainerTop) {
-                let paintEditorRows = paintEditorContainerTop.querySelector('[class^="paint-editor_row_"]') // test
+                let paintEditorRows = paintEditorContainerTop.querySelector('[class*="paint-editor_row_"]')
                 for (const row of paintEditorRows) {
                     insertAfter(row, container)
                     break;
