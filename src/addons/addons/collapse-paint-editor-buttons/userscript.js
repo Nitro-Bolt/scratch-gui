@@ -44,7 +44,8 @@ export default async function({ addon }) {
         let button = document.querySelector(`button#sa-collapse-${type}`);
         if (button) {
             if (!onlyChangeButton) collapseStatuses[type] = !status;
-            button.innerHTML = symbols[String(!status)]
+            if (!onlyChangeButton) button.innerHTML = symbols[String(!status)]
+            if (!!onlyChangeButton) button.innerHTML = symbols[String(!!status)]
             if (!status && !onlyChangeButton) {
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
