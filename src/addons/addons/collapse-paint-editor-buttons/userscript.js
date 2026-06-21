@@ -95,7 +95,7 @@ export default async function({ addon }) {
     let testContainer;
 
     while (true) {
-        await new Promise(r => {
+        await new Promise(async (r) => {
             while (!testContainer) {
                 testContainer = document.querySelector('[class*="paint-editor_editor-container_"]');
                 await new Promise(res => setTimeout(res, 50));
@@ -120,7 +120,7 @@ export default async function({ addon }) {
             console.warn("paintEditorContainer not found!")
         };
 
-        await new Promise(r => {
+        await new Promise(async (r) => {
             while (!!testContainer) {
                 testContainer = document.querySelector('[class*="paint-editor_editor-container_"]');
                 await new Promise(res => setTimeout(res, 50));
