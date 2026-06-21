@@ -28,12 +28,12 @@ export default async function({ addon }) {
         const collapseOptionsButton = createButton("", symbols["up"], () => {collapseFunc("options")}, "sa-collapse-options");
 
         const e = document.createElement("div");
-        container.style.display = "flex";
-        container.style.gap = "4px";
-        container.appendChild(collapseOptionsButton);
-        container.id = "sa-collapse-container";
-        
-        addon.tab.displayNoneWhileDisabled(container, {
+        e.style.display = "flex";
+        e.style.gap = "4px";
+        e.appendChild(collapseOptionsButton);
+        e.id = "sa-collapse-container";
+
+        addon.tab.displayNoneWhileDisabled(e, {
             display: "flex",
         });
 
