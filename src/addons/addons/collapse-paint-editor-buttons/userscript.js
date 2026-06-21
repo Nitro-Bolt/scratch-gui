@@ -40,6 +40,8 @@ export default async function({ addon }) {
         return e;
     };
 
+    const resize = () => window.dispatchEvent(new Event("resize"));
+
     // const collapseOptionsButton = createButton("", symbols["up"], () => {collapseFunc("options")}, "sa-collapse-options");
 
     let container = createContainerTemplate();
@@ -53,14 +55,19 @@ export default async function({ addon }) {
             if (!!status) {
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
-                    row.style.display = "none";
+                    if (!row.id === `sa-collapse-${type}`) {
+                        row.style.display = "none";
+                    }
                 }
             } else {
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
-                    row.style.display = "";
+                    if (!row.id === `sa-collapse-${type}`) {
+                        row.style.display = "";
+                    }
                 }
             }
+            resize();
         } else {
             console.warn("Button with specified type: ", type, " was not found.")
         }
@@ -122,7 +129,7 @@ export default async function({ addon }) {
 
         await new Promise(async (r) => {
             while (!!testContainer) {
-                testContainer = document.querySelector('[class*="paint-editor_editor-container_"]');
+                testContainer = document.querySelector('button#sa-collapse-options'); // button as a example
                 await new Promise(res => setTimeout(res, 50));
             };
             r();
