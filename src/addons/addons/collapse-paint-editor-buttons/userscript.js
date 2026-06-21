@@ -51,8 +51,8 @@ export default async function({ addon }) {
         let button = document.querySelector(`button#sa-collapse-${type}`);
         if (button) {
             collapseStatuses[type] = !status;
-            button.innerHTML = symbols[String(!!status)]
-            if (!!status) {
+            button.innerHTML = symbols[String(!status)]
+            if (!status) {
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
                     if (row.id !== `sa-collapse-container`) {
@@ -74,7 +74,7 @@ export default async function({ addon }) {
     }
 
     function insertAfter(referenceNode, newNode) {
-        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+        referenceNode.parentNode.insertBefore(newNode, referenceNode/*.nextSibling*/);
     }
 
     let previousCollapseOptions = null;
