@@ -7,8 +7,8 @@ export default async function({ addon }) {
     const symbols = {
         "down": "v",
         "up": "ʌ",
-        "false": "v",
-        "true": "ʌ"
+        "true": "v",
+        "false": "ʌ"
     };
 
     let collapseStatuses = {
@@ -120,6 +120,7 @@ export default async function({ addon }) {
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
                     insertAfter(row, container)
+                    collapseFunc("options")
                     break;
                 }
             }
