@@ -55,14 +55,14 @@ export default async function({ addon }) {
             if (!!status) {
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
-                    if (!row.id === `sa-collapse-${type}`) {
+                    if (row.id !== `sa-collapse-${type}`) {
                         row.style.display = "none";
                     }
                 }
             } else {
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
-                    if (!row.id === `sa-collapse-${type}`) {
+                    if (row.id !== `sa-collapse-${type}`) {
                         row.style.display = "";
                     }
                 }
@@ -129,7 +129,7 @@ export default async function({ addon }) {
 
         await new Promise(async (r) => {
             while (!!testContainer) {
-                testContainer = document.querySelector('button#sa-collapse-options'); // button as a example
+                testContainer = document.querySelector('button#sa-collapse-options');
                 await new Promise(res => setTimeout(res, 50));
             };
             r();
