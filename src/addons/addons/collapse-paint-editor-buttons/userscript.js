@@ -39,13 +39,14 @@ export default async function({ addon }) {
     // const collapseOptionsButton = createButton("", symbols["up"], () => {collapseFunc("options")}, "sa-collapse-options");
     let container = createContainerTemplate();
 
-    function collapseFunc(type, onlyChangeButton = false) {
+    function collapseFunc(type, onlyChangeButton = false, changeButtonTo = false) {
         let status = collapseStatuses[type];
         let button = document.querySelector(`button#sa-collapse-${type}`);
         if (button) {
             if (!onlyChangeButton) collapseStatuses[type] = !status;
+            if (!!onlyChangeButton) collapseStatuses[type] = !!changeButtonTo;
             if (!onlyChangeButton) button.innerHTML = symbols[String(!status)]
-            if (!!onlyChangeButton) button.innerHTML = symbols[String(!!status)]
+            if (!!onlyChangeButton) button.innerHTML = symbols[String(!!changeButtonTo)]
             if (!status && !onlyChangeButton) {
                 let paintEditorRows = paintEditorContainerTop.childNodes
                 for (const row of paintEditorRows) {
@@ -115,7 +116,7 @@ export default async function({ addon }) {
                         collapseFunc("options")
                         alreadyChanged = true
                     }
-                    collapseFunc("options", true)
+                    collapseFunc("options", true, false)
                     break;
                 }
             }
