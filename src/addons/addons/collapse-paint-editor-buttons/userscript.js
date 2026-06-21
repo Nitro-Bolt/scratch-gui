@@ -92,12 +92,18 @@ export default async function({ addon }) {
         }
     });
 
-    while (true) {
-        while (!document.querySelector('[class*="paint-editor_editor-container_"]')) {
-            await new Promise(r => setTimeout(50, r))
-        };
+    let testContainer;
 
-        console.log("element was successfully found. (sa-collapse-paint-editor-button)")
+    while (true) {
+        await new Promise(r => {
+            while (!testContainer) {
+                testContainer = document.querySelector('[class*="paint-editor_editor-container_"]');
+                await new Promise(res => setTimeout(res, 50));
+            };
+            r();
+        });
+
+        console.log("element was successfully found. (sa-collapse-paint-editor-button)");
 
         paintEditorContainer = document.querySelector('[class*="paint-editor_editor-container_"]');
 
@@ -112,6 +118,14 @@ export default async function({ addon }) {
             }
         } else {
             console.warn("paintEditorContainer not found!")
-        }
+        };
+
+        await new Promise(r => {
+            while (!!testContainer) {
+                testContainer = document.querySelector('[class*="paint-editor_editor-container_"]');
+                await new Promise(res => setTimeout(res, 50));
+            };
+            r();
+        });
     }
 }
