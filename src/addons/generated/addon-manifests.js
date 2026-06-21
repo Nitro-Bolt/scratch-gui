@@ -85,6 +85,7 @@ import _toolbox_full_blocks_on_hover from "../addons/toolbox-full-blocks-on-hove
 import _merge_costumes from "../addons/merge-costumes/_manifest_entry.js";
 import _copy_reporter from "../addons/copy-reporter/_manifest_entry.js";
 import _block_pins from "../addons/block-pins/_manifest_entry.js";
+import _collapse_paint_editor_buttons from "../addons/collapse-paint-editor-buttons/_manifest_entry.js";
 
 export default {
   "cat-blocks": _cat_blocks,
@@ -174,4 +175,5 @@ export default {
   "merge-costumes": _merge_costumes,
   "copy-reporter": _copy_reporter,
   "block-pins": _block_pins,
+  "collapse-paint-editor-buttons": _collapse_paint_editor_buttons,
 };
