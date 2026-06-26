@@ -43,6 +43,8 @@ class Waveform extends React.PureComponent {
                 'L' : 'Q'}${x} ${y} ${(x + nx) / 2} ${(y + ny) / 2}`;
         });
 
+        const randomId = Math.random();
+
         return (
             <>
                 <svg
@@ -51,7 +53,7 @@ class Waveform extends React.PureComponent {
                 >
                     {preferences['waveform-color'] === 'volume' &&
                         <defs>
-                            <linearGradient id="sound">
+                            <linearGradient id={'sound'.concat(randomId)}>
                                 {data.map((value, i) => (
                                     <stop
                                         offset={`${i / data.length * 100}%`}
@@ -60,7 +62,7 @@ class Waveform extends React.PureComponent {
                                     />
                                 ))}
                             </linearGradient>
-                            <linearGradient id="soundOutline">
+                            <linearGradient id={'soundOutline'.concat(randomId)}>
                                 {data.map((value, i) => (
                                     <stop
                                         offset={`${i / data.length * 100}%`}
@@ -77,8 +79,8 @@ class Waveform extends React.PureComponent {
                             d={`M0 0${pathComponents.join(' ')}Z`}
                             strokeLinejoin={'round'}
                             strokeWidth={1}
-                            fill="url(#sound)"
-                            stroke="url(#soundOutline)"
+                            fill={'url(#sound'.concat(randomId, ')')}
+                            stroke={'url(#soundOutline'.concat(randomId, ')')}
                         />
                     </g>
                 </svg>
