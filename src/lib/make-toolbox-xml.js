@@ -486,6 +486,19 @@ const control = function (isInitialSetup, isStage, targetId, colors) {
         <block type="control_if_extendable"/>
         <block type="control_if_else_extendable"/>
         <block type="control_switch"/>
+        <block type="control_inline_if_else">
+          <value name="THEN">
+            <shadow type="text">
+              <field name="TEXT">apple</field>
+            </shadow>
+          </value>
+          <value name="ELSE">
+            <shadow type="text">
+              <field name="TEXT">banana</field>
+            </shadow>
+          </value>
+        </block>
+        ${blockSeparator}
         <block id="wait_until" type="control_wait_until"/>
         <block id="repeat_until" type="control_repeat_until"/>
         <block id="while" type="control_while"/>
