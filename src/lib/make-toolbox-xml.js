@@ -285,6 +285,20 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                     </shadow>
                 </value>
             </block>
+            <block type="looks_changelayerby" id="looks_changelayerby">
+                <value name="NUM">
+                    <shadow type="math_integer">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="looks_setlayerto" id="looks_setlayerto">
+                <value name="NUM">
+                    <shadow type="math_integer">
+                        <field name="NUM">0</field>
+                    </shadow>
+                </value>
+            </block>
         `}
         ${isStage ? `
             <block id="backdropnumbername" type="looks_backdropnumbername"/>
@@ -292,6 +306,7 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
             <block id="${targetId}_costumenumbername" type="looks_costumenumbername"/>
             <block id="backdropnumbername" type="looks_backdropnumbername"/>
             <block id="${targetId}_size" type="looks_size"/>
+            <block id="${targetId}_layer" type="looks_layer"/>
         `}
         ${categorySeparator}
     </category>
