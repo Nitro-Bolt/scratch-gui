@@ -850,7 +850,7 @@ const mapStateToProps = state => ({
     workspaceMetrics: state.scratchGui.workspaceMetrics,
     useCatBlocks: isTimeTravel2020(state),
     hiddenCategories: state.scratchGui.preferences['hidden-categories'],
-    nbBlocks: state.scratchGui.preferences['hide-nb-blocks'] === true
+    nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true)
 });
 
 const mapDispatchToProps = dispatch => ({
