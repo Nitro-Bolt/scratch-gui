@@ -343,6 +343,11 @@ const assets = function (isInitialSetup, isStage, targetId, assetName, colors, n
             </value>
         </block>
         ${blockSeparator}
+        <block type="assets_all">
+            <value name="SPRITE">
+                <shadow type="assets_sprite_menu"></shadow>
+            </value>
+        </block>
         <block id="${targetId}_assets_metadata" type="assets_metadata">
             <value name="ASSET_MENU">
                 <shadow type="assets_menu">
