@@ -510,6 +510,19 @@ const EditorSettingsModal = props => {
                     />
                     <div className={styles.divider} />
                 </div>
+                <BooleanSetting
+                    value={!!props.preferences['hide-nb-blocks']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.vanillaPalette"
+                        defaultMessage="Vanilla Palette"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.vanillaPaletteHelp"
+                        defaultMessage="Hides NitroBolt-exclusive blocks (e.g. extended operators, switch, for-each-in-range, etc.) and hides the JSON and assets categories."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => props.onSetPreference('hide-nb-blocks', e.target.checked)}
+                />
                 <Setting
                     help={
                         <FormattedMessage
@@ -537,21 +550,24 @@ const EditorSettingsModal = props => {
                     secondary={
                         categoriesExpanded && (<div><div className={styles.categoryGrid}>
                             {toolbox_categories.map(category => {
-                                const isVisible = !hiddenCategories.includes(category.id);
-                                const visibleCount = toolbox_categories.filter(c => !hiddenCategories.includes(c.id)).length;
+                                const isNB = category.id === 'json' || category.id === 'assets';
+                                const hideNB = !!props.preferences['hide-nb-blocks'] && isNB;
+                                const isVisible = !hideNB && !hiddenCategories.includes(category.id);
+                                const visibleCount = toolbox_categories.filter(c =>
+                                    !(!!props.preferences['hide-nb-blocks'] && (c.id === 'json' || c.id === 'assets')) &&
+                                    !hiddenCategories.includes(c.id)
+                                ).length;
+
                                 return (
-                                    <label
-                                        key={category.id}
-                                        className={styles.label}
-                                    >
+                                    <label key={category.id} className={styles.label}>
                                         <FancyCheckbox
                                             className={styles.checkbox}
                                             checked={isVisible}
-                                            disabled={isVisible && visibleCount === 1}
+                                            disabled={hideNB || (isVisible && visibleCount === 1)}
                                             onChange={() => {
-                                                const next = isVisible ?
-                                                    [...hiddenCategories, category.id] :
-                                                    hiddenCategories.filter(id => id !== category.id);
+                                                const next = hiddenCategories.includes(category.id)
+                                                    ? hiddenCategories.filter(id => id !== category.id)
+                                                    : [...hiddenCategories, category.id];
                                                 props.onSetPreference('hidden-categories', next);
                                             }}
                                         />

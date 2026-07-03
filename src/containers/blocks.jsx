@@ -243,7 +243,8 @@ class Blocks extends React.Component {
             this.props.anyModalVisible !== nextProps.anyModalVisible ||
             this.props.stageSize !== nextProps.stageSize ||
             this.props.customStageSize !== nextProps.customStageSize ||
-            this.props.hiddenCategories !== nextProps.hiddenCategories
+            this.props.hiddenCategories !== nextProps.hiddenCategories ||
+            this.props.nbBlocks !== nextProps.nbBlocks
         );
     }
     componentDidUpdate (prevProps) {
@@ -259,7 +260,8 @@ class Blocks extends React.Component {
             this.requestToolboxUpdate();
         }
 
-        if (this.props.hiddenCategories !== prevProps.hiddenCategories) {
+        if (this.props.hiddenCategories !== prevProps.hiddenCategories ||
+            this.props.nbBlocks !== prevProps.nbBlocks) {
             const toolboxXML = this.getToolboxXML();
             if (toolboxXML) {
                 this.props.updateToolboxState(toolboxXML);
@@ -479,7 +481,8 @@ class Blocks extends React.Component {
                 targetSounds.length > 0 ? targetSounds[targetSounds.length - 1].name : '',
                 targetAssets.length > 0 ? targetAssets[targetAssets.length - 1].name : '',
                 this.props.theme.getBlockColors(),
-                this.props.hiddenCategories || []
+                this.props.hiddenCategories || [],
+                this.props.nbBlocks
             );
         } catch {
             return null;
@@ -846,7 +849,8 @@ const mapStateToProps = state => ({
     customProceduresVisible: state.scratchGui.customProcedures.active,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
     useCatBlocks: isTimeTravel2020(state),
-    hiddenCategories: state.scratchGui.preferences['hidden-categories']
+    hiddenCategories: state.scratchGui.preferences['hidden-categories'],
+    nbBlocks: state.scratchGui.preferences['hide-nb-blocks'] === false
 });
 
 const mapDispatchToProps = dispatch => ({
