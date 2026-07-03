@@ -5,6 +5,7 @@ const PREFERS_HIGH_CONTRAST_QUERY = matchMedia('(prefers-contrast: more)');
 const PREFERS_DARK_QUERY = matchMedia('(prefers-color-scheme: dark)');
 
 const STORAGE_KEY = 'tw:theme';
+const ACCENT_KEY = 'tw:accent';
 
 /**
  * @returns {Theme} detected theme
@@ -24,10 +25,10 @@ const systemPreferencesTheme = () => {
  */
 const detectTheme = () => {
     try {
-        const local = localStorage.getItem(ACCENT_KEY);
+        const local = localStorage.getItem(STORAGE_KEY);
 
         return new Theme(
-            local || new Theme('lime green')
+            localStorage.getItem(ACCENT_KEY), local || 'light'
         );
     } catch (e) {
         // ignore

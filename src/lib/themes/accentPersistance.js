@@ -40,7 +40,7 @@ const detectTheme = () => {
         const local = localStorage.getItem(ACCENT_KEY);
 
         return new Theme(
-            local || new Theme('lime green')
+            local || new Theme('lime green'), localStorage.getItem(STORAGE_KEY)
         );
     } catch (e) {
         // ignore
