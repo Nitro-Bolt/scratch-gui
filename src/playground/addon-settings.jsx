@@ -23,7 +23,7 @@ import Settings from '../addons/settings/settings.jsx';
 import appTarget from './app-target';
 
 import {LANGUAGE_KEY} from '../lib/detect-locale.js';
-import {ACCENT_KEY} from '../lib/themes/themePersistance.js';
+import {ACCENT_KEY} from '../lib/themes/accentPersistance.js';
 
 import entries from '../addons/generated/l10n-entries.js';
 import settings_entries from '../addons/generated/l10n-settings-entries.js';

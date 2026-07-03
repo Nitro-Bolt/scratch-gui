@@ -7,7 +7,7 @@ import {closeCustomAccentModal} from '../reducers/modals';
 import {setTheme} from '../reducers/theme';
 import CustomAccentModalComponent from '../components/dm-custom-accent-modal/custom-accent-modal.jsx';
 import SavedAccentTemplate, {CUSTOM_ACCENTS_KEY} from '../components/dm-custom-accent-modal/saved-accent-template.js';
-import { persistThemeCustom, persistTheme } from '../lib/themes/themePersistance.js'
+import { persistThemeCustom, persistTheme } from '../lib/themes/accentPersistance.js'
 import { Theme } from '../lib/themes/index.js'
 import downloadBlob from '../lib/download-blob.js'
 

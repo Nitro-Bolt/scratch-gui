@@ -24,6 +24,6 @@ const manifest = {
     "dynamicEnable": true,
     "dynamicDisable": false,
     "tags": ["new", "beta", "dinosaurmod"],
-    "enabledByDefault": false
+    "enabledByDefault": true
 };
 export default manifest;

@@ -1,4 +1,4 @@
-import {detectTheme} from '../lib/themes/themePersistance';
+import {detectTheme} from '../lib/themes/accentPersistance';
 
 const SET_THEME = 'scratch-gui/theme/SET_THEME';
 
