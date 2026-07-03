@@ -65,9 +65,9 @@ const messages = defineMessages({
         id: 'nb.editorSettings.displaySection',
         defaultMessage: 'Display'
     },
-    git: {
-        id: 'nb.editorSettings.gitSection',
-        defaultMessage: 'Git'
+    versionControl: {
+        id: 'nb.editorSettings.versionControlSection',
+        defaultMessage: 'Version Control'
     },
     keymap: {
         id: 'nb.editorSettings.keymapSection',
@@ -658,8 +658,8 @@ const EditorSettingsModal = props => {
             </Box>
         },
         {
-            title: messages.git,
-            content: null
+            title: messages.versionControl,
+            content: <p>Coming Soon</p>
         },
         {
             title: messages.keymap,
