@@ -7,9 +7,12 @@ import {setProjectTitle} from '../reducers/project-title';
 import {setAuthor, setDescription} from '../reducers/tw';
 
 export const fetchProjectMeta = async projectId => {
+    // When people reopen tabs, sometimes the browser is *very* aggressive about caching even when the
+    // trampoline says not to, so we're going to try putting a cache buster in here.
+    const cacheBuster = `?rudebuster=${Math.random()}`;
     const urls = [
-        `https://trampoline.turbowarp.org/api/projects/${projectId}`,
-        `https://trampoline.turbowarp.xyz/api/projects/${projectId}`
+        `https://trampoline.turbowarp.org/api/projects/${projectId}${cacheBuster}`,
+        `https://trampoline.turbowarp.xyz/api/projects/${projectId}${cacheBuster}`
     ];
     let firstError;
     for (const url of urls) {
