@@ -5,6 +5,8 @@ import {getIsError} from '../reducers/project-state';
 
 const ENDPOINT = 'https://windchimes.turbowarp.org/api/chime';
 const OPT_OUT_KEY = 'tw:windchime_opt_out';
+const submittedViewsThisSession = new Set();
+const submittedErrorsThisSession = new Set();
 
 const isOptedOut = () => {
     if (!process.env.ENABLE_WINDCHIMES) {
@@ -50,16 +52,24 @@ const submitChime = async (resource, event) => {
 
 class TWWindchimeSubmitter extends React.Component {
     componentDidUpdate (prevProps) {
-        if (this.props.projectId === '0' && this.props.projectId !== null) {
-            // Only projects from an ID are eligible for windchimes.
+        if (this.props.projectId === '0' || this.props.projectId === null) {
+            // Only projects with a real ID are eligible for windchimes.
             return;
         }
 
-        if (this.props.isStarted && !prevProps.isStarted) {
+        if (
+            this.props.isStarted && !prevProps.isStarted &&
+            !submittedViewsThisSession.has(this.props.projectId)
+        ) {
+            submittedViewsThisSession.add(this.props.projectId);
             submitChime(`scratch/${this.props.projectId}`, this.props.isEmbedded ? 'view/embed' : 'view/index');
         }
 
-        if (this.props.isError && !prevProps.isError) {
+        if (
+            this.props.isError && !prevProps.isError &&
+            !submittedErrorsThisSession.has(this.props.projectId)
+        ) {
+            submittedErrorsThisSession.add(this.props.projectId);
             submitChime(`scratch/${this.props.projectId}`, 'error/loading');
         }
     }
