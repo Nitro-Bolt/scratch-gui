@@ -22,6 +22,7 @@ import {
 
 import log from './log';
 import storage from './storage';
+import {ProjectUnsharedError, ProjectFetchError} from './tw-load-project-error';
 
 import VM from 'scratch-vm';
 import {fetchProjectMeta} from './tw-project-meta-fetcher-hoc.jsx';
@@ -46,7 +47,7 @@ const fetchProjectToken = async projectId => {
         return metadata.project_token;
     } catch (e) {
         log.error(e);
-        throw new Error('Cannot access project token. Project is probably unshared. See https://docs.turbowarp.org/unshared-projects');
+        throw new ProjectUnsharedError('Cannot access project token. Project is probably unshared. See https://docs.turbowarp.org/unshared-projects');
     }
 };
 
@@ -131,7 +132,10 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                 assetPromise = fetchProjectToken(projectId)
                     .then(token => {
                         storage.setProjectToken(token);
-                        return storage.load(storage.AssetType.Project, projectId, storage.DataFormat.JSON);
+                        return storage.load(storage.AssetType.Project, projectId, storage.DataFormat.JSON)
+                            .catch(err => {
+                                throw new ProjectFetchError(`Could not load project: ${err}`);
+                            });
                     });
             }
 
@@ -139,10 +143,15 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                 .then(projectAsset => {
                     if (projectAsset) {
                         this.props.onFetchedProjectData(projectAsset.data, loadingState);
-                    } else {
+                    } else if (projectUrl) {
                         // Treat failure to load as an error
                         // Throw to be caught by catch later on
                         throw new Error('Could not find project');
+                    } else {
+                        // We got a valid project token but no project data came back, so the token
+                        // has likely expired or the project is otherwise unavailable.
+                        // Throw to be caught by catch later on
+                        throw new ProjectFetchError('Could not find project');
                     }
                 })
                 .catch(err => {
