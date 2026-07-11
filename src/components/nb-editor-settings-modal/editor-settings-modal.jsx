@@ -72,8 +72,28 @@ const messages = defineMessages({
     keymap: {
         id: 'nb.editorSettings.keymapSection',
         defaultMessage: 'Keymap'
+    },
+    visibleTabs: {
+        id: 'nb.editorSettings.visibleTabs',
+        defaultMessage: 'Visible tabs'
+    },
+    visibleTabsHelp: {
+        id: 'nb.editorSettings.visibleTabsHelp',
+        defaultMessage: 'Choose which tabs to show in the editor. Hidden tabs can still be accessed via keyboard shortcuts.'
+    },
+    resetTabsVisibility: {
+        id: 'nb.editorSettings.resetTabsVisibility',
+        defaultMessage: 'Reset to defaults'
     }
 });
+
+const editorTabs = [
+    {index: 0, id: 'code', label: 'Code'},
+    {index: 1, id: 'costumes', label: 'Costumes'},
+    {index: 2, id: 'sounds', label: 'Sounds'},
+    {index: 3, id: 'assets', label: 'Assets'},
+    {index: 4, id: 'variables', label: 'Variables'}
+];
 
 const toolbox_categories = [
     {id: 'motion', label: 'Motion'},
@@ -196,6 +216,7 @@ const EditorSettingsModal = props => {
     const [categoriesExpanded, setCategoriesExpanded] = useState(false);
     const [blockColors, setBlockColors] = useState(loadBlockColors);
     const [blockColorsExpanded, setBlockColorsExpanded] = useState(false);
+    const [tabsExpanded, setTabsExpanded] = useState(false);
 
     const latestBlockColors = useRef(blockColors);
     latestBlockColors.current = blockColors;
@@ -252,6 +273,11 @@ const EditorSettingsModal = props => {
     };
 
     const hiddenCategories = props.preferences['hidden-categories'] || [];
+    const hiddenTabs = props.preferences['hidden-tabs'] || [];
+
+    const handleResetTabsVisibility = () => {
+        props.onSetPreference('hidden-tabs', []);
+    };
 
     const sections = [
         {
@@ -502,6 +528,73 @@ const EditorSettingsModal = props => {
                     />}
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={e => props.onSetPreference('hide-feedback', e.target.checked)}
+                />
+                <Setting
+                    help={
+                        <FormattedMessage
+                            id="nb.editorSettings.visibleTabsHelp"
+                            defaultMessage="Choose which tabs to show in the editor. Hidden tabs can still be accessed via keyboard shortcuts."
+                        />
+                    }
+                    primary={
+                        <button
+                            className={classNames(styles.label, styles.collapseButton)}
+                            onClick={() => setTabsExpanded(e => !e)}
+                        >
+                            <FormattedMessage
+                                id="nb.editorSettings.visibleTabs"
+                                defaultMessage="Visible tabs"
+                            />
+                            <img
+                                className={classNames(styles.collapseArrow, {
+                                    [styles.collapseArrowExpanded]: tabsExpanded
+                                })}
+                                src={dropdownCaret}
+                            />
+                        </button>
+                    }
+                    secondary={
+                        tabsExpanded && (<div><div className={styles.categoryGrid}>
+                            {editorTabs.map(tab => {
+                                const isHidden = hiddenTabs.includes(tab.index);
+                                const visibleCount = editorTabs.filter(t =>
+                                    !hiddenTabs.includes(t.index)
+                                ).length;
+
+                                return (
+                                    <label
+                                        key={tab.index}
+                                        className={styles.label}
+                                    >
+                                        <FancyCheckbox
+                                            className={styles.checkbox}
+                                            checked={!isHidden}
+                                            disabled={!isHidden && visibleCount < 3}
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onChange={() => {
+                                                const next = hiddenTabs.includes(tab.index) ?
+                                                    hiddenTabs.filter(i => i !== tab.index) :
+                                                    [...hiddenTabs, tab.index];
+                                                props.onSetPreference('hidden-tabs', next);
+                                            }}
+                                        />
+                                        {tab.label}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                        <button
+                            className={styles.button}
+                            onClick={handleResetTabsVisibility}
+                            style={{marginTop: '8px'}}
+                        >
+                            <FormattedMessage
+                                id="nb.editorSettings.resetTabsVisibility"
+                                defaultMessage="Reset to defaults"
+                            />
+                        </button>
+                        </div>)
+                    }
                 />
                 <div className={styles.header}>
                     <FormattedMessage

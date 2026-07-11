@@ -179,6 +179,7 @@ const GUIComponent = props => {
     }
     const backpackVisible = (_backpackVisible ?? true) && !props.preferences['hide-backpack'];
     const feedbackVisible = !props.preferences['hide-feedback'];
+    const hiddenTabs = props.preferences['hidden-tabs'] || [];
     useEffect(() => vm.setCompilerOptions({
         enabled: !props.preferences['disable-compiler']
     }), []);
@@ -418,7 +419,10 @@ const GUIComponent = props => {
                                         )
                                     }
                                 >
-                                    <Tab className={tabClassNames.tab}>
+                                    <Tab
+                                        className={tabClassNames.tab}
+                                        style={hiddenTabs.includes(0) ? {display: 'none'} : null}
+                                    >
                                         <img
                                             draggable={false}
                                             src={codeIcon()}
@@ -432,6 +436,7 @@ const GUIComponent = props => {
                                     <Tab
                                         className={tabClassNames.tab}
                                         onClick={onActivateCostumesTab}
+                                        style={hiddenTabs.includes(1) ? {display: 'none'} : null}
                                     >
                                         <img
                                             draggable={false}
@@ -454,6 +459,7 @@ const GUIComponent = props => {
                                     <Tab
                                         className={tabClassNames.tab}
                                         onClick={onActivateSoundsTab}
+                                        style={hiddenTabs.includes(2) ? {display: 'none'} : null}
                                     >
                                         <img
                                             draggable={false}
@@ -468,6 +474,7 @@ const GUIComponent = props => {
                                     <Tab
                                         className={tabClassNames.tab}
                                         onClick={onActivateAssetsTab}
+                                        style={hiddenTabs.includes(3) ? {display: 'none'} : null}
                                     >
                                         <img
                                             draggable={false}
@@ -482,6 +489,7 @@ const GUIComponent = props => {
                                     <Tab
                                         className={tabClassNames.tab}
                                         onClick={onActivateVariablesTab}
+                                        style={hiddenTabs.includes(4) ? {display: 'none'} : null}
                                     >
                                         <img
                                             draggable={false}
@@ -496,6 +504,7 @@ const GUIComponent = props => {
                                 </TabList>
                                 <TabPanel
                                     className={tabClassNames.tabPanel}
+                                    style={hiddenTabs.includes(0) ? {display: 'none'} : null}
                                 >
                                     <Box className={styles.blocksWrapper}>
                                         <Blocks
@@ -529,18 +538,30 @@ const GUIComponent = props => {
                                         <Watermark />
                                     </Box>
                                 </TabPanel>
-                                <TabPanel className={tabClassNames.tabPanel}>
+                                <TabPanel
+                                    className={tabClassNames.tabPanel}
+                                    style={hiddenTabs.includes(1) ? {display: 'none'} : null}
+                                >
                                     {costumesTabVisible ? <CostumeTab
                                         vm={vm}
                                     /> : null}
                                 </TabPanel>
-                                <TabPanel className={tabClassNames.tabPanel}>
+                                <TabPanel
+                                    className={tabClassNames.tabPanel}
+                                    style={hiddenTabs.includes(2) ? {display: 'none'} : null}
+                                >
                                     {soundsTabVisible ? <SoundTab vm={vm} /> : null}
                                 </TabPanel>
-                                <TabPanel className={tabClassNames.tabPanel}>
+                                <TabPanel
+                                    className={tabClassNames.tabPanel}
+                                    style={hiddenTabs.includes(3) ? {display: 'none'} : null}
+                                >
                                     {assetsTabVisible ? <AssetTab vm={vm} /> : null}
                                 </TabPanel>
-                                <TabPanel className={tabClassNames.tabPanel}>
+                                <TabPanel
+                                    className={tabClassNames.tabPanel}
+                                    style={hiddenTabs.includes(4) ? {display: 'none'} : null}
+                                >
                                     {variablesTabVisible ? <VariableManager vm={vm} /> : null}
                                 </TabPanel>
                             </Tabs>

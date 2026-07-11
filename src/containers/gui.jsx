@@ -150,16 +150,19 @@ GUI.defaultProps = {
 
 const mapStateToProps = state => {
     const loadingState = state.scratchGui.projectState.loadingState;
+    const hiddenTabs = state.scratchGui.preferences['hidden-tabs'] || [];
+    const rawActiveTabIndex = state.scratchGui.editorTab.activeTabIndex;
+    const activeTabIndex = hiddenTabs.includes(rawActiveTabIndex) ? BLOCKS_TAB_INDEX : rawActiveTabIndex;
     return {
-        activeTabIndex: state.scratchGui.editorTab.activeTabIndex,
+        activeTabIndex,
         alertsVisible: state.scratchGui.alerts.visible,
-        assetsTabVisible: state.scratchGui.editorTab.activeTabIndex === ASSETS_TAB_INDEX,
+        assetsTabVisible: activeTabIndex === ASSETS_TAB_INDEX,
         backdropLibraryVisible: state.scratchGui.modals.backdropLibrary,
-        blocksTabVisible: state.scratchGui.editorTab.activeTabIndex === BLOCKS_TAB_INDEX,
+        blocksTabVisible: activeTabIndex === BLOCKS_TAB_INDEX,
         cardsVisible: state.scratchGui.cards.visible,
         connectionModalVisible: state.scratchGui.modals.connectionModal,
         costumeLibraryVisible: state.scratchGui.modals.costumeLibrary,
-        costumesTabVisible: state.scratchGui.editorTab.activeTabIndex === COSTUMES_TAB_INDEX,
+        costumesTabVisible: activeTabIndex === COSTUMES_TAB_INDEX,
         error: state.scratchGui.projectState.error,
         isError: getIsError(loadingState),
         isEmbedded: state.scratchGui.mode.isEmbedded,
@@ -169,7 +172,7 @@ const mapStateToProps = state => {
         isShowingProject: getIsShowingProject(loadingState),
         loadingStateVisible: state.scratchGui.modals.loadingProject,
         projectId: state.scratchGui.projectState.projectId,
-        soundsTabVisible: state.scratchGui.editorTab.activeTabIndex === SOUNDS_TAB_INDEX,
+        soundsTabVisible: activeTabIndex === SOUNDS_TAB_INDEX,
         targetIsStage: (
             state.scratchGui.targets.stage &&
             state.scratchGui.targets.stage.id === state.scratchGui.targets.editingTarget
@@ -184,7 +187,7 @@ const mapStateToProps = state => {
         fontsModalVisible: state.scratchGui.modals.fontsModal,
         unknownPlatformModalVisible: state.scratchGui.modals.unknownPlatformModal,
         invalidProjectModalVisible: state.scratchGui.modals.invalidProjectModal,
-        variablesTabVisible: state.scratchGui.editorTab.activeTabIndex === VARIABLES_TAB_INDEX,
+        variablesTabVisible: activeTabIndex === VARIABLES_TAB_INDEX,
         vm: state.scratchGui.vm
     };
 };
