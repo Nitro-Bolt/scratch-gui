@@ -22,6 +22,7 @@ class SpriteSelectorItem extends React.PureComponent {
             'handleDelete',
             'handleDuplicate',
             'handleExport',
+            'handleExportBitmap',
             'handleRename',
             'handleMoveToTop',
             'handleMoveToBottom',
@@ -105,6 +106,10 @@ class SpriteSelectorItem extends React.PureComponent {
         e.stopPropagation();
         this.props.onExportButtonClick(this.props.id);
     }
+    handleExportBitmap (e) {
+        e.stopPropagation();
+        this.props.onExportBitmapButtonClick(this.props.id);
+    }
     handleRename (e) {
         e.stopPropagation();
         this.props.onRenameButtonClick(this.props.id);
@@ -138,10 +143,12 @@ class SpriteSelectorItem extends React.PureComponent {
             onDeleteButtonClick,
             onDuplicateButtonClick,
             onExportButtonClick,
+            onExportBitmapButtonClick,
             onRenameButtonClick,
             onMoveToTopButtonClick,
             onMoveToBottomButtonClick,
             dragPayload,
+            isBitmap,
             receivedBlocks,
             costumeURL,
             vm,
@@ -157,6 +164,8 @@ class SpriteSelectorItem extends React.PureComponent {
                 onDeleteButtonClick={onDeleteButtonClick ? this.handleDelete : null}
                 onDuplicateButtonClick={onDuplicateButtonClick ? this.handleDuplicate : null}
                 onExportButtonClick={onExportButtonClick ? this.handleExport : null}
+                onExportBitmapButtonClick={onExportBitmapButtonClick ? this.handleExportBitmap : null}
+                isBitmap={isBitmap}
                 onRenameButtonClick={onRenameButtonClick ? this.handleRename : null}
                 onMoveToTopButtonClick={onMoveToTopButtonClick && index !== 0 ? this.handleMoveToTop : null}
                 onMoveToBottomButtonClick={onMoveToBottomButtonClick && index !== totalItems - 1 ? this.handleMoveToBottom : null}
@@ -190,6 +199,7 @@ SpriteSelectorItem.propTypes = {
     onDrag: PropTypes.func.isRequired,
     onDuplicateButtonClick: PropTypes.func,
     onExportButtonClick: PropTypes.func,
+    onExportBitmapButtonClick: PropTypes.func,
     onMoveToTopButtonClick: PropTypes.func,
     onMoveToBottomButtonClick: PropTypes.func,
     receivedBlocks: PropTypes.bool.isRequired,

@@ -25,8 +25,7 @@ import {generateRandomUsername} from '../../lib/tw-username.js';
 import KeyInput from './key-input.jsx';
 import {defaultKeyboardShortcuts} from '../../lib/nb-keyboard-shortcut.js';
 import {setTheme} from '../../reducers/theme.js';
-import {persistTheme} from '../../lib/themes/themePersistance.js';
-import {detectTheme} from '../../lib/themes/themePersistance.js';
+import {persistTheme, detectTheme} from '../../lib/themes/themePersistance.js';
 import {GUI_DARK, GUI_LIGHT, Theme, BLOCKS_CUSTOM} from '../../lib/themes/index.js';
 import {
     BLOCK_COLOR_CATEGORIES,
@@ -65,6 +64,10 @@ const messages = defineMessages({
         id: 'nb.editorSettings.displaySection',
         defaultMessage: 'Display'
     },
+    paint: {
+        id: 'nb.editorSettings.paintSection',
+        defaultMessage: 'Paint'
+    },
     versionControl: {
         id: 'nb.editorSettings.versionControlSection',
         defaultMessage: 'Version Control'
@@ -95,7 +98,7 @@ const editorTabs = [
     {index: 4, id: 'variables', label: 'Variables'}
 ];
 
-const toolbox_categories = [
+const toolboxCategories = [
     {id: 'motion', label: 'Motion'},
     {id: 'looks', label: 'Looks'},
     {id: 'sound', label: 'Sound'},
@@ -222,14 +225,6 @@ const EditorSettingsModal = props => {
     latestBlockColors.current = blockColors;
     const pendingBlockColors = useRef(null);
 
-    useEffect(() => () => {
-        if (pendingBlockColors.current) {
-            commitBlockColors(pendingBlockColors.current);
-            pendingBlockColors.current = null;
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     useEffect(() => {
         if (props.theme.blocks !== BLOCKS_CUSTOM) {
             setBlockColors({});
@@ -243,6 +238,13 @@ const EditorSettingsModal = props => {
         saveBlockColors(next);
         props.onChangeTheme(props.theme.set('blocks', BLOCKS_CUSTOM));
     };
+
+    useEffect(() => () => {
+        if (pendingBlockColors.current) {
+            commitBlockColors(pendingBlockColors.current);
+            pendingBlockColors.current = null;
+        }
+    }, []);
 
     const handleBlockColorPreview = (colorId, value) => {
         const next = {...latestBlockColors.current, [colorId]: value};
@@ -607,7 +609,7 @@ const EditorSettingsModal = props => {
                     value={!!props.preferences['hide-nb-blocks']}
                     label={<FormattedMessage
                         id="nb.editorSettings.vanillaPalette"
-                        defaultMessage="Vanilla Palette"
+                        defaultMessage="Vanilla palette"
                     />}
                     help={<FormattedMessage
                         id="nb.editorSettings.vanillaPaletteHelp"
@@ -642,25 +644,28 @@ const EditorSettingsModal = props => {
                     }
                     secondary={
                         categoriesExpanded && (<div><div className={styles.categoryGrid}>
-                            {toolbox_categories.map(category => {
+                            {toolboxCategories.map(category => {
                                 const isNB = category.id === 'json' || category.id === 'assets';
                                 const hideNB = !!props.preferences['hide-nb-blocks'] && isNB;
                                 const isVisible = !hideNB && !hiddenCategories.includes(category.id);
-                                const visibleCount = toolbox_categories.filter(c =>
+                                const visibleCount = toolboxCategories.filter(c =>
                                     !(!!props.preferences['hide-nb-blocks'] && (c.id === 'json' || c.id === 'assets')) &&
                                     !hiddenCategories.includes(c.id)
                                 ).length;
 
                                 return (
-                                    <label key={category.id} className={styles.label}>
+                                    <label
+                                        key={category.id}
+                                        className={styles.label}
+                                    >
                                         <FancyCheckbox
                                             className={styles.checkbox}
                                             checked={isVisible}
                                             disabled={hideNB || (isVisible && visibleCount === 1)}
                                             onChange={() => {
-                                                const next = hiddenCategories.includes(category.id)
-                                                    ? hiddenCategories.filter(id => id !== category.id)
-                                                    : [...hiddenCategories, category.id];
+                                                const next = hiddenCategories.includes(category.id) ?
+                                                    hiddenCategories.filter(id => id !== category.id) :
+                                                    [...hiddenCategories, category.id];
                                                 props.onSetPreference('hidden-categories', next);
                                             }}
                                         />
@@ -670,15 +675,15 @@ const EditorSettingsModal = props => {
                             })}
                         </div>
                         <button
-                                className={styles.button}
-                                onClick={handleResetCategoriesVisibility}
-                                style={{marginTop: '8px'}}
-                            >
-                                <FormattedMessage
+                            className={styles.button}
+                            onClick={handleResetCategoriesVisibility}
+                            style={{marginTop: '8px'}}
+                        >
+                            <FormattedMessage
                                 id="nb.editorSettings.resetCategoriesVisibility"
                                 defaultMessage="Reset to defaults"
                             />
-                            </button>
+                        </button>
                         </div>)
                     }
                 />
@@ -751,8 +756,57 @@ const EditorSettingsModal = props => {
             </Box>
         },
         {
+            title: messages.paint,
+            content: <Box>
+                <Setting
+                    primary={(
+                        <div className={classNames(styles.label, styles.customStageSize)}>
+                            <FormattedMessage
+                                defaultMessage="Nudge multiplier:"
+                                id="nb.editorSettings.nudgeMultiplier"
+                            />
+                            <BufferedInput
+                                value={String(props.preferences['paint-nudge-multiplier'] ?? 15)}
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onSubmit={value => {
+                                    const num = Number(value);
+                                    if (Number.isFinite(num) && num > 0) {
+                                        props.onSetPreference('paint-nudge-multiplier', num);
+                                    }
+                                }}
+                                type="number"
+                                min="1"
+                                spellCheck="false"
+                            />
+                        </div>
+                    )}
+                    help={
+                        <FormattedMessage
+                            id="nb.editorSettings.nudgeMultiplierHelp"
+                            defaultMessage="How far selected objects move when pressing Shift+Arrow keys in the paint editor."
+                        />
+                    }
+                />
+                <BooleanSetting
+                    value={!!props.preferences['paint-no-swap-button']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.noSwapButton"
+                        defaultMessage="Hide swap button"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.noSwapButtonHelp"
+                        defaultMessage="Hides the fill and outline swap button."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('paint-no-swap-button', e.target.checked);
+                    }}
+                />
+            </Box>
+        },
+        {
             title: messages.versionControl,
-            content: <p>Coming Soon</p>
+            content: <p>{'Coming Soon'}</p>
         },
         {
             title: messages.keymap,
