@@ -721,6 +721,23 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
                     </shadow>
                 </value>
             </block>
+            <block type="operator_letters_in">
+                <value name="START">
+                    <shadow type="math_whole_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+                <value name="END">
+                    <shadow type="math_whole_number">
+                        <field name="NUM">2</field>
+                    </shadow>
+                </value>
+                <value name="STRING">
+                    <shadow type="text">
+                        <field name="TEXT">${apple}</field>
+                    </shadow>
+                </value>
+            </block>
             <block type="operator_length">
                 <value name="STRING">
                     <shadow type="text">
