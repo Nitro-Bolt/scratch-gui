@@ -116,7 +116,7 @@ class AudioRecorder {
 
         return {
             levels: chunkLevels,
-            channel1Samples: buffer,
+            samples: buffer,
             sampleRate: this.audioContext.sampleRate,
             trimStart: trimStart,
             trimEnd: trimEnd
