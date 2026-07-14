@@ -721,7 +721,7 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
                     </shadow>
                 </value>
             </block>
-            <block type="operator_letters_in">
+            ${nbBlocks ? `<block type="operator_letters_in">
                 <value name="START">
                     <shadow type="math_whole_number">
                         <field name="NUM">1</field>
@@ -737,7 +737,7 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
                         <field name="TEXT">${apple}</field>
                     </shadow>
                 </value>
-            </block>
+            </block>` : ""}
             <block type="operator_length">
                 <value name="STRING">
                     <shadow type="text">
