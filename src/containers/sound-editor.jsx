@@ -186,7 +186,7 @@ class SoundEditor extends React.Component {
             }) =>
                 WavEncoder.encode({
                     sampleRate: newSampleRate,
-                    channelData: [newChannel1Samples, newChannel2Samples]
+                    channelData: [newChannel1Samples, newChannel2Samples].filter(v => v)
                 }).then(wavBuffer => {
                     if (!skipUndo) {
                         this.redoStack = [];

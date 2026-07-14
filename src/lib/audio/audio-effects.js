@@ -84,7 +84,7 @@ class AudioEffects {
         // Doing buffer.reverse() would mutate the original data.
         if (name === effectTypes.REVERSE) {
             const originalBufferData = buffer.getChannelData(0);
-            const originalBufferData2 = buffer.getChannelData(1);
+            const originalBufferData2 = buffer.numberOfChannels > 1 ? buffer.getChannelData(1) : null;
             const newBuffer = this.audioContext.createBuffer(2, buffer.length, buffer.sampleRate);
             const newBufferData = newBuffer.getChannelData(0);
             const newBufferData2 = newBuffer.getChannelData(1);
@@ -96,11 +96,11 @@ class AudioEffects {
             for (let i = 0; i < bufferLength; i++) {
                 if (i >= startSamples && i < endSamples) {
                     newBufferData[i] = originalBufferData[endSamples - counter - 1];
-                    newBufferData2[i] = originalBufferData[endSamples - counter - 1];
+                    if (originalBufferData2) newBufferData2[i] = originalBufferData2[endSamples - counter - 1];
                     counter++;
                 } else {
                     newBufferData[i] = originalBufferData[i];
-                    newBufferData2[i] = originalBufferData2[i];
+                    if (originalBufferData2) newBufferData2[i] = originalBufferData2[i];
                 }
             }
             this.buffer = newBuffer;
