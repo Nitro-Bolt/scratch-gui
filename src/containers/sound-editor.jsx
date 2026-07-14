@@ -58,7 +58,10 @@ class SoundEditor extends React.Component {
         ]);
         this.state = {
             copyBuffer: null,
-            chunkLevels: computeChunkedRMS(this.props.channel1Samples),
+            chunkLevels: computeChunkedRMS(
+                this.props.channel1Samples,
+                this.props.channel2Samples
+            ),
             playhead: 0, // null is not playing, [0 -> 1] is playing percent
             trimStart: null,
             trimEnd: null,
@@ -174,7 +177,7 @@ class SoundEditor extends React.Component {
         this.audioBufferPlayer.stop();
         this.audioBufferPlayer = new AudioBufferPlayer(channel1Samples, channel2Samples, sampleRate);
         this.setState({
-            chunkLevels: computeChunkedRMS(channel1Samples)
+            chunkLevels: computeChunkedRMS(channel1Samples, channel2Samples)
         });
     }
     submitNewSamples (channel1Samples, channel2Samples, sampleRate, skipUndo) {
