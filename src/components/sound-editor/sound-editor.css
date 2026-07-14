@@ -56,12 +56,29 @@
     width: 100%;
 }
 
+.meter-container, .waveform-container {
+    background: $ui-primary;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 5px;
+    padding: 3px;
+    /* Force these to be on their own render layer because they update often */
+    transform: translateZ(0);
+}
+
+.meter-container {
+    margin-right: 5px;
+    height: calc(100% - 50px);
+    display: flex;
+    align-items: center;
+}
+
 .audio-container {
     display: flex;
     flex-direction: column;
     margin: 20px 0;
     border: 1px solid $ui-black-transparent;
     border-radius: 5px;
+    flex-grow: 1;
 }
 
 .time-steps {

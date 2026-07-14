@@ -25,12 +25,10 @@ const Meter = props => {
     return (
         <div
             className={styles.maskContainer}
-            style={{height: `${height}px`}}
         >
             <svg
                 className={styles.container}
-                height={height}
-                width={width}
+                viewBox={`0 0 ${width} ${height}`}
             >
                 {Array(nBars).fill(0)
                     .map((value, index) => (

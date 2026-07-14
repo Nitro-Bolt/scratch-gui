@@ -35,6 +35,8 @@ import pasteIcon from '!../../lib/tw-recolor/build!./icon--paste.svg';
 import copyToNewIcon from '!../../lib/tw-recolor/build!./icon--copy-to-new.svg';
 import trimIcon from '!../../lib/tw-recolor/build!./icon--trim-action.svg';
 import { SOUND_BYTE_LIMIT } from '../../lib/audio/audio-util.js';
+import Box from '../box/box.jsx';
+import Meter from '../meter/meter.jsx';
 
 const BufferedInput = BufferedInputHOC(Input);
 
@@ -267,42 +269,51 @@ const SoundEditor = props => (
                 onClick={props.onDeleteInverse}
             />
         </div>
-        <div className={classNames(styles.audioContainer)}>
-            <div
-                className={styles.timeSteps}
-                ref={props.setTimeStepRef}
-                onMouseDown={props.onTimeStepMouseDown}
-            >
-                {Array.from({length: props.timeStepCount}).map((_, i) => (
-                    <div
-                        key={i}
-                        className={styles.timeStep}
-                        style={{
-                            translate: `${props.timeStepWidth * i}px 0`
-                        }}
-                    >
-                        {i % 2 === 0 && (
-                            <span>{formatTime(props.timeStepTime * i)}</span>
-                        )}
-                    </div>
-                ))}
-            </div>
-            <div className={styles.waveformContainer}>
-                <Waveform
-                    data={props.chunkLevels}
-                    height={160}
-                    width={600}
-                    preferences={props.preferences}
+        <div className={styles.row}>
+            <Box className={styles.meterContainer}>
+                <Meter
+                    height={172}
+                    level={props.playing * props.chunkLevels[Math.floor(props.playhead * props.chunkLevels.length)]}
+                    width={20}
                 />
-                <AudioSelector
-                    playhead={props.playhead}
-                    onUpdatePlayhead={props.onUpdatePlayhead}
-                    trimEnd={props.trimEnd}
-                    trimStart={props.trimStart}
-                    onPlay={props.onPlay}
-                    onSetTrim={props.onSetTrim}
-                    onStop={props.onStop}
-                />
+            </Box>
+            <div className={classNames(styles.audioContainer)}>
+                <div
+                    className={styles.timeSteps}
+                    ref={props.setTimeStepRef}
+                    onMouseDown={props.onTimeStepMouseDown}
+                >
+                    {Array.from({length: props.timeStepCount}).map((_, i) => (
+                        <div
+                            key={i}
+                            className={styles.timeStep}
+                            style={{
+                                translate: `${props.timeStepWidth * i}px 0`
+                            }}
+                        >
+                            {i % 2 === 0 && (
+                                <span>{formatTime(props.timeStepTime * i)}</span>
+                            )}
+                        </div>
+                    ))}
+                </div>
+                <div className={styles.waveformContainer}>
+                    <Waveform
+                        data={props.chunkLevels}
+                        height={160}
+                        width={600}
+                        preferences={props.preferences}
+                    />
+                    <AudioSelector
+                        playhead={props.playhead}
+                        onUpdatePlayhead={props.onUpdatePlayhead}
+                        trimEnd={props.trimEnd}
+                        trimStart={props.trimStart}
+                        onPlay={props.onPlay}
+                        onSetTrim={props.onSetTrim}
+                        onStop={props.onStop}
+                    />
+                </div>
             </div>
         </div>
         <div className={classNames(styles.row, styles.rowReverse)}>
