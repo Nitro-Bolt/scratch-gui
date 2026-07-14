@@ -156,6 +156,11 @@ const messages = defineMessages({
         id: 'gui.soundEditor.flip',
         description: 'Title of the button to apply the flip effect',
         defaultMessage: 'Flip'
+    },
+    bitcrush: {
+        id: 'gui.soundEditor.bitcrush',
+        description: 'Title of the button to apply the bitcrush effect',
+        defaultMessage: 'Bitcrush'
     }
 });
 
@@ -416,6 +421,12 @@ const SoundEditor = props => (
                     title={<FormattedMessage {...messages.flip} />}
                     onClick={props.onFlip}
                 />
+                <IconButton
+                    className={classNames(styles.effectButton, styles.flipInRtl)}
+                    img={flipIcon}
+                    title={<FormattedMessage {...messages.bitcrush} />}
+                    onClick={props.onBitcrush}
+                />
             </div>
         </div>
         <div className={styles.infoRow}>
@@ -469,6 +480,7 @@ SoundEditor.propTypes = {
     onCopyToNew: PropTypes.func.isRequired,
     onDelete: PropTypes.func,
     onDeleteInverse: PropTypes.func,
+    onBitcrush: PropTypes.func.isRequired,
     onEcho: PropTypes.func.isRequired,
     onFadeIn: PropTypes.func.isRequired,
     onFadeOut: PropTypes.func.isRequired,

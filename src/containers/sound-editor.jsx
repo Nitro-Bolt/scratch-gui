@@ -588,6 +588,7 @@ class SoundEditor extends React.Component {
                 onCopyToNew={this.handleCopyToNew}
                 onDelete={this.handleDelete}
                 onDeleteInverse={this.handleDeleteInverse}
+                onBitcrush={this.effectFactory(effectTypes.BITCRUSH)}
                 onEcho={this.effectFactory(effectTypes.ECHO)}
                 onFadeIn={this.effectFactory(effectTypes.FADEIN)}
                 onFadeOut={this.effectFactory(effectTypes.FADEOUT)}

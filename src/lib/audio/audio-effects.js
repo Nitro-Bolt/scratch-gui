@@ -4,7 +4,6 @@ import RobotEffect from './effects/robot-effect.js';
 import VolumeEffect from './effects/volume-effect.js';
 import FadeEffect from './effects/fade-effect.js';
 import MuteEffect from './effects/mute-effect.js';
-import BitcrushEffect from './effects/bitcrush-effect.js';
 
 const effectTypes = {
     FLIP: 'flip',
@@ -29,17 +28,20 @@ class AudioEffects {
      * @param {AudioBuffer} buffer
      */
     constructor (buffer, name, trimStart, trimEnd) {
-        this.trimStartSeconds = (trimStart * buffer.length) / buffer.sampleRate;
-        this.trimEndSeconds = (trimEnd * buffer.length) / buffer.sampleRate;
+        const targetSampleRate = name === effectTypes.BITCRUSH ? 11025 : 44100;
+        const conversionRatio = targetSampleRate / buffer.sampleRate;
+        let sampleCount = Math.round(buffer.length / conversionRatio);
+
+        this.trimStartSeconds = (trimStart * sampleCount) / targetSampleRate;
+        this.trimEndSeconds = (trimEnd * sampleCount) / targetSampleRate;
         this.adjustedTrimStartSeconds = this.trimStartSeconds;
         this.adjustedTrimEndSeconds = this.trimEndSeconds;
 
         // Some effects will modify the playback rate and/or number of samples.
         // Need to precompute those values to create the offline audio context.
         const pitchRatio = Math.pow(2, 4 / 12); // A major third
-        let sampleCount = buffer.length;
         const affectedSampleCount = Math.floor((this.trimEndSeconds - this.trimStartSeconds) *
-            buffer.sampleRate);
+            targetSampleRate);
         let adjustedAffectedSampleCount = affectedSampleCount;
         const unaffectedSampleCount = sampleCount - affectedSampleCount;
 
@@ -47,7 +49,7 @@ class AudioEffects {
         switch (name) {
         case effectTypes.ECHO:
             sampleCount = Math.max(sampleCount,
-                Math.floor((this.trimEndSeconds + EchoEffect.TAIL_SECONDS) * buffer.sampleRate));
+                Math.floor((this.trimEndSeconds + EchoEffect.TAIL_SECONDS) * targetSampleRate));
             break;
         case effectTypes.FASTER:
             this.playbackRate = pitchRatio;
@@ -62,9 +64,9 @@ class AudioEffects {
             break;
         }
 
-        const durationSeconds = sampleCount / buffer.sampleRate;
+        const durationSeconds = sampleCount / targetSampleRate;
         this.adjustedTrimEndSeconds = this.trimStartSeconds +
-            (adjustedAffectedSampleCount / buffer.sampleRate);
+            (adjustedAffectedSampleCount / targetSampleRate);
         this.adjustedTrimStart = this.adjustedTrimStartSeconds / durationSeconds;
         this.adjustedTrimEnd = this.adjustedTrimEndSeconds / durationSeconds;
 
@@ -72,11 +74,15 @@ class AudioEffects {
             /**
              * @type {OfflineAudioContext}
              */
-            this.audioContext = new window.OfflineAudioContext(2, sampleCount, buffer.sampleRate);
+            this.audioContext = new window.OfflineAudioContext(
+                2,
+                buffer.length * (targetSampleRate / buffer.sampleRate),
+                targetSampleRate
+            );
         } else {
             // Need to use webkitOfflineAudioContext, which doesn't support all sample rates.
             // Resample by adjusting sample count to make room and set offline context to desired sample rate.
-            const sampleScale = 44100 / buffer.sampleRate;
+            const sampleScale = 44100 / targetSampleRate;
             this.audioContext = new window.webkitOfflineAudioContext(2, sampleScale * sampleCount, 44100);
         }
 
@@ -126,6 +132,28 @@ class AudioEffects {
             }
 
             this.buffer = newBuffer;
+        } if (name === effectTypes.BITCRUSH) {
+            const originalBufferData = buffer.getChannelData(0);
+            const originalBufferData2 = buffer.getChannelData(1);
+            const newBuffer = this.audioContext.createBuffer(2, buffer.length, buffer.sampleRate);
+            const newBufferData = newBuffer.getChannelData(0);
+            const newBufferData2 = newBuffer.getChannelData(1);
+
+            const bitDepth = 4;
+            const steps = Math.pow(2, bitDepth) - 1;
+
+            const startSamples = Math.floor(this.trimStartSeconds * buffer.sampleRate);
+            const endSamples = Math.floor(this.trimEndSeconds * buffer.sampleRate);
+            for (let i = 0; i < sampleCount; i++) {
+                if (i >= startSamples && i < endSamples) {
+                    newBufferData[i] = Math.round(originalBufferData[i] * steps) / steps;
+                    newBufferData2[i] = Math.round(originalBufferData2[i] * steps) / steps;
+                } else {
+                    newBufferData[i] = originalBufferData[i];
+                    newBufferData2[i] = originalBufferData2[i];
+                }
+            }
+            this.buffer = newBuffer;
         } else {
             // All other effects use the original buffer because it is not modified.
             this.buffer = buffer;
@@ -173,22 +201,6 @@ class AudioEffects {
             ({input, output} = new MuteEffect(this.audioContext,
                 this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
             break;
-        case effectTypes.BITCRUSH:
-            // eslint-disable-next-line no-new
-            new BitcrushEffect(this.audioContext, this.buffer, this.adjustedTrimStartSeconds,
-                this.adjustedTrimEndSeconds, (i, o) => {
-                    console.log('ahhh');
-                    this.source.connect(i);
-                    o.connect(this.audioContext.destination);
-
-                    this.source.start();
-
-                    this.audioContext.startRendering();
-                    this.audioContext.oncomplete = ({renderedBuffer}) => {
-                        done(renderedBuffer, this.adjustedTrimStart, this.adjustedTrimEnd);
-                    };
-                });
-            return;
         }
 
         if (input && output) {
