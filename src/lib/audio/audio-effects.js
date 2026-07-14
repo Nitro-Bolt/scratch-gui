@@ -1,3 +1,4 @@
+/* eslint-disable valid-jsdoc */
 import EchoEffect from './effects/echo-effect.js';
 import RobotEffect from './effects/robot-effect.js';
 import VolumeEffect from './effects/volume-effect.js';
@@ -21,6 +22,9 @@ class AudioEffects {
     static get effectTypes () {
         return effectTypes;
     }
+    /**
+     * @param {AudioBuffer} buffer
+     */
     constructor (buffer, name, trimStart, trimEnd) {
         this.trimStartSeconds = (trimStart * buffer.length) / buffer.sampleRate;
         this.trimEndSeconds = (trimEnd * buffer.length) / buffer.sampleRate;
@@ -62,12 +66,15 @@ class AudioEffects {
         this.adjustedTrimEnd = this.adjustedTrimEndSeconds / durationSeconds;
 
         if (window.OfflineAudioContext) {
-            this.audioContext = new window.OfflineAudioContext(1, sampleCount, buffer.sampleRate);
+            /**
+             * @type {OfflineAudioContext}
+             */
+            this.audioContext = new window.OfflineAudioContext(2, sampleCount, buffer.sampleRate);
         } else {
             // Need to use webkitOfflineAudioContext, which doesn't support all sample rates.
             // Resample by adjusting sample count to make room and set offline context to desired sample rate.
             const sampleScale = 44100 / buffer.sampleRate;
-            this.audioContext = new window.webkitOfflineAudioContext(1, sampleScale * sampleCount, 44100);
+            this.audioContext = new window.webkitOfflineAudioContext(2, sampleScale * sampleCount, 44100);
         }
 
         // For the reverse effect we need to manually reverse the data into a new audio buffer
@@ -75,8 +82,10 @@ class AudioEffects {
         // Doing buffer.reverse() would mutate the original data.
         if (name === effectTypes.REVERSE) {
             const originalBufferData = buffer.getChannelData(0);
-            const newBuffer = this.audioContext.createBuffer(1, buffer.length, buffer.sampleRate);
+            const originalBufferData2 = buffer.getChannelData(1);
+            const newBuffer = this.audioContext.createBuffer(2, buffer.length, buffer.sampleRate);
             const newBufferData = newBuffer.getChannelData(0);
+            const newBufferData2 = newBuffer.getChannelData(1);
             const bufferLength = buffer.length;
 
             const startSamples = Math.floor(this.trimStartSeconds * buffer.sampleRate);
@@ -85,9 +94,11 @@ class AudioEffects {
             for (let i = 0; i < bufferLength; i++) {
                 if (i >= startSamples && i < endSamples) {
                     newBufferData[i] = originalBufferData[endSamples - counter - 1];
+                    newBufferData2[i] = originalBufferData[endSamples - counter - 1];
                     counter++;
                 } else {
                     newBufferData[i] = originalBufferData[i];
+                    newBufferData2[i] = originalBufferData2[i];
                 }
             }
             this.buffer = newBuffer;

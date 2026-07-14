@@ -28,16 +28,16 @@ const computeChunkedRMS = function (samples, chunkSize = 1024) {
     return chunkLevels;
 };
 
-const encodeAndAddSoundToVM = function (vm, samples, sampleRate, name, callback) {
+const encodeAndAddSoundToVM = function (vm, channel1Samples, channel2Samples, sampleRate, name, callback) {
     WavEncoder.encode({
         sampleRate: sampleRate,
-        channelData: [samples]
+        channelData: [channel1Samples, channel2Samples]
     }).then(wavBuffer => {
         const vmSound = {
             format: '',
             dataFormat: 'wav',
             rate: sampleRate,
-            sampleCount: samples.length
+            sampleCount: channel1Samples.length
         };
 
         // Create an asset from the encoded .wav and get resulting md5
@@ -76,15 +76,15 @@ const encodeAndAddSoundToVM = function (vm, samples, sampleRate, name, callback)
  * @returns {SoundBuffer} Downsampled buffer with half the sample rate
  */
 const downsampleIfNeeded = (buffer, resampler) => {
-    const {samples, sampleRate} = buffer;
-    const encodedByteLength = samples.length * 2; /* bitDepth 16 bit */
+    const {channel1Samples, channel2Samples, sampleRate} = buffer;
+    const encodedByteLength = channel1Samples.length * 2; /* bitDepth 16 bit */
     // Resolve immediately if already within byte limit
     if (encodedByteLength < SOUND_BYTE_LIMIT) {
-        return Promise.resolve({samples, sampleRate});
+        return Promise.resolve({channel1Samples, channel2Samples, sampleRate});
     }
     // TW: Don't check if the sound will still fit at this reduced sample rate.
     // Instead the GUI will show a warning if it's too large.
-    return resampler({samples, sampleRate}, 22050);
+    return resampler({channel1Samples, channel2Samples, sampleRate}, 22050);
 };
 
 /**
@@ -93,13 +93,16 @@ const downsampleIfNeeded = (buffer, resampler) => {
  * @returns {SoundBuffer} Downsampled buffer with half the sample rate
  */
 const dropEveryOtherSample = buffer => {
-    const newLength = Math.floor(buffer.samples.length / 2);
+    const newLength = Math.floor(buffer.channel1Samples.length / 2);
     const newSamples = new Float32Array(newLength);
+    const newSamples2 = new Float32Array(newLength);
     for (let i = 0; i < newLength; i++) {
-        newSamples[i] = buffer.samples[i * 2];
+        newSamples[i] = buffer.channel1Samples[i * 2];
+        newSamples2[i] = buffer.channel2Samples[i * 2];
     }
     return {
-        samples: newSamples,
+        channel1Samples: newSamples,
+        channel2Samples: newSamples2,
         sampleRate: buffer.sampleRate / 2
     };
 };
