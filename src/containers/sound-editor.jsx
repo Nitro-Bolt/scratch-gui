@@ -589,6 +589,7 @@ class SoundEditor extends React.Component {
                 onFadeIn={this.effectFactory(effectTypes.FADEIN)}
                 onFadeOut={this.effectFactory(effectTypes.FADEOUT)}
                 onFaster={this.effectFactory(effectTypes.FASTER)}
+                onFlip={this.effectFactory(effectTypes.FLIP)}
                 onLouder={this.effectFactory(effectTypes.LOUDER)}
                 onMute={this.effectFactory(effectTypes.MUTE)}
                 onPaste={this.handlePaste}
@@ -599,7 +600,7 @@ class SoundEditor extends React.Component {
                 onRobot={this.effectFactory(effectTypes.ROBOT)}
                 onSetTrim={this.handleUpdateTrim}
                 onSlower={this.effectFactory(effectTypes.SLOWER)}
-                onSofter={this.effectFactory(effectTypes.BITCRUSH)}
+                onSofter={this.effectFactory(effectTypes.SOFTER)}
                 onStop={this.handleStopPlaying}
                 onUndo={this.handleUndo}
                 onUpdatePlayhead={this.handleUpdatePlayhead}

@@ -7,6 +7,7 @@ import MuteEffect from './effects/mute-effect.js';
 import BitcrushEffect from './effects/bitcrush-effect.js';
 
 const effectTypes = {
+    FLIP: 'flip',
     BITCRUSH: 'bitcrush',
     ROBOT: 'robot',
     REVERSE: 'reverse',
@@ -103,6 +104,27 @@ class AudioEffects {
                     if (originalBufferData2) newBufferData2[i] = originalBufferData2[i];
                 }
             }
+            this.buffer = newBuffer;
+        } if (name === effectTypes.FLIP) {
+            const originalBufferData = buffer.getChannelData(0);
+            const originalBufferData2 = buffer.numberOfChannels > 1 ? buffer.getChannelData(1) : null;
+            const newBuffer = this.audioContext.createBuffer(2, buffer.length, buffer.sampleRate);
+            const newBufferData = newBuffer.getChannelData(0);
+            const newBufferData2 = newBuffer.getChannelData(1);
+            const bufferLength = buffer.length;
+
+            if (buffer.numberOfChannels === 2) {
+                for (let i = 0; i < bufferLength; i++) {
+                    newBufferData[i] = originalBufferData2[i];
+                    newBufferData2[i] = originalBufferData[i];
+                }
+            } else {
+                for (let i = 0; i < bufferLength; i++) {
+                    newBufferData[i] = originalBufferData[i];
+                    newBufferData2[i] = originalBufferData[i];
+                }
+            }
+
             this.buffer = newBuffer;
         } else {
             // All other effects use the original buffer because it is not modified.

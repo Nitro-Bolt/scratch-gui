@@ -28,6 +28,7 @@ import reverseIcon from './icon--reverse.svg';
 import fadeOutIcon from './icon--fade-out.svg';
 import fadeInIcon from './icon--fade-in.svg';
 import muteIcon from './icon--mute.svg';
+import flipIcon from './icon--flip.svg';
 
 import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
 import copyIcon from '!../../lib/tw-recolor/build!./icon--copy.svg';
@@ -150,6 +151,11 @@ const messages = defineMessages({
         id: 'gui.soundEditor.mute',
         description: 'Title of the button to apply the mute effect',
         defaultMessage: 'Mute'
+    },
+    flip: {
+        id: 'gui.soundEditor.flip',
+        description: 'Title of the button to apply the flip effect',
+        defaultMessage: 'Flip'
     }
 });
 
@@ -404,6 +410,12 @@ const SoundEditor = props => (
                     title={<FormattedMessage {...messages.echo} />}
                     onClick={props.onEcho}
                 />
+                <IconButton
+                    className={classNames(styles.effectButton, styles.flipInRtl)}
+                    img={flipIcon}
+                    title={<FormattedMessage {...messages.flip} />}
+                    onClick={props.onFlip}
+                />
             </div>
         </div>
         <div className={styles.infoRow}>
@@ -461,6 +473,7 @@ SoundEditor.propTypes = {
     onFadeIn: PropTypes.func.isRequired,
     onFadeOut: PropTypes.func.isRequired,
     onFaster: PropTypes.func.isRequired,
+    onFlip: PropTypes.func.isRequired,
     onLouder: PropTypes.func.isRequired,
     onMute: PropTypes.func.isRequired,
     onPaste: PropTypes.func.isRequired,
