@@ -95,10 +95,11 @@ const downsampleIfNeeded = (buffer, resampler) => {
 const dropEveryOtherSample = buffer => {
     const newLength = Math.floor(buffer.channel1Samples.length / 2);
     const newSamples = new Float32Array(newLength);
-    const newSamples2 = new Float32Array(newLength);
+    let newSamples2 = null;
+    if (buffer.channel2Samples) newSamples2 = new Float32Array(newLength);
     for (let i = 0; i < newLength; i++) {
         newSamples[i] = buffer.channel1Samples[i * 2];
-        newSamples2[i] = buffer.channel2Samples[i * 2];
+        if (buffer.channel2Samples) newSamples2[i] = buffer.channel2Samples[i * 2];
     }
     return {
         channel1Samples: newSamples,

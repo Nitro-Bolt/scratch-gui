@@ -6,9 +6,9 @@ class AudioBufferPlayer {
          * @type {AudioContext}
          */
         this.audioContext = new SharedAudioContext();
-        this.buffer = this.audioContext.createBuffer(2, channel1Samples.length, sampleRate);
+        this.buffer = this.audioContext.createBuffer(1 + !!channel2Samples, channel1Samples.length, sampleRate);
         this.buffer.getChannelData(0).set(channel1Samples);
-        this.buffer.getChannelData(1).set(channel2Samples);
+        if (channel2Samples) this.buffer.getChannelData(1).set(channel2Samples);
         this.source = null;
 
         this.startTime = null;

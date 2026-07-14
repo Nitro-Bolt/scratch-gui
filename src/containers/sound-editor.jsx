@@ -323,7 +323,8 @@ class SoundEditor extends React.Component {
         // Cannot reliably use props.samples because it gets detached by Firefox
         return {
             channel1Samples: this.audioBufferPlayer.buffer.getChannelData(0),
-            channel2Samples: this.audioBufferPlayer.buffer.getChannelData(1),
+            channel2Samples: this.audioBufferPlayer.buffer.numberOfChannels > 1 ?
+                this.audioBufferPlayer.buffer.getChannelData(1) : null,
             sampleRate: this.audioBufferPlayer.buffer.sampleRate
         };
     }
@@ -339,7 +340,7 @@ class SoundEditor extends React.Component {
         const effects = new AudioEffects(this.audioBufferPlayer.buffer, name, trimStart, trimEnd);
         effects.process((renderedBuffer, adjustedTrimStart, adjustedTrimEnd) => {
             const channel1Samples = renderedBuffer.getChannelData(0);
-            const channel2Samples = renderedBuffer.getChannelData(1);
+            const channel2Samples = renderedBuffer.numberOfChannels > 1 ? renderedBuffer.getChannelData(1) : null;
             const sampleRate = renderedBuffer.sampleRate;
             this.submitNewSamples(channel1Samples, channel2Samples, sampleRate).then(success => {
                 if (success) {
@@ -630,7 +631,7 @@ const mapStateToProps = (state, {soundIndex}) => {
         soundId: sound.soundId,
         sampleRate: audioBuffer.sampleRate,
         channel1Samples: audioBuffer.getChannelData(0),
-        channel2Samples: audioBuffer.getChannelData(1),
+        channel2Samples: audioBuffer.numberOfChannels > 1 ? audioBuffer.getChannelData(1) : null,
         isFullScreen: state.scratchGui.mode.isFullScreen,
         name: sound.name,
         vm: state.scratchGui.vm
