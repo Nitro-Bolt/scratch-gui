@@ -29,6 +29,7 @@ import fadeOutIcon from './icon--fade-out.svg';
 import fadeInIcon from './icon--fade-in.svg';
 import muteIcon from './icon--mute.svg';
 import flipIcon from './icon--flip.svg';
+import bitcrushIcon from './icon--bitcrush.svg';
 
 import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
 import copyIcon from '!../../lib/tw-recolor/build!./icon--copy.svg';
@@ -423,7 +424,7 @@ const SoundEditor = props => (
                 />
                 <IconButton
                     className={classNames(styles.effectButton, styles.flipInRtl)}
-                    img={flipIcon}
+                    img={bitcrushIcon}
                     title={<FormattedMessage {...messages.bitcrush} />}
                     onClick={props.onBitcrush}
                 />
