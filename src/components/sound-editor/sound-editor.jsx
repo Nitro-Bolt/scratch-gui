@@ -35,7 +35,7 @@ import copyIcon from '!../../lib/tw-recolor/build!./icon--copy.svg';
 import pasteIcon from '!../../lib/tw-recolor/build!./icon--paste.svg';
 import copyToNewIcon from '!../../lib/tw-recolor/build!./icon--copy-to-new.svg';
 import trimIcon from '!../../lib/tw-recolor/build!./icon--trim-action.svg';
-import { SOUND_BYTE_LIMIT } from '../../lib/audio/audio-util.js';
+import {SOUND_BYTE_LIMIT} from '../../lib/audio/audio-util.js';
 import Box from '../box/box.jsx';
 import Meter from '../meter/meter.jsx';
 
