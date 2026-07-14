@@ -4,8 +4,10 @@ import RobotEffect from './effects/robot-effect.js';
 import VolumeEffect from './effects/volume-effect.js';
 import FadeEffect from './effects/fade-effect.js';
 import MuteEffect from './effects/mute-effect.js';
+import BitcrushEffect from './effects/bitcrush-effect.js';
 
 const effectTypes = {
+    BITCRUSH: 'bitcrush',
     ROBOT: 'robot',
     REVERSE: 'reverse',
     LOUDER: 'higher',
@@ -149,6 +151,22 @@ class AudioEffects {
             ({input, output} = new MuteEffect(this.audioContext,
                 this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
             break;
+        case effectTypes.BITCRUSH:
+            // eslint-disable-next-line no-new
+            new BitcrushEffect(this.audioContext, this.buffer, this.adjustedTrimStartSeconds,
+                this.adjustedTrimEndSeconds, (i, o) => {
+                    console.log('ahhh');
+                    this.source.connect(i);
+                    o.connect(this.audioContext.destination);
+
+                    this.source.start();
+
+                    this.audioContext.startRendering();
+                    this.audioContext.oncomplete = ({renderedBuffer}) => {
+                        done(renderedBuffer, this.adjustedTrimStart, this.adjustedTrimEnd);
+                    };
+                });
+            return;
         }
 
         if (input && output) {

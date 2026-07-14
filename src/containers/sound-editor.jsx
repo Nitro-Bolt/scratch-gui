@@ -589,7 +589,7 @@ class SoundEditor extends React.Component {
                 onRobot={this.effectFactory(effectTypes.ROBOT)}
                 onSetTrim={this.handleUpdateTrim}
                 onSlower={this.effectFactory(effectTypes.SLOWER)}
-                onSofter={this.effectFactory(effectTypes.SOFTER)}
+                onSofter={this.effectFactory(effectTypes.BITCRUSH)}
                 onStop={this.handleStopPlaying}
                 onUndo={this.handleUndo}
                 onUpdatePlayhead={this.handleUpdatePlayhead}

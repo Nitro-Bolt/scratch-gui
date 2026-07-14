@@ -19,12 +19,12 @@ class AudioBufferPlayer {
 
     play (trimStart, trimEnd, onUpdate, onEnded) {
         this.updateCallback = onUpdate;
-        this.trimStart = trimStart;
-        this.trimEnd = trimEnd;
+        this.trimStart = Math.min(trimStart, trimEnd);
+        this.trimEnd = Math.max(trimStart, trimEnd);
         this.startTime = Date.now();
 
-        const trimStartTime = this.buffer.duration * trimStart;
-        const trimmedDuration = (this.buffer.duration * trimEnd) - trimStartTime;
+        const trimStartTime = this.buffer.duration * Math.min(trimStart, trimEnd);
+        const trimmedDuration = (this.buffer.duration * Math.max(trimStart, trimEnd)) - trimStartTime;
 
         this.source = this.audioContext.createBufferSource();
         this.source.onended = onEnded;
