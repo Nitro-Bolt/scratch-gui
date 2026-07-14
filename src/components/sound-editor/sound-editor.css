@@ -275,7 +275,13 @@ $border-radius: 0.25rem;
     font-weight: bold;
 }
 .advanced-info {
+    display: flex;
+    gap: calc(2 * $space);
+    align-items: center;
+}
 
+.time-steps {
+    cursor: ew-resize;
 }
 
 .time-step {
@@ -285,6 +291,7 @@ $border-radius: 0.25rem;
     font-size: 0.7rem;
     pointer-events: none;
     user-select: none;
+    cursor: inherit;
 }
 
 .time-step span {
@@ -293,7 +300,6 @@ $border-radius: 0.25rem;
 }
 
 .alert {
-    margin-top: calc(2 * $space);
     border-radius: 5px;
     padding: $space;
     display: flex;

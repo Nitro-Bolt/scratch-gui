@@ -274,6 +274,7 @@ class SoundEditor extends React.Component {
         if (trimStart !== null) this.handleUpdatePlayhead(trimStart);
     }
     handleTimeStepMouseDown (e) {
+        this.handleStoppedPlaying();
         this.handleTimeStepMouseMove(e);
         this.timeStepDragRecognizer.start(e);
         e.preventDefault();

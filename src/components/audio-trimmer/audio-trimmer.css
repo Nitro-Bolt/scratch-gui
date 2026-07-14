@@ -18,10 +18,6 @@ $hover-scale: 1.25;
     transform: translateZ(0);
 }
 
-.selector {
-    cursor: pointer;
-}
-
 .trim-background {
     cursor: pointer;
     touch-action: none;
@@ -154,6 +150,11 @@ $hover-scale: 1.25;
     height: $trim-handle-height;
     right: 0;
     user-select: none;
+    cursor: grab;
+}
+
+.trim-handle :active {
+    cursor: grabbing;
 }
 
 .trimmer .trim-handle {

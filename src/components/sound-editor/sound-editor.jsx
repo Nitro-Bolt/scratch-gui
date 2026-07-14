@@ -399,31 +399,33 @@ const SoundEditor = props => (
                 {formatDuration(props.playhead, props.trimStart, props.trimEnd, props.duration)}
             </div>
             <div className={styles.advancedInfo}>
-                {props.isStereo ? (
-                    <FormattedMessage
-                        defaultMessage="Stereo"
-                        description="Refers to a 'Stereo Sound' (2 channels)"
-                        id="tw.stereo"
-                    />
-                ) : (
-                    <FormattedMessage
-                        defaultMessage="Mono"
-                        description="Refers to a 'Mono Sound' (1 channel)"
-                        id="tw.mono"
-                    />
-                )}
-                {` (${formatSoundSize(props.size)})`}
+                {props.isStereo &&
+                    <div className={classNames(styles.alert, styles.stereo)}>
+                        <FormattedMessage
+                            defaultMessage="Editing this stereo sound will irreversibly convert it to mono."
+                            description="Message that appears when editing a stereo sound."
+                            id="tw.stereoAlert"
+                        />
+                    </div>
+                }
+                <span>
+                    {props.isStereo ? (
+                        <FormattedMessage
+                            defaultMessage="Stereo"
+                            description="Refers to a 'Stereo Sound' (2 channels)"
+                            id="tw.stereo"
+                        />
+                    ) : (
+                        <FormattedMessage
+                            defaultMessage="Mono"
+                            description="Refers to a 'Mono Sound' (1 channel)"
+                            id="tw.mono"
+                        />
+                    )}
+                    {` (${formatSoundSize(props.size)})`}
+                </span>
             </div>
         </div>
-        {props.isStereo && (
-            <div className={classNames(styles.alert, styles.stereo)}>
-                <FormattedMessage
-                    defaultMessage="Editing this stereo sound will irreversibly convert it to mono."
-                    description="Message that appears when editing a stereo sound."
-                    id="tw.stereoAlert"
-                />
-            </div>
-        )}
     </div>
 );
 

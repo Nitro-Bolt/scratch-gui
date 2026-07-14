@@ -6,7 +6,6 @@ import {getEventXY} from '../lib/touch-utils';
 import DragRecognizer from '../lib/drag-recognizer';
 
 const MIN_LENGTH = 0.01;
-const MIN_DURATION = 500;
 
 class AudioSelector extends React.Component {
     constructor (props) {
@@ -28,6 +27,8 @@ class AudioSelector extends React.Component {
         };
 
         this.clickStartTime = 0;
+
+        this.playheadAttached = false;
 
         this.trimStartDragRecognizer = new DragRecognizer({
             onDrag: this.handleTrimStartMouseMove,
@@ -57,7 +58,7 @@ class AudioSelector extends React.Component {
         const {width, left} = this.containerElement.getBoundingClientRect();
         this.initialTrimEnd = (getEventXY(e).x - left) / width;
         this.initialTrimStart = this.initialTrimEnd;
-        // this.props.onSetTrim(this.initialTrimStart, this.initialTrimEnd);
+        this.props.onSetTrim(this.initialTrimStart, this.initialTrimEnd);
         this.props.onUpdatePlayhead(this.initialTrimStart);
 
         this.clickStartTime = Date.now();
@@ -70,6 +71,10 @@ class AudioSelector extends React.Component {
     handleTrimStartMouseMove (currentOffset, initialOffset) {
         const dx = (currentOffset.x - initialOffset.x) / this.containerSize;
         const newTrim = Math.max(0, Math.min(1, this.initialTrimStart + dx));
+        console.log(this.initialTrimStart, this.props.playhead);
+        if (this.playheadAttached || newTrim > this.props.playhead) {
+            this.props.onUpdatePlayhead(Math.min(newTrim, this.initialTrimEnd));
+        }
         if (newTrim > this.initialTrimEnd) {
             this.setState({
                 trimStart: this.initialTrimEnd,
@@ -85,6 +90,11 @@ class AudioSelector extends React.Component {
     handleTrimEndMouseMove (currentOffset, initialOffset) {
         const dx = (currentOffset.x - initialOffset.x) / this.containerSize;
         const newTrim = Math.min(1, Math.max(0, this.initialTrimEnd + dx));
+        if (newTrim < this.initialTrimStart) {
+            this.props.onUpdatePlayhead(newTrim);
+        } else if (this.props.playhead < this.initialTrimStart) {
+            this.props.onUpdatePlayhead(this.initialTrimStart);
+        }
         if (newTrim < this.initialTrimStart) {
             this.setState({
                 trimStart: newTrim,
@@ -118,8 +128,9 @@ class AudioSelector extends React.Component {
         this.trimStartDragRecognizer.start(e);
         this.initialTrimStart = this.props.trimStart;
         this.initialTrimEnd = this.props.trimEnd;
+        // account for a miniscule amount of error. i don't trust such long decimals
+        this.playheadAttached = Math.abs(this.props.trimStart - this.props.playhead) < 0.001;
         e.stopPropagation();
-        e.preventDefault();
     }
     handleTrimEndMouseDown (e) {
         this.containerSize = this.containerElement.getBoundingClientRect().width;
@@ -127,7 +138,6 @@ class AudioSelector extends React.Component {
         this.initialTrimEnd = this.props.trimEnd;
         this.initialTrimStart = this.props.trimStart;
         e.stopPropagation();
-        e.preventDefault();
     }
     storeRef (el) {
         this.containerElement = el;
