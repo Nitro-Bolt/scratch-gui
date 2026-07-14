@@ -96,7 +96,9 @@ class SoundEditor extends React.Component {
             this.resetState(newProps.samples, newProps.sampleRate);
             this.setState({
                 trimStart: null,
-                trimEnd: null
+                trimEnd: null,
+                playing: false,
+                playhead: 0
             });
         }
         if (newProps.duration !== this.props.duration) {
