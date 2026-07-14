@@ -71,7 +71,7 @@ class AudioSelector extends React.Component {
     handleTrimStartMouseMove (currentOffset, initialOffset) {
         const dx = (currentOffset.x - initialOffset.x) / this.containerSize;
         const newTrim = Math.max(0, Math.min(1, this.initialTrimStart + dx));
-        console.log(this.initialTrimStart, this.props.playhead);
+        this.props.onSetTrim(newTrim, this.initialTrimEnd);
         if (this.playheadAttached || newTrim > this.props.playhead) {
             this.props.onUpdatePlayhead(Math.min(newTrim, this.initialTrimEnd));
         }
@@ -90,6 +90,7 @@ class AudioSelector extends React.Component {
     handleTrimEndMouseMove (currentOffset, initialOffset) {
         const dx = (currentOffset.x - initialOffset.x) / this.containerSize;
         const newTrim = Math.min(1, Math.max(0, this.initialTrimEnd + dx));
+        this.props.onSetTrim(this.initialTrimStart, newTrim);
         if (newTrim < this.initialTrimStart) {
             this.props.onUpdatePlayhead(newTrim);
         } else if (this.props.playhead < this.initialTrimStart) {
@@ -111,14 +112,11 @@ class AudioSelector extends React.Component {
         this.props.onSetTrim(this.state.trimStart, this.state.trimEnd);
     }
     handleTrimEndMouseUp () {
-        // If the selection was made quickly (tooFast) and is small (tooShort),
-        // deselect instead. This allows click-to-deselect even if you drag
-        // a little bit by accident. It also allows very quickly making a
-        // selection, as long as it is above a minimum length.
-        const tooFast = (Date.now() - this.clickStartTime) < MIN_DURATION;
         const tooShort = (this.state.trimEnd - this.state.trimStart) < MIN_LENGTH;
-        if (tooFast && tooShort) {
+        if (tooShort) {
             this.clearSelection();
+        } else if (this.state.trimStart > this.state.trimEnd) {
+            this.props.onSetTrim(this.state.trimEnd, this.state.trimStart);
         } else {
             this.props.onSetTrim(this.state.trimStart, this.state.trimEnd);
         }
