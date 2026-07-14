@@ -379,7 +379,12 @@ class SoundEditor extends React.Component {
         this.redoStack.push(this.getUndoItem());
         const {channel1Samples, channel2Samples, sampleRate, trimStart, trimEnd} = this.undoStack.pop();
         if (channel1Samples) {
-            return this.submitNewSamples(channel1Samples, channel2Samples, sampleRate, true).then(success => {
+            return this.submitNewSamples(
+                channel1Samples,
+                channel2Samples ?? channel1Samples,
+                sampleRate,
+                true
+            ).then(success => {
                 if (success) {
                     this.setState({trimStart: trimStart, trimEnd: trimEnd}, this.handlePlay);
                 }
@@ -390,7 +395,12 @@ class SoundEditor extends React.Component {
         const {channel1Samples, channel2Samples, sampleRate, trimStart, trimEnd} = this.redoStack.pop();
         if (channel1Samples) {
             this.undoStack.push(this.getUndoItem());
-            return this.submitNewSamples(channel1Samples, channel2Samples, sampleRate, true).then(success => {
+            return this.submitNewSamples(
+                channel1Samples,
+                channel2Samples ?? channel1Samples,
+                sampleRate,
+                true
+            ).then(success => {
                 if (success) {
                     this.setState({trimStart: trimStart, trimEnd: trimEnd}, this.handlePlay);
                 }
