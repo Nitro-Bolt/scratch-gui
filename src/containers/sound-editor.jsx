@@ -94,11 +94,13 @@ class SoundEditor extends React.Component {
             this.redoStack = [];
             this.undoStack = [];
             this.resetState(newProps.samples, newProps.sampleRate);
-            this.setTimeSteps(newProps.duration);
             this.setState({
                 trimStart: null,
                 trimEnd: null
             });
+        }
+        if (newProps.duration !== this.props.duration) {
+            this.setTimeSteps(newProps.duration);
         }
     }
     componentWillUnmount () {
@@ -483,6 +485,7 @@ class SoundEditor extends React.Component {
                 }, this.paste);
             });
         }
+
     }
     setRef (element) {
         this.ref = element;
