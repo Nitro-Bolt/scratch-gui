@@ -5,7 +5,7 @@ import AudioSelectorComponent from '../components/audio-trimmer/audio-selector.j
 import {getEventXY} from '../lib/touch-utils';
 import DragRecognizer from '../lib/drag-recognizer';
 
-const MIN_LENGTH = 0.01;
+const MIN_LENGTH = 0.005;
 
 class AudioSelector extends React.Component {
     constructor (props) {
