@@ -122,13 +122,13 @@ class AudioEffects {
 
             for (let i = 0; i < bufferLength; i++) {
                 newBufferData[i] = originalBufferData2[i];
-                newBufferData2[i] = 0;
+                newBufferData2[i] = originalBufferData[i];
             }
 
             this.buffer = newBuffer;
         } if (name === effectTypes.BITCRUSH) {
             const originalBufferData = buffer.getChannelData(0);
-            const originalBufferData2 = buffer.getChannelData(1);
+            const originalBufferData2 = buffer.getChannelData(buffer.numberOfChannels - 1);
             const newBuffer = this.audioContext.createBuffer(2, buffer.length, buffer.sampleRate);
             const newBufferData = newBuffer.getChannelData(0);
             const newBufferData2 = newBuffer.getChannelData(1);
