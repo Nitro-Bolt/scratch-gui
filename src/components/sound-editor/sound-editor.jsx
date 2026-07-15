@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import classNames from 'classnames';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
 
@@ -28,7 +28,6 @@ import reverseIcon from './icon--reverse.svg';
 import fadeOutIcon from './icon--fade-out.svg';
 import fadeInIcon from './icon--fade-in.svg';
 import muteIcon from './icon--mute.svg';
-import flipIcon from './icon--flip.svg';
 import bitcrushIcon from './icon--bitcrush.svg';
 
 import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
@@ -39,7 +38,7 @@ import trimIcon from '!../../lib/tw-recolor/build!./icon--trim-action.svg';
 import {SOUND_BYTE_LIMIT} from '../../lib/audio/audio-util.js';
 import Box from '../box/box.jsx';
 import Meter from '../meter/meter.jsx';
-import { DefaultOpts } from '../../lib/audio/default-audio-effect-opts.js';
+import {DefaultOpts} from '../../lib/audio/default-audio-effect-opts.js';
 
 const BufferedInput = BufferedInputHOC(Input);
 
