@@ -1,6 +1,6 @@
-import WavEncoder from 'wav-encoder';
+import {Mp3Encoder} from 'lamejs';
 
-export const SOUND_BYTE_LIMIT = 10 * 1000 * 1000; // 10mb
+export const SOUND_BYTE_LIMIT = 100 * 1000 * 1000; // 100mb
 
 const _computeRMS = function (samples, start, end, scaling = 0.55) {
     const length = end - start;
@@ -34,36 +34,52 @@ const computeChunkedRMS = function (channels, chunkSize = 1024) {
 };
 
 const encodeAndAddSoundToVM = function (vm, channel1Samples, channel2Samples, sampleRate, name, callback) {
-    WavEncoder.encode({
-        sampleRate: sampleRate,
-        channelData: [channel1Samples, channel2Samples].filter(Boolean)
-    }).then(wavBuffer => {
-        const vmSound = {
-            format: '',
-            dataFormat: 'wav',
-            rate: sampleRate,
-            sampleCount: channel1Samples.length
-        };
+    const encoder = new Mp3Encoder(2, sampleRate, 128);
+    const data = [];
 
-        // Create an asset from the encoded .wav and get resulting md5
-        const storage = vm.runtime.storage;
-        vmSound.asset = storage.createAsset(
-            storage.AssetType.Sound,
-            storage.DataFormat.WAV,
-            new Uint8Array(wavBuffer),
-            null,
-            true // generate md5
-        );
-        vmSound.assetId = vmSound.asset.assetId;
+    const left = channel1Samples;
+    const right = channel1Samples ?? channel2Samples;
+    const sampleBlockSize = 1152;
 
-        // update vmSound object with md5 property
-        vmSound.md5 = `${vmSound.assetId}.${vmSound.dataFormat}`;
-        // The VM will update the sound name to a fresh name
-        vmSound.name = name;
+    for (let i = 0; i < left.length; i += sampleBlockSize) {
+        const leftChunk = left.subarray(i, i + sampleBlockSize);
+        const rightChunk = right.subarray(i, i + sampleBlockSize);
+        const buffer = encoder.encodeBuffer(leftChunk, rightChunk);
+        if (buffer.length > 0) {
+            data.push(buffer);
+        }
+    }
+    const buffer = encoder.flush();
 
-        vm.addSound(vmSound).then(() => {
-            if (callback) callback();
-        });
+    if (buffer.length > 0) {
+        data.push(buffer);
+    }
+
+    const vmSound = {
+        format: '',
+        dataFormat: 'mp3',
+        rate: sampleRate,
+        sampleCount: channel1Samples.length
+    };
+
+    // Create an asset from the encoded .wav and get resulting md5
+    const storage = vm.runtime.storage;
+    vmSound.asset = storage.createAsset(
+        storage.AssetType.Sound,
+        storage.DataFormat.MP3,
+        new Uint8Array(buffer),
+        null,
+        true // generate md5
+    );
+    vmSound.assetId = vmSound.asset.assetId;
+
+    // update vmSound object with md5 property
+    vmSound.md5 = `${vmSound.assetId}.${vmSound.dataFormat}`;
+    // The VM will update the sound name to a fresh name
+    vmSound.name = name;
+
+    vm.addSound(vmSound).then(() => {
+        if (callback) callback();
     });
 };
 

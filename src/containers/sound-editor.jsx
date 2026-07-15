@@ -1,7 +1,7 @@
 import bindAll from 'lodash.bindall';
 import PropTypes from 'prop-types';
 import React from 'react';
-import WavEncoder from 'wav-encoder';
+import {Mp3Encoder} from 'lamejs';
 import VM from 'scratch-vm';
 
 import {connect} from 'react-redux';
@@ -186,26 +186,64 @@ class SoundEditor extends React.Component {
                 channel1Samples: newChannel1Samples,
                 channel2Samples: newChannel2Samples,
                 sampleRate: newSampleRate
-            }) =>
-                WavEncoder.encode({
-                    sampleRate: newSampleRate,
-                    channelData: [newChannel1Samples, newChannel2Samples].filter(Boolean)
-                }).then(wavBuffer => {
-                    if (!skipUndo) {
-                        this.redoStack = [];
-                        if (this.undoStack.length >= UNDO_STACK_SIZE) {
-                            this.undoStack.shift(); // Drop the first element off the array
-                        }
-                        this.undoStack.push(this.getUndoItem());
+            }) => {
+                const encoder = new Mp3Encoder(2, newSampleRate, 128);
+                const data = [];
+
+                const left = newChannel1Samples;
+                const right = newChannel2Samples ?? newChannel1Samples;
+                const sampleBlockSize = 1152;
+
+                for (let i = 0; i < left.length; i += sampleBlockSize) {
+                    const leftChunk = left.subarray(i, i + sampleBlockSize);
+                    const rightChunk = right.subarray(i, i + sampleBlockSize);
+                    const buffer = encoder.encodeBuffer(leftChunk, rightChunk);
+                    if (buffer.length > 0) {
+                        data.push(buffer);
                     }
-                    this.resetState(newChannel1Samples, newChannel2Samples, newSampleRate);
-                    this.props.vm.updateSoundBuffer(
-                        this.props.soundIndex,
-                        this.audioBufferPlayer.buffer,
-                        new Uint8Array(wavBuffer));
-                    return true; // Edit was successful
-                })
-            )
+                }
+                const buffer = encoder.flush();
+
+                if (buffer.length > 0) {
+                    data.push(buffer);
+                }
+
+                this.resetState(newChannel1Samples, newChannel2Samples, newSampleRate);
+                this.props.vm.updateSoundBuffer(
+                    this.props.soundIndex,
+                    this.audioBufferPlayer.buffer,
+                    new Uint8Array(buffer)
+                );
+
+                if (!skipUndo) {
+                    this.redoStack = [];
+                    if (this.undoStack.length >= UNDO_STACK_SIZE) {
+                        this.undoStack.shift(); // Drop the first element off the array
+                    }
+                    this.undoStack.push(this.getUndoItem());
+                }
+
+                return true;
+
+                // ({
+                //     sampleRate: newSampleRate,
+                //     channelData: [newChannel1Samples, newChannel2Samples].filter(Boolean)
+                // }).then(wavBuffer => {
+                //     if (!skipUndo) {
+                //         this.redoStack = [];
+                //         if (this.undoStack.length >= UNDO_STACK_SIZE) {
+                //             this.undoStack.shift(); // Drop the first element off the array
+                //         }
+                //         this.undoStack.push(this.getUndoItem());
+                //     }
+                //     this.resetState(newChannel1Samples, newChannel2Samples, newSampleRate);
+                //     this.props.vm.updateSoundBuffer(
+                //         this.props.soundIndex,
+                //         this.audioBufferPlayer.buffer,
+                //         new Uint8Array(wavBuffer));
+                //     return true; // Edit was successful
+                // });
+            })
             .catch(e => {
                 // Encoding failed, or the sound was too large to save so edit is rejected
                 log.error(`Encountered error while trying to encode sound update: ${e.message}`);
