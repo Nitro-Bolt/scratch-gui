@@ -505,7 +505,7 @@ class SoundEditor extends React.Component {
             newSamples.set(lastPart, firstPart.length + this.state.copyBuffer.channel1Samples.length);
             const newSamples2 = new Float32Array(newLength);
             newSamples2.set(firstPart2, 0);
-            newSamples2.set(this.state.copyBuffer.channel1Samples2, firstPart2.length);
+            newSamples2.set(this.state.copyBuffer.channel2Samples, firstPart2.length);
             newSamples2.set(lastPart2, firstPart2.length + this.state.copyBuffer.channel2Samples.length);
 
             const trimStartSeconds = trimStartSamples / this.props.sampleRate;
