@@ -56,6 +56,34 @@
     width: 100%;
 }
 
+.dropdown {
+    display: flex;
+    gap: 1rem;
+}
+
+.dropdown-input {
+    width: 4rem;
+    text-align: center;
+}
+
+.dropdown .input-group:has(label) {
+    gap: 0.75rem;
+}
+
+.dropdown-submit {
+    font-family: inherit;
+    font-size: 14px;
+    background-color: $looks-secondary;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+}
+
 .meter-container, .waveform-container {
     background: $ui-primary;
     border: 1px solid $ui-black-transparent;

@@ -590,10 +590,11 @@ class SoundEditor extends React.Component {
                 onCopyToNew={this.handleCopyToNew}
                 onDelete={this.handleDelete}
                 onDeleteInverse={this.handleDeleteInverse}
-                onBitcrush={((sampleRate, bitDepth) => this.effectFactory(effectTypes.BITCRUSH, {
+                // eslint-disable-next-line react/jsx-no-bind
+                onBitcrush={(sampleRate, bitDepth) => this.handleEffect(effectTypes.BITCRUSH, {
                     sampleRate,
                     bitDepth
-                }))()}
+                })}
                 onEcho={this.effectFactory(effectTypes.ECHO)}
                 onFadeIn={this.effectFactory(effectTypes.FADEIN)}
                 onFadeOut={this.effectFactory(effectTypes.FADEOUT)}

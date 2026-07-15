@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
 
@@ -39,6 +39,7 @@ import trimIcon from '!../../lib/tw-recolor/build!./icon--trim-action.svg';
 import {SOUND_BYTE_LIMIT} from '../../lib/audio/audio-util.js';
 import Box from '../box/box.jsx';
 import Meter from '../meter/meter.jsx';
+import { DefaultOpts } from '../../lib/audio/default-audio-effect-opts.js';
 
 const BufferedInput = BufferedInputHOC(Input);
 
@@ -162,6 +163,16 @@ const messages = defineMessages({
         id: 'gui.soundEditor.bitcrush',
         description: 'Title of the button to apply the bitcrush effect',
         defaultMessage: 'Bitcrush'
+    },
+    bitcrushSampleRate: {
+        id: 'gui.soundEditor.bitcrush.sampleRate',
+        description: 'Label for the sample rate',
+        defaultMessage: 'Sample Rate'
+    },
+    bitcrushBitDepth: {
+        id: 'gui.soundEditor.bitcrush.bitDepth',
+        description: 'Label for the bit depth',
+        defaultMessage: 'Bit Depth'
     }
 });
 
@@ -201,298 +212,337 @@ const formatSoundSize = bytes => {
     return `${(bytes / 1000).toFixed(2)}KB`;
 };
 
-const SoundEditor = props => (
-    <div
-        className={styles.editorContainer}
-        ref={props.setRef}
-        onMouseDown={props.onContainerClick}
-    >
-        <div className={styles.row}>
-            <div className={styles.inputGroup}>
-                <Label text={props.intl.formatMessage(messages.sound)}>
-                    <BufferedInput
-                        tabIndex="1"
-                        type="text"
-                        value={props.name}
-                        onSubmit={props.onChangeName}
-                        className={styles.nameInput}
-                    />
-                </Label>
-                <div className={styles.buttonGroup}>
-                    <button
-                        className={styles.button}
-                        disabled={!props.canUndo}
-                        title={props.intl.formatMessage(messages.undo)}
-                        onClick={props.onUndo}
-                    >
-                        <TWRenderRecoloredImage
-                            className={styles.undoIcon}
-                            draggable={false}
-                            src={undoIcon}
+const SoundEditor = props => {
+    const [bitcrushSampleRate, setBitcrushSampleRate] = useState(DefaultOpts.sampleRate);
+    const [bitcrushBitDepth, setBitcrushBitDepth] = useState(DefaultOpts.bitDepth);
+    return (
+        <div
+            className={styles.editorContainer}
+            ref={props.setRef}
+            onMouseDown={props.onContainerClick}
+        >
+            <div className={styles.row}>
+                <div className={styles.inputGroup}>
+                    <Label text={props.intl.formatMessage(messages.sound)}>
+                        <BufferedInput
+                            tabIndex="1"
+                            type="text"
+                            value={props.name}
+                            onSubmit={props.onChangeName}
+                            className={styles.nameInput}
                         />
-                    </button>
-                    <button
-                        className={styles.button}
-                        disabled={!props.canRedo}
-                        title={props.intl.formatMessage(messages.redo)}
-                        onClick={props.onRedo}
-                    >
-                        <TWRenderRecoloredImage
-                            className={styles.redoIcon}
-                            draggable={false}
-                            src={redoIcon}
-                        />
-                    </button>
-                </div>
-            </div>
-            <div className={styles.inputGroup}>
-                <IconButton
-                    className={styles.toolButton}
-                    img={copyIcon}
-                    title={props.intl.formatMessage(messages.copy)}
-                    onClick={props.onCopy}
-                />
-                <IconButton
-                    className={styles.toolButton}
-                    disabled={props.canPaste === false}
-                    img={pasteIcon}
-                    title={props.intl.formatMessage(messages.paste)}
-                    onClick={props.onPaste}
-                />
-                <IconButton
-                    className={classNames(styles.toolButton, styles.flipInRtl)}
-                    img={copyToNewIcon}
-                    title={props.intl.formatMessage(messages.copyToNew)}
-                    onClick={props.onCopyToNew}
-                />
-            </div>
-            <IconButton
-                className={styles.toolButton}
-                disabled={props.trimStart === null}
-                img={deleteIcon}
-                title={props.intl.formatMessage(messages.delete)}
-                onClick={props.onDelete}
-            />
-            <IconButton
-                className={styles.toolButton}
-                disabled={props.trimStart === null}
-                img={trimIcon}
-                title={props.intl.formatMessage(messages.trim)}
-                onClick={props.onDeleteInverse}
-            />
-        </div>
-        <div className={styles.row}>
-            <Box className={styles.meterContainer}>
-                <Meter
-                    height={172}
-                    level={props.playing * Math.max(
-                        props.chunkLevels[0][Math.floor(props.playhead * props.chunkLevels[0].length)],
-                        props.chunkLevels[props.chunkLevels.length - 1][
-                            Math.floor(props.playhead * props.chunkLevels[props.chunkLevels.length - 1].length)
-                        ]
-                    )}
-                    width={20}
-                />
-            </Box>
-            <div className={classNames(styles.audioContainer)}>
-                <div
-                    className={styles.timeSteps}
-                    ref={props.setTimeStepRef}
-                    onMouseDown={props.onTimeStepMouseDown}
-                >
-                    {Array.from({length: props.timeStepCount}).map((_, i) => (
-                        <div
-                            key={i}
-                            className={styles.timeStep}
-                            style={{
-                                translate: `${props.timeStepWidth * i}px 0`
-                            }}
+                    </Label>
+                    <div className={styles.buttonGroup}>
+                        <button
+                            className={styles.button}
+                            disabled={!props.canUndo}
+                            title={props.intl.formatMessage(messages.undo)}
+                            onClick={props.onUndo}
                         >
-                            {i % 2 === 0 && (
-                                <span>{formatTime(props.timeStepTime * i)}</span>
-                            )}
-                        </div>
-                    ))}
+                            <TWRenderRecoloredImage
+                                className={styles.undoIcon}
+                                draggable={false}
+                                src={undoIcon}
+                            />
+                        </button>
+                        <button
+                            className={styles.button}
+                            disabled={!props.canRedo}
+                            title={props.intl.formatMessage(messages.redo)}
+                            onClick={props.onRedo}
+                        >
+                            <TWRenderRecoloredImage
+                                className={styles.redoIcon}
+                                draggable={false}
+                                src={redoIcon}
+                            />
+                        </button>
+                    </div>
                 </div>
-                <div className={styles.waveformContainer}>
-                    <div className={styles.waveformInsideContainer}>
-                        {props.chunkLevels.map((data, i) => (
+                <div className={styles.inputGroup}>
+                    <IconButton
+                        className={styles.toolButton}
+                        img={copyIcon}
+                        title={props.intl.formatMessage(messages.copy)}
+                        onClick={props.onCopy}
+                    />
+                    <IconButton
+                        className={styles.toolButton}
+                        disabled={props.canPaste === false}
+                        img={pasteIcon}
+                        title={props.intl.formatMessage(messages.paste)}
+                        onClick={props.onPaste}
+                    />
+                    <IconButton
+                        className={classNames(styles.toolButton, styles.flipInRtl)}
+                        img={copyToNewIcon}
+                        title={props.intl.formatMessage(messages.copyToNew)}
+                        onClick={props.onCopyToNew}
+                    />
+                </div>
+                <IconButton
+                    className={styles.toolButton}
+                    disabled={props.trimStart === null}
+                    img={deleteIcon}
+                    title={props.intl.formatMessage(messages.delete)}
+                    onClick={props.onDelete}
+                />
+                <IconButton
+                    className={styles.toolButton}
+                    disabled={props.trimStart === null}
+                    img={trimIcon}
+                    title={props.intl.formatMessage(messages.trim)}
+                    onClick={props.onDeleteInverse}
+                />
+            </div>
+            <div className={styles.row}>
+                <Box className={styles.meterContainer}>
+                    <Meter
+                        height={172}
+                        level={props.playing * Math.max(
+                            props.chunkLevels[0][Math.floor(props.playhead * props.chunkLevels[0].length)],
+                            props.chunkLevels[props.chunkLevels.length - 1][
+                                Math.floor(props.playhead * props.chunkLevels[props.chunkLevels.length - 1].length)
+                            ]
+                        )}
+                        width={20}
+                    />
+                </Box>
+                <div className={classNames(styles.audioContainer)}>
+                    <div
+                        className={styles.timeSteps}
+                        ref={props.setTimeStepRef}
+                        onMouseDown={props.onTimeStepMouseDown}
+                    >
+                        {Array.from({length: props.timeStepCount}).map((_, i) => (
                             <div
-                                className={styles.waveform}
                                 key={i}
+                                className={styles.timeStep}
+                                style={{
+                                    translate: `${props.timeStepWidth * i}px 0`
+                                }}
                             >
-                                <Waveform
-                                    data={data}
-                                    height={(140 / props.chunkLevels.length) + (props.chunkLevels.length * 20)}
-                                    width={600}
-                                    preferences={props.preferences}
-                                />
-                                {props.chunkLevels.length > 1 && (
-                                    <>
-                                        <div className={styles.waveformLabel}>
-                                            {[
-                                                <FormattedMessage
-                                                    defaultMessage="Left Channel"
-                                                    description="Label for left waveform"
-                                                    id="nb.left-channel"
-                                                    key="0"
-                                                />,
-                                                <FormattedMessage
-                                                    defaultMessage="Right Channel"
-                                                    description="Label for right waveform"
-                                                    id="nb.right-channel"
-                                                    key="1"
-                                                />
-                                            ][i]}
-                                        </div>
-                                    </>
+                                {i % 2 === 0 && (
+                                    <span>{formatTime(props.timeStepTime * i)}</span>
                                 )}
                             </div>
                         ))}
                     </div>
-                    <AudioSelector
-                        playhead={props.playhead}
-                        onUpdatePlayhead={props.onUpdatePlayhead}
-                        trimEnd={props.trimEnd}
-                        trimStart={props.trimStart}
-                        onPlay={props.onPlay}
-                        onSetTrim={props.onSetTrim}
-                        onStop={props.onStop}
+                    <div className={styles.waveformContainer}>
+                        <div className={styles.waveformInsideContainer}>
+                            {props.chunkLevels.map((data, i) => (
+                                <div
+                                    className={styles.waveform}
+                                    key={i}
+                                >
+                                    <Waveform
+                                        data={data}
+                                        height={(140 / props.chunkLevels.length) + (props.chunkLevels.length * 20)}
+                                        width={600}
+                                        preferences={props.preferences}
+                                    />
+                                    {props.chunkLevels.length > 1 && (
+                                        <>
+                                            <div className={styles.waveformLabel}>
+                                                {[
+                                                    <FormattedMessage
+                                                        defaultMessage="Left Channel"
+                                                        description="Label for left waveform"
+                                                        id="nb.left-channel"
+                                                        key="0"
+                                                    />,
+                                                    <FormattedMessage
+                                                        defaultMessage="Right Channel"
+                                                        description="Label for right waveform"
+                                                        id="nb.right-channel"
+                                                        key="1"
+                                                    />
+                                                ][i]}
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                        <AudioSelector
+                            playhead={props.playhead}
+                            onUpdatePlayhead={props.onUpdatePlayhead}
+                            trimEnd={props.trimEnd}
+                            trimStart={props.trimStart}
+                            onPlay={props.onPlay}
+                            onSetTrim={props.onSetTrim}
+                            onStop={props.onStop}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className={classNames(styles.row, styles.rowReverse)}>
+                <div className={classNames(styles.roundButtonOuter, styles.inputGroup)}>
+                    {props.playing ? (
+                        <button
+                            className={classNames(styles.roundButton, styles.pauseButton)}
+                            title={props.intl.formatMessage(messages.pause)}
+                            onClick={props.onPause}
+                        >
+                            <img
+                                draggable={false}
+                                src={pauseIcon}
+                            />
+                        </button>
+                    ) : (
+                        <button
+                            className={classNames(styles.roundButton, styles.playButton)}
+                            title={props.intl.formatMessage(messages.play)}
+                            onClick={props.onPlay}
+                        >
+                            <img
+                                draggable={false}
+                                src={playIcon}
+                            />
+                        </button>
+                    )}
+                </div>
+                <div className={styles.effects}>
+                    <IconButton
+                        className={styles.effectButton}
+                        img={fasterIcon}
+                        title={<FormattedMessage {...messages.faster} />}
+                        onClick={props.onFaster}
+                    />
+                    <IconButton
+                        className={styles.effectButton}
+                        img={slowerIcon}
+                        title={<FormattedMessage {...messages.slower} />}
+                        onClick={props.onSlower}
+                    />
+                    <IconButton
+                        disabled={props.tooLoud}
+                        className={classNames(styles.effectButton, styles.flipInRtl)}
+                        img={louderIcon}
+                        title={<FormattedMessage {...messages.louder} />}
+                        onClick={props.onLouder}
+                    />
+                    <IconButton
+                        className={classNames(styles.effectButton, styles.flipInRtl)}
+                        img={softerIcon}
+                        title={<FormattedMessage {...messages.softer} />}
+                        onClick={props.onSofter}
+                    />
+                    <IconButton
+                        className={classNames(styles.effectButton, styles.flipInRtl)}
+                        img={muteIcon}
+                        title={<FormattedMessage {...messages.mute} />}
+                        onClick={props.onMute}
+                    />
+                    <IconButton
+                        className={styles.effectButton}
+                        img={fadeInIcon}
+                        title={<FormattedMessage {...messages.fadeIn} />}
+                        onClick={props.onFadeIn}
+                    />
+                    <IconButton
+                        className={styles.effectButton}
+                        img={fadeOutIcon}
+                        title={<FormattedMessage {...messages.fadeOut} />}
+                        onClick={props.onFadeOut}
+                    />
+                    <IconButton
+                        className={styles.effectButton}
+                        img={reverseIcon}
+                        title={<FormattedMessage {...messages.reverse} />}
+                        onClick={props.onReverse}
+                    />
+                    <IconButton
+                        className={styles.effectButton}
+                        img={robotIcon}
+                        title={<FormattedMessage {...messages.robot} />}
+                        onClick={props.onRobot}
+                    />
+                    <IconButton
+                        className={styles.effectButton}
+                        img={echoIcon}
+                        title={<FormattedMessage {...messages.echo} />}
+                        onClick={props.onEcho}
+                    />
+                    <IconButton
+                        className={classNames(styles.effectButton, styles.flipInRtl)}
+                        img={bitcrushIcon}
+                        title={<FormattedMessage {...messages.bitcrush} />}
+                        onClick={props.onBitcrush}
+                        dropdown={(
+                            <div className={styles.dropdown}>
+                                <div className={styles.inputGroup}>
+                                    <Label text={props.intl.formatMessage(messages.bitcrushSampleRate)}>
+                                        <BufferedInput
+                                            type="number"
+                                            className={styles.dropdownInput}
+                                            value={bitcrushSampleRate}
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onInput={event => setBitcrushSampleRate(event.currentTarget.value)}
+                                        />
+                                    </Label>
+                                    <Label text={props.intl.formatMessage(messages.bitcrushBitDepth)}>
+                                        <BufferedInput
+                                            type="number"
+                                            className={styles.dropdownInput}
+                                            value={bitcrushBitDepth}
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onInput={event => setBitcrushBitDepth(event.currentTarget.value)}
+                                        />
+                                    </Label>
+                                </div>
+                                {bitcrushBitDepth} {bitcrushSampleRate}
+                                <button
+                                    className={styles.dropdownSubmit}
+                                    // eslint-disable-next-line react/jsx-no-bind
+                                    onClick={() => props.onBitcrush(bitcrushSampleRate, bitcrushBitDepth)}
+                                >
+                                    <FormattedMessage
+                                        id="gui.soundEditor.applyEffect"
+                                        description="Title of the button to apply the effect"
+                                        defaultMessage="Apply"
+                                    />
+                                </button>
+                            </div>
+                        )}
                     />
                 </div>
             </div>
-        </div>
-        <div className={classNames(styles.row, styles.rowReverse)}>
-            <div className={classNames(styles.roundButtonOuter, styles.inputGroup)}>
-                {props.playing ? (
-                    <button
-                        className={classNames(styles.roundButton, styles.pauseButton)}
-                        title={props.intl.formatMessage(messages.pause)}
-                        onClick={props.onPause}
-                    >
-                        <img
-                            draggable={false}
-                            src={pauseIcon}
-                        />
-                    </button>
-                ) : (
-                    <button
-                        className={classNames(styles.roundButton, styles.playButton)}
-                        title={props.intl.formatMessage(messages.play)}
-                        onClick={props.onPlay}
-                    >
-                        <img
-                            draggable={false}
-                            src={playIcon}
-                        />
-                    </button>
-                )}
-            </div>
-            <div className={styles.effects}>
-                <IconButton
-                    className={styles.effectButton}
-                    img={fasterIcon}
-                    title={<FormattedMessage {...messages.faster} />}
-                    onClick={props.onFaster}
-                />
-                <IconButton
-                    className={styles.effectButton}
-                    img={slowerIcon}
-                    title={<FormattedMessage {...messages.slower} />}
-                    onClick={props.onSlower}
-                />
-                <IconButton
-                    disabled={props.tooLoud}
-                    className={classNames(styles.effectButton, styles.flipInRtl)}
-                    img={louderIcon}
-                    title={<FormattedMessage {...messages.louder} />}
-                    onClick={props.onLouder}
-                />
-                <IconButton
-                    className={classNames(styles.effectButton, styles.flipInRtl)}
-                    img={softerIcon}
-                    title={<FormattedMessage {...messages.softer} />}
-                    onClick={props.onSofter}
-                />
-                <IconButton
-                    className={classNames(styles.effectButton, styles.flipInRtl)}
-                    img={muteIcon}
-                    title={<FormattedMessage {...messages.mute} />}
-                    onClick={props.onMute}
-                />
-                <IconButton
-                    className={styles.effectButton}
-                    img={fadeInIcon}
-                    title={<FormattedMessage {...messages.fadeIn} />}
-                    onClick={props.onFadeIn}
-                />
-                <IconButton
-                    className={styles.effectButton}
-                    img={fadeOutIcon}
-                    title={<FormattedMessage {...messages.fadeOut} />}
-                    onClick={props.onFadeOut}
-                />
-                <IconButton
-                    className={styles.effectButton}
-                    img={reverseIcon}
-                    title={<FormattedMessage {...messages.reverse} />}
-                    onClick={props.onReverse}
-                />
-                <IconButton
-                    className={styles.effectButton}
-                    img={robotIcon}
-                    title={<FormattedMessage {...messages.robot} />}
-                    onClick={props.onRobot}
-                />
-                <IconButton
-                    className={styles.effectButton}
-                    img={echoIcon}
-                    title={<FormattedMessage {...messages.echo} />}
-                    onClick={props.onEcho}
-                />
-                <IconButton
-                    className={classNames(styles.effectButton, styles.flipInRtl)}
-                    img={bitcrushIcon}
-                    title={<FormattedMessage {...messages.bitcrush} />}
-                    onClick={props.onBitcrush}
-                    dropdown={<div>{'it works'}</div>}
-                />
+            <div className={styles.infoRow}>
+                <div className={styles.duration}>
+                    {formatDuration(props.playhead, props.trimStart, props.trimEnd, props.duration)}
+                </div>
+                <div className={styles.advancedInfo}>
+                    {props.size > SOUND_BYTE_LIMIT &&
+                        <div className={classNames(styles.alert, styles.stereo)}>
+                            <FormattedMessage
+                                defaultMessage="Editing this sound will irreversibly lower its quality."
+                                description="Message that appears when editing a large sound."
+                                id="nb.sizeAlert"
+                            />
+                        </div>
+                    }
+                    <span>
+                        {props.isStereo ? (
+                            <FormattedMessage
+                                defaultMessage="Stereo"
+                                description="Refers to a 'Stereo Sound' (2 channels)"
+                                id="tw.stereo"
+                            />
+                        ) : (
+                            <FormattedMessage
+                                defaultMessage="Mono"
+                                description="Refers to a 'Mono Sound' (1 channel)"
+                                id="tw.mono"
+                            />
+                        )}
+                        {` (${formatSoundSize(props.size)})`}
+                    </span>
+                </div>
             </div>
         </div>
-        <div className={styles.infoRow}>
-            <div className={styles.duration}>
-                {formatDuration(props.playhead, props.trimStart, props.trimEnd, props.duration)}
-            </div>
-            <div className={styles.advancedInfo}>
-                {props.size > SOUND_BYTE_LIMIT &&
-                    <div className={classNames(styles.alert, styles.stereo)}>
-                        <FormattedMessage
-                            defaultMessage="Editing this sound will irreversibly lower its quality."
-                            description="Message that appears when editing a large sound."
-                            id="nb.sizeAlert"
-                        />
-                    </div>
-                }
-                <span>
-                    {props.isStereo ? (
-                        <FormattedMessage
-                            defaultMessage="Stereo"
-                            description="Refers to a 'Stereo Sound' (2 channels)"
-                            id="tw.stereo"
-                        />
-                    ) : (
-                        <FormattedMessage
-                            defaultMessage="Mono"
-                            description="Refers to a 'Mono Sound' (1 channel)"
-                            id="tw.mono"
-                        />
-                    )}
-                    {` (${formatSoundSize(props.size)})`}
-                </span>
-            </div>
-        </div>
-    </div>
-);
+    );
+};
 
 SoundEditor.propTypes = {
     isStereo: PropTypes.bool.isRequired,
