@@ -20,14 +20,12 @@ import redoIcon from '!../../lib/tw-recolor/build!./icon--redo.svg';
 import undoIcon from '!../../lib/tw-recolor/build!./icon--undo.svg';
 import fasterIcon from './icon--faster.svg';
 import slowerIcon from './icon--slower.svg';
-import louderIcon from './icon--louder.svg';
-import softerIcon from './icon--softer.svg';
+import volumeIcon from './icon--louder.svg';
 import robotIcon from './icon--robot.svg';
 import echoIcon from './icon--echo.svg';
 import reverseIcon from './icon--reverse.svg';
 import fadeOutIcon from './icon--fade-out.svg';
 import fadeInIcon from './icon--fade-in.svg';
-import muteIcon from './icon--mute.svg';
 import bitcrushIcon from './icon--bitcrush.svg';
 
 import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
@@ -158,6 +156,16 @@ const messages = defineMessages({
         description: 'Title of the button to apply the flip effect',
         defaultMessage: 'Flip'
     },
+    volume: {
+        id: 'gui.soundEditor.volume',
+        description: 'Title of the button to apply the volume effect',
+        defaultMessage: 'Volume'
+    },
+    volumeVolume: {
+        id: 'gui.soundEditor.volume.volume',
+        description: 'Label for the volume',
+        defaultMessage: 'Volume'
+    },
     bitcrush: {
         id: 'gui.soundEditor.bitcrush',
         description: 'Title of the button to apply the bitcrush effect',
@@ -214,6 +222,7 @@ const formatSoundSize = bytes => {
 const SoundEditor = props => {
     const [bitcrushSampleRate, setBitcrushSampleRate] = useState(DefaultOpts.sampleRate);
     const [bitcrushBitDepth, setBitcrushBitDepth] = useState(DefaultOpts.bitDepth);
+    const [volumeVolume, setVolumeVolume] = useState(DefaultOpts.volume);
     return (
         <div
             className={styles.editorContainer}
@@ -417,21 +426,34 @@ const SoundEditor = props => {
                     <IconButton
                         disabled={props.tooLoud}
                         className={classNames(styles.effectButton, styles.flipInRtl)}
-                        img={louderIcon}
-                        title={<FormattedMessage {...messages.louder} />}
-                        onClick={props.onLouder}
-                    />
-                    <IconButton
-                        className={classNames(styles.effectButton, styles.flipInRtl)}
-                        img={softerIcon}
-                        title={<FormattedMessage {...messages.softer} />}
-                        onClick={props.onSofter}
-                    />
-                    <IconButton
-                        className={classNames(styles.effectButton, styles.flipInRtl)}
-                        img={muteIcon}
-                        title={<FormattedMessage {...messages.mute} />}
-                        onClick={props.onMute}
+                        img={volumeIcon}
+                        title={<FormattedMessage {...messages.volume} />}
+                        dropdown={(
+                            <div className={styles.dropdown}>
+                                <div className={styles.inputGroup}>
+                                    <Label text={props.intl.formatMessage(messages.volumeVolume)}>
+                                        <BufferedInput
+                                            type="number"
+                                            className={styles.dropdownInput}
+                                            value={volumeVolume}
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onInput={event => setVolumeVolume(event.currentTarget.value)}
+                                        />
+                                    </Label>
+                                </div>
+                                <button
+                                    className={styles.dropdownSubmit}
+                                    // eslint-disable-next-line react/jsx-no-bind
+                                    onClick={() => props.onVolume(volumeVolume)}
+                                >
+                                    <FormattedMessage
+                                        id="gui.soundEditor.applyEffect"
+                                        description="Title of the button to apply the effect"
+                                        defaultMessage="Apply"
+                                    />
+                                </button>
+                            </div>
+                        )}
                     />
                     <IconButton
                         className={styles.effectButton}
@@ -490,7 +512,6 @@ const SoundEditor = props => {
                                         />
                                     </Label>
                                 </div>
-                                {bitcrushBitDepth} {bitcrushSampleRate}
                                 <button
                                     className={styles.dropdownSubmit}
                                     // eslint-disable-next-line react/jsx-no-bind
@@ -579,6 +600,7 @@ SoundEditor.propTypes = {
     onStop: PropTypes.func.isRequired,
     onUndo: PropTypes.func.isRequired,
     onUpdatePlayhead: PropTypes.func.isRequired,
+    onVolume: PropTypes.func.isRequired,
     onTimeStepMouseDown: PropTypes.func,
     playhead: PropTypes.number,
     playing: PropTypes.bool.isRequired,

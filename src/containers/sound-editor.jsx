@@ -614,6 +614,10 @@ class SoundEditor extends React.Component {
                 onStop={this.handleStopPlaying}
                 onUndo={this.handleUndo}
                 onUpdatePlayhead={this.handleUpdatePlayhead}
+                // eslint-disable-next-line react/jsx-no-bind
+                onVolume={volume => this.handleEffect(effectTypes.VOLUME, {
+                    volume
+                })}
                 onTimeStepMouseDown={this.handleTimeStepMouseDown}
                 timeStepCount={this.state.timeStepCount}
                 timeStepWidth={this.state.timeStepWidth}

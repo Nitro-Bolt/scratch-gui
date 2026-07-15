@@ -1,4 +1,7 @@
 export const DefaultOpts = {
+    // Volume
+    volume: 100,
+
     // Echo
     tailSeconds: 0.75,
 

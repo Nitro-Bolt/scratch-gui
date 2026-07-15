@@ -8,6 +8,7 @@ import MuteEffect from './effects/mute-effect.js';
 import {DefaultOpts} from './default-audio-effect-opts.js';
 
 const effectTypes = {
+    VOLUME: 'volume',
     FLIP: 'flip',
     BITCRUSH: 'bitcrush',
     ROBOT: 'robot',
@@ -176,6 +177,19 @@ class AudioEffects {
         case effectTypes.SOFTER:
             ({input, output} = new VolumeEffect(this.audioContext, 0.75,
                 this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+            break;
+        case effectTypes.VOLUME:
+            console.log(this.opts.volume);
+            ({input, output} = this.opts.volume < 1 ? new MuteEffect(
+                this.audioContext,
+                this.adjustedTrimStartSeconds,
+                this.adjustedTrimEndSeconds
+            ) : new VolumeEffect(
+                this.audioContext,
+                (this.opts.volume ?? DefaultOpts.volume) / 100,
+                this.adjustedTrimStartSeconds,
+                this.adjustedTrimEndSeconds
+            ));
             break;
         case effectTypes.ECHO:
             ({input, output} = new EchoEffect(this.audioContext,
