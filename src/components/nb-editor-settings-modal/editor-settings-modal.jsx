@@ -65,6 +65,10 @@ const messages = defineMessages({
         id: 'nb.editorSettings.displaySection',
         defaultMessage: 'Display'
     },
+    sound: {
+        id: 'nb.editorSettings.soundSection',
+        defaultMessage: 'Sound'
+    },
     git: {
         id: 'nb.editorSettings.gitSection',
         defaultMessage: 'Git'
@@ -653,6 +657,35 @@ const EditorSettingsModal = props => {
                     />}
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={e => props.onSetPreference('hide-feedback', e.target.checked)}
+                />
+            </Box>
+        },
+        {
+            title: messages.sound,
+            content: <Box>
+                <Setting
+                    primary={(
+                        <div className={classNames(styles.label, styles.customStageSize)}>
+                            <FormattedMessage
+                                defaultMessage="Encoding bit rate (kbps):"
+                                id="nb.editorSettings.encodingBitRate"
+                            />
+                            <BufferedInput
+                                value={props.preferences['encoding-bit-rate'] ?? 128}
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onSubmit={value => {
+                                    props.onSetPreference('encoding-bit-rate', Math.max(1, Math.min(value, 320)));
+                                }}
+                                type="number"
+                                min="1"
+                                max="320"
+                            />
+                        </div>
+                    )}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.encodingBitRateHelp"
+                        defaultMessage="Defines the bit rate for sounds encoded in NitroBolt."
+                    />}
                 />
             </Box>
         },

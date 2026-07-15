@@ -187,7 +187,7 @@ class SoundEditor extends React.Component {
                 channel2Samples: newChannel2Samples,
                 sampleRate: newSampleRate
             }) => {
-                const encoder = new Mp3Encoder(2, newSampleRate, 256);
+                const encoder = new Mp3Encoder(2, newSampleRate, this.props.preferences['encoding-bit-rate'] ?? 128);
                 const chunks = [];
 
                 const left = new Int16Array(newChannel1Samples.length);
@@ -468,7 +468,7 @@ class SoundEditor extends React.Component {
     }
     handleCopyToNew () {
         this.copy(() => {
-            encodeAndAddSoundToVM(this.props.vm, this.state.copyBuffer.channel1Samples,
+            encodeAndAddSoundToVM(this.props.vm, this.props.preferences, this.state.copyBuffer.channel1Samples,
                 this.state.copyBuffer.channel2Samples, this.state.copyBuffer.sampleRate, this.props.name);
         });
     }

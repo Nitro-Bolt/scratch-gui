@@ -81,11 +81,18 @@ class RecordModal extends React.Component {
             const endIndex = Math.floor(this.state.trimEnd * sampleCount);
             const clippedSamples = this.state.samples.slice(startIndex, endIndex);
 
-            encodeAndAddSoundToVM(this.props.vm, clippedSamples, null, this.state.sampleRate, 'recording1',
+            encodeAndAddSoundToVM(
+                this.props.vm,
+                this.props.preferences,
+                clippedSamples,
+                null,
+                this.state.sampleRate,
+                'recording1',
                 () => {
                     this.props.onClose();
                     this.props.onNewSound();
-                });
+                }
+            );
         });
     }
     handleCancel () {

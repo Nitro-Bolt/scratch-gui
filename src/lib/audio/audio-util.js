@@ -33,8 +33,8 @@ const computeChunkedRMS = function (channels, chunkSize = 1024) {
     return channelChunkLevels;
 };
 
-const encodeAndAddSoundToVM = function (vm, channel1Samples, channel2Samples, sampleRate, name, callback) {
-    const encoder = new Mp3Encoder(2, sampleRate, 256);
+const encodeAndAddSoundToVM = function (vm, preferences, channel1Samples, channel2Samples, sampleRate, name, callback) {
+    const encoder = new Mp3Encoder(2, sampleRate, preferences['encoding-bit-rate'] ?? 128);
     const chunks = [];
 
     const left = new Int16Array(channel1Samples.length);
