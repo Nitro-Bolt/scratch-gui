@@ -34,11 +34,22 @@ const computeChunkedRMS = function (channels, chunkSize = 1024) {
 };
 
 const encodeAndAddSoundToVM = function (vm, channel1Samples, channel2Samples, sampleRate, name, callback) {
-    const encoder = new Mp3Encoder(2, sampleRate, 128);
-    const data = [];
+    const encoder = new Mp3Encoder(2, sampleRate, 256);
+    const chunks = [];
 
-    const left = channel1Samples;
-    const right = channel1Samples ?? channel2Samples;
+    const left = new Int16Array(channel1Samples.length);
+    const right = new Int16Array(channel1Samples.length);
+
+    // Channels must be converted from Float32Arrays to Int16Arrays to prevent registering as near-silence.
+    // The encoder expects values between -32768 and 32767, and our arrays have values between -1.0 and 1.0.
+    for (let i = 0; i < channel1Samples.length; i++) {
+        const sample1 = Math.max(-1, Math.min(channel1Samples[i], 1));
+        const sample2 = Math.max(-1, Math.min((channel2Samples ?? channel1Samples)[i], 1));
+
+        left[i] = sample1 < 0 ? sample1 * 0x8000 : sample1 * 0x7FFF;
+        right[i] = sample2 < 0 ? sample2 * 0x8000 : sample2 * 0x7FFF;
+    }
+
     const sampleBlockSize = 1152;
 
     for (let i = 0; i < left.length; i += sampleBlockSize) {
@@ -46,13 +57,20 @@ const encodeAndAddSoundToVM = function (vm, channel1Samples, channel2Samples, sa
         const rightChunk = right.subarray(i, i + sampleBlockSize);
         const buffer = encoder.encodeBuffer(leftChunk, rightChunk);
         if (buffer.length > 0) {
-            data.push(buffer);
+            chunks.push(buffer);
         }
     }
-    const buffer = encoder.flush();
 
-    if (buffer.length > 0) {
-        data.push(buffer);
+    const flushed = encoder.flush();
+    if (flushed.length > 0) {
+        chunks.push(flushed);
+    }
+
+    const buffer = new Int8Array(chunks.reduce((acc, arr) => acc + arr.byteLength, 0));
+    let offset = 0;
+    for (const chunk of chunks) {
+        buffer.set(chunk, offset);
+        offset += chunk.byteLength;
     }
 
     const vmSound = {

@@ -187,11 +187,22 @@ class SoundEditor extends React.Component {
                 channel2Samples: newChannel2Samples,
                 sampleRate: newSampleRate
             }) => {
-                const encoder = new Mp3Encoder(2, newSampleRate, 128);
-                const data = [];
+                const encoder = new Mp3Encoder(2, newSampleRate, 256);
+                const chunks = [];
 
-                const left = newChannel1Samples;
-                const right = newChannel2Samples ?? newChannel1Samples;
+                const left = new Int16Array(newChannel1Samples.length);
+                const right = new Int16Array(newChannel1Samples.length);
+
+                // Channels must be converted from Float32Arrays to Int16Arrays to prevent registering as near-silence.
+                // The encoder expects values between -32768 and 32767, and our arrays have values between -1.0 and 1.0.
+                for (let i = 0; i < newChannel1Samples.length; i++) {
+                    const sample1 = Math.max(-1, Math.min(newChannel1Samples[i], 1));
+                    const sample2 = Math.max(-1, Math.min((newChannel2Samples ?? newChannel1Samples)[i], 1));
+
+                    left[i] = sample1 < 0 ? sample1 * 0x8000 : sample1 * 0x7FFF;
+                    right[i] = sample2 < 0 ? sample2 * 0x8000 : sample2 * 0x7FFF;
+                }
+
                 const sampleBlockSize = 1152;
 
                 for (let i = 0; i < left.length; i += sampleBlockSize) {
@@ -199,13 +210,20 @@ class SoundEditor extends React.Component {
                     const rightChunk = right.subarray(i, i + sampleBlockSize);
                     const buffer = encoder.encodeBuffer(leftChunk, rightChunk);
                     if (buffer.length > 0) {
-                        data.push(buffer);
+                        chunks.push(buffer);
                     }
                 }
-                const buffer = encoder.flush();
 
-                if (buffer.length > 0) {
-                    data.push(buffer);
+                const flushed = encoder.flush();
+                if (flushed.length > 0) {
+                    chunks.push(flushed);
+                }
+
+                const buffer = new Int8Array(chunks.reduce((acc, arr) => acc + arr.byteLength, 0));
+                let offset = 0;
+                for (const chunk of chunks) {
+                    buffer.set(chunk, offset);
+                    offset += chunk.byteLength;
                 }
 
                 this.resetState(newChannel1Samples, newChannel2Samples, newSampleRate);
@@ -224,25 +242,6 @@ class SoundEditor extends React.Component {
                 }
 
                 return true;
-
-                // ({
-                //     sampleRate: newSampleRate,
-                //     channelData: [newChannel1Samples, newChannel2Samples].filter(Boolean)
-                // }).then(wavBuffer => {
-                //     if (!skipUndo) {
-                //         this.redoStack = [];
-                //         if (this.undoStack.length >= UNDO_STACK_SIZE) {
-                //             this.undoStack.shift(); // Drop the first element off the array
-                //         }
-                //         this.undoStack.push(this.getUndoItem());
-                //     }
-                //     this.resetState(newChannel1Samples, newChannel2Samples, newSampleRate);
-                //     this.props.vm.updateSoundBuffer(
-                //         this.props.soundIndex,
-                //         this.audioBufferPlayer.buffer,
-                //         new Uint8Array(wavBuffer));
-                //     return true; // Edit was successful
-                // });
             })
             .catch(e => {
                 // Encoding failed, or the sound was too large to save so edit is rejected
