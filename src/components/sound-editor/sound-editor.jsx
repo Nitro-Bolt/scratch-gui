@@ -330,7 +330,20 @@ const SoundEditor = props => (
                                 {props.chunkLevels.length > 1 && (
                                     <>
                                         <div className={styles.waveformLabel}>
-                                            {['Left Channel', 'Right Channel'][i]}
+                                            {[
+                                                <FormattedMessage
+                                                    defaultMessage="Left Channel"
+                                                    description="Label for left waveform"
+                                                    id="nb.left-channel"
+                                                    key="0"
+                                                />,
+                                                <FormattedMessage
+                                                    defaultMessage="Right Channel"
+                                                    description="Label for right waveform"
+                                                    id="nb.right-channel"
+                                                    key="1"
+                                                />
+                                            ][i]}
                                         </div>
                                     </>
                                 )}
