@@ -60,4 +60,5 @@
     cursor: auto;
     border-radius: 0.5rem;
     margin-top: 0.25rem;
+    z-index: 1;
 }
