@@ -112,23 +112,17 @@ class AudioEffects {
             }
             this.buffer = newBuffer;
         } if (name === effectTypes.FLIP) {
+            console.log(buffer);
             const originalBufferData = buffer.getChannelData(0);
-            const originalBufferData2 = buffer.numberOfChannels > 1 ? buffer.getChannelData(1) : null;
+            const originalBufferData2 = buffer.getChannelData(buffer.numberOfChannels - 1);
             const newBuffer = this.audioContext.createBuffer(2, buffer.length, buffer.sampleRate);
             const newBufferData = newBuffer.getChannelData(0);
             const newBufferData2 = newBuffer.getChannelData(1);
             const bufferLength = buffer.length;
 
-            if (buffer.numberOfChannels === 2) {
-                for (let i = 0; i < bufferLength; i++) {
-                    newBufferData[i] = originalBufferData2[i];
-                    newBufferData2[i] = originalBufferData[i];
-                }
-            } else {
-                for (let i = 0; i < bufferLength; i++) {
-                    newBufferData[i] = originalBufferData[i];
-                    newBufferData2[i] = originalBufferData[i];
-                }
+            for (let i = 0; i < bufferLength; i++) {
+                newBufferData[i] = originalBufferData2[i];
+                newBufferData2[i] = 0;
             }
 
             this.buffer = newBuffer;

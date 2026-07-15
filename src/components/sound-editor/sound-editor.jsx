@@ -434,12 +434,6 @@ const SoundEditor = props => (
                 />
                 <IconButton
                     className={classNames(styles.effectButton, styles.flipInRtl)}
-                    img={flipIcon}
-                    title={<FormattedMessage {...messages.flip} />}
-                    onClick={props.onFlip}
-                />
-                <IconButton
-                    className={classNames(styles.effectButton, styles.flipInRtl)}
                     img={bitcrushIcon}
                     title={<FormattedMessage {...messages.bitcrush} />}
                     onClick={props.onBitcrush}
