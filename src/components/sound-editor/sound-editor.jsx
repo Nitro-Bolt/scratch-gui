@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 import classNames from 'classnames';
@@ -424,10 +425,10 @@ const SoundEditor = props => {
                         onClick={props.onSlower}
                     />
                     <IconButton
-                        disabled={props.tooLoud}
                         className={classNames(styles.effectButton, styles.flipInRtl)}
                         img={volumeIcon}
                         title={<FormattedMessage {...messages.volume} />}
+                        onClick={props.onLouder}
                         dropdown={(
                             <div className={styles.dropdown}>
                                 <div className={styles.inputGroup}>
@@ -436,14 +437,12 @@ const SoundEditor = props => {
                                             type="number"
                                             className={styles.dropdownInput}
                                             value={volumeVolume}
-                                            // eslint-disable-next-line react/jsx-no-bind
                                             onInput={event => setVolumeVolume(event.currentTarget.value)}
                                         />
                                     </Label>
                                 </div>
                                 <button
                                     className={styles.dropdownSubmit}
-                                    // eslint-disable-next-line react/jsx-no-bind
                                     onClick={() => props.onVolume(volumeVolume)}
                                 >
                                     <FormattedMessage
@@ -489,7 +488,7 @@ const SoundEditor = props => {
                         className={classNames(styles.effectButton, styles.flipInRtl)}
                         img={bitcrushIcon}
                         title={<FormattedMessage {...messages.bitcrush} />}
-                        onClick={props.onBitcrush}
+                        onClick={() => props.onBitcrush(DefaultOpts.sampleRate, DefaultOpts.bitDepth)}
                         dropdown={(
                             <div className={styles.dropdown}>
                                 <div className={styles.inputGroup}>
@@ -498,7 +497,6 @@ const SoundEditor = props => {
                                             type="number"
                                             className={styles.dropdownInput}
                                             value={bitcrushSampleRate}
-                                            // eslint-disable-next-line react/jsx-no-bind
                                             onInput={event => setBitcrushSampleRate(event.currentTarget.value)}
                                         />
                                     </Label>
@@ -507,14 +505,12 @@ const SoundEditor = props => {
                                             type="number"
                                             className={styles.dropdownInput}
                                             value={bitcrushBitDepth}
-                                            // eslint-disable-next-line react/jsx-no-bind
                                             onInput={event => setBitcrushBitDepth(event.currentTarget.value)}
                                         />
                                     </Label>
                                 </div>
                                 <button
                                     className={styles.dropdownSubmit}
-                                    // eslint-disable-next-line react/jsx-no-bind
                                     onClick={() => props.onBitcrush(bitcrushSampleRate, bitcrushBitDepth)}
                                 >
                                     <FormattedMessage
