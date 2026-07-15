@@ -319,8 +319,8 @@ class SoundEditor extends React.Component {
     handleTimeStepMouseUp () {
         this.timeStepDragRecognizer.reset();
     }
-    effectFactory (name) {
-        return () => this.handleEffect(name);
+    effectFactory (name, opts) {
+        return () => this.handleEffect(name, opts);
     }
     copyCurrentBuffer () {
         // Cannot reliably use props.samples because it gets detached by Firefox
@@ -331,7 +331,9 @@ class SoundEditor extends React.Component {
             sampleRate: this.audioBufferPlayer.buffer.sampleRate
         };
     }
-    handleEffect (name) {
+    handleEffect (name, opts) {
+        opts = opts ?? {};
+
         const trimStart = this.state.trimStart === null ? 0.0 : this.state.trimStart;
         const trimEnd = this.state.trimEnd === null ? 1.0 : this.state.trimEnd;
 
@@ -340,7 +342,7 @@ class SoundEditor extends React.Component {
             return;
         }
 
-        const effects = new AudioEffects(this.audioBufferPlayer.buffer, name, trimStart, trimEnd);
+        const effects = new AudioEffects(this.audioBufferPlayer.buffer, name, trimStart, trimEnd, opts);
         effects.process((renderedBuffer, adjustedTrimStart, adjustedTrimEnd) => {
             const channel1Samples = renderedBuffer.getChannelData(0);
             const channel2Samples = renderedBuffer.numberOfChannels > 1 ? renderedBuffer.getChannelData(1) : null;
@@ -588,7 +590,10 @@ class SoundEditor extends React.Component {
                 onCopyToNew={this.handleCopyToNew}
                 onDelete={this.handleDelete}
                 onDeleteInverse={this.handleDeleteInverse}
-                onBitcrush={this.effectFactory(effectTypes.BITCRUSH)}
+                onBitcrush={((sampleRate, bitDepth) => this.effectFactory(effectTypes.BITCRUSH, {
+                    sampleRate,
+                    bitDepth
+                }))()}
                 onEcho={this.effectFactory(effectTypes.ECHO)}
                 onFadeIn={this.effectFactory(effectTypes.FADEIN)}
                 onFadeOut={this.effectFactory(effectTypes.FADEOUT)}

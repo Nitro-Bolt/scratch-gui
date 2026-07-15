@@ -5,6 +5,8 @@ import VolumeEffect from './effects/volume-effect.js';
 import FadeEffect from './effects/fade-effect.js';
 import MuteEffect from './effects/mute-effect.js';
 
+import {DefaultOpts} from './default-audio-effect-opts.js';
+
 const effectTypes = {
     FLIP: 'flip',
     BITCRUSH: 'bitcrush',
@@ -27,8 +29,8 @@ class AudioEffects {
     /**
      * @param {AudioBuffer} buffer
      */
-    constructor (buffer, name, trimStart, trimEnd) {
-        const targetSampleRate = name === effectTypes.BITCRUSH ? 11025 : 44100;
+    constructor (buffer, name, trimStart, trimEnd, opts) {
+        const targetSampleRate = name === effectTypes.BITCRUSH ? (opts.sampleRate ?? DefaultOpts.sampleRate) : 44100;
         const conversionRatio = targetSampleRate / buffer.sampleRate;
         let sampleCount = Math.round(buffer.length / conversionRatio);
 
@@ -49,7 +51,7 @@ class AudioEffects {
         switch (name) {
         case effectTypes.ECHO:
             sampleCount = Math.max(sampleCount,
-                Math.floor((this.trimEndSeconds + EchoEffect.TAIL_SECONDS) * targetSampleRate));
+                Math.floor((this.trimEndSeconds + (opts.tailSeconds ?? EchoEffect.TAIL_SECONDS)) * targetSampleRate));
             break;
         case effectTypes.FASTER:
             this.playbackRate = pitchRatio;
@@ -112,7 +114,6 @@ class AudioEffects {
             }
             this.buffer = newBuffer;
         } if (name === effectTypes.FLIP) {
-            console.log(buffer);
             const originalBufferData = buffer.getChannelData(0);
             const originalBufferData2 = buffer.getChannelData(buffer.numberOfChannels - 1);
             const newBuffer = this.audioContext.createBuffer(2, buffer.length, buffer.sampleRate);
@@ -133,7 +134,7 @@ class AudioEffects {
             const newBufferData = newBuffer.getChannelData(0);
             const newBufferData2 = newBuffer.getChannelData(1);
 
-            const bitDepth = 4;
+            const bitDepth = opts.bitDepth ?? DefaultOpts.bitDepth;
             const steps = Math.pow(2, bitDepth) - 1;
 
             const startSamples = Math.floor(this.trimStartSeconds * buffer.sampleRate);
@@ -156,6 +157,7 @@ class AudioEffects {
         this.source = this.audioContext.createBufferSource();
         this.source.buffer = this.buffer;
         this.name = name;
+        this.opts = opts;
     }
     process (done) {
         // Some effects need to use more nodes and must expose an input and output

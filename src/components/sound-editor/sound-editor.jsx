@@ -455,6 +455,7 @@ const SoundEditor = props => (
                     img={bitcrushIcon}
                     title={<FormattedMessage {...messages.bitcrush} />}
                     onClick={props.onBitcrush}
+                    dropdown={<div>{'it works'}</div>}
                 />
             </div>
         </div>
