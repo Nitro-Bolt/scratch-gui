@@ -92,7 +92,7 @@ class AudioRecorder {
             offset += bufferChunk.length;
         }
 
-        const chunkLevels = computeChunkedRMS(buffer, buffer);
+        const chunkLevels = computeChunkedRMS([buffer])[0];
         const maxRMS = Math.max.apply(null, chunkLevels);
         const threshold = maxRMS / 8;
 

@@ -285,7 +285,7 @@ const SoundEditor = props => (
             <Box className={styles.meterContainer}>
                 <Meter
                     height={172}
-                    level={props.playing * props.chunkLevels[Math.floor(props.playhead * props.chunkLevels.length)]}
+                    level={props.playing * props.chunkLevels[0][Math.floor(props.playhead * props.chunkLevels.length)]}
                     width={20}
                 />
             </Box>
@@ -310,12 +310,28 @@ const SoundEditor = props => (
                     ))}
                 </div>
                 <div className={styles.waveformContainer}>
-                    <Waveform
-                        data={props.chunkLevels}
-                        height={160}
-                        width={600}
-                        preferences={props.preferences}
-                    />
+                    <div className={styles.waveformInsideContainer}>
+                        {props.chunkLevels.map((data, i) => (
+                            <div
+                                className={styles.waveform}
+                                key={i}
+                            >
+                                <Waveform
+                                    data={data}
+                                    height={(140 / props.chunkLevels.length) + (props.chunkLevels.length * 20)}
+                                    width={600}
+                                    preferences={props.preferences}
+                                />
+                                {props.chunkLevels.length > 1 && (
+                                    <>
+                                        <div className={styles.waveformLabel}>
+                                            {['Left Channel', 'Right Channel'][i]}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                     <AudioSelector
                         playhead={props.playhead}
                         onUpdatePlayhead={props.onUpdatePlayhead}
@@ -472,7 +488,7 @@ SoundEditor.propTypes = {
     canPaste: PropTypes.bool.isRequired,
     canRedo: PropTypes.bool.isRequired,
     canUndo: PropTypes.bool.isRequired,
-    chunkLevels: PropTypes.arrayOf(PropTypes.number).isRequired,
+    chunkLevels: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
     intl: intlShape,
     name: PropTypes.string.isRequired,
     onChangeName: PropTypes.func.isRequired,

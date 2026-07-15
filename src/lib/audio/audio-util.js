@@ -18,18 +18,19 @@ const _computeRMS = function (samples, start, end, scaling = 0.55) {
 
 const computeRMS = (samples, scaling) => _computeRMS(samples, 0, samples.length, scaling);
 
-const computeChunkedRMS = function (channel1Samples, channel2Samples, chunkSize = 1024) {
-    console.log('computeChunkedRMS', channel1Samples, channel2Samples);
-    const sampleCount = channel1Samples.length;
-    const chunkLevels = [];
-    for (let i = 0; i < sampleCount; i += chunkSize) {
-        const maxIndex = Math.min(sampleCount, i + chunkSize);
-        // Take the average of the two audio channels
-        chunkLevels.push((
-            _computeRMS(channel1Samples, i, maxIndex) + _computeRMS(channel2Samples ?? channel1Samples, i, maxIndex)
-        ) / 2);
+const computeChunkedRMS = function (channels, chunkSize = 1024) {
+    const channelChunkLevels = [];
+    for (const channel of channels) {
+        const sampleCount = channel.length;
+        const chunkLevels = [];
+        for (let i = 0; i < sampleCount; i += chunkSize) {
+            const maxIndex = Math.min(sampleCount, i + chunkSize);
+            // Take the average of the two audio channels
+            chunkLevels.push(_computeRMS(channel, i, maxIndex));
+        }
+        channelChunkLevels.push(chunkLevels);
     }
-    return chunkLevels;
+    return channelChunkLevels;
 };
 
 const encodeAndAddSoundToVM = function (vm, channel1Samples, channel2Samples, sampleRate, name, callback) {
