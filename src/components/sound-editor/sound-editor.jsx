@@ -213,6 +213,8 @@ const formatDuration = (playheadPercent, trimStartPercent, trimEndPercent, durat
     return `${formatTime(currentTime)} / ${formatTime(trimDuration)}`;
 };
 
+const formatSampleRate = sampleRate => `${(sampleRate / 1000).toFixed(0)}kHz`;
+
 const formatSoundSize = bytes => {
     if (bytes > 1000 * 1000) {
         return `${(bytes / 1000 / 1000).toFixed(2)}MB`;
@@ -539,6 +541,7 @@ const SoundEditor = props => {
                         </div>
                     }
                     <span>
+                        {`${formatSampleRate(props.sampleRate)} `}
                         {props.isStereo ? (
                             <FormattedMessage
                                 defaultMessage="Stereo"
@@ -564,6 +567,7 @@ SoundEditor.propTypes = {
     isStereo: PropTypes.bool.isRequired,
     duration: PropTypes.number.isRequired,
     size: PropTypes.number.isRequired,
+    sampleRate: PropTypes.number.isRequired,
     canPaste: PropTypes.bool.isRequired,
     canRedo: PropTypes.bool.isRequired,
     canUndo: PropTypes.bool.isRequired,
