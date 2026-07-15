@@ -285,7 +285,12 @@ const SoundEditor = props => (
             <Box className={styles.meterContainer}>
                 <Meter
                     height={172}
-                    level={props.playing * props.chunkLevels[0][Math.floor(props.playhead * props.chunkLevels.length)]}
+                    level={props.playing * Math.max(
+                        props.chunkLevels[0][Math.floor(props.playhead * props.chunkLevels[0].length)],
+                        props.chunkLevels[props.chunkLevels.length - 1][
+                            Math.floor(props.playhead * props.chunkLevels[props.chunkLevels.length - 1].length)
+                        ]
+                    )}
                     width={20}
                 />
             </Box>
