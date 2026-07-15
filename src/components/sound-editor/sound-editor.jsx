@@ -380,6 +380,7 @@ const SoundEditor = props => {
                             onUpdatePlayhead={props.onUpdatePlayhead}
                             trimEnd={props.trimEnd}
                             trimStart={props.trimStart}
+                            trimChannel={props.trimChannel}
                             onPlay={props.onPlay}
                             onSetTrim={props.onSetTrim}
                             onStop={props.onStop}
@@ -612,6 +613,7 @@ SoundEditor.propTypes = {
     tooLoud: PropTypes.bool.isRequired,
     trimEnd: PropTypes.number,
     trimStart: PropTypes.number,
+    trimChannel: PropTypes.arrayOf(PropTypes.bool),
     preferences: PropTypes.object
 };
 

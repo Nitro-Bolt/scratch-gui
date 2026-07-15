@@ -65,6 +65,7 @@ class SoundEditor extends React.Component {
             playhead: 0, // null is not playing, [0 -> 1] is playing percent
             trimStart: null,
             trimEnd: null,
+            trimChannel: [false, true],
             playing: false,
             timeStepCount: 0,
             timeStepWidth: 0,
@@ -373,13 +374,14 @@ class SoundEditor extends React.Component {
 
         const trimStart = this.state.trimStart === null ? 0.0 : this.state.trimStart;
         const trimEnd = this.state.trimEnd === null ? 1.0 : this.state.trimEnd;
+        const trimChannel = this.state.trimChannel;
 
         // Offline audio context needs at least 2 samples
         if (this.audioBufferPlayer.buffer.length < 2) {
             return;
         }
 
-        const effects = new AudioEffects(this.audioBufferPlayer.buffer, name, trimStart, trimEnd, opts);
+        const effects = new AudioEffects(this.audioBufferPlayer.buffer, name, trimStart, trimEnd, trimChannel, opts);
         effects.process((renderedBuffer, adjustedTrimStart, adjustedTrimEnd) => {
             const channel1Samples = renderedBuffer.getChannelData(0);
             const channel2Samples = renderedBuffer.numberOfChannels > 1 ? renderedBuffer.getChannelData(1) : null;
@@ -622,6 +624,7 @@ class SoundEditor extends React.Component {
                 tooLoud={this.tooLoud()}
                 trimEnd={this.state.trimEnd}
                 trimStart={this.state.trimStart}
+                trimChannel={this.state.trimChannel}
                 onChangeName={this.handleChangeName}
                 onContainerClick={this.handleContainerClick}
                 onCopy={this.handleCopy}

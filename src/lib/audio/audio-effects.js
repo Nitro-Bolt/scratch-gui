@@ -30,7 +30,7 @@ class AudioEffects {
     /**
      * @param {AudioBuffer} buffer
      */
-    constructor (buffer, name, trimStart, trimEnd, opts) {
+    constructor (buffer, name, trimStart, trimEnd, trimChannel, opts) {
         const targetSampleRate = name === effectTypes.BITCRUSH ? (opts.sampleRate ?? DefaultOpts.sampleRate) : 44100;
         const conversionRatio = targetSampleRate / buffer.sampleRate;
         let sampleCount = Math.round(buffer.length / conversionRatio);
@@ -159,6 +159,13 @@ class AudioEffects {
         this.source.buffer = this.buffer;
         this.name = name;
         this.opts = opts;
+
+        // Matches [false, true] and [true, false]. We only need to split the channels if just one channel is modified.
+        if (trimChannel[0] !== trimChannel[1]) {
+            this.splitter = this.audioContext.createChannelSplitter(2);
+            this.merger = this.audioContext.createChannelMerger(2);
+            this.selectedChannel = 0 + trimChannel[1];
+        }
     }
     process (done) {
         // Some effects need to use more nodes and must expose an input and output
@@ -213,9 +220,19 @@ class AudioEffects {
             break;
         }
 
+
         if (input && output) {
-            this.source.connect(input);
-            output.connect(this.audioContext.destination);
+            if (this.splitter) {
+                this.source.connect(this.splitter);
+                this.splitter.connect(input, this.selectedChannel);
+                input.connect(this.merger);
+                this.splitter.connect(this.merger);
+                this.merger.connect(output);
+                output.connect(this.audioContext.destination);
+            } else {
+                this.source.connect(input);
+                output.connect(this.audioContext.destination);
+            }
         } else {
             // No effects nodes are needed, wire directly to the output
             this.source.connect(this.audioContext.destination);
