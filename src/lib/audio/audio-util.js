@@ -36,7 +36,7 @@ const computeChunkedRMS = function (channels, chunkSize = 1024) {
 const encodeAndAddSoundToVM = function (vm, channel1Samples, channel2Samples, sampleRate, name, callback) {
     WavEncoder.encode({
         sampleRate: sampleRate,
-        channelData: [channel1Samples, channel2Samples].filter(v => v)
+        channelData: [channel1Samples, channel2Samples].filter(Boolean)
     }).then(wavBuffer => {
         const vmSound = {
             format: '',
@@ -82,14 +82,15 @@ const encodeAndAddSoundToVM = function (vm, channel1Samples, channel2Samples, sa
  */
 const downsampleIfNeeded = (buffer, resampler) => {
     const {channel1Samples, channel2Samples, sampleRate} = buffer;
-    const encodedByteLength = channel1Samples.length * 2; /* bitDepth 16 bit */
+    // const encodedByteLength = channel1Samples.length * 2; /* bitDepth 16 bit */
+    return Promise.resolve({channel1Samples, channel2Samples, sampleRate});
     // Resolve immediately if already within byte limit
-    if (encodedByteLength < SOUND_BYTE_LIMIT) {
-        return Promise.resolve({channel1Samples, channel2Samples, sampleRate});
-    }
-    // TW: Don't check if the sound will still fit at this reduced sample rate.
-    // Instead the GUI will show a warning if it's too large.
-    return resampler({channel1Samples, channel2Samples, sampleRate}, 22050);
+    // if (encodedByteLength < SOUND_BYTE_LIMIT) {
+    //     return Promise.resolve({channel1Samples, channel2Samples, sampleRate});
+    // }
+    // // TW: Don't check if the sound will still fit at this reduced sample rate.
+    // // Instead the GUI will show a warning if it's too large.
+    // return resampler({channel1Samples, channel2Samples, sampleRate}, 22050);
 };
 
 /**

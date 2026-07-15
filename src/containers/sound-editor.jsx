@@ -61,7 +61,7 @@ class SoundEditor extends React.Component {
             chunkLevels: computeChunkedRMS([
                 this.props.channel1Samples,
                 this.props.channel2Samples
-            ].filter(v => v)),
+            ].filter(Boolean)),
             playhead: 0, // null is not playing, [0 -> 1] is playing percent
             trimStart: null,
             trimEnd: null,
@@ -177,7 +177,7 @@ class SoundEditor extends React.Component {
         this.audioBufferPlayer.stop();
         this.audioBufferPlayer = new AudioBufferPlayer(channel1Samples, channel2Samples, sampleRate);
         this.setState({
-            chunkLevels: computeChunkedRMS([channel1Samples, channel2Samples].filter(v => v))
+            chunkLevels: computeChunkedRMS([channel1Samples, channel2Samples].filter(Boolean))
         });
     }
     submitNewSamples (channel1Samples, channel2Samples, sampleRate, skipUndo) {
@@ -189,7 +189,7 @@ class SoundEditor extends React.Component {
             }) =>
                 WavEncoder.encode({
                     sampleRate: newSampleRate,
-                    channelData: [newChannel1Samples, newChannel2Samples].filter(v => v)
+                    channelData: [newChannel1Samples, newChannel2Samples].filter(Boolean)
                 }).then(wavBuffer => {
                     if (!skipUndo) {
                         this.redoStack = [];
