@@ -34,6 +34,7 @@ class PaintEditorWrapper extends React.Component {
             this.props.customStageSize !== nextProps.customStageSize ||
             this.props.nudgeMultiplier !== nextProps.nudgeMultiplier ||
             this.props.noSwapButton !== nextProps.noSwapButton ||
+            this.props.noCutButton !== nextProps.noCutButton ||
             this.state.fonts !== nextState.fonts;
     }
     componentWillUnmount () {
@@ -87,6 +88,7 @@ class PaintEditorWrapper extends React.Component {
                 height={this.props.customStageSize.height}
                 nudgeMultiplier={this.props.nudgeMultiplier}
                 noSwapButton={this.props.noSwapButton}
+                noCutButton={this.props.noCutButton}
             />
         );
     }
@@ -102,6 +104,7 @@ PaintEditorWrapper.propTypes = {
     imageId: PropTypes.string.isRequired,
     nudgeMultiplier: PropTypes.number,
     noSwapButton: PropTypes.bool,
+    noCutButton: PropTypes.bool,
     theme: PropTypes.instanceOf(Theme),
     name: PropTypes.string,
     rotationCenterX: PropTypes.number,
@@ -123,6 +126,7 @@ const mapStateToProps = (state, {selectedCostumeIndex}) => {
         name: costume && costume.name,
         nudgeMultiplier: state.scratchGui.preferences['paint-nudge-multiplier'],
         noSwapButton: state.scratchGui.preferences['paint-no-swap-button'],
+        noCutButton: state.scratchGui.preferences['paint-no-cut-button'],
         rotationCenterX: costume && costume.rotationCenterX,
         rotationCenterY: costume && costume.rotationCenterY,
         imageFormat: costume && costume.dataFormat,

@@ -802,6 +802,21 @@ const EditorSettingsModal = props => {
                         props.onSetPreference('paint-no-swap-button', e.target.checked);
                     }}
                 />
+                <BooleanSetting
+                    value={!!props.preferences['paint-no-cut-button']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.noCutButton"
+                        defaultMessage="Hide cut button"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.noCutButtonHelp"
+                        defaultMessage="Hides the cut to clipboard button."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('paint-no-cut-button', e.target.checked);
+                    }}
+                />
             </Box>
         },
         {
