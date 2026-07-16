@@ -13,6 +13,7 @@ $hover-scale: 1.25;
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 1;
 
     /* Force the browser to paint separately to avoid composite cost with waveform */
     transform: translateZ(0);
@@ -62,6 +63,7 @@ $hover-scale: 1.25;
     width: 0px;
     height: 100%;
     border: 1px solid $red-tertiary;
+    z-index: 1;
 }
 
 .selector .trim-line {

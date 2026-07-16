@@ -14,25 +14,33 @@ const AudioSelector = props => (
         onTouchStart={props.onNewSelectionMouseDown}
     >
         {props.trimStart === null ? null : (
-            <Box
-                className={classNames(styles.absolute)}
-                style={{
-                    top: `${Math.max(0, (props.trimChannel[1] - props.trimChannel[0])) * 50}%`,
-                    left: `${props.trimStart * 100}%`,
-                    width: `${100 * (props.trimEnd - props.trimStart)}%`,
-                    height: `${(1 + (props.trimChannel[0] === props.trimChannel[1])) * 50}%`
-                }}
-            >
-                <Box className={classNames(styles.absolute, styles.selectionBackground)} />
-                <SelectionHandle
-                    handleStyle={styles.leftHandle}
-                    onMouseDown={props.onTrimStartMouseDown}
+            <>
+                <Box
+                    className={classNames(styles.absolute, styles.selectionBackground)}
+                    style={{
+                        left: `${props.trimStart * 100}%`,
+                        width: `${100 * (props.trimEnd - props.trimStart)}%`
+                    }}
                 />
-                <SelectionHandle
-                    handleStyle={styles.rightHandle}
-                    onMouseDown={props.onTrimEndMouseDown}
-                />
-            </Box>
+                <Box
+                    className={classNames(styles.absolute)}
+                    style={{
+                        top: `${Math.max(0, (props.trimChannel[1] - props.trimChannel[0])) * 50}%`,
+                        left: `${props.trimStart * 100}%`,
+                        width: `${100 * (props.trimEnd - props.trimStart)}%`,
+                        height: `${(1 + (props.trimChannel[0] === props.trimChannel[1])) * 50}%`
+                    }}
+                >
+                    <SelectionHandle
+                        handleStyle={styles.leftHandle}
+                        onMouseDown={props.onTrimStartMouseDown}
+                    />
+                    <SelectionHandle
+                        handleStyle={styles.rightHandle}
+                        onMouseDown={props.onTrimEndMouseDown}
+                    />
+                </Box>
+            </>
         )}
         {props.playhead !== null && (
             <Playhead
