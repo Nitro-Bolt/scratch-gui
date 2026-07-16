@@ -81,7 +81,7 @@ class AudioEffects {
              */
             this.audioContext = new window.OfflineAudioContext(
                 2,
-                buffer.length * (targetSampleRate / buffer.sampleRate),
+                sampleCount * (targetSampleRate / buffer.sampleRate),
                 targetSampleRate
             );
         } else {
