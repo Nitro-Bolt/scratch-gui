@@ -341,6 +341,13 @@ const SoundEditor = props => {
                     </div>
                     <div className={styles.waveformContainer}>
                         <div className={styles.waveformInsideContainer}>
+                            <div
+                                className={styles.waveformShadow}
+                                style={{
+                                    // eslint-disable-next-line max-len
+                                    background: `linear-gradient(90deg, var(--page-background) 0%, var(--page-background) ${props.playhead * 100}%, transparent ${props.playhead * 100}%${props.playhead > 0 && props.trimEnd ? `, transparent ${props.trimEnd * 100}%, var(--page-background) ${props.trimEnd * 100}%` : ''})`
+                                }}
+                            />
                             {props.chunkLevels.map((data, i) => (
                                 <div
                                     className={styles.waveform}
