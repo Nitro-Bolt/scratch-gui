@@ -124,9 +124,16 @@ class AudioEffects {
             const newBufferData2 = newBuffer.getChannelData(1);
             const bufferLength = buffer.length;
 
+            const startSamples = Math.floor(this.trimStartSeconds * buffer.sampleRate);
+            const endSamples = Math.floor(this.trimEndSeconds * buffer.sampleRate);
             for (let i = 0; i < bufferLength; i++) {
-                newBufferData[i] = originalBufferData2[i];
-                newBufferData2[i] = originalBufferData[i];
+                if (i >= startSamples && i < endSamples) {
+                    newBufferData[i] = originalBufferData2[i];
+                    newBufferData2[i] = originalBufferData[i];
+                } else {
+                    newBufferData[i] = originalBufferData[i];
+                    newBufferData2[i] = originalBufferData2[i];
+                }
             }
 
             this.buffer = newBuffer;

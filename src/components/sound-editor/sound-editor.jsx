@@ -27,6 +27,7 @@ import echoIcon from './icon--echo.svg';
 import reverseIcon from './icon--reverse.svg';
 import fadeOutIcon from './icon--fade-out.svg';
 import fadeInIcon from './icon--fade-in.svg';
+import flipIcon from './icon--flip.svg';
 import bitcrushIcon from './icon--bitcrush.svg';
 
 import deleteIcon from '!../../lib/tw-recolor/build!./icon--delete.svg';
@@ -155,7 +156,7 @@ const messages = defineMessages({
     flip: {
         id: 'gui.soundEditor.flip',
         description: 'Title of the button to apply the flip effect',
-        defaultMessage: 'Flip'
+        defaultMessage: 'Flip L&R'
     },
     volume: {
         id: 'gui.soundEditor.volume',
@@ -496,6 +497,12 @@ const SoundEditor = props => {
                         img={echoIcon}
                         title={<FormattedMessage {...messages.echo} />}
                         onClick={props.onEcho}
+                    />
+                    <IconButton
+                        className={styles.effectButton}
+                        img={flipIcon}
+                        title={<FormattedMessage {...messages.flip} />}
+                        onClick={props.onFlip}
                     />
                     <IconButton
                         className={classNames(styles.effectButton, styles.flipInRtl)}
