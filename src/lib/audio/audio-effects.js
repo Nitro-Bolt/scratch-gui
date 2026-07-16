@@ -37,8 +37,8 @@ class AudioEffects {
         const conversionRatio = targetSampleRate / buffer.sampleRate;
         let sampleCount = Math.round(buffer.length / conversionRatio);
 
-        this.trimStartSeconds = (trimStart * sampleCount) / targetSampleRate;
-        this.trimEndSeconds = (trimEnd * sampleCount) / targetSampleRate;
+        this.trimStartSeconds = (trimStart * sampleCount) / buffer.sampleRate;
+        this.trimEndSeconds = (trimEnd * sampleCount) / buffer.sampleRate;
         this.adjustedTrimStartSeconds = this.trimStartSeconds;
         this.adjustedTrimEndSeconds = this.trimEndSeconds;
 
@@ -46,7 +46,7 @@ class AudioEffects {
         // Need to precompute those values to create the offline audio context.
         const pitchRatio = Math.pow(2, 4 / 12); // A major third
         const affectedSampleCount = Math.floor((this.trimEndSeconds - this.trimStartSeconds) *
-            targetSampleRate);
+            buffer.sampleRate);
         let adjustedAffectedSampleCount = affectedSampleCount;
         const unaffectedSampleCount = sampleCount - affectedSampleCount;
 
@@ -54,7 +54,7 @@ class AudioEffects {
         switch (name) {
         case effectTypes.ECHO:
             sampleCount = Math.max(sampleCount,
-                Math.floor((this.trimEndSeconds + (opts.tailSeconds ?? EchoEffect.TAIL_SECONDS)) * targetSampleRate));
+                Math.floor((this.trimEndSeconds + (opts.tailSeconds ?? EchoEffect.TAIL_SECONDS)) * buffer.sampleRate));
             break;
         case effectTypes.FASTER:
             this.playbackRate = pitchRatio;
@@ -69,9 +69,9 @@ class AudioEffects {
             break;
         }
 
-        const durationSeconds = sampleCount / targetSampleRate;
+        const durationSeconds = sampleCount / buffer.sampleRate;
         this.adjustedTrimEndSeconds = this.trimStartSeconds +
-            (adjustedAffectedSampleCount / targetSampleRate);
+            (adjustedAffectedSampleCount / buffer.sampleRate);
         this.adjustedTrimStart = this.adjustedTrimStartSeconds / durationSeconds;
         this.adjustedTrimEnd = this.adjustedTrimEndSeconds / durationSeconds;
 
@@ -81,7 +81,7 @@ class AudioEffects {
              */
             this.audioContext = new window.OfflineAudioContext(
                 2,
-                sampleCount * (targetSampleRate / buffer.sampleRate),
+                sampleCount * (conversionRatio ** 2),
                 targetSampleRate
             );
         } else {
