@@ -17,8 +17,10 @@ const AudioSelector = props => (
             <Box
                 className={classNames(styles.absolute)}
                 style={{
+                    top: `${Math.max(0, (props.trimChannel[1] - props.trimChannel[0])) * 50}%`,
                     left: `${props.trimStart * 100}%`,
-                    width: `${100 * (props.trimEnd - props.trimStart)}%`
+                    width: `${100 * (props.trimEnd - props.trimStart)}%`,
+                    height: `${(1 + (props.trimChannel[0] === props.trimChannel[1])) * 50}%`
                 }}
             >
                 <Box className={classNames(styles.absolute, styles.selectionBackground)} />
@@ -47,7 +49,9 @@ AudioSelector.propTypes = {
     onTrimStartMouseDown: PropTypes.func.isRequired,
     playhead: PropTypes.number,
     trimEnd: PropTypes.number,
-    trimStart: PropTypes.number
+    trimStart: PropTypes.number,
+    trimChannel: PropTypes.arrayOf(PropTypes.number),
+    channelCount: PropTypes.number
 };
 
 export default AudioSelector;

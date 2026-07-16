@@ -55,11 +55,17 @@ class AudioSelector extends React.Component {
         this.props.onSetTrim(null, null);
     }
     handleNewSelectionMouseDown (e) {
-        const {width, left} = this.containerElement.getBoundingClientRect();
-        this.initialTrimEnd = (getEventXY(e).x - left) / width;
+        const {width, height, left, top} = this.containerElement.getBoundingClientRect();
+        const {x, y} = getEventXY(e);
+        const yPos = y - top;
+        this.initialTrimEnd = (x - left) / width;
         this.initialTrimStart = this.initialTrimEnd;
         this.props.onSetTrim(this.initialTrimStart, this.initialTrimEnd);
         this.props.onUpdatePlayhead(this.initialTrimStart);
+        this.props.onSetTrimChannel([
+            yPos < height / 3,
+            yPos > height * (2 / 3)
+        ]);
 
         this.clickStartTime = Date.now();
 
@@ -147,6 +153,8 @@ class AudioSelector extends React.Component {
                 playhead={this.props.playhead}
                 trimEnd={this.state.trimEnd}
                 trimStart={this.state.trimStart}
+                trimChannel={this.props.trimChannel}
+                channelCount={this.props.channelCount}
                 onNewSelectionMouseDown={this.handleNewSelectionMouseDown}
                 onTrimEndMouseDown={this.handleTrimEndMouseDown}
                 onTrimStartMouseDown={this.handleTrimStartMouseDown}
@@ -160,6 +168,9 @@ AudioSelector.propTypes = {
     playhead: PropTypes.number,
     trimEnd: PropTypes.number,
     trimStart: PropTypes.number,
+    trimChannel: PropTypes.arrayOf(PropTypes.number),
+    onSetTrimChannel: PropTypes.func,
+    channelCount: PropTypes.number,
     onUpdatePlayhead: PropTypes.func
 };
 

@@ -36,6 +36,7 @@ class SoundEditor extends React.Component {
             'handlePause',
             'handleStopPlaying',
             'handleUpdatePlayhead',
+            'handleSetTrimChannel',
             'handleTimeStepMouseDown',
             'handleTimeStepMouseMove',
             'handleTimeStepMouseUp',
@@ -275,6 +276,9 @@ class SoundEditor extends React.Component {
     }
     handleUpdatePlayhead (playhead) {
         this.setState({playhead});
+    }
+    handleSetTrimChannel (trimChannel) {
+        this.setState({trimChannel});
     }
     handleChangeName (name) {
         this.props.vm.renameSound(this.props.soundIndex, name);
@@ -625,6 +629,7 @@ class SoundEditor extends React.Component {
                 trimEnd={this.state.trimEnd}
                 trimStart={this.state.trimStart}
                 trimChannel={this.state.trimChannel}
+                onSetTrimChannel={this.handleSetTrimChannel}
                 onChangeName={this.handleChangeName}
                 onContainerClick={this.handleContainerClick}
                 onCopy={this.handleCopy}
