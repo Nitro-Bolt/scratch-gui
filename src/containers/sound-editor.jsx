@@ -65,7 +65,7 @@ class SoundEditor extends React.Component {
             playhead: 0, // null is not playing, [0 -> 1] is playing percent
             trimStart: null,
             trimEnd: null,
-            trimChannel: [false, true],
+            trimChannel: [false, false],
             playing: false,
             timeStepCount: 0,
             timeStepWidth: 0,

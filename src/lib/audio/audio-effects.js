@@ -220,15 +220,13 @@ class AudioEffects {
             break;
         }
 
-
         if (input && output) {
             if (this.splitter) {
                 this.source.connect(this.splitter);
                 this.splitter.connect(input, this.selectedChannel);
-                input.connect(this.merger);
-                this.splitter.connect(this.merger);
-                this.merger.connect(output);
-                output.connect(this.audioContext.destination);
+                output.connect(this.merger, 0, this.selectedChannel);
+                this.splitter.connect(this.merger, 1 - this.selectedChannel, 1 - this.selectedChannel);
+                this.merger.connect(this.audioContext.destination);
             } else {
                 this.source.connect(input);
                 output.connect(this.audioContext.destination);
