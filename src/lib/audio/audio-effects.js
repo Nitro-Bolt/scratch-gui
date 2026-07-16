@@ -31,7 +31,9 @@ class AudioEffects {
      * @param {AudioBuffer} buffer
      */
     constructor (buffer, name, trimStart, trimEnd, trimChannel, opts) {
-        const targetSampleRate = name === effectTypes.BITCRUSH ? (opts.sampleRate ?? DefaultOpts.sampleRate) : 44100;
+        const targetSampleRate = name === effectTypes.BITCRUSH ?
+            (opts.sampleRate ?? DefaultOpts.sampleRate) :
+            buffer.sampleRate;
         const conversionRatio = targetSampleRate / buffer.sampleRate;
         let sampleCount = Math.round(buffer.length / conversionRatio);
 
