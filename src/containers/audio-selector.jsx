@@ -62,7 +62,10 @@ class AudioSelector extends React.Component {
         this.initialTrimStart = this.initialTrimEnd;
         this.props.onSetTrim(this.initialTrimStart, this.initialTrimEnd);
         this.props.onUpdatePlayhead(this.initialTrimStart);
-        this.props.onSetTrimChannel([
+        this.props.onSetTrimChannel(this.props.channelCount === 1 ? [
+            false,
+            false
+        ] : [
             yPos < height / 3,
             yPos > height * (2 / 3)
         ]);
