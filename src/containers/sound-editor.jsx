@@ -189,6 +189,14 @@ class SoundEditor extends React.Component {
                 channel2Samples: newChannel2Samples,
                 sampleRate: newSampleRate
             }) => {
+                if (!skipUndo) {
+                    this.redoStack = [];
+                    if (this.undoStack.length >= UNDO_STACK_SIZE) {
+                        this.undoStack.shift(); // Drop the first element off the array
+                    }
+                    this.undoStack.push(this.getUndoItem());
+                }
+
                 const encoder = new Mp3Encoder(2, newSampleRate, this.props.preferences['encoding-bit-rate'] ?? 128);
                 const chunks = [];
 
@@ -234,14 +242,6 @@ class SoundEditor extends React.Component {
                     this.audioBufferPlayer.buffer,
                     new Uint8Array(buffer)
                 );
-
-                if (!skipUndo) {
-                    this.redoStack = [];
-                    if (this.undoStack.length >= UNDO_STACK_SIZE) {
-                        this.undoStack.shift(); // Drop the first element off the array
-                    }
-                    this.undoStack.push(this.getUndoItem());
-                }
 
                 return true;
             })
