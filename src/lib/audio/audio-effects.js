@@ -188,7 +188,6 @@ class AudioEffects {
                 this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
             break;
         case effectTypes.VOLUME:
-            console.log(this.opts.volume);
             ({input, output} = this.opts.volume < 1 ? new MuteEffect(
                 this.audioContext,
                 this.adjustedTrimStartSeconds,
