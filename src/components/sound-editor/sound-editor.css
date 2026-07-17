@@ -239,7 +239,7 @@ $border-radius: 0.25rem;
     height: 2.75rem;
     width: 2.75rem;
     outline: none;
-    background-color: transparent;
+    background-color: $looks-secondary;
     border-radius: 100rem;
     border: none;
     cursor: pointer;
