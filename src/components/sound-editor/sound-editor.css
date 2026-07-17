@@ -133,6 +133,8 @@
     border: 1px solid $ui-black-transparent;
     margin: -1px;
     z-index: 1;
+    pointer-events: none;
+    user-select: none;
 }
 
 .meter-container {
