@@ -474,7 +474,9 @@ class SoundEditor extends React.Component {
         const trimStartSamples = trimStart * newCopyBuffer.channel1Samples.length;
         const trimEndSamples = trimEnd * newCopyBuffer.channel1Samples.length;
         newCopyBuffer.channel1Samples = newCopyBuffer.channel1Samples.slice(trimStartSamples, trimEndSamples);
-        newCopyBuffer.channel2Samples = newCopyBuffer.channel2Samples.slice(trimStartSamples, trimEndSamples);
+        if (newCopyBuffer.channel2Samples) {
+            newCopyBuffer.channel2Samples = newCopyBuffer.channel2Samples.slice(trimStartSamples, trimEndSamples);
+        }
 
         this.setState({
             copyBuffer: newCopyBuffer
@@ -536,9 +538,16 @@ class SoundEditor extends React.Component {
             newSamples.set(channel1Samples, 0);
             newSamples.set(this.state.copyBuffer.channel1Samples, channel1Samples.length);
             const newSamples2 = new Float32Array(newLength);
-            newSamples2.set(channel2Samples, 0);
-            newSamples2.set(this.state.copyBuffer.channel2Samples, channel2Samples.length);
-            this.submitNewSamples(newSamples, newSamples2, this.props.sampleRate, false).then(success => {
+            if (channel2Samples) {
+                newSamples2.set(channel2Samples, 0);
+                newSamples2.set(this.state.copyBuffer.channel2Samples, channel2Samples.length);
+            }
+            this.submitNewSamples(
+                newSamples,
+                channel2Samples ? newSamples2 : null,
+                this.props.sampleRate,
+                false
+            ).then(success => {
                 if (success) {
                     this.handlePlay();
                 }
@@ -549,17 +558,19 @@ class SoundEditor extends React.Component {
             const trimEndSamples = this.state.trimEnd * channel1Samples.length;
             const firstPart = channel1Samples.slice(0, trimStartSamples);
             const lastPart = channel1Samples.slice(trimEndSamples);
-            const firstPart2 = channel2Samples.slice(0, trimStartSamples);
-            const lastPart2 = channel2Samples.slice(trimEndSamples);
+            const firstPart2 = channel2Samples?.slice(0, trimStartSamples);
+            const lastPart2 = channel2Samples?.slice(trimEndSamples);
             const newLength = firstPart.length + this.state.copyBuffer.channel1Samples.length + lastPart.length;
             const newSamples = new Float32Array(newLength);
             newSamples.set(firstPart, 0);
             newSamples.set(this.state.copyBuffer.channel1Samples, firstPart.length);
             newSamples.set(lastPart, firstPart.length + this.state.copyBuffer.channel1Samples.length);
             const newSamples2 = new Float32Array(newLength);
-            newSamples2.set(firstPart2, 0);
-            newSamples2.set(this.state.copyBuffer.channel2Samples, firstPart2.length);
-            newSamples2.set(lastPart2, firstPart2.length + this.state.copyBuffer.channel2Samples.length);
+            if (channel2Samples) {
+                newSamples2.set(firstPart2, 0);
+                newSamples2.set(this.state.copyBuffer.channel2Samples, firstPart2.length);
+                newSamples2.set(lastPart2, firstPart2.length + this.state.copyBuffer.channel2Samples.length);
+            }
 
             const trimStartSeconds = trimStartSamples / this.props.sampleRate;
             const trimEndSeconds = trimStartSeconds +
@@ -567,7 +578,12 @@ class SoundEditor extends React.Component {
             const newDurationSeconds = newSamples.length / this.state.copyBuffer.sampleRate;
             const adjustedTrimStart = trimStartSeconds / newDurationSeconds;
             const adjustedTrimEnd = trimEndSeconds / newDurationSeconds;
-            this.submitNewSamples(newSamples, newSamples2, this.props.sampleRate, false).then(success => {
+            this.submitNewSamples(
+                newSamples,
+                channel2Samples ? newSamples2 : null,
+                this.props.sampleRate,
+                false
+            ).then(success => {
                 if (success) {
                     this.setState({
                         trimStart: adjustedTrimStart,

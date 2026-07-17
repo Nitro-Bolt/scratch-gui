@@ -34,7 +34,11 @@ const computeChunkedRMS = function (channels, chunkSize = 1024) {
 };
 
 const encodeAndAddSoundToVM = function (vm, preferences, channel1Samples, channel2Samples, sampleRate, name, callback) {
-    const encoder = new Mp3Encoder(2, sampleRate, preferences['encoding-bit-rate'] ?? 128);
+    const encoder = new Mp3Encoder(
+        1 + !!channel2Samples,
+        sampleRate,
+        preferences['encoding-bit-rate'] ?? 128
+    );
     const chunks = [];
 
     const left = new Int16Array(channel1Samples.length);
@@ -44,10 +48,12 @@ const encodeAndAddSoundToVM = function (vm, preferences, channel1Samples, channe
     // The encoder expects values between -32768 and 32767, and our arrays have values between -1.0 and 1.0.
     for (let i = 0; i < channel1Samples.length; i++) {
         const sample1 = Math.max(-1, Math.min(channel1Samples[i], 1));
-        const sample2 = Math.max(-1, Math.min((channel2Samples ?? channel1Samples)[i], 1));
-
         left[i] = sample1 < 0 ? sample1 * 0x8000 : sample1 * 0x7FFF;
-        right[i] = sample2 < 0 ? sample2 * 0x8000 : sample2 * 0x7FFF;
+
+        if (channel2Samples) {
+            const sample2 = Math.max(-1, Math.min((channel2Samples)[i], 1));
+            right[i] = sample2 < 0 ? sample2 * 0x8000 : sample2 * 0x7FFF;
+        }
     }
 
     const sampleBlockSize = 1152;
