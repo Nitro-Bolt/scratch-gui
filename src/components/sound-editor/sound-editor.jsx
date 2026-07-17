@@ -370,13 +370,13 @@ const SoundEditor = props => {
                                                     <FormattedMessage
                                                         defaultMessage="Left Channel"
                                                         description="Label for left waveform"
-                                                        id="nb.left-channel"
+                                                        id="nb.leftChannel"
                                                         key="0"
                                                     />,
                                                     <FormattedMessage
                                                         defaultMessage="Right Channel"
                                                         description="Label for right waveform"
-                                                        id="nb.right-channel"
+                                                        id="nb.rightChannel"
                                                         key="1"
                                                     />
                                                 ][i]}
