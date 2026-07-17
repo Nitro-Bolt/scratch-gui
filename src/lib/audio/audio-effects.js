@@ -80,7 +80,7 @@ class AudioEffects {
              * @type {OfflineAudioContext}
              */
             this.audioContext = new window.OfflineAudioContext(
-                2,
+                buffer.numberOfChannels,
                 sampleCount * (conversionRatio ** 2),
                 targetSampleRate
             );

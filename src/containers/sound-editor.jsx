@@ -197,7 +197,11 @@ class SoundEditor extends React.Component {
                     this.undoStack.push(this.getUndoItem());
                 }
 
-                const encoder = new Mp3Encoder(2, newSampleRate, this.props.preferences['encoding-bit-rate'] ?? 128);
+                const encoder = new Mp3Encoder(
+                    1 + !!channel2Samples,
+                    newSampleRate,
+                    this.props.preferences['encoding-bit-rate'] ?? 128
+                );
                 const chunks = [];
 
                 const left = new Int16Array(newChannel1Samples.length);
@@ -207,10 +211,12 @@ class SoundEditor extends React.Component {
                 // The encoder expects values between -32768 and 32767, and our arrays have values between -1.0 and 1.0.
                 for (let i = 0; i < newChannel1Samples.length; i++) {
                     const sample1 = Math.max(-1, Math.min(newChannel1Samples[i], 1));
-                    const sample2 = Math.max(-1, Math.min((newChannel2Samples ?? newChannel1Samples)[i], 1));
-
                     left[i] = sample1 < 0 ? sample1 * 0x8000 : sample1 * 0x7FFF;
-                    right[i] = sample2 < 0 ? sample2 * 0x8000 : sample2 * 0x7FFF;
+
+                    if (newChannel2Samples) {
+                        const sample2 = Math.max(-1, Math.min((newChannel2Samples)[i], 1));
+                        right[i] = sample2 < 0 ? sample2 * 0x8000 : sample2 * 0x7FFF;
+                    }
                 }
 
                 const sampleBlockSize = 1152;
@@ -285,13 +291,14 @@ class SoundEditor extends React.Component {
     }
     handleDelete () {
         const {channel1Samples, channel2Samples, sampleRate} = this.copyCurrentBuffer();
+        const _channel2Samples = channel2Samples ?? channel1Samples;
         const sampleCount = channel1Samples.length;
         const startIndex = Math.floor(this.state.trimStart * sampleCount);
         const endIndex = Math.floor(this.state.trimEnd * sampleCount);
         const firstPart = channel1Samples.slice(0, startIndex);
         const secondPart = channel1Samples.slice(endIndex, sampleCount);
-        const firstPart2 = channel2Samples.slice(0, startIndex);
-        const secondPart2 = channel2Samples.slice(endIndex, sampleCount);
+        const firstPart2 = _channel2Samples.slice(0, startIndex);
+        const secondPart2 = _channel2Samples.slice(endIndex, sampleCount);
         const newLength = firstPart.length + secondPart.length;
         let newSamples;
         let newSamples2;
@@ -306,7 +313,7 @@ class SoundEditor extends React.Component {
             newSamples2.set(firstPart2, 0);
             newSamples2.set(secondPart2, firstPart2.length);
         }
-        this.submitNewSamples(newSamples, newSamples2, sampleRate).then(() => {
+        this.submitNewSamples(newSamples, channel2Samples ? newSamples2 : null, sampleRate).then(() => {
             this.setState({
                 trimStart: null,
                 trimEnd: null
@@ -316,16 +323,17 @@ class SoundEditor extends React.Component {
     handleDeleteInverse () {
         // Delete everything outside of the trimmers
         const {channel1Samples, channel2Samples, sampleRate} = this.copyCurrentBuffer();
+        const _channel2Samples = channel2Samples ?? channel1Samples;
         const sampleCount = channel1Samples.length;
         const startIndex = Math.floor(this.state.trimStart * sampleCount);
         const endIndex = Math.floor(this.state.trimEnd * sampleCount);
         let clippedSamples = channel1Samples.slice(startIndex, endIndex);
-        let clippedSamples2 = channel2Samples.slice(startIndex, endIndex);
+        let clippedSamples2 = _channel2Samples.slice(startIndex, endIndex);
         if (clippedSamples.length === 0) {
             clippedSamples = new Float32Array(1);
             clippedSamples2 = new Float32Array(1);
         }
-        this.submitNewSamples(clippedSamples, clippedSamples2, sampleRate).then(success => {
+        this.submitNewSamples(clippedSamples, channel2Samples ? clippedSamples2 : null, sampleRate).then(success => {
             if (success) {
                 this.setState({
                     trimStart: null,
@@ -429,7 +437,7 @@ class SoundEditor extends React.Component {
         if (channel1Samples) {
             return this.submitNewSamples(
                 channel1Samples,
-                channel2Samples ?? channel1Samples,
+                channel2Samples,
                 sampleRate,
                 true
             ).then(success => {
@@ -445,7 +453,7 @@ class SoundEditor extends React.Component {
             this.undoStack.push(this.getUndoItem());
             return this.submitNewSamples(
                 channel1Samples,
-                channel2Samples ?? channel1Samples,
+                channel2Samples,
                 sampleRate,
                 true
             ).then(success => {
