@@ -15,6 +15,7 @@ import IconButton from '../icon-button/icon-button.jsx';
 
 import styles from './sound-editor.css';
 
+import controlsGraphic from '!../../lib/tw-recolor/build!./icon--controls.svg';
 import playIcon from './icon--play.svg';
 import pauseIcon from './icon--pause.svg';
 import stopIcon from './icon--stop.svg';
@@ -402,6 +403,7 @@ const SoundEditor = props => {
             </div>
             <div className={classNames(styles.row, styles.rowReverse)}>
                 <div className={classNames(styles.roundButtonOuter, styles.inputGroup)}>
+                    <TWRenderRecoloredImage src={controlsGraphic} />
                     <button
                         className={classNames(styles.roundButton, styles.stopButton)}
                         title={props.intl.formatMessage(messages.stop)}

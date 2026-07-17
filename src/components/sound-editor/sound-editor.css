@@ -221,18 +221,29 @@ $border-radius: 0.25rem;
     display: flex;
     align-items: center;
     height: 100%;
+    position: relative;
+}
+
+.round-button-outer > img {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    pointer-events: none;
+    user-select: none;
 }
 
 .round-button {
-    height: 3rem;
-    width: 3rem;
+    height: 2.75rem;
+    width: 2.75rem;
     outline: none;
-    background: $looks-secondary;
-    border-radius: 100%;
+    background-color: transparent;
+    border-radius: 100rem;
     border: none;
     cursor: pointer;
     padding: 0.75rem;
     user-select: none;
+    z-index: 1;
 }
 
 .round-button > img {
