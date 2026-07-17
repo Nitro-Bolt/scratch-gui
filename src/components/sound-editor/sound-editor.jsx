@@ -17,6 +17,7 @@ import styles from './sound-editor.css';
 
 import playIcon from './icon--play.svg';
 import pauseIcon from './icon--pause.svg';
+import stopIcon from './icon--stop.svg';
 import redoIcon from '!../../lib/tw-recolor/build!./icon--redo.svg';
 import undoIcon from '!../../lib/tw-recolor/build!./icon--undo.svg';
 import fasterIcon from './icon--faster.svg';
@@ -401,9 +402,19 @@ const SoundEditor = props => {
             </div>
             <div className={classNames(styles.row, styles.rowReverse)}>
                 <div className={classNames(styles.roundButtonOuter, styles.inputGroup)}>
+                    <button
+                        className={classNames(styles.roundButton, styles.stopButton)}
+                        title={props.intl.formatMessage(messages.stop)}
+                        onClick={props.onStop}
+                    >
+                        <img
+                            draggable={false}
+                            src={stopIcon}
+                        />
+                    </button>
                     {props.playing ? (
                         <button
-                            className={classNames(styles.roundButton, styles.pauseButton)}
+                            className={classNames(styles.roundButton, styles.playButton)}
                             title={props.intl.formatMessage(messages.pause)}
                             onClick={props.onPause}
                         >
