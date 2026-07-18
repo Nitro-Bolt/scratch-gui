@@ -16,14 +16,16 @@ const IconButton = ({
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const onClickDropdown = () => setDropdownOpen(!dropdownOpen);
     return (
-        <div className={classNames(styles.buttonContainer, className)}>
+        <div
+            className={classNames(styles.buttonContainer, className)}
+            onClick={disabled ? null : (dropdown ? onClickDropdown : onClick)}
+        >
             <div
                 className={classNames(
                     styles.container,
                     disabled ? styles.disabled : null
                 )}
                 role="button"
-                onClick={disabled ? null : onClick}
             >
                 <TWRenderRecoloredImage
                     className={styles.icon}
