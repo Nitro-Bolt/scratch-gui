@@ -116,11 +116,11 @@
     flex-grow: 1;
 }
 
-.waveform:first-child {
+:has(.waveform + .waveform) .waveform:first-child {
     border-bottom: 1px solid $ui-black-transparent;
 }
 
-.waveform:last-child .waveform-label {
+.waveform + .waveform .waveform-label {
     border-bottom-left-radius: 5px;
 }
 

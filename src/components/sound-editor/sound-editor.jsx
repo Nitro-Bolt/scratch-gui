@@ -359,14 +359,6 @@ const SoundEditor = props => {
                     </div>
                     <div className={styles.waveformContainer}>
                         <div className={styles.waveformInsideContainer}>
-                            <div
-                                className={styles.waveformShadow}
-                                style={{
-                                    // This logic makes my brain hurt but if it's not broken don't fix it
-                                    // eslint-disable-next-line max-len
-                                    background: `linear-gradient(90deg, ${Math.min(props.playhead, props.trimEnd ?? props.playhead) > 0 ? `var(--page-background) 0%, var(--page-background) ${Math.min(props.playhead, props.trimEnd ?? props.playhead) * 100}%, transparent ${Math.min(props.playhead, props.trimEnd ?? props.playhead) * 100}%` : 'transparent'}${props.trimStart || props.trimEnd ? `, transparent ${Math.max(props.playhead, props.trimStart, props.trimEnd) * 100}%, var(--page-background) ${Math.max(props.playhead, props.trimStart, props.trimEnd) * 100}%` : ''})`
-                                }}
-                            />
                             {props.chunkLevels.map((data, i) => (
                                 <div
                                     className={styles.waveform}
@@ -400,6 +392,14 @@ const SoundEditor = props => {
                                     )}
                                 </div>
                             ))}
+                            <div
+                                className={styles.waveformShadow}
+                                style={{
+                                    // This logic makes my brain hurt but if it's not broken don't fix it
+                                    // eslint-disable-next-line max-len
+                                    background: `linear-gradient(90deg, ${Math.min(props.playhead, props.trimEnd ?? props.playhead) > 0 ? `var(--page-background) 0%, var(--page-background) ${Math.min(props.playhead, props.trimEnd ?? props.playhead) * 100}%, transparent ${Math.min(props.playhead, props.trimEnd ?? props.playhead) * 100}%` : 'transparent'}${props.trimStart || props.trimEnd ? `, transparent ${Math.max(props.playhead, props.trimStart, props.trimEnd) * 100}%, var(--page-background) ${Math.max(props.playhead, props.trimStart, props.trimEnd) * 100}%` : ''})`
+                                }}
+                            />
                         </div>
                         <AudioSelector
                             playhead={props.playhead}
