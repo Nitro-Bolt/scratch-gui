@@ -3,7 +3,7 @@ export const DefaultOpts = {
     speed: 125,
 
     // Volume
-    volume: 100,
+    volume: 125,
 
     // Bitcrush
     bitDepth: 4,
