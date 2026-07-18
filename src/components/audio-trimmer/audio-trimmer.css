@@ -25,16 +25,9 @@ $hover-scale: 1.25;
 }
 
 .trim-background-mask {
-    border: 1px solid $red-tertiary;
     opacity: 0.5;
 
-    background: repeating-linear-gradient(
-        45deg,
-        $red-primary,
-        $red-primary $stripe-size,
-        $red-tertiary $stripe-size,
-        $red-tertiary calc(2 * $stripe-size)
-    );
+    background-color: $page-background;
 }
 
 .start-trim-background .trim-background-mask {
@@ -52,7 +45,7 @@ $hover-scale: 1.25;
     top: 0;
     width: 0px;
     height: 100%;
-    border: 1px solid $red-tertiary;
+    border: 1px solid $looks-secondary;
     z-index: 1;
 }
 
@@ -137,10 +130,6 @@ $hover-scale: 1.25;
 
 .trim-handle :active {
     cursor: grabbing;
-}
-
-.trimmer .trim-handle {
-    filter: hue-rotate(-240deg) brightness(1.35);
 }
 
 .trim-handle img {
