@@ -258,13 +258,13 @@ $border-radius: 0.25rem;
     /*min-width: 1.5rem;*/
 }
 
-.stop-button {
+.play-button {
     padding-right: calc(0.75rem / 2);
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-.play-button {
+.stop-button {
     padding-left: calc(0.75rem / 2);
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;

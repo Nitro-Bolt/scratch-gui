@@ -418,16 +418,6 @@ const SoundEditor = props => {
             </div>
             <div className={classNames(styles.row, styles.rowReverse)}>
                 <div className={classNames(styles.roundButtonOuter, styles.inputGroup)}>
-                    <button
-                        className={classNames(styles.roundButton, styles.stopButton)}
-                        title={props.intl.formatMessage(messages.stop)}
-                        onClick={props.onStop}
-                    >
-                        <img
-                            draggable={false}
-                            src={stopIcon}
-                        />
-                    </button>
                     {props.playing ? (
                         <button
                             className={classNames(styles.roundButton, styles.playButton)}
@@ -451,6 +441,16 @@ const SoundEditor = props => {
                             />
                         </button>
                     )}
+                    <button
+                        className={classNames(styles.roundButton, styles.stopButton)}
+                        title={props.intl.formatMessage(messages.stop)}
+                        onClick={props.onStop}
+                    >
+                        <img
+                            draggable={false}
+                            src={stopIcon}
+                        />
+                    </button>
                 </div>
                 <div className={styles.effects}>
                     <IconButton
