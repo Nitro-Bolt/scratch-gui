@@ -308,7 +308,12 @@ const SoundEditor = props => {
                     onClick={props.onDeleteInverse}
                 />
             </div>
-            <div className={styles.row}>
+            <div
+                className={styles.row}
+                style={{
+                    alignItems: 'stretch'
+                }}
+            >
                 <Box className={styles.meterContainer}>
                     <Meter
                         height={172}

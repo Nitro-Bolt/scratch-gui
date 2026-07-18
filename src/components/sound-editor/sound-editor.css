@@ -96,6 +96,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    flex-grow: 1;
 }
 
 .waveform-shadow {
@@ -112,6 +113,7 @@
 
 .waveform {
     position: relative;
+    flex-grow: 1;
 }
 
 .waveform:first-child {
@@ -138,11 +140,10 @@
 }
 
 .meter-container {
-    margin-right: 5px;
-    height: calc(100% - 50px);
     display: flex;
     align-items: center;
     padding: 3px;
+    margin: 20px 5px 20px 0;
 }
 
 .audio-container {
@@ -169,6 +170,8 @@
     justify-content: space-around;
     align-items: center;
     width: 100%;
+    flex-direction: column;
+    flex-grow: 1;
 
     position: relative;
 
