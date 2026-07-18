@@ -313,7 +313,7 @@ $border-radius: 0.25rem;
 }
 
 .effect-button > div:first-child {
-    padding: 0.25rem 0;
+    padding: 0.25rem 0.5rem;
 }
 
 .effect-button :first-child img {
