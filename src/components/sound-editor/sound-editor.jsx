@@ -159,6 +159,16 @@ const messages = defineMessages({
         description: 'Title of the button to apply the flip effect',
         defaultMessage: 'Flip L&R'
     },
+    speed: {
+        id: 'gui.soundEditor.speed',
+        description: 'Title of the button to apply the speed effect',
+        defaultMessage: 'Speed'
+    },
+    speedSpeed: {
+        id: 'gui.soundEditor.speed.speed',
+        description: 'Label for the speed',
+        defaultMessage: 'Speed'
+    },
     volume: {
         id: 'gui.soundEditor.volume',
         description: 'Title of the button to apply the volume effect',
@@ -225,9 +235,10 @@ const formatSoundSize = bytes => {
 };
 
 const SoundEditor = props => {
+    const [speedSpeed, setSpeedSpeed] = useState(DefaultOpts.speed);
+    const [volumeVolume, setVolumeVolume] = useState(DefaultOpts.volume);
     const [bitcrushSampleRate, setBitcrushSampleRate] = useState(DefaultOpts.sampleRate);
     const [bitcrushBitDepth, setBitcrushBitDepth] = useState(DefaultOpts.bitDepth);
-    const [volumeVolume, setVolumeVolume] = useState(DefaultOpts.volume);
     return (
         <div
             className={styles.editorContainer}
@@ -445,14 +456,32 @@ const SoundEditor = props => {
                     <IconButton
                         className={styles.effectButton}
                         img={fasterIcon}
-                        title={<FormattedMessage {...messages.faster} />}
+                        title={<FormattedMessage {...messages.speed} />}
                         onClick={props.onFaster}
-                    />
-                    <IconButton
-                        className={styles.effectButton}
-                        img={slowerIcon}
-                        title={<FormattedMessage {...messages.slower} />}
-                        onClick={props.onSlower}
+                        dropdown={(
+                            <div className={styles.dropdown}>
+                                <div className={styles.inputGroup}>
+                                    <Label text={props.intl.formatMessage(messages.speedSpeed)}>
+                                        <BufferedInput
+                                            type="number"
+                                            className={styles.dropdownInput}
+                                            value={speedSpeed}
+                                            onInput={event => setSpeedSpeed(event.currentTarget.value)}
+                                        />
+                                    </Label>
+                                </div>
+                                <button
+                                    className={styles.dropdownSubmit}
+                                    onClick={() => props.onSpeed(speedSpeed)}
+                                >
+                                    <FormattedMessage
+                                        id="gui.soundEditor.applyEffect"
+                                        description="Title of the button to apply the effect"
+                                        defaultMessage="Apply"
+                                    />
+                                </button>
+                            </div>
+                        )}
                     />
                     <IconButton
                         className={classNames(styles.effectButton, styles.flipInRtl)}
@@ -631,6 +660,7 @@ SoundEditor.propTypes = {
     onSetTrim: PropTypes.func,
     onSlower: PropTypes.func.isRequired,
     onSofter: PropTypes.func.isRequired,
+    onSpeed: PropTypes.func.isRequired,
     onStop: PropTypes.func.isRequired,
     onUndo: PropTypes.func.isRequired,
     onUpdatePlayhead: PropTypes.func.isRequired,

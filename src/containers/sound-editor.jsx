@@ -681,6 +681,10 @@ class SoundEditor extends React.Component {
                 onSetTrim={this.handleUpdateTrim}
                 onSlower={this.effectFactory(effectTypes.SLOWER)}
                 onSofter={this.effectFactory(effectTypes.SOFTER)}
+                // eslint-disable-next-line react/jsx-no-bind
+                onSpeed={speed => this.handleEffect(effectTypes.SPEED, {
+                    speed
+                })}
                 onStop={this.handleStopPlaying}
                 onUndo={this.handleUndo}
                 onUpdatePlayhead={this.handleUpdatePlayhead}

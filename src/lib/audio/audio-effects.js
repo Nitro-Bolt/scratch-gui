@@ -8,6 +8,7 @@ import MuteEffect from './effects/mute-effect.js';
 import {DefaultOpts} from './default-audio-effect-opts.js';
 
 const effectTypes = {
+    SPEED: 'speed',
     VOLUME: 'volume',
     FLIP: 'flip',
     BITCRUSH: 'bitcrush',
@@ -44,7 +45,7 @@ class AudioEffects {
 
         // Some effects will modify the playback rate and/or number of samples.
         // Need to precompute those values to create the offline audio context.
-        const pitchRatio = Math.pow(2, 4 / 12); // A major third
+        const pitchRatio = 1.25;
         const affectedSampleCount = Math.floor((this.trimEndSeconds - this.trimStartSeconds) *
             buffer.sampleRate);
         let adjustedAffectedSampleCount = affectedSampleCount;
@@ -55,6 +56,12 @@ class AudioEffects {
         case effectTypes.ECHO:
             sampleCount = Math.max(sampleCount,
                 Math.floor((this.trimEndSeconds + (opts.tailSeconds ?? EchoEffect.TAIL_SECONDS)) * buffer.sampleRate));
+            break;
+        case effectTypes.SPEED:
+            this.playbackRate = opts.speed / 100;
+            adjustedAffectedSampleCount = Math.floor(affectedSampleCount / this.playbackRate);
+            sampleCount = unaffectedSampleCount + adjustedAffectedSampleCount;
+
             break;
         case effectTypes.FASTER:
             this.playbackRate = pitchRatio;
@@ -181,6 +188,7 @@ class AudioEffects {
         let input;
         let output;
         switch (this.name) {
+        case effectTypes.SPEED:
         case effectTypes.FASTER:
         case effectTypes.SLOWER:
             this.source.playbackRate.setValueAtTime(this.playbackRate, this.adjustedTrimStartSeconds);

@@ -1,9 +1,9 @@
 export const DefaultOpts = {
+    // Speed
+    speed: 125,
+
     // Volume
     volume: 100,
-
-    // Echo
-    tailSeconds: 0.75,
 
     // Bitcrush
     bitDepth: 4,
