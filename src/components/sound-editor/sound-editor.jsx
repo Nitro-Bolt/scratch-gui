@@ -335,7 +335,7 @@ const SoundEditor = props => {
                                     translate: `${props.timeStepWidth * i}px 0`
                                 }}
                             >
-                                {i % 2 === 0 && (
+                                {(i % 2 === 0 || props.timeStepWidth > 65) && (
                                     <span>{formatTime(props.timeStepTime * i)}</span>
                                 )}
                             </div>
