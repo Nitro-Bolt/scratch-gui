@@ -3,12 +3,15 @@
 .button-container {
     justify-content: center;
     display: flex;
-    cursor: pointer;
     font-size: 0.75rem;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: $looks-secondary;
     border-radius: 0.5rem;
     position: relative;
+}
+
+.button-container:not(:has(.disabled)) {
+    cursor: pointer;
 }
 
 .button-container + .button-container {
