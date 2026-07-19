@@ -26,6 +26,7 @@ const Selector = props => {
         onDeleteClick,
         onDuplicateClick,
         onExportClick,
+        onExportBitmapClick,
         onItemClick,
         onMoveToTopClick,
         onMoveToBottomClick
@@ -76,6 +77,7 @@ const Selector = props => {
                             dragType={dragType}
                             id={index}
                             index={index}
+                            isBitmap={item.isBitmap}
                             totalItems={items.length}
                             name={item.name}
                             number={index + 1 /* 1-indexed */}
@@ -84,6 +86,7 @@ const Selector = props => {
                             onDeleteButtonClick={onDeleteClick}
                             onDuplicateButtonClick={onDuplicateClick}
                             onExportButtonClick={onExportClick}
+                            onExportBitmapButtonClick={onExportBitmapClick}
                             onMoveToTopButtonClick={onMoveToTopClick}
                             onMoveToBottomButtonClick={onMoveToBottomClick}
                         />
@@ -114,6 +117,7 @@ Selector.propTypes = {
     onDeleteClick: PropTypes.func,
     onDuplicateClick: PropTypes.func,
     onExportClick: PropTypes.func,
+    onExportBitmapClick: PropTypes.func,
     onItemClick: PropTypes.func.isRequired,
     onRemoveSortable: PropTypes.func,
     onMoveToTopClick: PropTypes.func,

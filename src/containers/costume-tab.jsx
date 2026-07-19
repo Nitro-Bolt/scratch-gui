@@ -81,6 +81,7 @@ class CostumeTab extends React.Component {
             'handleDeleteCostume',
             'handleDuplicateCostume',
             'handleExportCostume',
+            'handleExportBitmapCostume',
             'handleMoveToTop',
             'handleMoveToBottom',
             'handleNewCostume',
@@ -152,6 +153,28 @@ class CostumeTab extends React.Component {
             this.props.vm.getExportedCostume(item)
         ], {type: item.asset.assetType.contentType});
         downloadBlob(`${item.name}.${item.asset.dataFormat}`, blob);
+    }
+    handleExportBitmapCostume (costumeIndex) {
+        const item = this.props.vm.editingTarget.sprite.costumes[costumeIndex];
+        const data = this.props.vm.getExportedCostume(item);
+        const contentType = item.asset.assetType.contentType;
+
+        const blob = new Blob([data], {type: contentType});
+        const url = URL.createObjectURL(blob);
+
+        const img = new Image();
+        img.onload = () => {
+            URL.revokeObjectURL(url);
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth || img.width;
+            canvas.height = img.naturalHeight || img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            canvas.toBlob(pngBlob => {
+                downloadBlob(`${item.name}.png`, pngBlob);
+            }, 'image/png');
+        };
+        img.src = url;
     }
     handleMoveToTop (costumeIndex) {
         this.props.vm.editingTarget.reorderCostume(costumeIndex, 0);
@@ -306,6 +329,7 @@ class CostumeTab extends React.Component {
         const costumeData = target.costumes ? target.costumes.map(costume => ({
             name: costume.name,
             asset: costume.asset,
+            isBitmap: costume.asset && costume.asset.dataFormat !== 'svg',
             details: costume.size ? this.formatCostumeDetails(costume.size, costume.bitmapResolution) : null,
             dragPayload: costume
         })) : [];
@@ -351,6 +375,7 @@ class CostumeTab extends React.Component {
                 onDrop={this.handleDrop}
                 onDuplicateClick={this.handleDuplicateCostume}
                 onExportClick={this.handleExportCostume}
+                onExportBitmapClick={this.handleExportBitmapCostume}
                 onItemClick={this.handleSelectCostume}
                 onMoveToTopClick={this.handleMoveToTop}
                 onMoveToBottomClick={this.handleMoveToBottom}

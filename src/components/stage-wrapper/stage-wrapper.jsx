@@ -47,10 +47,12 @@ const StageWrapperComponent = function (props) {
                 />
             </Box>
             <Box
-                className={styles.stageCanvasWrapper}
-                style={{
-                    display: stageSize === 0 && !(isEmbedded || isFullScreen) ? 'none' : null
-                }}
+                className={classNames(
+                    styles.stageCanvasWrapper,
+                    {
+                        [styles.hidden]: stageSize === 0 && !(isEmbedded || isFullScreen) ? 'hidden' : null
+                    }
+                )}
             >
                 {
                     isRendererSupported ?

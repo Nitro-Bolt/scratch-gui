@@ -181,7 +181,7 @@ const compareArrays = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 let _firstAddBlockRan = false;
 
 const contextMenuCallbacks = [];
-const CONTEXT_MENU_ORDER = ['editor-devtools', 'blocks2image', 'swap-local-global'];
+const CONTEXT_MENU_ORDER = ['blocks2image', 'swap-local-global'];
 let createdAnyBlockContextMenus = false;
 
 const updateClasses = () => {
@@ -399,16 +399,16 @@ class Tab extends EventTargetShim {
                           const wrapper = Object.assign(document.createElement('div'), {
                               className: 'sa-paintEditorZoomControls-wrapper'
                           });
-          
+
                           wrapper.style.display = 'flex';
                           wrapper.style.flexDirection = 'row-reverse';
                           wrapper.style.height = 'calc(1.95rem + 2px)';
-          
+
                           const zoomControls = q("[class^='paint-editor_zoom-controls']");
-          
+
                           zoomControls.replaceWith(wrapper);
                           wrapper.appendChild(zoomControls);
-          
+
                           return wrapper;
                       })()
                 ),
@@ -899,7 +899,7 @@ class AddonRunner {
         this.publicAPI.addon.self.disabled = false;
         this.updateAllStyles();
         this.publicAPI.addon.self.dispatchEvent(new CustomEvent('reenabled'));
-    
+
     }
 
     dynamicDisable () {

@@ -44,6 +44,7 @@
 .input-small {
     width: 3rem;
     padding: 0 0.5rem;
+    border-radius: 1.7rem;
     text-overflow: clip;
     text-align: center;
 }

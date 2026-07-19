@@ -105,7 +105,6 @@ import sharedMessages from '../../lib/shared-messages';
 import SeeInsideButton from './tw-see-inside.jsx';
 import {notScratchDesktop} from '../../lib/isScratchDesktop.js';
 import {APP_NAME} from '../../lib/brand.js';
-import AllTheModsButton from './tw-all-the-mods.jsx';
 
 const ariaMessages = defineMessages({
     tutorials: {
@@ -1003,7 +1002,6 @@ class MenuBar extends React.Component {
                             </Button>
                         </a>
                     </div>}
-                    <AllTheModsButton className={styles.menuBarButton} />
                 </div>
 
                 <div className={styles.accountInfoGroup}>

@@ -25,8 +25,7 @@ import {generateRandomUsername} from '../../lib/tw-username.js';
 import KeyInput from './key-input.jsx';
 import {defaultKeyboardShortcuts} from '../../lib/nb-keyboard-shortcut.js';
 import {setTheme} from '../../reducers/theme.js';
-import {persistTheme} from '../../lib/themes/themePersistance.js';
-import {detectTheme} from '../../lib/themes/themePersistance.js';
+import {persistTheme, detectTheme} from '../../lib/themes/themePersistance.js';
 import {GUI_DARK, GUI_LIGHT, Theme, BLOCKS_CUSTOM} from '../../lib/themes/index.js';
 import {
     BLOCK_COLOR_CATEGORIES,
@@ -72,14 +71,41 @@ const messages = defineMessages({
     git: {
         id: 'nb.editorSettings.gitSection',
         defaultMessage: 'Git'
+    paint: {
+        id: 'nb.editorSettings.paintSection',
+        defaultMessage: 'Paint'
+    },
+    versionControl: {
+        id: 'nb.editorSettings.versionControlSection',
+        defaultMessage: 'Version Control'
     },
     keymap: {
         id: 'nb.editorSettings.keymapSection',
         defaultMessage: 'Keymap'
+    },
+    visibleTabs: {
+        id: 'nb.editorSettings.visibleTabs',
+        defaultMessage: 'Visible tabs'
+    },
+    visibleTabsHelp: {
+        id: 'nb.editorSettings.visibleTabsHelp',
+        defaultMessage: 'Choose which tabs to show in the editor. Hidden tabs can still be accessed via keyboard shortcuts.'
+    },
+    resetTabsVisibility: {
+        id: 'nb.editorSettings.resetTabsVisibility',
+        defaultMessage: 'Reset to defaults'
     }
 });
 
-const toolbox_categories = [
+const editorTabs = [
+    {index: 0, id: 'code', label: 'Code'},
+    {index: 1, id: 'costumes', label: 'Costumes'},
+    {index: 2, id: 'sounds', label: 'Sounds'},
+    {index: 3, id: 'assets', label: 'Assets'},
+    {index: 4, id: 'variables', label: 'Variables'}
+];
+
+const toolboxCategories = [
     {id: 'motion', label: 'Motion'},
     {id: 'looks', label: 'Looks'},
     {id: 'sound', label: 'Sound'},
@@ -200,18 +226,11 @@ const EditorSettingsModal = props => {
     const [categoriesExpanded, setCategoriesExpanded] = useState(false);
     const [blockColors, setBlockColors] = useState(loadBlockColors);
     const [blockColorsExpanded, setBlockColorsExpanded] = useState(false);
+    const [tabsExpanded, setTabsExpanded] = useState(false);
 
     const latestBlockColors = useRef(blockColors);
     latestBlockColors.current = blockColors;
     const pendingBlockColors = useRef(null);
-
-    useEffect(() => () => {
-        if (pendingBlockColors.current) {
-            commitBlockColors(pendingBlockColors.current);
-            pendingBlockColors.current = null;
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     useEffect(() => {
         if (props.theme.blocks !== BLOCKS_CUSTOM) {
@@ -226,6 +245,13 @@ const EditorSettingsModal = props => {
         saveBlockColors(next);
         props.onChangeTheme(props.theme.set('blocks', BLOCKS_CUSTOM));
     };
+
+    useEffect(() => () => {
+        if (pendingBlockColors.current) {
+            commitBlockColors(pendingBlockColors.current);
+            pendingBlockColors.current = null;
+        }
+    }, []);
 
     const handleBlockColorPreview = (colorId, value) => {
         const next = {...latestBlockColors.current, [colorId]: value};
@@ -256,6 +282,11 @@ const EditorSettingsModal = props => {
     };
 
     const hiddenCategories = props.preferences['hidden-categories'] || [];
+    const hiddenTabs = props.preferences['hidden-tabs'] || [];
+
+    const handleResetTabsVisibility = () => {
+        props.onSetPreference('hidden-tabs', []);
+    };
 
     const sections = [
         {
@@ -537,6 +568,73 @@ const EditorSettingsModal = props => {
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={e => props.onSetPreference('hide-feedback', e.target.checked)}
                 />
+                <Setting
+                    help={
+                        <FormattedMessage
+                            id="nb.editorSettings.visibleTabsHelp"
+                            defaultMessage="Choose which tabs to show in the editor. Hidden tabs can still be accessed via keyboard shortcuts."
+                        />
+                    }
+                    primary={
+                        <button
+                            className={classNames(styles.label, styles.collapseButton)}
+                            onClick={() => setTabsExpanded(e => !e)}
+                        >
+                            <FormattedMessage
+                                id="nb.editorSettings.visibleTabs"
+                                defaultMessage="Visible tabs"
+                            />
+                            <img
+                                className={classNames(styles.collapseArrow, {
+                                    [styles.collapseArrowExpanded]: tabsExpanded
+                                })}
+                                src={dropdownCaret}
+                            />
+                        </button>
+                    }
+                    secondary={
+                        tabsExpanded && (<div><div className={styles.categoryGrid}>
+                            {editorTabs.map(tab => {
+                                const isHidden = hiddenTabs.includes(tab.index);
+                                const visibleCount = editorTabs.filter(t =>
+                                    !hiddenTabs.includes(t.index)
+                                ).length;
+
+                                return (
+                                    <label
+                                        key={tab.index}
+                                        className={styles.label}
+                                    >
+                                        <FancyCheckbox
+                                            className={styles.checkbox}
+                                            checked={!isHidden}
+                                            disabled={!isHidden && visibleCount < 3}
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onChange={() => {
+                                                const next = hiddenTabs.includes(tab.index) ?
+                                                    hiddenTabs.filter(i => i !== tab.index) :
+                                                    [...hiddenTabs, tab.index];
+                                                props.onSetPreference('hidden-tabs', next);
+                                            }}
+                                        />
+                                        {tab.label}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                        <button
+                            className={styles.button}
+                            onClick={handleResetTabsVisibility}
+                            style={{marginTop: '8px'}}
+                        >
+                            <FormattedMessage
+                                id="nb.editorSettings.resetTabsVisibility"
+                                defaultMessage="Reset to defaults"
+                            />
+                        </button>
+                        </div>)
+                    }
+                />
                 <div className={styles.header}>
                     <FormattedMessage
                         id="nb.editorSettings.toolbox"
@@ -544,6 +642,19 @@ const EditorSettingsModal = props => {
                     />
                     <div className={styles.divider} />
                 </div>
+                <BooleanSetting
+                    value={!!props.preferences['hide-nb-blocks']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.vanillaPalette"
+                        defaultMessage="Vanilla palette"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.vanillaPaletteHelp"
+                        defaultMessage="Hides NitroBolt-exclusive blocks (e.g. extended operators, switch, for-each-in-range, etc.) and hides the JSON and assets categories."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => props.onSetPreference('hide-nb-blocks', e.target.checked)}
+                />
                 <Setting
                     help={
                         <FormattedMessage
@@ -570,9 +681,15 @@ const EditorSettingsModal = props => {
                     }
                     secondary={
                         categoriesExpanded && (<div><div className={styles.categoryGrid}>
-                            {toolbox_categories.map(category => {
-                                const isVisible = !hiddenCategories.includes(category.id);
-                                const visibleCount = toolbox_categories.filter(c => !hiddenCategories.includes(c.id)).length;
+                            {toolboxCategories.map(category => {
+                                const isNB = category.id === 'json' || category.id === 'assets';
+                                const hideNB = !!props.preferences['hide-nb-blocks'] && isNB;
+                                const isVisible = !hideNB && !hiddenCategories.includes(category.id);
+                                const visibleCount = toolboxCategories.filter(c =>
+                                    !(!!props.preferences['hide-nb-blocks'] && (c.id === 'json' || c.id === 'assets')) &&
+                                    !hiddenCategories.includes(c.id)
+                                ).length;
+
                                 return (
                                     <label
                                         key={category.id}
@@ -581,11 +698,11 @@ const EditorSettingsModal = props => {
                                         <FancyCheckbox
                                             className={styles.checkbox}
                                             checked={isVisible}
-                                            disabled={isVisible && visibleCount === 1}
+                                            disabled={hideNB || (isVisible && visibleCount === 1)}
                                             onChange={() => {
-                                                const next = isVisible ?
-                                                    [...hiddenCategories, category.id] :
-                                                    hiddenCategories.filter(id => id !== category.id);
+                                                const next = hiddenCategories.includes(category.id) ?
+                                                    hiddenCategories.filter(id => id !== category.id) :
+                                                    [...hiddenCategories, category.id];
                                                 props.onSetPreference('hidden-categories', next);
                                             }}
                                         />
@@ -595,15 +712,15 @@ const EditorSettingsModal = props => {
                             })}
                         </div>
                         <button
-                                className={styles.button}
-                                onClick={handleResetCategoriesVisibility}
-                                style={{marginTop: '8px'}}
-                            >
-                                <FormattedMessage
+                            className={styles.button}
+                            onClick={handleResetCategoriesVisibility}
+                            style={{marginTop: '8px'}}
+                        >r
+                            <FormattedMessage
                                 id="nb.editorSettings.resetCategoriesVisibility"
                                 defaultMessage="Reset to defaults"
                             />
-                            </button>
+                        </button>
                         </div>)
                     }
                 />
@@ -676,6 +793,70 @@ const EditorSettingsModal = props => {
             </Box>
         },
         {
+            title: messages.paint,
+            content: <Box>
+                <Setting
+                    primary={(
+                        <div className={classNames(styles.label, styles.customStageSize)}>
+                            <FormattedMessage
+                                defaultMessage="Nudge multiplier:"
+                                id="nb.editorSettings.nudgeMultiplier"
+                            />
+                            <BufferedInput
+                                value={String(props.preferences['paint-nudge-multiplier'] ?? 15)}
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onSubmit={value => {
+                                    const num = Number(value);
+                                    if (Number.isFinite(num) && num > 0) {
+                                        props.onSetPreference('paint-nudge-multiplier', num);
+                                    }
+                                }}
+                                type="number"
+                                min="1"
+                                spellCheck="false"
+                            />
+                        </div>
+                    )}
+                    help={
+                        <FormattedMessage
+                            id="nb.editorSettings.nudgeMultiplierHelp"
+                            defaultMessage="How far selected objects move when pressing Shift+Arrow keys in the paint editor."
+                        />
+                    }
+                />
+                <BooleanSetting
+                    value={!!props.preferences['paint-no-swap-button']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.noSwapButton"
+                        defaultMessage="Hide swap button"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.noSwapButtonHelp"
+                        defaultMessage="Hides the fill and outline swap button."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('paint-no-swap-button', e.target.checked);
+                    }}
+                />
+                <BooleanSetting
+                    value={!!props.preferences['paint-no-cut-button']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.noCutButton"
+                        defaultMessage="Hide cut button"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.noCutButtonHelp"
+                        defaultMessage="Hides the cut to clipboard button."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('paint-no-cut-button', e.target.checked);
+                    }}
+                />
+            </Box>
+        },
+        {
             title: messages.sound,
             content: <Box>
                 <Setting
@@ -705,8 +886,8 @@ const EditorSettingsModal = props => {
             </Box>
         },
         {
-            title: messages.git,
-            content: null
+            title: messages.versionControl,
+            content: <p>{'Coming Soon'}</p>
         },
         {
             title: messages.keymap,

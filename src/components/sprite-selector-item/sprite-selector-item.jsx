@@ -54,7 +54,7 @@ const SpriteSelectorItem = props => (
                 onClick={props.onDeleteButtonClick}
             />
         ) : null }
-        {props.onDuplicateButtonClick || props.onDeleteButtonClick || props.onExportButtonClick || props.onMoveToTopButtonClick || props.onMoveToBottomButtonClick ? (
+        {props.onDuplicateButtonClick || props.onDeleteButtonClick|| props.onExportButtonClick || props.onExportBitmapButtonClick || props.onMoveToTopButtonClick || props.onMoveToBottomButtonClick ? (
             <ContextMenu id={`${props.name}-${contextMenuId++}`}>
                 {props.onDuplicateButtonClick ? (
                     <MenuItem onClick={props.onDuplicateButtonClick}>
@@ -71,6 +71,15 @@ const SpriteSelectorItem = props => (
                             defaultMessage="export"
                             description="Menu item to export the selected item"
                             id="gui.spriteSelectorItem.contextMenuExport"
+                        />
+                    </MenuItem>
+                ) : null }
+                {props.onExportBitmapButtonClick && !props.isBitmap ? (
+                    <MenuItem onClick={props.onExportBitmapButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="export as bitmap"
+                            description="Menu item to bitmap export the selected item"
+                            id="gui.spriteSelectorItem.contextMenuExportBitmap"
                         />
                     </MenuItem>
                 ) : null }
@@ -127,6 +136,8 @@ SpriteSelectorItem.propTypes = {
     onDeleteButtonClick: PropTypes.func,
     onDuplicateButtonClick: PropTypes.func,
     onExportButtonClick: PropTypes.func,
+    onExportBitmapButtonClick: PropTypes.func,
+    isBitmap: PropTypes.bool,
     onRenameButtonClick: PropTypes.func,
     onMoveToTopButtonClick: PropTypes.func,
     onMoveToBottomButtonClick: PropTypes.func,
