@@ -36,7 +36,6 @@ import copyIcon from '!../../lib/tw-recolor/build!./icon--copy.svg';
 import pasteIcon from '!../../lib/tw-recolor/build!./icon--paste.svg';
 import copyToNewIcon from '!../../lib/tw-recolor/build!./icon--copy-to-new.svg';
 import trimIcon from '!../../lib/tw-recolor/build!./icon--trim-action.svg';
-import {SOUND_BYTE_LIMIT} from '../../lib/audio/audio-util.js';
 import Box from '../box/box.jsx';
 import Meter from '../meter/meter.jsx';
 import {DefaultOpts} from '../../lib/audio/default-audio-effect-opts.js';
@@ -594,15 +593,6 @@ const SoundEditor = props => {
                     {formatDuration(props.playhead, props.trimStart, props.trimEnd, props.duration)}
                 </div>
                 <div className={styles.advancedInfo}>
-                    {props.size > SOUND_BYTE_LIMIT &&
-                        <div className={classNames(styles.alert, styles.stereo)}>
-                            <FormattedMessage
-                                defaultMessage="Editing this sound will irreversibly lower its quality."
-                                description="Message that appears when editing a large sound."
-                                id="nb.sizeAlert"
-                            />
-                        </div>
-                    }
                     <span>
                         {`${formatSampleRate(props.sampleRate)} `}
                         {props.isStereo ? (

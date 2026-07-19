@@ -1,7 +1,5 @@
 import EncoderWorker from 'worker-loader!../nb-encode-mp3-worker.js';
 
-export const SOUND_BYTE_LIMIT = 20 * 1000 * 1000; // 20mb
-
 const _computeRMS = function (samples, start, end, scaling = 0.55) {
     const length = end - start;
     if (length === 0) return 0;
@@ -84,21 +82,15 @@ const encodeAndAddSoundToVM = function (vm, preferences, channel1Samples, channe
  */
 
 /**
- * Downsample the given buffer to try to reduce file size below SOUND_BYTE_LIMIT
+ * NB: The only limit is the user's computer. This function immediately resolves the buffer.
  * @param {SoundBuffer} buffer - Buffer to resample
  * @param {function(SoundBuffer):Promise<SoundBuffer>} resampler - resampler function
  * @returns {SoundBuffer} Downsampled buffer with half the sample rate
  */
+// eslint-disable-next-line no-unused-vars
 const downsampleIfNeeded = (buffer, resampler) => {
     const {channel1Samples, channel2Samples, sampleRate} = buffer;
-    const encodedByteLength = channel1Samples.length * 2; /* bitDepth 16 bit */
-    // Resolve immediately if already within byte limit
-    if (encodedByteLength < SOUND_BYTE_LIMIT) {
-        return Promise.resolve({channel1Samples, channel2Samples, sampleRate});
-    }
-    // TW: Don't check if the sound will still fit at this reduced sample rate.
-    // Instead the GUI will show a warning if it's too large.
-    return resampler({channel1Samples, channel2Samples, sampleRate}, 22050);
+    return Promise.resolve({channel1Samples, channel2Samples, sampleRate});
 };
 
 /**
