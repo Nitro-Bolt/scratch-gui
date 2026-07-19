@@ -667,16 +667,9 @@ class Blocks extends React.Component {
     }
     handleCustomProceduresClose (data) {
         this.props.onRequestCloseCustomProcedures(data);
-        // Wait for React to unmount the modal and dispose its temporary
-        // procedure workspace before rebuilding the flyout. Refreshing here
-        // synchronously can preserve the temporary prototype as a duplicate.
-        setTimeout(() => {
-            const ws = this.workspace;
-            if (ws && ws.toolbox_) {
-                ws.refreshToolboxSelection_();
-                ws.toolbox_.scrollToCategoryById('myBlocks');
-            }
-        });
+        const ws = this.workspace;
+        ws.refreshToolboxSelection_();
+        ws.toolbox_.scrollToCategoryById('myBlocks');
     }
     handleDrop (dragInfo) {
         fetch(dragInfo.payload.bodyUrl)
