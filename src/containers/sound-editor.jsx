@@ -1,7 +1,6 @@
 import bindAll from 'lodash.bindall';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Mp3Encoder} from 'lamejs';
 import VM from 'scratch-vm';
 
 import {connect} from 'react-redux';
@@ -18,6 +17,8 @@ import AudioBufferPlayer from '../lib/audio/audio-buffer-player.js';
 import DragRecognizer from '../lib/drag-recognizer';
 import {getEventXY} from '../lib/touch-utils';
 import log from '../lib/log.js';
+import EncoderWorker from 'worker-loader!../lib/nb-encode-mp3-worker.js';
+import {closeAlertWithId, showStandardAlert} from '../reducers/alerts.js';
 
 const UNDO_STACK_SIZE = 99;
 
@@ -183,12 +184,13 @@ class SoundEditor extends React.Component {
         });
     }
     submitNewSamples (channel1Samples, channel2Samples, sampleRate, skipUndo) {
+        this.props.showEncodingAlert();
         return downsampleIfNeeded({channel1Samples, channel2Samples, sampleRate}, this.resampleBufferToRate)
             .then(({
                 channel1Samples: newChannel1Samples,
                 channel2Samples: newChannel2Samples,
                 sampleRate: newSampleRate
-            }) => {
+            }) => new Promise((resolve, reject) => {
                 if (!skipUndo) {
                     this.redoStack = [];
                     if (this.undoStack.length >= UNDO_STACK_SIZE) {
@@ -197,65 +199,39 @@ class SoundEditor extends React.Component {
                     this.undoStack.push(this.getUndoItem());
                 }
 
-                const encoder = new Mp3Encoder(
-                    1 + !!channel2Samples,
-                    newSampleRate,
-                    this.props.preferences['encoding-bit-rate'] ?? 128
-                );
-                const chunks = [];
-
-                const left = new Int16Array(newChannel1Samples.length);
-                const right = new Int16Array(newChannel1Samples.length);
-
-                // Channels must be converted from Float32Arrays to Int16Arrays to prevent registering as near-silence.
-                // The encoder expects values between -32768 and 32767, and our arrays have values between -1.0 and 1.0.
-                for (let i = 0; i < newChannel1Samples.length; i++) {
-                    const sample1 = Math.max(-1, Math.min(newChannel1Samples[i], 1));
-                    left[i] = sample1 < 0 ? sample1 * 0x8000 : sample1 * 0x7FFF;
-
-                    if (newChannel2Samples) {
-                        const sample2 = Math.max(-1, Math.min((newChannel2Samples)[i], 1));
-                        right[i] = sample2 < 0 ? sample2 * 0x8000 : sample2 * 0x7FFF;
-                    }
-                }
-
-                const sampleBlockSize = 1152;
-
-                for (let i = 0; i < left.length; i += sampleBlockSize) {
-                    const leftChunk = left.subarray(i, i + sampleBlockSize);
-                    const rightChunk = right.subarray(i, i + sampleBlockSize);
-                    const buffer = encoder.encodeBuffer(leftChunk, rightChunk);
-                    if (buffer.length > 0) {
-                        chunks.push(buffer);
-                    }
-                }
-
-                const flushed = encoder.flush();
-                if (flushed.length > 0) {
-                    chunks.push(flushed);
-                }
-
-                const buffer = new Int8Array(chunks.reduce((acc, arr) => acc + arr.byteLength, 0));
-                let offset = 0;
-                for (const chunk of chunks) {
-                    buffer.set(chunk, offset);
-                    offset += chunk.byteLength;
-                }
-
-                this.resetState(newChannel1Samples, newChannel2Samples, newSampleRate);
-                this.props.vm.updateSoundBuffer(
-                    this.props.soundIndex,
-                    this.audioBufferPlayer.buffer,
-                    new Uint8Array(buffer)
-                );
-
-                return true;
+                const encoderWorker = new EncoderWorker();
+                encoderWorker.onerror = event => {
+                    reject(event);
+                };
+                encoderWorker.onmessage = ({data}) => {
+                    resolve(data);
+                };
+                encoderWorker.postMessage({
+                    channel1Samples: newChannel1Samples,
+                    channel2Samples: newChannel2Samples,
+                    sampleRate: newSampleRate,
+                    bitRate: this.props.preferences['encoding-bit-rate'] ?? 128
+                });
             })
-            .catch(e => {
-                // Encoding failed, or the sound was too large to save so edit is rejected
-                log.error(`Encountered error while trying to encode sound update: ${e.message}`);
-                return false; // Edit was not applied
-            });
+                .then(buffer => {
+                    this.resetState(newChannel1Samples, newChannel2Samples, newSampleRate);
+                    this.props.vm.updateSoundBuffer(
+                        this.props.soundIndex,
+                        this.audioBufferPlayer.buffer,
+                        new Uint8Array(buffer)
+                    );
+
+                    this.props.closeEncodingAlert();
+
+                    return true;
+                })
+                .catch(e => {
+                    // Encoding failed, or the sound was too large to save so edit is rejected
+                    this.props.closeEncodingAlert();
+                    this.props.showEncodingErrorAlert();
+                    log.error(`Encountered error while trying to encode sound update: ${e.message}`);
+                    return false; // Edit was not applied
+                }));
     }
     handlePlay () {
         this.audioBufferPlayer.stop();
@@ -711,6 +687,9 @@ SoundEditor.propTypes = {
     sampleRate: PropTypes.number,
     channel1Samples: PropTypes.instanceOf(Float32Array),
     channel2Samples: PropTypes.instanceOf(Float32Array),
+    closeEncodingAlert: PropTypes.func.isRequired,
+    showEncodingAlert: PropTypes.func.isRequired,
+    showEncodingErrorAlert: PropTypes.func.isRequired,
     soundId: PropTypes.string,
     soundIndex: PropTypes.number,
     preferences: PropTypes.object,
@@ -737,6 +716,13 @@ const mapStateToProps = (state, {soundIndex}) => {
     };
 };
 
+const mapDispatchToProps = dispatch => ({
+    closeEncodingAlert: () => dispatch(closeAlertWithId('nbEncodingAudio')),
+    showEncodingAlert: () => dispatch(showStandardAlert('nbEncodingAudio')),
+    showEncodingErrorAlert: () => dispatch(showStandardAlert('nbEncodingAudioError'))
+});
+
 export default connect(
-    mapStateToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(SoundEditor);

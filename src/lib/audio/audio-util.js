@@ -1,4 +1,4 @@
-import {Mp3Encoder} from 'lamejs';
+import EncoderWorker from 'worker-loader!../nb-encode-mp3-worker.js';
 
 export const SOUND_BYTE_LIMIT = 100 * 1000 * 1000; // 100mb
 
@@ -34,76 +34,45 @@ const computeChunkedRMS = function (channels, chunkSize = 1024) {
 };
 
 const encodeAndAddSoundToVM = function (vm, preferences, channel1Samples, channel2Samples, sampleRate, name, callback) {
-    const encoder = new Mp3Encoder(
-        1 + !!channel2Samples,
-        sampleRate,
-        preferences['encoding-bit-rate'] ?? 128
-    );
-    const chunks = [];
+    return new Promise((resolve, reject) => {
+        const encoderWorker = new EncoderWorker();
+        encoderWorker.onerror = event => {
+            reject(event);
+        };
+        encoderWorker.onmessage = ({data}) => {
+            const vmSound = {
+                format: '',
+                dataFormat: 'mp3',
+                rate: sampleRate,
+                sampleCount: channel1Samples.length
+            };
 
-    const left = new Int16Array(channel1Samples.length);
-    const right = new Int16Array(channel1Samples.length);
+            // Create an asset from the encoded .wav and get resulting md5
+            const storage = vm.runtime.storage;
+            vmSound.asset = storage.createAsset(
+                storage.AssetType.Sound,
+                storage.DataFormat.MP3,
+                new Uint8Array(data),
+                null,
+                true // generate md5
+            );
+            vmSound.assetId = vmSound.asset.assetId;
 
-    // Channels must be converted from Float32Arrays to Int16Arrays to prevent registering as near-silence.
-    // The encoder expects values between -32768 and 32767, and our arrays have values between -1.0 and 1.0.
-    for (let i = 0; i < channel1Samples.length; i++) {
-        const sample1 = Math.max(-1, Math.min(channel1Samples[i], 1));
-        left[i] = sample1 < 0 ? sample1 * 0x8000 : sample1 * 0x7FFF;
+            // update vmSound object with md5 property
+            vmSound.md5 = `${vmSound.assetId}.${vmSound.dataFormat}`;
+            // The VM will update the sound name to a fresh name
+            vmSound.name = name;
 
-        if (channel2Samples) {
-            const sample2 = Math.max(-1, Math.min((channel2Samples)[i], 1));
-            right[i] = sample2 < 0 ? sample2 * 0x8000 : sample2 * 0x7FFF;
-        }
-    }
-
-    const sampleBlockSize = 1152;
-
-    for (let i = 0; i < left.length; i += sampleBlockSize) {
-        const leftChunk = left.subarray(i, i + sampleBlockSize);
-        const rightChunk = right.subarray(i, i + sampleBlockSize);
-        const buffer = encoder.encodeBuffer(leftChunk, rightChunk);
-        if (buffer.length > 0) {
-            chunks.push(buffer);
-        }
-    }
-
-    const flushed = encoder.flush();
-    if (flushed.length > 0) {
-        chunks.push(flushed);
-    }
-
-    const buffer = new Int8Array(chunks.reduce((acc, arr) => acc + arr.byteLength, 0));
-    let offset = 0;
-    for (const chunk of chunks) {
-        buffer.set(chunk, offset);
-        offset += chunk.byteLength;
-    }
-
-    const vmSound = {
-        format: '',
-        dataFormat: 'mp3',
-        rate: sampleRate,
-        sampleCount: channel1Samples.length
-    };
-
-    // Create an asset from the encoded .wav and get resulting md5
-    const storage = vm.runtime.storage;
-    vmSound.asset = storage.createAsset(
-        storage.AssetType.Sound,
-        storage.DataFormat.MP3,
-        new Uint8Array(buffer),
-        null,
-        true // generate md5
-    );
-    vmSound.assetId = vmSound.asset.assetId;
-
-    // update vmSound object with md5 property
-    vmSound.md5 = `${vmSound.assetId}.${vmSound.dataFormat}`;
-    // The VM will update the sound name to a fresh name
-    vmSound.name = name;
-
-    vm.addSound(vmSound).then(() => {
-        if (callback) callback();
+            vm.addSound(vmSound).then(() => {
+                if (callback) resolve(callback());
+            });
+        };
+        encoderWorker.postMessage({
+            channel1Samples,
+            channel2Samples,
+            sampleRate,
+            bitRate: preferences['encoding-bit-rate'] ?? 128
+        });
     });
 };
 
