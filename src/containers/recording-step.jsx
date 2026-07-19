@@ -82,7 +82,8 @@ RecordingStep.propTypes = {
     intl: intlShape.isRequired,
     onRecord: PropTypes.func.isRequired,
     onStopRecording: PropTypes.func.isRequired,
-    recording: PropTypes.bool
+    recording: PropTypes.bool,
+    paused: PropTypes.bool
 };
 
 export default injectIntl(RecordingStep);

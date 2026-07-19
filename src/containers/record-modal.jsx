@@ -17,6 +17,8 @@ class RecordModal extends React.Component {
         bindAll(this, [
             'handleRecord',
             'handleStopRecording',
+            'handlePauseRecording',
+            'handleResumeRecording',
             'handlePlay',
             'handleStopPlaying',
             'handleBack',
@@ -34,18 +36,25 @@ class RecordModal extends React.Component {
             playhead: null,
             playing: false,
             recording: false,
+            paused: false,
             sampleRate: null,
             trimStart: 0,
             trimEnd: 1
         };
     }
     handleRecord () {
-        this.setState({recording: true});
+        this.setState({recording: true, paused: false});
     }
     handleStopRecording (samples, sampleRate, levels, trimStart, trimEnd) {
         if (samples.length > 0) {
             this.setState({samples, sampleRate, levels, trimStart, trimEnd, recording: false});
         }
+    }
+    handlePauseRecording () {
+        this.setState({recording: false, paused: true});
+    }
+    handleResumeRecording () {
+        this.handleRecord();
     }
     handlePlay () {
         this.setState({playing: true});
@@ -54,7 +63,7 @@ class RecordModal extends React.Component {
         this.setState({playing: false, playhead: null});
     }
     handleBack () {
-        this.setState({playing: false, samples: null});
+        this.setState({playing: false, paused: false, samples: null, playhead: null});
     }
     handleSetTrimEnd (trimEnd) {
         this.setState({trimEnd});
@@ -72,11 +81,18 @@ class RecordModal extends React.Component {
             const endIndex = Math.floor(this.state.trimEnd * sampleCount);
             const clippedSamples = this.state.samples.slice(startIndex, endIndex);
 
-            encodeAndAddSoundToVM(this.props.vm, clippedSamples, this.state.sampleRate, 'recording1',
+            encodeAndAddSoundToVM(
+                this.props.vm,
+                this.props.preferences,
+                clippedSamples,
+                null,
+                this.state.sampleRate,
+                'recording1',
                 () => {
                     this.props.onClose();
                     this.props.onNewSound();
-                });
+                }
+            );
         });
     }
     handleCancel () {
@@ -90,6 +106,7 @@ class RecordModal extends React.Component {
                 playhead={this.state.playhead}
                 playing={this.state.playing}
                 recording={this.state.recording}
+                paused={this.state.paused}
                 sampleRate={this.state.sampleRate}
                 samples={this.state.samples}
                 trimEnd={this.state.trimEnd}
@@ -103,7 +120,10 @@ class RecordModal extends React.Component {
                 onSetTrimStart={this.handleSetTrimStart}
                 onStopPlaying={this.handleStopPlaying}
                 onStopRecording={this.handleStopRecording}
+                onPauseRecording={this.handlePauseRecording}
+                onResumeRecording={this.handleResumeRecording}
                 onSubmit={this.handleSubmit}
+                preferences={this.props.preferences}
             />
         );
     }
@@ -112,6 +132,7 @@ class RecordModal extends React.Component {
 RecordModal.propTypes = {
     onClose: PropTypes.func,
     onNewSound: PropTypes.func,
+    preferences: PropTypes.object,
     vm: PropTypes.instanceOf(VM)
 };
 

@@ -13,13 +13,10 @@ $hover-scale: 1.25;
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 1;
 
     /* Force the browser to paint separately to avoid composite cost with waveform */
     transform: translateZ(0);
-}
-
-.selector {
-    cursor: pointer;
 }
 
 .trim-background {
@@ -28,21 +25,9 @@ $hover-scale: 1.25;
 }
 
 .trim-background-mask {
-    border: 1px solid $red-tertiary;
     opacity: 0.5;
 
-    background: repeating-linear-gradient(
-        45deg,
-        $red-primary,
-        $red-primary $stripe-size,
-        $red-tertiary $stripe-size,
-        $red-tertiary calc(2 * $stripe-size)
-    );
-}
-
-.selection-background {
-    background: $looks-secondary;
-    opacity: 0.5;
+    background-color: $page-background;
 }
 
 .start-trim-background .trim-background-mask {
@@ -60,20 +45,36 @@ $hover-scale: 1.25;
     top: 0;
     width: 0px;
     height: 100%;
-    border: 1px solid $red-tertiary;
+    border: 1px solid $looks-secondary;
+    z-index: 1;
 }
 
 .selector .trim-line {
     border: 1px solid $looks-secondary;
 }
 
-.playhead-container {
+.playhead-container, .playhead-caret-container {
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
     width: 100%;
+}
+
+.playhead-container {
     overflow: hidden;
+}
+
+.playhead-caret-container {
+    pointer-events: none;
+}
+
+.playhead-caret-container img {
+    height: 1rem;
+    position: absolute;
+    top: -1rem;
+    left: calc(-0.5rem - 0.25rem);
+    user-select: none;
 }
 
 .playhead {
@@ -83,10 +84,19 @@ $hover-scale: 1.25;
     */
     width: 100%;
     height: 100%;
-    border-left: 1px solid $looks-secondary;
-    border-top: none;
-    border-bottom: none;
-    border-right: none;
+    position: relative;
+}
+
+.playhead::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0.125rem;
+    height: 100%;
+    border-bottom-left-radius: 0.125rem;
+    border-bottom-right-radius: 0.125rem;
+    background-color: $looks-secondary;
 }
 
 .right-handle {
@@ -115,10 +125,11 @@ $hover-scale: 1.25;
     height: $trim-handle-height;
     right: 0;
     user-select: none;
+    cursor: grab;
 }
 
-.trimmer .trim-handle {
-    filter: hue-rotate(-240deg) brightness(1.35);
+.trim-handle :active {
+    cursor: grabbing;
 }
 
 .trim-handle img {
