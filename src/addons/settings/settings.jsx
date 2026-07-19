@@ -35,7 +35,7 @@ import infoImage from './icons/info.svg';
 import trashImage from './icons/trash.svg';
 import TWFancyCheckbox from '../../components/tw-fancy-checkbox/checkbox.jsx';
 import styles from './settings.css';
-import { getCustomAddons, storeAddon, removeAddon } from '../../lib/nb-custom-addons.js';
+import {getCustomAddons, storeAddon, removeAddon} from '../../lib/nb-custom-addons.js';
 import {detectTheme} from '../../lib/themes/themePersistance.js';
 import {applyGuiColors} from '../../lib/themes/guiHelpers.js';
 import {APP_NAME} from '../../lib/brand.js';
@@ -915,7 +915,7 @@ class AddonList extends React.Component {
             <div>
                 <AddonGroup
                     label={settingsTranslations.groupCustom}
-                    open={true}
+                    open
                     addons={this.props.customAddons}
                     extended={this.props.extended}
                 />
@@ -997,7 +997,7 @@ class AddonSettingsComponent extends React.Component {
     }
     handleCustomAddonsLoaded (customAddons) {
         if (!this._isMounted) return;
-        const addonEntries = customAddons.map((item) => {
+        const addonEntries = customAddons.map(item => {
             const addonState = {
                 enabled: SettingsStore.getAddonEnabled(item.id),
                 dirty: false
@@ -1201,7 +1201,7 @@ class AddonSettingsComponent extends React.Component {
 
                 await removeAddon(addon.id);
                 this.setState(prevState => {
-                    const { [addon.id]: _, customAddons, ...rest } = prevState;
+                    const {[addon.id]: _, customAddons, ...rest} = prevState;
                     return {
                         ...rest,
                         customAddons: customAddons.filter(c => c.id !== addon.id)
@@ -1229,10 +1229,10 @@ class AddonSettingsComponent extends React.Component {
                             />
                         </div>
                         <button
-                                className={classNames(styles.button, styles.importAddonButton)}
-                                onClick={this.handleImportAddon}
-                            >
-                                    {settingsTranslations.importAddon}
+                            className={classNames(styles.button, styles.importAddonButton)}
+                            onClick={this.handleImportAddon}
+                        >
+                            {settingsTranslations.importAddon}
                         </button>
                         <a
                             href="https://scratch.mit.edu/users/CubesterYT/#comments"

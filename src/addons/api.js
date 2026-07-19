@@ -14,8 +14,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { getCustomAddons, storeAddon, removeAddon } from '../lib/nb-custom-addons.js';
-import { TextDecoder } from '../lib/tw-text-encoder.js';
+import {getCustomAddons, storeAddon, removeAddon} from '../lib/nb-custom-addons.js';
+import {TextDecoder} from '../lib/tw-text-encoder.js';
 import IntlMessageFormat from 'intl-messageformat';
 import SettingsStore from './settings-store-singleton';
 import dataURLToBlob from '../lib/data-uri-to-blob';
@@ -47,7 +47,7 @@ const arrayBufferToDataURI = buffer => {
         reader.onerror = () => reject(reader.error);
         reader.readAsDataURL(blob);
     });
-}
+};
 
 let _scratchClassNames = null;
 const getScratchClassNames = () => {
@@ -181,7 +181,7 @@ const compareArrays = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 let _firstAddBlockRan = false;
 
 const contextMenuCallbacks = [];
-const CONTEXT_MENU_ORDER = ['editor-devtools', 'block-switching', 'blocks2image', 'swap-local-global'];
+const CONTEXT_MENU_ORDER = ['editor-devtools', 'blocks2image', 'swap-local-global'];
 let createdAnyBlockContextMenus = false;
 
 const updateClasses = () => {
@@ -599,16 +599,6 @@ class Tab extends EventTargetShim {
                 }
 
                 oldShow.call(this, event, items, rtl);
-
-                const blocklyContextMenu = ScratchBlocks.WidgetDiv.DIV.firstChild;
-                items.forEach((item, i) => {
-                    if (i !== 0 && item.separator) {
-                        const itemElt = blocklyContextMenu.children[i];
-                        itemElt.style.paddingTop = '2px';
-                        itemElt.classList.add('sa-blockly-menu-item-border');
-                        itemElt.style.borderTop = '1px solid var(--ui-black-transparent)';
-                    }
-                });
             };
         });
     }
@@ -1025,13 +1015,11 @@ SettingsStore.addEventListener('setting-changed', async e => {
         if (value) {
             if (runner) {
                 runner.dynamicEnable();
+            } else if (addons[addonId]) {
+                runAddon(addonId, addons[addonId], false);
             } else {
-                if (addons[addonId]) {
-                    runAddon(addonId, addons[addonId], false);
-                } else {
-                    const customAddons = await getCustomAddons();
-                    runAddon(addonId, customAddons.find(c => c.id === addonId), true);
-                }
+                const customAddons = await getCustomAddons();
+                runAddon(addonId, customAddons.find(c => c.id === addonId), true);
             }
         } else if (runner) {
             runner.dynamicDisable();

@@ -78,7 +78,7 @@ export default function (vm) {
 
     const assetsMenu = function () {
         if (vm.editingTarget && vm.editingTarget.getAssets().length > 0) {
-            return vm.editingTarget.getAssets().map(asset => [asset.name + '.' + asset.dataFormat, asset.name]);
+            return vm.editingTarget.getAssets().map(asset => [`${asset.name}.${asset.dataFormat}`, asset.name]);
         }
         return [['', '']];
     };

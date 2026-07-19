@@ -43,7 +43,6 @@ import _sprite_properties from "../addons/sprite-properties/_manifest_entry.js";
 import _gamepad from "../addons/gamepad/_manifest_entry.js";
 import _editor_sounds from "../addons/editor-sounds/_manifest_entry.js";
 import _folders from "../addons/folders/_manifest_entry.js";
-import _block_switching from "../addons/block-switching/_manifest_entry.js";
 import _load_extensions from "../addons/load-extensions/_manifest_entry.js";
 import _custom_zoom from "../addons/custom-zoom/_manifest_entry.js";
 import _initialise_sprite_position from "../addons/initialise-sprite-position/_manifest_entry.js";
@@ -119,7 +118,6 @@ export default {
   "gamepad": _gamepad,
   "editor-sounds": _editor_sounds,
   "folders": _folders,
-  "block-switching": _block_switching,
   "load-extensions": _load_extensions,
   "custom-zoom": _custom_zoom,
   "initialise-sprite-position": _initialise_sprite_position,

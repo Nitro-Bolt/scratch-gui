@@ -14,7 +14,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { getCustomAddons } from '../lib/nb-custom-addons';
+import {getCustomAddons} from '../lib/nb-custom-addons';
 import addons from './generated/addon-manifests';
 import upstreamMeta from './generated/upstream-meta.json';
 import EventTargetShim from './event-target';

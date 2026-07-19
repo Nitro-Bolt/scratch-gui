@@ -1152,6 +1152,7 @@ export default class WorkspaceQuerier {
     "operator_join",
     "operator_round",
     "operator_mathop",
+    "operator_power",
     "operator_mod",
     "operator_divide",
     "operator_multiply",

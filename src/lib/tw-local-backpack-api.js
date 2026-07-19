@@ -123,7 +123,7 @@ const getBackpackContents = async ({
     });
 };
 
-const saveBackpackObject = async (backpackObject) => {
+const saveBackpackObject = async backpackObject => {
     // User interaction -- fine to show a permission dialog
     requestPersistentStorage();
 

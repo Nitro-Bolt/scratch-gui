@@ -68,7 +68,7 @@ const loadAddon = async file => {
     const manifestString = await zip.file('manifest.json').async('string');
     const manifest = JSON.parse(manifestString);
 
-    let userscriptPaths = [];
+    const userscriptPaths = [];
     manifest.userscripts = await Promise.all(
         manifest.userscripts.map(userscript => {
             userscriptPaths.push(userscript.url);

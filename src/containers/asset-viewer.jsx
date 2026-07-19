@@ -10,7 +10,7 @@ import getAssetType from '../lib/nb-asset-type.js';
 
 import {connect} from 'react-redux';
 
-import AssetViewerComponent from "../components/asset-viewer/asset-viewer.jsx";
+import AssetViewerComponent from '../components/asset-viewer/asset-viewer.jsx';
 
 class AssetViewer extends React.Component {
     constructor (props) {
@@ -303,7 +303,7 @@ const mapStateToProps = (state, {selectedAssetIndex}) => {
         vm: state.scratchGui.vm,
         theme: state.scratchGui.theme.theme,
         name: assetObject.dataFormat !== '' ?
-            assetObject.name + '.' + assetObject.dataFormat :
+            `${assetObject.name}.${assetObject.dataFormat}` :
             assetObject.name,
         lastModified: assetObject.lastModified ?
             new Date(assetObject.lastModified).toLocaleString() :

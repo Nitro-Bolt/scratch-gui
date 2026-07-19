@@ -1,18 +1,9 @@
 import bindAll from 'lodash.bindall';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {injectIntl, intlShape, defineMessages} from 'react-intl';
+import {injectIntl, intlShape} from 'react-intl';
 
 import LibraryItemComponent from '../components/library-item/library-item.jsx';
-
-const messages = defineMessages({
-    incompatible: {
-        // eslint-disable-next-line max-len
-        defaultMessage: 'This extension is incompatible with Scratch. Projects made with it cannot be uploaded to the Scratch website. Are you sure you want to enable it?',
-        description: 'Confirm loading Scratch-incompatible extension',
-        id: 'tw.confirmIncompatibleExtension'
-    }
-});
 
 class LibraryItem extends React.PureComponent {
     constructor (props) {
@@ -45,16 +36,6 @@ class LibraryItem extends React.PureComponent {
     handleClick (e) {
         if (e.target.closest('a')) {
             // Allow clicking on links inside the item
-            return;
-        }
-
-        if (
-            !this.props.favorite &&
-            this.props.incompatibleWithScratch &&
-            !e.shiftKey &&
-            // eslint-disable-next-line no-alert
-            !confirm(this.props.intl.formatMessage(messages.incompatible))
-        ) {
             return;
         }
 
@@ -199,7 +180,6 @@ LibraryItem.propTypes = {
         })
     ),
     id: PropTypes.number.isRequired,
-    incompatibleWithScratch: PropTypes.bool,
     insetIconURL: PropTypes.string,
     internetConnectionRequired: PropTypes.bool,
     isPlaying: PropTypes.bool,
