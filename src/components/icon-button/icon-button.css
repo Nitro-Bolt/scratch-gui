@@ -10,7 +10,7 @@
     position: relative;
 }
 
-.button-container:active {
+.button-container:active:not(:has(.dropdown:active)) {
     background-color: hsla(300, 53%, 60%, 0.15);
 }
 

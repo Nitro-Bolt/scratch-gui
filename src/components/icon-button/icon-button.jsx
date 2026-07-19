@@ -19,13 +19,13 @@ const IconButton = ({
         <div
             className={classNames(styles.buttonContainer, className)}
             onClick={disabled ? null : (dropdown ? onClickDropdown : onClick)}
+            role="button"
         >
             <div
                 className={classNames(
                     styles.container,
                     disabled ? styles.disabled : null
                 )}
-                role="button"
             >
                 <TWRenderRecoloredImage
                     className={styles.icon}
@@ -51,7 +51,11 @@ const IconButton = ({
                         />
                     </div>
                     {dropdownOpen && (
-                        <div className={styles.dropdown}>
+                        <div
+                            className={styles.dropdown}
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onClick={event => event.stopPropagation()}
+                        >
                             {dropdown}
                         </div>
                     )}
