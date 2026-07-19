@@ -3,7 +3,10 @@ import React, {useState} from 'react';
 import classNames from 'classnames';
 import TWRenderRecoloredImage from '../../lib/tw-recolor/render.jsx';
 import styles from './icon-button.css';
-import dropdownCaret from '../menu-bar/dropdown-caret.svg';
+import dropdownCaretWhite from '../menu-bar/dropdown-caret.svg';
+import dropdownCaretBlack from './dropdown-caret.svg';
+import {connect} from 'react-redux';
+import {GUI_DARK, Theme} from '../../lib/themes/index.js';
 
 const IconButton = ({
     img,
@@ -11,7 +14,8 @@ const IconButton = ({
     dropdown,
     className,
     title,
-    onClick
+    onClick,
+    theme
 }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const onClickDropdown = () => setDropdownOpen(!dropdownOpen);
@@ -44,7 +48,7 @@ const IconButton = ({
                         onClick={disabled ? null : onClickDropdown}
                     >
                         <img
-                            src={dropdownCaret}
+                            src={theme === GUI_DARK ? dropdownCaretWhite : dropdownCaretBlack}
                             draggable={false}
                             width={8}
                             height={5}
@@ -71,7 +75,14 @@ IconButton.propTypes = {
     dropdown: PropTypes.node,
     img: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
     onClick: PropTypes.func.isRequired,
-    title: PropTypes.node.isRequired
+    title: PropTypes.node.isRequired,
+    theme: PropTypes.string.isRequired
 };
 
-export default IconButton;
+const mapStateToProps = state => ({
+    theme: state.scratchGui.theme.theme.gui
+});
+
+export default connect(
+    mapStateToProps
+)(IconButton);
