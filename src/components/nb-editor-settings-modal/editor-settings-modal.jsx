@@ -68,9 +68,6 @@ const messages = defineMessages({
         id: 'nb.editorSettings.soundSection',
         defaultMessage: 'Sound'
     },
-    git: {
-        id: 'nb.editorSettings.gitSection',
-        defaultMessage: 'Git'
     paint: {
         id: 'nb.editorSettings.paintSection',
         defaultMessage: 'Paint'
