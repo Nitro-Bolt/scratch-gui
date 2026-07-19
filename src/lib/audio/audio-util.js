@@ -1,6 +1,6 @@
 import EncoderWorker from 'worker-loader!../nb-encode-mp3-worker.js';
 
-export const SOUND_BYTE_LIMIT = 100 * 1000 * 1000; // 100mb
+export const SOUND_BYTE_LIMIT = 20 * 1000 * 1000; // 20mb
 
 const _computeRMS = function (samples, start, end, scaling = 0.55) {
     const length = end - start;
