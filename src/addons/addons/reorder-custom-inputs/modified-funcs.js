@@ -1,7 +1,7 @@
 // https://github.com/scratchfoundation/scratch-blocks/blob/f210e042988b91bcdc2abeca7a2d85e178edadb2/blocks_vertical/procedures.js#L205
 export function modifiedCreateAllInputs(connectionMap) {
   // Split the proc into components, by %n, %b, %o, %a, %s and %l (ignoring escaped).
-  var procComponents = this.procCode_.split(/(?=[^\\]%[nboasl])/);
+  var procComponents = this.procCode_.split(/(?=[^\\]%[nbdoasl])/);
   procComponents = procComponents.map(function (c) {
     return c.trim(); // Strip whitespace.
   });
@@ -13,7 +13,14 @@ export function modifiedCreateAllInputs(connectionMap) {
     // Don't treat %l as an argument
     if (component.substring(0, 1) == "%" && component.substring(1, 2) !== "l") {
       var argumentType = component.substring(1, 2);
-      if (!(argumentType == "n" || argumentType == "b" || argumentType == "o" || argumentType == "a" || argumentType == "s")) {
+      if (
+        argumentType !== 'n' &&
+        argumentType !== 'b' &&
+        argumentType !== 'o' &&
+        argumentType !== 'a' &&
+        argumentType !== 's' &&
+        argumentType !== 'd'
+      ) {
         throw new Error("Found an custom procedure with an invalid type: " + argumentType);
       }
       labelText = component.substring(2).trim();
@@ -65,6 +72,8 @@ export function modifiedUpdateDeclarationProcCode(prefixLabels = false) {
         this.procCode_ += "%o";
       } else if (target.type == "argument_editor_array") {
         this.procCode_ += "%a";
+      } else if (target.type == "argument_editor_dropdown") {
+        this.procCode_ += "%d";
       } else {
         this.procCode_ += "%s";
       }

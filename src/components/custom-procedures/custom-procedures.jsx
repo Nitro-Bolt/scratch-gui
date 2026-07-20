@@ -9,6 +9,7 @@ import booleanInputIcon from './icon--boolean-input.svg';
 import objectInputIcon from './icon--object-input.svg';
 import arrayInputIcon from './icon--array-input.svg';
 import textInputIcon from './icon--text-input.svg';
+import dropdownInputIcon from './icon--dropdown.svg';
 import labelIcon from './icon--label.svg';
 
 import styles from './custom-procedures.css';
@@ -81,6 +82,25 @@ const CustomProcedures = props => {
                             <option value="object">object</option>
                             <option value="array">array</option>
                         </select>
+                    </div>
+                    <div
+                        className={styles.optionCard}
+                        role="button"
+                        tabIndex="0"
+                        onClick={props.onAddDropdown}
+                    >
+                        <img
+                            className={styles.optionIcon}
+                            src={dropdownInputIcon}
+                            draggable={false}
+                        />
+                        <div className={styles.optionTitle}>
+                            <FormattedMessage
+                                defaultMessage="Add a dropdown"
+                                description="Label for button to add a dropdown"
+                                id="gui.customProcedures.addADropdown"
+                            />
+                        </div>
                     </div>
                     <div
                         className={styles.optionCard}
@@ -259,6 +279,7 @@ CustomProcedures.propTypes = {
     componentRef: PropTypes.func.isRequired,
     intl: intlShape,
     onAddInput: PropTypes.func.isRequired,
+    onAddDropdown: PropTypes.func.isRequired,
     onAddLabel: PropTypes.func.isRequired,
     handlePropagation: PropTypes.func.isRequired,
     handleInputMenuChange: PropTypes.func.isRequired,
