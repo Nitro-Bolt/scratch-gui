@@ -576,19 +576,20 @@ class Tab extends EventTargetShim {
             const oldShow = ScratchBlocks.ContextMenu.show;
             ScratchBlocks.ContextMenu.show = function (event, items, rtl) {
                 const gesture = ScratchBlocks.mainWorkspace.currentGesture_;
-                const block = gesture.targetBlock_;
+                const block = gesture && gesture.targetBlock_;
+                const group = ScratchBlocks.ContextMenu.currentGroup;
 
                 // eslint-disable-next-line no-shadow
                 for (const {callback, workspace, blocks, flyout, comments} of contextMenuCallbacks) {
                     const injectMenu =
                         // Workspace
-                        (workspace && !block && !gesture.flyout_ && !gesture.startBubble_) ||
+                        (workspace && !group && !block && gesture && !gesture.flyout_ && !gesture.startBubble_) ||
                         // Block in workspace
                         (blocks && block && !gesture.flyout_) ||
                         // Block in flyout
-                        (flyout && gesture.flyout_) ||
+                        (flyout && gesture && gesture.flyout_) ||
                         // Comments
-                        (comments && gesture.startBubble_);
+                        (comments && gesture && gesture.startBubble_);
                     if (injectMenu) {
                         try {
                             items = callback(items, block);
