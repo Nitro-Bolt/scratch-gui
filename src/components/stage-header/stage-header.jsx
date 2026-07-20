@@ -10,7 +10,7 @@ import Button from '../button/button.jsx';
 import ToggleButtons from '../toggle-buttons/toggle-buttons.jsx';
 import Controls from '../../containers/controls.jsx';
 import {getStageDimensions, getMinWidth} from '../../lib/screen-utils';
-import {STAGE_DISPLAY_SIZES, STAGE_SIZE_MODES} from '../../lib/layout-constants';
+import {STAGE_SIZE_MODES} from '../../lib/layout-constants';
 
 import fullScreenIcon from './icon--fullscreen.svg';
 import unFullScreenIcon from './icon--unfullscreen.svg';
@@ -208,7 +208,11 @@ const StageHeaderComponent = function (props) {
                 className={styles.stageHeaderWrapper}
                 // + 2 px because the stage will have 2 pixels of border around it
                 style={{
-                    minWidth: `${Math.max(stageDimensions.width, getMinWidth(stageSize)) + 2}px`,
+                    minWidth: `${(
+                        isPlayerOnly ?
+                            stageDimensions.width :
+                            Math.max(stageDimensions.width, getMinWidth(stageSize))
+                    ) + 2}px`,
                     left: preferences['stage-left'] && !isRtl ? 0 : null,
                     right: preferences['stage-left'] && isRtl ? 0 : null
                 }}
