@@ -233,7 +233,6 @@ const GUIComponent = props => {
             <React.Fragment>
                 <TWSecurityManager securityManager={securityManager} />
                 <TWRestorePointManager />
-                {usernameModalVisible && <TWUsernameModal />}
                 {settingsModalVisible && <TWSettingsModal />}
                 {customExtensionModalVisible && <TWCustomExtensionModal />}
                 {customAccentModalVisible && <NBCustomAccentModal />}
