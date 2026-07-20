@@ -97,10 +97,26 @@ const defineDynamicBlock = (ScratchBlocks, categoryInfo, staticBlockInfo, extend
             const arg = blockInfo.arguments[argName];
             switch (arg.type) {
             case ArgumentType.STRING:
+            case ArgumentType.NUMBER:
+            case ArgumentType.ANGLE:
+            case ArgumentType.MATRIX:
+            case ArgumentType.NOTE:
+            case ArgumentType.COLOR:
+            case ArgumentType.COSTUME:
+            case ArgumentType.SOUND:
                 args.push({type: 'input_value', name: argName});
                 break;
             case ArgumentType.BOOLEAN:
                 args.push({type: 'input_value', name: argName, check: 'Boolean'});
+                break;
+            case ArgumentType.IMAGE:
+                args.push({
+                    type: 'field_image',
+                    src: arg.dataURI || '',
+                    width: 24,
+                    height: 24,
+                    flip_rtl: arg.flipRTL || false
+                });
                 break;
             }
             return `%${++argCount}`;
