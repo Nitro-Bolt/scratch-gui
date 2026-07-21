@@ -712,7 +712,7 @@ const EditorSettingsModal = props => {
                             className={styles.button}
                             onClick={handleResetCategoriesVisibility}
                             style={{marginTop: '8px'}}
-                        >r
+                        >
                             <FormattedMessage
                                 id="nb.editorSettings.resetCategoriesVisibility"
                                 defaultMessage="Reset to defaults"
@@ -918,7 +918,7 @@ const EditorSettingsModal = props => {
                 </Box>
                 <Box className={styles.keySetting}>
                     <FormattedMessage
-                        defaultMessage="Open extension catlog"
+                        defaultMessage="Open extension catalog"
                         id="nb.editorSettings.keymap.openExtentions"
                     />
                     <KeyInput
