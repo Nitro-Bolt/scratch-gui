@@ -9,6 +9,7 @@ import booleanInputIcon from './icon--boolean-input.svg';
 import objectInputIcon from './icon--object-input.svg';
 import arrayInputIcon from './icon--array-input.svg';
 import textInputIcon from './icon--text-input.svg';
+import branchIcon from './icon--branch.svg';
 import labelIcon from './icon--label.svg';
 
 import styles from './custom-procedures.css';
@@ -81,6 +82,25 @@ const CustomProcedures = props => {
                             <option value="object">object</option>
                             <option value="array">array</option>
                         </select>
+                    </div>
+                    <div
+                        className={styles.optionCard}
+                        role="button"
+                        tabIndex="0"
+                        onClick={props.onAddBranch}
+                    >
+                        <img
+                            className={styles.optionIcon}
+                            src={branchIcon}
+                            draggable={false}
+                        />
+                        <div className={styles.optionTitle}>
+                            <FormattedMessage
+                                defaultMessage="Add a branch"
+                                description="Label for button to add a branch"
+                                id="gui.customProcedures.addABranch"
+                            />
+                        </div>
                     </div>
                     <div
                         className={styles.optionCard}
@@ -272,6 +292,7 @@ CustomProcedures.propTypes = {
     componentRef: PropTypes.func.isRequired,
     intl: intlShape,
     onAddInput: PropTypes.func.isRequired,
+    onAddBranch: PropTypes.func.isRequired,
     onAddLabel: PropTypes.func.isRequired,
     handlePropagation: PropTypes.func.isRequired,
     handleInputMenuChange: PropTypes.func.isRequired,

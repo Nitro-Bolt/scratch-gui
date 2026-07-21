@@ -40,6 +40,10 @@ export default async function ({ addon, console }) {
       }
     }
     if (inputNameToRemove) {
+      const inputIndexToRemove = this.inputList.findIndex((input) => input.name === inputNameToRemove);
+      if (inputIndexToRemove === 0 && this.inputList[1]?.type === Blockly.NEXT_STATEMENT) {
+        return;
+      }
       Blockly.WidgetDiv.hide(true);
       this.removeInput(inputNameToRemove);
       this.onChangeFn(true); // this is the only part we changed. We added this boolean input, which lets us switch on the merging.
@@ -97,9 +101,17 @@ export default async function ({ addon, console }) {
       return false;
     }
 
-    const originalPosition = procedureBlock.inputList.findIndex((input) => input.name === inputNameToShift);
-    const itemToMove = procedureBlock.inputList.splice(originalPosition, 1)[0];
-    procedureBlock.inputList.splice(newPosition, 0, itemToMove);
+    const reorderedInputs = [...procedureBlock.inputList];
+    const originalPosition = reorderedInputs.findIndex((input) => input.name === inputNameToShift);
+    const itemToMove = reorderedInputs.splice(originalPosition, 1)[0];
+    reorderedInputs.splice(newPosition, 0, itemToMove);
+
+    // A procedure must start with a label or value argument, never a branch.
+    if (reorderedInputs[0]?.type === Blockly.NEXT_STATEMENT) {
+      return false;
+    }
+
+    procedureBlock.inputList.splice(0, procedureBlock.inputList.length, ...reorderedInputs);
 
     Blockly.Events.disable();
     try {
@@ -116,7 +128,7 @@ export default async function ({ addon, console }) {
     if (!input) return;
     if (input.type === Blockly.DUMMY_INPUT) {
       input.fieldRow[0].showEditor_();
-    } else if (input.type === Blockly.INPUT_VALUE) {
+    } else if (input.type === Blockly.INPUT_VALUE || input.type === Blockly.NEXT_STATEMENT) {
       const target = input.connection.targetBlock();
       target.getField("TEXT").showEditor_();
     }
@@ -138,7 +150,7 @@ export default async function ({ addon, console }) {
     procedureDeclaration.onChangeFn = modifiedUpdateDeclarationProcCode;
     procedureDeclaration.removeFieldCallback = modifiedRemoveFieldCallback;
 
-    for (const inputFn of ["addLabelExternal", "addBooleanExternal", "addStringNumberExternal"]) {
+    for (const inputFn of ["addLabelExternal", "addBooleanExternal", "addStringNumberExternal", "addStatementExternal"]) {
       if (save_original) {
         originalAddFns[inputFn] = procedureDeclaration[inputFn];
       }
@@ -165,6 +177,12 @@ export default async function ({ addon, console }) {
   }
 
   function enableAddon() {
+    Blockly.Blocks["argument_reporter_statement"].init = function () {
+      originalStatementReporterInit.call(this);
+      this.setPreviousStatement(true, "argumentReporterCommand");
+      this.setNextStatement(true, "argumentReporterCommand");
+    };
+
     // pollute the procedures_declaration prototype with a modified version that prevents merging, and allows inserting after
     polluteProcedureDeclaration(Blockly.Blocks["procedures_declaration"]);
 
@@ -182,6 +200,8 @@ export default async function ({ addon, console }) {
   }
 
   function disableAddon() {
+    Blockly.Blocks["argument_reporter_statement"].init = originalStatementReporterInit;
+
     // depollute the procedures_declaration prototype
     depolluteProcedureDeclaration(Blockly.Blocks["procedures_declaration"]);
 
@@ -198,6 +218,7 @@ export default async function ({ addon, console }) {
   const originalCreateAllInputs = Blockly.Blocks["procedures_declaration"].createAllInputs_;
   const originalUpdateDeclarationProcCode = Blockly.Blocks["procedures_declaration"].onChangeFn;
   const originalRemoveFieldCallback = Blockly.Blocks["procedures_declaration"].removeFieldCallback;
+  const originalStatementReporterInit = Blockly.Blocks["argument_reporter_statement"].init;
   const originalShowEditor = Blockly.FieldTextInputRemovable.prototype.showEditor_;
   let originalAddFns = {};
   let selectedField = null;
