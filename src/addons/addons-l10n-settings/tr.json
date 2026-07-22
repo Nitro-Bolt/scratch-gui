@@ -19,8 +19,6 @@
     "jump-to-def/@description": "Orta fare düğmesiyle veya bloğa Shift+Tıklayarak özel bir bloğun tanımına gitmenize izin verir.",
     "jump-to-def/@info-developer-tools": "Bu eklenti öncesinde \"geliştirici araçları\" eklentisinin bir parçasıydı ancak artık buraya taşındı.",
     "jump-to-def/@name": "Özel blok tanımına git",
-    "reorder-custom-inputs/@description": "\"Bir Blok Oluştur\" ekranında özel blok değişkenlerinin yeniden düzenlenmesine olanak sağlar.",
-    "reorder-custom-inputs/@name": "Yeniden düzenlenebilir özel blok girişleri",
     "editor-searchable-dropdowns/@description": "Blok açılır menülerinde seçenekleri aratmanıza olanak tanır.",
     "editor-searchable-dropdowns/@name": "Açılır blok aratma",
     "data-category-tweaks-v2/@description": "Verideki (\"Değişkenler\") blok kategorisi için ince ayarlar sağlar.",

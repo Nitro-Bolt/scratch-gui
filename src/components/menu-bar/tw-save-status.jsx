@@ -2,11 +2,13 @@ import {connect} from 'react-redux';
 import {FormattedMessage} from 'react-intl';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ButtonComponent from '../button/button.jsx';
 import InlineMessages from '../../containers/inline-messages.jsx';
 import SB3Downloader from '../../containers/sb3-downloader.jsx';
 import {filterInlineAlerts} from '../../reducers/alerts';
 
 import styles from './save-status.css';
+import downloadIcon from './icon--download.svg';
 
 const TWSaveStatus = ({
     alertsList,
@@ -21,9 +23,12 @@ const TWSaveStatus = ({
             showSaveFilePicker={showSaveFilePicker}
         >
             {(_className, _downloadProjectCallback, {smartSave}) => (
-                <div
+                <ButtonComponent
                     onClick={smartSave}
                     className={styles.saveNow}
+                    iconSrc={downloadIcon}
+                    iconWidth={20}
+                    iconHeight={20}
                 >
                     {fileHandle ? (
                         <FormattedMessage
@@ -41,7 +46,7 @@ const TWSaveStatus = ({
                             id="gui.menuBar.downloadToComputer"
                         />
                     )}
-                </div>
+                </ButtonComponent>
             )}
         </SB3Downloader>
     ));
