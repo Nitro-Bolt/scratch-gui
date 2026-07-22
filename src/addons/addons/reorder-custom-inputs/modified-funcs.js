@@ -8,6 +8,7 @@ export function modifiedCreateAllInputs(connectionMap) {
 
   // Create arguments and labels as appropriate.
   var argumentCount = 0;
+  var dropdownCount = 0;
   for (var i = 0, component; (component = procComponents[i]); i++) {
     var labelText;
     // Don't treat %l as an argument
@@ -34,8 +35,11 @@ export function modifiedCreateAllInputs(connectionMap) {
         input.setCheck("Object");
       } else if (argumentType == "a") {
         input.setCheck("Array");
+      } else if (argumentType == 'd' && this.argumentDropdowns_[dropdownCount]) {
+        var dropdownOptions = this.argumentDropdowns_[dropdownCount].map(o => [o, o]);
+        dropdownCount++;
       }
-      this.populateArgument_(argumentType, argumentCount, connectionMap, id, input);
+      this.populateArgument_(argumentType, argumentCount, connectionMap, id, input, dropdownOptions);
       argumentCount++;
     } else {
       labelText = component == "%l" ? " " : component.replace("%l", "").trim();
@@ -52,6 +56,7 @@ export function modifiedUpdateDeclarationProcCode(prefixLabels = false) {
   this.procCode_ = "";
   this.displayNames_ = [];
   this.argumentIds_ = [];
+  this.argumentDropdowns_ = [];
   for (var i = 0; i < this.inputList.length; i++) {
     if (i != 0) {
       this.procCode_ += " ";
@@ -74,6 +79,8 @@ export function modifiedUpdateDeclarationProcCode(prefixLabels = false) {
         this.procCode_ += "%a";
       } else if (target.type == "argument_editor_dropdown") {
         this.procCode_ += "%d";
+        var options = target.inputList[0].fieldRow[0].getOptions();
+        this.argumentDropdowns_.push(options.map(o => o[0]));
       } else {
         this.procCode_ += "%s";
       }
