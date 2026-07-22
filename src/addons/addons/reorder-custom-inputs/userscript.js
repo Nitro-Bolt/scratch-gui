@@ -179,6 +179,13 @@ export default async function ({ addon, console }) {
       createArrow("right", () => shiftFieldCallback(this.sourceBlock_, this, "right"));
       selectedField = this;
     };
+
+    Blockly.FieldDropdownEditor.prototype.showEditor_ = function () {
+      originalShowEditorDropdown.call(this);
+      createArrow("left", () => shiftFieldCallback(this.sourceBlock_, this, "left"));
+      createArrow("right", () => shiftFieldCallback(this.sourceBlock_, this, "right"));
+      selectedField = this;
+    };
   }
 
   function disableAddon() {
@@ -199,6 +206,7 @@ export default async function ({ addon, console }) {
   const originalUpdateDeclarationProcCode = Blockly.Blocks["procedures_declaration"].onChangeFn;
   const originalRemoveFieldCallback = Blockly.Blocks["procedures_declaration"].removeFieldCallback;
   const originalShowEditor = Blockly.FieldTextInputRemovable.prototype.showEditor_;
+  const originalShowEditorDropdown = Blockly.FieldDropdownEditor.prototype.showEditor_;
   let originalAddFns = {};
   let selectedField = null;
 
