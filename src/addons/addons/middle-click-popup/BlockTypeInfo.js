@@ -423,7 +423,7 @@ export class BlockTypeInfo {
         }
       } else {
         if (!field.argType_) {
-          if (field.getText().trim().length !== 0) parts.push(field.getText());
+          if (field.getText().trim().length !== 0) parts.push(field.getText().replace("≥", ">=").replace("≤", "<="));
         } else if (field.argType_[0] === "colour") {
           addInput(new BlockInputColour(inputIdx, fieldIdx));
         } else if (field.argType_[1] === "number") {
