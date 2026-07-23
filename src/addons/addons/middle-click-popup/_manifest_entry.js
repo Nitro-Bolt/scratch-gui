@@ -18,6 +18,10 @@ const manifest = {
     {
       "name": "CST1229",
       "link": "https://scratch.mit.edu/users/CST1229/"
+    },
+    {
+      "name": "breakfast_for_dinner",
+      "link": "https://scratch.mit.edu/users/breakfast_for_dinner/"
     }
   ],
   "tags": [
