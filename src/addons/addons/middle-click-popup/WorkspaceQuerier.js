@@ -507,7 +507,7 @@ class TokenTypeStringEnum extends TokenType {
  * The token type for a literal string, like 'Hello World' in the query `say Hello World`
  */
 class TokenTypeStringLiteral extends TokenType {
-  static TERMINATORS = [undefined, " ", "+", "-", "*", "/", "=", "<", ">", ")"];
+  static TERMINATORS = [undefined, " ", "+", "-", "*", "/", "^", "<=", ">=", "=", "<", ">", ")"];
 
   static isTerminator(char) {
     return this.TERMINATORS.includes(char);
