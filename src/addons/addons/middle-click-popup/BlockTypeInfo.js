@@ -428,7 +428,7 @@ export class BlockTypeInfo {
           addInput(new BlockInputColour(inputIdx, fieldIdx));
         } else if (field.argType_[1] === "number") {
           addInput(new BlockInputNumber(inputIdx, fieldIdx, field.text_));
-        } else {
+        } else if (field.argType_[0] !== "extendable") {
           addInput(new BlockInputString(inputIdx, fieldIdx, field.text_));
         }
       }
