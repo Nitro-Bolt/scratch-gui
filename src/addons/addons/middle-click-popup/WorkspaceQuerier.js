@@ -1159,9 +1159,12 @@ export default class WorkspaceQuerier {
     "operator_subtract",
     "operator_add",
     "operator_equals",
+    "operator_lte",
     "operator_lt",
+    "operator_gte",
     "operator_gt",
     "operator_or",
+    "operator_xor",
     "operator_and",
     "operator_not",
   ];
