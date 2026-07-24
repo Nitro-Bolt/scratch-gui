@@ -64,6 +64,10 @@ const messages = defineMessages({
         id: 'nb.editorSettings.displaySection',
         defaultMessage: 'Display'
     },
+    sound: {
+        id: 'nb.editorSettings.soundSection',
+        defaultMessage: 'Sound'
+    },
     paint: {
         id: 'nb.editorSettings.paintSection',
         defaultMessage: 'Paint'
@@ -463,6 +467,36 @@ const EditorSettingsModal = props => {
                         props.onSetPreference('stage-left', e.target.checked);
                     }}
                 />
+                <BooleanSetting
+                    value={props.preferences['waveform-render-type'] === 'sharp'}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.waveformRenderType"
+                        defaultMessage="Sharp waveforms"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.waveformRenderTypeHelp"
+                        defaultMessage="Choose between sharp edges on sound waveforms or soft edges like in Scratch. Sharp edges can offer more detail on large sounds."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('waveform-render-type', e.target.checked ? 'sharp' : 'soft');
+                    }}
+                />
+                <BooleanSetting
+                    value={props.preferences['waveform-color'] === 'volume'}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.waveformColor"
+                        defaultMessage="Waveform volume gradient"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.waveformColorHelp"
+                        defaultMessage="If checked, waveforms will display a volume gradient where green is quieter and red is louder."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('waveform-color', e.target.checked ? 'volume' : null);
+                    }}
+                />
                 <div className={styles.header}>
                     <FormattedMessage
                         id="nb.editorSettings.theme"
@@ -820,6 +854,35 @@ const EditorSettingsModal = props => {
             </Box>
         },
         {
+            title: messages.sound,
+            content: <Box>
+                <Setting
+                    primary={(
+                        <div className={classNames(styles.label, styles.customStageSize)}>
+                            <FormattedMessage
+                                defaultMessage="Encoding bit rate (kbps):"
+                                id="nb.editorSettings.encodingBitRate"
+                            />
+                            <BufferedInput
+                                value={props.preferences['encoding-bit-rate'] ?? 128}
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onSubmit={value => {
+                                    props.onSetPreference('encoding-bit-rate', Math.max(1, Math.min(value, 320)));
+                                }}
+                                type="number"
+                                min="1"
+                                max="320"
+                            />
+                        </div>
+                    )}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.encodingBitRateHelp"
+                        defaultMessage="Defines the bit rate for sounds encoded in NitroBolt."
+                    />}
+                />
+            </Box>
+        },
+        {
             title: messages.versionControl,
             content: <p>{'Coming Soon'}</p>
         },
@@ -855,7 +918,7 @@ const EditorSettingsModal = props => {
                 </Box>
                 <Box className={styles.keySetting}>
                     <FormattedMessage
-                        defaultMessage="Open extension catlog"
+                        defaultMessage="Open extension catalog"
                         id="nb.editorSettings.keymap.openExtentions"
                     />
                     <KeyInput

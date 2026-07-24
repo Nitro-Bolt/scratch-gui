@@ -41,7 +41,6 @@ import TWRestorePointManager from '../../containers/tw-restore-point-manager.jsx
 import TWFontsModal from '../../containers/tw-fonts-modal.jsx';
 import TWUnknownPlatformModal from '../../containers/tw-unknown-platform-modal.jsx';
 import TWInvalidProjectModal from '../../containers/tw-invalid-project-modal.jsx';
-import TWWindChimeSubmitter from '../../containers/tw-windchime-submitter.jsx';
 
 import {STAGE_SIZE_MODES, FIXED_WIDTH, UNCONSTRAINED_NON_STAGE_WIDTH} from '../../lib/layout-constants';
 import {Theme} from '../../lib/themes';
@@ -234,7 +233,6 @@ const GUIComponent = props => {
             <React.Fragment>
                 <TWSecurityManager securityManager={securityManager} />
                 <TWRestorePointManager />
-                <TWWindChimeSubmitter isEmbedded={isEmbedded} />
                 {settingsModalVisible && <TWSettingsModal />}
                 {customExtensionModalVisible && <TWCustomExtensionModal />}
                 {customAccentModalVisible && <NBCustomAccentModal />}
@@ -546,11 +544,11 @@ const GUIComponent = props => {
                                         vm={vm}
                                     /> : null}
                                 </TabPanel>
-                                <TabPanel
-                                    className={tabClassNames.tabPanel}
-                                    style={hiddenTabs.includes(2) ? {display: 'none'} : null}
-                                >
-                                    {soundsTabVisible ? <SoundTab vm={vm} /> : null}
+                                <TabPanel className={tabClassNames.tabPanel}>
+                                    {soundsTabVisible ? <SoundTab
+                                        vm={vm}
+                                        preferences={props.preferences}
+                                    /> : null}
                                 </TabPanel>
                                 <TabPanel
                                     className={tabClassNames.tabPanel}

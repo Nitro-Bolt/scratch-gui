@@ -17,6 +17,7 @@
 
 .mask-container {
     position: relative;
+    height: 100%;
 }
 
 .mask {
@@ -29,4 +30,8 @@
     will-change: transform;
     background: $ui-primary;
     opacity: 0.75;
+}
+
+.container {
+    height: 100%;
 }

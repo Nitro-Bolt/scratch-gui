@@ -10,7 +10,8 @@ class Waveform extends React.PureComponent {
         const {
             width,
             height,
-            data
+            data,
+            preferences
         } = this.props;
 
         // Never want a density of points higher than the number of pixels
@@ -38,23 +39,52 @@ class Waveform extends React.PureComponent {
         ];
         const pathComponents = points.map(([x, y], i) => {
             const [nx, ny] = points[i < points.length - 1 ? i + 1 : 0];
-            return `Q${x} ${y} ${(x + nx) / 2} ${(y + ny) / 2}`;
+            return `${preferences?.['waveform-render-type'] === 'sharp' ?
+                'L' : 'Q'}${x} ${y} ${(x + nx) / 2} ${(y + ny) / 2}`;
         });
 
+        const randomId = Math.random();
+
         return (
-            <svg
-                className={styles.container}
-                viewBox={`0 0 ${width} ${height}`}
-            >
-                <g transform={`scale(1, -1) translate(0, -${height / 2})`}>
-                    <path
-                        className={styles.waveformPath}
-                        d={`M0 0${pathComponents.join(' ')}Z`}
-                        strokeLinejoin={'round'}
-                        strokeWidth={1}
-                    />
-                </g>
-            </svg>
+            <>
+                <svg
+                    className={styles.container}
+                    viewBox={`0 0 ${width} ${height}`}
+                >
+                    {preferences['waveform-color'] === 'volume' &&
+                        <defs>
+                            <linearGradient id={'sound'.concat(randomId)}>
+                                {data.map((value, i) => (
+                                    <stop
+                                        offset={`${i / data.length * 100}%`}
+                                        stopColor={`hsl(${120 - (value * 120)} 100% 70%)`}
+                                        key={i}
+                                    />
+                                ))}
+                            </linearGradient>
+                            <linearGradient id={'soundOutline'.concat(randomId)}>
+                                {data.map((value, i) => (
+                                    <stop
+                                        offset={`${i / data.length * 100}%`}
+                                        stopColor={`hsl(${120 - (value * 120)} 50% 50%)`}
+                                        key={i}
+                                    />
+                                ))}
+                            </linearGradient>
+                        </defs>
+                    }
+                    <g transform={`scale(1, -1) translate(0, -${height / 2})`}>
+                        <path
+                            className={preferences['waveform-color'] === 'volume' ? null : styles.waveformPath}
+                            d={`M0 0${pathComponents.join(' ')}Z`}
+                            strokeLinejoin={'round'}
+                            strokeWidth={1}
+                            fill={'url(#sound'.concat(randomId, ')')}
+                            stroke={'url(#soundOutline'.concat(randomId, ')')}
+                        />
+                    </g>
+                </svg>
+            </>
         );
     }
 }
@@ -62,7 +92,8 @@ class Waveform extends React.PureComponent {
 Waveform.propTypes = {
     data: PropTypes.arrayOf(PropTypes.number),
     height: PropTypes.number,
-    width: PropTypes.number
+    width: PropTypes.number,
+    preferences: PropTypes.object
 };
 
 export default Waveform;

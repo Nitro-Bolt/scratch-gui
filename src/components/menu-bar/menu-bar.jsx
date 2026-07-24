@@ -1004,7 +1004,7 @@ class MenuBar extends React.Component {
                     </div>}
                 </div>
 
-                <div className={styles.accountInfoGroup}>
+                <div className={styles.accountInfoGroup, styles.menuBarItem}>
                     <TWSaveStatus
                         showSaveFilePicker={this.props.showSaveFilePicker}
                     />

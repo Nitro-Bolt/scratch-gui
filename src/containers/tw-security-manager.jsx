@@ -48,6 +48,16 @@ const embedHostsTrustedByUser = new Set();
 
 /**
  * @param {URL} parsed Parsed URL object
+ * @returns {boolean} True if path is untrusted.
+ */
+const isUntrustedPath = parsed => (
+    // Cloudflare serves stuff on /cdn-cgi/ that we don't want to let projects access without showing
+    // a permission prompt to a non-trusted domain (/cdn-cgi/trace contains IP)
+    /^\/cdn-cgi\//i.test(parsed.pathname)
+);
+
+/**
+ * @param {URL} parsed Parsed URL object
  * @returns {boolean} True if the URL is part of the builtin set of URLs to always trust fetching from.
  */
 const isAlwaysTrustedForFetching = parsed => (
@@ -302,7 +312,9 @@ class TWSecurityManagerComponent extends React.Component {
             return false;
         }
         if (this.shouldTrustAllExtensions() || isAlwaysTrustedForFetching(parsed)) {
-            return true;
+            // For untrusted paths, don't even show a dialog, just auto-reject because users won't understand
+            // what the dialog actually does.
+            return !isUntrustedPath(parsed);
         }
         const {showModal, releaseLock} = await this.acquireModalLock();
         const host = (

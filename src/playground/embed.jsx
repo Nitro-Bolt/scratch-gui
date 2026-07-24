@@ -9,6 +9,7 @@ import runAddons from '../addons/entry';
 import {Theme} from '../lib/themes/index.js';
 
 import GUI from './render-gui.jsx';
+import TWWindchimeSubmitter from '../containers/tw-windchime-submitter.jsx';
 import render from './app-target';
 
 const getProjectId = () => {
@@ -43,11 +44,18 @@ const onProjectLoaded = () => {
     }
 };
 
+const Embed = props => (
+    <React.Fragment>
+        <GUI {...props} />
+        <TWWindchimeSubmitter />
+    </React.Fragment>
+);
+
 const WrappedGUI = compose(
     AppStateHOC,
     TWStateManagerHOC,
     TWEmbedFullScreenHOC
-)(GUI);
+)(Embed);
 
 render(<WrappedGUI
     isEmbedded
