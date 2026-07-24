@@ -14,13 +14,13 @@ import render from './app-target';
 
 const getProjectId = () => {
     // For compatibility reasons, we first look at the hash.
-    // eg. https://turbowarp.org/embed.html#1
+    // eg. https://nitrobolt.org/embed.html#1
     const hashMatch = location.hash.match(/#(\d+)/);
     if (hashMatch !== null) {
         return hashMatch[1];
     }
     // Otherwise, we'll recreate what "wildcard" routing does.
-    // eg. https://turbowarp.org/1/embed
+    // eg. https://nitrobolt.org/1/embed
     const pathMatch = location.pathname.match(/(\d+)\/embed/);
     if (pathMatch !== null) {
         return pathMatch[pathMatch.length - 1];
