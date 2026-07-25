@@ -11,6 +11,7 @@ class CustomProcedures extends React.Component {
         super(props);
         bindAll(this, [
             'handleAddLabel',
+            'handleAddDropdown',
             'handleAddBranch',
             'handleAddInput',
             'handleAddColor',
@@ -133,6 +134,11 @@ class CustomProcedures extends React.Component {
             this.mutationRoot.addLabelExternal();
         }
     }
+    handleAddDropdown () {
+        if (this.mutationRoot) {
+            this.mutationRoot.addDropdownExternal();
+        }
+    }
     handleAddBranch () {
         if (this.mutationRoot) {
             this.mutationRoot.addStatementExternal();
@@ -191,6 +197,7 @@ class CustomProcedures extends React.Component {
                 warp={this.state.warp}
                 colour={this.state.colour}
                 onAddInput={this.handleAddInput}
+                onAddDropdown={this.handleAddDropdown}
                 onAddBranch={this.handleAddBranch}
                 onAddLabel={this.handleAddLabel}
                 setColor={this.handleAddColor}
