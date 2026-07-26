@@ -590,7 +590,7 @@ class NBConnectionManager extends EventEmitter {
    * @param {CollaborationPeer} peer The peer who sent the packet
    * @returns {void}
    */
-  _handlePacket (packet, peer) {
+  async _handlePacket (packet, peer) {
     if (typeof packet !== 'object') return console.error('Received malformed packet', packet);
     if (typeof packet?.type !== 'string') return console.error('Received malformed packet', packet);
 
@@ -599,7 +599,16 @@ class NBConnectionManager extends EventEmitter {
         if (typeof packet?.username !== 'string') return console.error('Received malformed packet', packet);
         if (!this.isHost) return console.error('Client attempted to authenticate with incorrect peer!', peer, packet);
 
-        if (this.joinRequestHandler(packet.username, peer)) {
+        let allowJoin = false;
+        try {
+          allowJoin = await this.joinRequestHandler(packet.username, peer);
+        } catch (e) {
+          console.error('Failed to handle collaboration join request', e);
+        }
+
+        if (allowJoin && peer.open) {
+          // The peer is intentionally revalidated after the host's asynchronous decision.
+          // eslint-disable-next-line require-atomic-updates
           peer.authenticated = true;
           peer.username = packet.username;
           this.users.set(peer.peer, packet.username);

@@ -32,6 +32,7 @@ import DragLayer from '../../containers/drag-layer.jsx';
 import ConnectionModal from '../../containers/connection-modal.jsx';
 import TelemetryModal from '../telemetry-modal/telemetry-modal.jsx';
 import NBLiveCollaboration from '../../containers/nb-live-collaboration-modal.jsx';
+import NBCollaborationJoinRequest from '../../containers/nb-collaboration-join-request.jsx';
 import TWSettingsModal from '../../containers/tw-settings-modal.jsx';
 import TWSecurityManager from '../../containers/tw-security-manager.jsx';
 import TWCustomExtensionModal from '../../containers/tw-custom-extension-modal.jsx';
@@ -234,6 +235,7 @@ const GUIComponent = props => {
         const alwaysEnabledModals = (
             <React.Fragment>
                 <TWSecurityManager securityManager={securityManager} />
+                <NBCollaborationJoinRequest />
                 <TWRestorePointManager />
                 {liveCollaborationModalVisible && <NBLiveCollaboration />}
                 {settingsModalVisible && <TWSettingsModal />}

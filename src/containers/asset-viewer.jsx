@@ -138,16 +138,7 @@ class AssetViewer extends React.Component {
             return;
         }
 
-        const assetObject = this.getAssetObject();
-        if (!assetObject || !assetObject.asset || typeof assetObject.asset.encodeTextData !== 'function') {
-            return;
-        }
-
-        const extension = assetObject.dataFormat || 'txt';
-        assetObject.asset.encodeTextData(value, extension, true);
-        assetObject.md5 = `${assetObject.asset.assetId}.${extension}`;
-        assetObject.assetId = assetObject.asset.assetId;
-        this.props.vm.runtime.emitProjectChanged();
+        this.props.vm.updateTextAsset(this.props.assetIndex, value);
     }
 
     updateUndoRedoState () {

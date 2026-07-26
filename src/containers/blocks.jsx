@@ -11,6 +11,7 @@ import connectionManager from '../lib/nb-connection-manager.js';
 import * as JSZip from "@turbowarp/jszip"
 
 import log from '../lib/log.js';
+import {manuallyTrustExtension} from './tw-security-manager.jsx';
 import Prompt from './prompt.jsx';
 import BlocksComponent from '../components/blocks/blocks.jsx';
 import ExtensionLibrary from './extension-library.jsx';
@@ -125,6 +126,7 @@ class Blocks extends React.Component {
             'handleExtensionAdded',
             'handleExtensionReordered',
             'handleExtensionRemoved',
+            'handleExtensionMutation',
             'handleBlocksInfoUpdate',
             'onTargetsUpdate',
             'onVisualReport',
@@ -143,6 +145,9 @@ class Blocks extends React.Component {
         };
         this.onTargetsUpdate = debounce(this.onTargetsUpdate, 100);
         this.toolboxUpdateQueue = [];
+        this.pendingRemoteExtensionOperations = Promise.resolve();
+        this.pendingRemoteMutationOperations = Promise.resolve();
+        this.applyingRemoteExtensionMutation = false;
     }
     componentDidMount () {
         connectionManager.on('ROOMCHANGE', room => {
@@ -409,6 +414,7 @@ class Blocks extends React.Component {
         this.props.vm.addListener('EXTENSION_ADDED', this.handleExtensionAdded);
         this.props.vm.addListener('EXTENSION_REORDERED', this.handleExtensionReordered);
         this.props.vm.addListener('EXTENSION_REMOVED', this.handleExtensionRemoved);
+        this.props.vm.addListener('EXTENSION_MUTATION', this.handleExtensionMutation);
         this.props.vm.addListener('BLOCKSINFO_UPDATE', this.handleBlocksInfoUpdate);
         this.props.vm.addListener('PERIPHERAL_CONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.addListener('PERIPHERAL_DISCONNECTED', this.handleStatusButtonUpdate);
@@ -428,6 +434,7 @@ class Blocks extends React.Component {
         this.props.vm.removeListener('PERIPHERAL_CONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.removeListener('PERIPHERAL_DISCONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.removeListener('CREATE_UNSANDBOXED_EXTENSION_API', this.onExtensionAPI);
+        this.props.vm.removeListener('EXTENSION_MUTATION', this.handleExtensionMutation);
     }
 
     attachConnectionMananger () {
@@ -512,7 +519,13 @@ class Blocks extends React.Component {
         this.eventIgnoreList.splice(this.eventFired(e), 1)
     }
     sendBlocklyEvent(e) {
-        if (['ui', 'endDrag', 'dragOutside'].includes(e.type)) return;
+        if ([
+            'ui',
+            'endDrag',
+            'dragOutside',
+            'group_end_drag',
+            'group_drag_outside'
+        ].includes(e.type)) return;
 
         console.log("Sending blockly event ", e)
 
@@ -535,7 +548,7 @@ class Blocks extends React.Component {
         });
         else console.error("Connection manager disconnected")
     }
-    handlePacket(data) { // data is packet.payload
+    async handlePacket(data) { // data is packet.payload
         if (typeof data.type !== "object") {
             if (typeof data?.type !== "string") return console.error("Received malformed packet");
             switch (data.type) {
@@ -556,34 +569,73 @@ class Blocks extends React.Component {
 
                     break;
                 }
+                case "extension": {
+                    const mutation = data.mutation;
+                    if (!mutation || typeof mutation.action !== 'string') {
+                        return console.error('Received malformed extension mutation', data);
+                    }
+                    this.pendingRemoteExtensionOperations = this.pendingRemoteExtensionOperations
+                        .then(async () => {
+                            this.applyingRemoteExtensionMutation = true;
+                            try {
+                                const manager = this.props.vm.extensionManager;
+                                if (mutation.action === 'load') {
+                                    if (mutation.sandboxMode === 'unsandboxed') {
+                                        manuallyTrustExtension(mutation.source);
+                                    }
+                                    await manager.loadExtensionURL(mutation.source);
+                                } else if (mutation.action === 'remove') {
+                                    if (manager.isExtensionLoaded(mutation.extensionId)) {
+                                        manager.removeExtension(mutation.extensionId);
+                                    }
+                                } else if (mutation.action === 'reorder') {
+                                    manager.reorderExtension(
+                                        mutation.extensionIndex,
+                                        mutation.reorderIndex
+                                    );
+                                }
+                            } finally {
+                                this.applyingRemoteExtensionMutation = false;
+                            }
+                        })
+                        .catch(error => console.error('Failed to apply extension mutation', error));
+                    await this.pendingRemoteExtensionOperations;
+                    break;
+                }
                 case "sync": {
-                    console.log("Received sync data", data);
+                    this.pendingRemoteMutationOperations = this.pendingRemoteMutationOperations
+                        .then(() => this.pendingRemoteExtensionOperations)
+                        .then(async () => {
+                            console.log("Received sync data", data);
 
-                    if (typeof data.fn !== "string" || !Array.isArray(data.args)) return console.error("received malformed data");
+                            if (typeof data.fn !== "string" || !Array.isArray(data.args)) {
+                                return console.error("received malformed data");
+                            }
 
-                    const fn = this.props.vm[data.fn];
-                    if (typeof fn !== "function") {
-                        return console.error("Unknown VM mutation:", data.fn);
-                    }
+                            const fn = this.props.vm[data.fn];
+                            if (typeof fn !== "function") {
+                                return console.error("Unknown VM mutation:", data.fn);
+                            }
 
-                    try {
-                        fn.apply(this.props.vm, data.sprite ?
-                            [...data.args,
-                                false,
-                                data.sprite === '_stage_' ?
-                                    this.props.vm.runtime.getTargetForStage() :
-                                    this.props.vm.runtime.getSpriteTargetByName(data.sprite)
-                            ] :
-                            [...data.args, false]);
-                    } catch (e) {
-                        console.error("Failed to apply mutation", e);
-                    }
+                            await fn.apply(this.props.vm, data.sprite ?
+                                [...data.args,
+                                    false,
+                                    data.sprite === '_stage_' ?
+                                        this.props.vm.runtime.getTargetForStage() :
+                                        this.props.vm.runtime.getSpriteTargetByName(data.sprite)
+                                ] :
+                                [...data.args, false]);
+                        })
+                        .catch(e => console.error("Failed to apply mutation", e));
+                    await this.pendingRemoteMutationOperations;
 
                     break;
                 }
             }
         }
         else {
+            await this.pendingRemoteExtensionOperations;
+            await this.pendingRemoteMutationOperations;
             if (!Object.prototype.hasOwnProperty.call(data, "data")) return console.error("Received malformed blockly packet", data);
             if (data.type?.isBlockly) {
                 //this.ScratchBlocks.Events.disable()
@@ -594,9 +646,65 @@ class Blocks extends React.Component {
                 if (data.type.sprite === editingSpriteName) {
                     // Make a "sliding" animation for when blocks are being moved
                     if (e.type === 'move') {
-                        this.workspace.getBlockById(e.blockId).getSvgRoot().style.transition = 'transform 0.5s';
+                        const block = this.workspace.getBlockById(e.blockId);
+                        if (block && block.getSvgRoot()) {
+                            block.getSvgRoot().style.transition = 'transform 0.5s';
+                        }
+                    } else if (e.type === 'group_change') {
+                        const group = this.workspace.getGroupById(e.groupId);
+                        if (group && group.getSvgRoot()) {
+                            group.getSvgRoot().style.transition = 'transform 0.5s';
+                        }
+                    } else if (e.type === 'comment_move') {
+                        const comment = this.workspace.getCommentById(e.commentId);
+                        const commentRoot = comment && (
+                            typeof comment.getSvgRoot === 'function' ?
+                                comment.getSvgRoot() :
+                                comment.bubble_ && comment.bubble_.getSvgRoot()
+                        );
+                        if (commentRoot) {
+                            commentRoot.style.transition = 'transform 0.5s';
+                        }
                     }
-                    e.run(true);
+                    // Replaying a remote event through Blockly can emit a second local
+                    // event (notably BlockMove via moveBy). Group auto-fit sees that
+                    // secondary event as a local drag, adopts the block again, and sends
+                    // an expanding group state back to every peer. Apply the visual event
+                    // silently, then update the VM model exactly once with the original.
+                    this.ScratchBlocks.Events.disable();
+                    try {
+                        e.run(true);
+                    } finally {
+                        this.ScratchBlocks.Events.enable();
+                    }
+                    this.props.vm.blockListener(e);
+                    // Reparenting an SVG while its transform is transitioning cancels
+                    // the animation. Promote it once the remote movement finishes.
+                    if (e.type === 'move') {
+                        const blockId = e.blockId;
+                        setTimeout(() => {
+                            const block = this.workspace.getBlockById(blockId);
+                            if (block && typeof block.bringToFront === 'function') {
+                                block.bringToFront();
+                            }
+                        }, 550);
+                    } else if (e.type === 'group_change' && e.oldState && e.newState) {
+                        const geometryChanged = (
+                            e.oldState.x !== e.newState.x ||
+                            e.oldState.y !== e.newState.y ||
+                            e.oldState.width !== e.newState.width ||
+                            e.oldState.height !== e.newState.height
+                        );
+                        if (geometryChanged) {
+                            const groupId = e.groupId;
+                            setTimeout(() => {
+                                const group = this.workspace.getGroupById(groupId);
+                                if (group && typeof group.bringToFront_ === 'function') {
+                                    group.bringToFront_();
+                                }
+                            }, 550);
+                        }
+                    }
                 } else {
                     if (data.type.sprite === '_stage_') {
                         this.props.vm.runtime.getTargetForStage().blocks.blocklyListen(e);
@@ -802,6 +910,20 @@ class Blocks extends React.Component {
         if (toolboxXML) {
             this.props.updateToolboxState(toolboxXML);
         }
+    }
+    handleExtensionMutation (mutation) {
+        if (this.applyingRemoteExtensionMutation ||
+            !this.connectionManager ||
+            !this.connectionManager.connected) {
+            return;
+        }
+        this.connectionManager.sendToAll({
+            type: this.connectionManager.PacketType.PACKET,
+            payload: {
+                type: 'extension',
+                mutation
+            }
+        });
     }
     handleBlocksInfoUpdate (categoryInfo) {
         // @todo Later we should replace this to avoid all the warnings from redefining blocks.
