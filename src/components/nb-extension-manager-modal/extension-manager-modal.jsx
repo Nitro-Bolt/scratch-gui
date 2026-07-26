@@ -36,7 +36,7 @@ const ExtensionManagerModal = props => {
             className={styles.modalContent}
             onRequestClose={props.onClose}
             contentLabel={props.intl.formatMessage(messages.title)}
-            id='extensionManagerModal'
+            id="extensionManagerModal"
         >
             <Box className={styles.body}>
                 <p>{loadedAmountText}</p>
@@ -55,15 +55,12 @@ const ExtensionManagerModal = props => {
                             <button
                                 className={styles.deleteOption}
                                 onClick={() => props.removeExtension(extension[0])}
-                            >
-                            </button>
-                        :
+                            /> :
                             <FancyCheckbox
                                 className={styles.checkboxOption}
                                 onChange={props.updateExtensionList}
                                 value={extension[0]}
-                            >
-                            </FancyCheckbox>
+                            />
                         }
                     </div>
                 ))}

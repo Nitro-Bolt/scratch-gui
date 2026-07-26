@@ -24,11 +24,11 @@ body {
     margin: 0;
 }
 
-a[href] {
+.container a[href] {
     color: $link-color;
     text-decoration: underline;
 }
-a:active, a:focus {
+.container a:active, a:focus {
     outline: none;
     box-shadow: 0 0 0 3px $looks-transparent;
 }
@@ -44,12 +44,12 @@ a:active, a:focus {
     overflow: hidden;
 }
 
-.section {
+.container .section {
     max-width: 1280px;
     margin: auto;
 }
 
-.header {
+.container .header {
     position: relative;
     padding: 8px 20px;
     background-color: $ui-secondary;
@@ -107,6 +107,7 @@ a:active, a:focus {
     outline: none;
     background-color: transparent;
     font-size: 14px;
+    box-sizing: content-box;
 }
 /* legacy edge */
 .search-input::-ms-clear {
@@ -126,6 +127,18 @@ a:active, a:focus {
 }
 .search-input:not([value=""]) ~ .search-button {
     background-image: url("./icons/clear.svg") !important;
+}
+
+.import-addon-button {
+    color: inherit;
+    height: 16px;
+    margin-left: 10px;
+    padding: 10px;
+    background-color: transparent;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    box-sizing: content-box;
 }
 
 .feedback-button-outer {
@@ -256,21 +269,21 @@ a:active, a:focus {
     align-items: center;
 }
 
-.reset-button {
+.addon-button {
     display: flex;
     border-radius: 4px;
     cursor: pointer;
     border: none;
     background-color: transparent;
 }
-.reset-button:hover {
+.addon-button:hover {
     background: $ui-black-transparent;
 }
-.reset-button:active, .reset-button:focus-within {
+.addon-button:active, .addon-button:focus-within {
     outline: none;
     box-shadow: 0 0 0 3px $looks-transparent;
 }
-.reset-button-image {
+.addon-button-image {
     padding: 1px 0;
     height: 16px;
     width: 16px;
@@ -455,6 +468,10 @@ a:active, a:focus {
     outline: none;
     border: 1px solid transparent;
     border-radius: 4px 0px 0px 4px;
+}
+
+.setting :is(input[type="checkbox"], input[type="radio"]) {
+    padding: 0;
 }
 
 .reset-setting-button {

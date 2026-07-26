@@ -94,7 +94,8 @@ export default async function ({ addon, console }) {
   document.body.addEventListener(
     "click",
     (e) => {
-      if (addon.self.disabled) {
+      const currentTabIndex = addon.tab.redux.state.scratchGui.editorTab.activeTabIndex;
+      if (addon.self.disabled || currentTabIndex === 3) {
         return;
       }
       const mainButton = e.target.closest('[class*="action-menu_main-button_"]');
@@ -117,8 +118,9 @@ export default async function ({ addon, console }) {
   document.body.addEventListener(
     "mouseover",
     (e) => {
+      const currentTabIndex = addon.tab.redux.state.scratchGui.editorTab.activeTabIndex;
       const mainButton = e.target.closest('[class*="action-menu_main-button_"]');
-      if (!mainButton) {
+      if (!mainButton || currentTabIndex === 3) {
         return;
       }
       const tooltipElement = mainButton.parentElement.querySelector(".__react_component_tooltip");

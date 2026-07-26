@@ -1,4 +1,4 @@
-import {BLOCKS_THREE} from '.';
+import {BLOCKS_THREE, BLOCKS_CUSTOM} from '.';
 
 const getBlockIconURI = extensionIcons => {
     if (!extensionIcons) return null;
@@ -41,6 +41,7 @@ const injectExtensionCategoryTheme = (dynamicBlockXML, theme) => {
         const primaryColor = dom.documentElement.getAttribute('colour');
         const usesCustomColors = primaryColor.toLowerCase() !== DEFAULT_EXTENSION_PRIMARY;
         if (usesCustomColors) {
+            if (theme.blocks === BLOCKS_CUSTOM) return extension;
             const converters = theme.getCustomExtensionColors();
             dom.documentElement.setAttribute('colour', converters.categoryIconBackground(primaryColor));
             dom.documentElement.setAttribute('secondaryColour', converters.categoryIconBorder(primaryColor));
@@ -99,6 +100,7 @@ const injectExtensionBlockTheme = (blockInfoJson, theme) => {
     if (theme.blocks === BLOCKS_THREE) return blockInfoJson;
 
     if (!blockInfoJson.extensions?.includes('default_extension_colors')) {
+        if (theme.blocks === BLOCKS_CUSTOM) return blockInfoJson;
         const converters = theme.getCustomExtensionColors();
         return {
             ...blockInfoJson,

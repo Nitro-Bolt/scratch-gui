@@ -6,14 +6,27 @@ import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import log from '../lib/log';
 
 import extensionLibraryContent, {
-    galleryError,
-    galleryLoading,
-    galleryMore
+    galleryStatusItems
 } from '../lib/libraries/extensions/index.jsx';
 import extensionTags from '../lib/libraries/tw-extension-tags';
 
 import LibraryComponent from '../components/library/library.jsx';
 import extensionIcon from '../components/action-menu/icon--sprite.svg';
+
+const gallerySources = [
+    {
+        id: 'nitrobolt',
+        baseURL: 'https://extensions.nitrobolt.org/',
+        metadataURL: 'https://extensions.nitrobolt.org/generated-metadata/extensions-v0.json',
+        tag: 'nb'
+    },
+    {
+        id: 'turbowarp',
+        baseURL: 'https://extensions.turbowarp.org/',
+        metadataURL: 'https://extensions.turbowarp.org/generated-metadata/extensions-v0.json',
+        tag: 'tw'
+    }
+];
 
 const messages = defineMessages({
     extensionTitle: {
@@ -39,49 +52,84 @@ const translateGalleryItem = (extension, locale) => ({
     description: extension.descriptionTranslations[locale] || extension.description
 });
 
-let cachedGallery = null;
+const mapGalleryExtension = (extension, source) => ({
+    name: extension.name,
+    nameTranslations: extension.nameTranslations || {},
+    description: extension.description,
+    descriptionTranslations: extension.descriptionTranslations || {},
+    extensionId: extension.id,
+    extensionURL: `${source.baseURL}${extension.slug}.js`,
+    iconURL: `${source.baseURL}${extension.image || 'images/unknown.svg'}`,
+    tags: [source.tag],
+    credits: [
+        ...(extension.original || []),
+        ...(extension.by || [])
+    ].map(credit => {
+        if (credit.link) {
+            return (
+                <a
+                    href={credit.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    key={credit.name}
+                >
+                    {credit.name}
+                </a>
+            );
+        }
+        return credit.name;
+    }),
+    docsURI: extension.docs ? `${source.baseURL}${extension.slug}` : null,
+    samples: extension.samples ? extension.samples.map(sample => ({
+        href: `${process.env.ROOT}editor?project_url=${source.baseURL}samples/${encodeURIComponent(sample)}.sb3`,
+        text: sample
+    })) : null,
+    incompatibleWithScratch: !extension.scratchCompatible,
+    featured: true
+});
+
+let cachedGalleryBySource = null;
 
 const fetchLibrary = async () => {
-    const res = await fetch('https://extensions.turbowarp.org/generated-metadata/extensions-v0.json');
-    if (!res.ok) {
-        throw new Error(`HTTP status ${res.status}`);
-    }
-    const data = await res.json();
-    return data.extensions.map(extension => ({
-        name: extension.name,
-        nameTranslations: extension.nameTranslations || {},
-        description: extension.description,
-        descriptionTranslations: extension.descriptionTranslations || {},
-        extensionId: extension.id,
-        extensionURL: `https://extensions.turbowarp.org/${extension.slug}.js`,
-        iconURL: `https://extensions.turbowarp.org/${extension.image || 'images/unknown.svg'}`,
-        tags: ['tw'],
-        credits: [
-            ...(extension.original || []),
-            ...(extension.by || [])
-        ].map(credit => {
-            if (credit.link) {
-                return (
-                    <a
-                        href={credit.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        key={credit.name}
-                    >
-                        {credit.name}
-                    </a>
-                );
-            }
-            return credit.name;
-        }),
-        docsURI: extension.docs ? `https://extensions.turbowarp.org/${extension.slug}` : null,
-        samples: extension.samples ? extension.samples.map(sample => ({
-            href: `${process.env.ROOT}editor?project_url=https://extensions.turbowarp.org/samples/${encodeURIComponent(sample)}.sb3`,
-            text: sample
-        })) : null,
-        incompatibleWithScratch: !extension.scratchCompatible,
-        featured: true
+    const results = await Promise.allSettled(gallerySources.map(async source => {
+        const res = await fetch(source.metadataURL);
+        if (!res.ok) {
+            throw new Error(`[${source.id}] HTTP status ${res.status}`);
+        }
+        const data = await res.json();
+        return data.extensions.map(extension => mapGalleryExtension(extension, source));
     }));
+
+    const extensionIds = new Set();
+    const galleryBySource = {};
+
+    for (const [index, result] of results.entries()) {
+        const source = gallerySources[index];
+
+        if (result.status === 'fulfilled') {
+            const extensions = [];
+            for (const extension of result.value) {
+                // Keep first occurrence, so NitroBolt wins when IDs overlap.
+                if (!extensionIds.has(extension.extensionId)) {
+                    extensionIds.add(extension.extensionId);
+                    extensions.push(extension);
+                }
+            }
+            galleryBySource[source.id] = {
+                status: 'success',
+                extensions
+            };
+        } else {
+            log.error(result.reason);
+            galleryBySource[source.id] = {
+                status: 'error',
+                error: result.reason,
+                extensions: []
+            };
+        }
+    }
+
+    return galleryBySource;
 };
 
 class ExtensionLibrary extends React.PureComponent {
@@ -91,13 +139,12 @@ class ExtensionLibrary extends React.PureComponent {
             'handleItemSelect'
         ]);
         this.state = {
-            gallery: cachedGallery,
-            galleryError: null,
+            galleryBySource: cachedGalleryBySource,
             galleryTimedOut: false
         };
     }
     componentDidMount () {
-        if (!this.state.gallery) {
+        if (!this.state.galleryBySource) {
             const timeout = setTimeout(() => {
                 this.setState({
                     galleryTimedOut: true
@@ -105,18 +152,15 @@ class ExtensionLibrary extends React.PureComponent {
             }, 750);
 
             fetchLibrary()
-                .then(gallery => {
-                    cachedGallery = gallery;
+                .then(galleryBySource => {
+                    cachedGalleryBySource = galleryBySource;
                     this.setState({
-                        gallery
+                        galleryBySource
                     });
                     clearTimeout(timeout);
                 })
                 .catch(error => {
                     log.error(error);
-                    this.setState({
-                        galleryError: error
-                    });
                     clearTimeout(timeout);
                 });
         }
@@ -152,21 +196,51 @@ class ExtensionLibrary extends React.PureComponent {
     }
     render () {
         let library = null;
-        if (this.state.gallery || this.state.galleryError || this.state.galleryTimedOut) {
+        if (this.state.galleryBySource || this.state.galleryTimedOut) {
             library = extensionLibraryContent.map(toLibraryItem);
             library.push('---');
-            if (this.state.gallery) {
-                library.push(toLibraryItem(galleryMore));
-                const locale = this.props.intl.locale;
-                library.push(
-                    ...this.state.gallery
-                        .map(i => translateGalleryItem(i, locale))
-                        .map(toLibraryItem)
-                );
-            } else if (this.state.galleryError) {
-                library.push(toLibraryItem(galleryError));
-            } else {
-                library.push(toLibraryItem(galleryLoading));
+
+            const locale = this.props.intl.locale;
+
+            for (const source of gallerySources) {
+                const sourceGallery = this.state.galleryBySource ? this.state.galleryBySource[source.id] : null;
+                const sourceStatusItems = galleryStatusItems[source.id];
+
+                const extensionsToExclude = [
+                    'faceSensing',
+                    'fetch',
+                    'fullscreen0419',
+                    'images',
+                    'lmsCast',
+                    'lmscomments',
+                    'lmsHackedBlocks',
+                    'lmsmcutils',
+                    'lmsutilsblocks',
+                    'RixxyX',
+                    'ShovelUtils',
+                    'shreder95resolution',
+                    'skyhigh173JSON'
+                ];
+
+                if (sourceGallery && sourceGallery.status === 'success') {
+                    library.push(toLibraryItem(sourceStatusItems.more));
+                    library.push(
+                        ...sourceGallery.extensions
+                            .filter(i => !extensionsToExclude.includes(i.extensionId))
+                            .map(i => translateGalleryItem(i, locale))
+                            .map(toLibraryItem)
+                    );
+                } else if (sourceGallery && sourceGallery.status === 'error') {
+                    library.push(toLibraryItem(sourceStatusItems.error));
+                } else {
+                    library.push(toLibraryItem(sourceStatusItems.loading));
+                }
+
+                library.push('---');
+            }
+
+            if (library[library.length - 1] === '---') {
+                library.pop();
             }
         }
 

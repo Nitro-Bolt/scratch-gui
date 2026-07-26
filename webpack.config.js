@@ -5,6 +5,7 @@ const webpack = require('webpack');
 // Plugins
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 // PostCss
 const autoprefixer = require('autoprefixer');
@@ -67,6 +68,14 @@ const base = {
     },
     module: {
         rules: [{
+            test: /\.css$/,
+            include: /node_modules[\\/]monaco-editor/,
+            use: [{
+                loader: 'style-loader'
+            }, {
+                loader: 'css-loader'
+            }]
+        }, {
             test: /\.jsx?$/,
             loader: 'babel-loader',
             include: [
@@ -88,6 +97,7 @@ const base = {
         },
         {
             test: /\.css$/,
+            exclude: /node_modules[\\/]monaco-editor/,
             use: [{
                 loader: 'style-loader'
             }, {
@@ -130,7 +140,8 @@ const base = {
                     force: true
                 }
             ]
-        })
+        }),
+        new MonacoWebpackPlugin()
     ]
 };
 
@@ -155,7 +166,7 @@ module.exports = [
         module: {
             rules: base.module.rules.concat([
                 {
-                    test: /\.(svg|png|wav|mp3|gif|jpg|woff2|hex)$/,
+                    test: /\.(svg|png|wav|mp3|gif|jpg|woff|woff2|ttf|eot|hex)$/,
                     loader: 'url-loader',
                     options: {
                         limit: 2048,
@@ -179,7 +190,8 @@ module.exports = [
                 'process.env.DEBUG': Boolean(process.env.DEBUG),
                 'process.env.ENABLE_SERVICE_WORKER': JSON.stringify(process.env.ENABLE_SERVICE_WORKER || ''),
                 'process.env.ROOT': JSON.stringify(root),
-                'process.env.ROUTING_STYLE': JSON.stringify(process.env.ROUTING_STYLE || 'filehash')
+                'process.env.ROUTING_STYLE': JSON.stringify(process.env.ROUTING_STYLE || 'filehash'),
+                'process.env.ENABLE_WINDCHIMES': JSON.stringify(process.env.ENABLE_WINDCHIMES || '')
             }),
             new HtmlWebpackPlugin({
                 chunks: ['editor'],
@@ -265,7 +277,7 @@ module.exports = [
             module: {
                 rules: base.module.rules.concat([
                     {
-                        test: /\.(svg|png|wav|mp3|gif|jpg|woff2|hex)$/,
+                        test: /\.(svg|png|wav|mp3|gif|jpg|woff|woff2|ttf|eot|hex)$/,
                         loader: 'url-loader',
                         options: {
                             limit: 2048,

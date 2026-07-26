@@ -26,11 +26,11 @@ const AudioTrimmer = props => (
                 />
             </Box>
         )}
-        {props.playhead ? (
+        {props.playhead !== null && (
             <Playhead
                 playbackPosition={props.playhead}
             />
-        ) : null}
+        )}
         {props.trimEnd === null ? null : (
             <Box
                 className={classNames(styles.absolute, styles.trimBackground, styles.endTrimBackground)}

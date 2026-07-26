@@ -29,9 +29,9 @@ import MenuBarHOC from '../../containers/menu-bar-hoc.jsx';
 import SettingsMenu from './settings-menu.jsx';
 
 import FramerateChanger from '../../containers/tw-framerate-changer.jsx';
-import ChangeUsername from '../../containers/tw-change-username.jsx';
 import CloudVariablesToggler from '../../containers/tw-cloud-toggler.jsx';
 import TWSaveStatus from './tw-save-status.jsx';
+import TWNews from './tw-news.jsx';
 
 import {openTipsLibrary, openExtensionManagerModal, openLiveCollaborationModal, openSettingsModal, openRestorePointModal} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
@@ -95,7 +95,6 @@ import editIcon from './icon--edit.svg';
 import liveCollaborationIcon from './nb-live-collaboration.svg';
 import addonsIcon from './addons.svg';
 import errorIcon from './tw-error.svg';
-import advancedIcon from './tw-advanced.svg';
 
 import ninetiesLogo from './nineties_logo.svg';
 import catLogo from './cat_logo.svg';
@@ -483,7 +482,7 @@ class MenuBar extends React.Component {
         );
         // Show the About button only if we have a handler for it (like in the desktop app)
         const aboutButton = this.buildAboutMenu(this.props.onClickAbout);
-        return (
+        const menuBar = (
             <Box
                 className={classNames(
                     this.props.className,
@@ -551,11 +550,6 @@ class MenuBar extends React.Component {
                             onClickDesktopSettings={
                                 this.props.onClickDesktopSettings &&
                                 this.handleClickDesktopSettings
-                            }
-                            // eslint-disable-next-line react/jsx-no-bind
-                            onOpenCustomSettings={
-                                this.props.onClickAddonSettings &&
-                                this.props.onClickAddonSettings.bind(null, 'editor-theme3')
                             }
                             onRequestClose={this.props.onRequestCloseSettings}
                             onRequestOpen={this.props.onClickSettings}
@@ -791,15 +785,6 @@ class MenuBar extends React.Component {
                                             )}
                                         </MenuItem>
                                     )}</FramerateChanger>
-                                    <ChangeUsername>{changeUsername => (
-                                        <MenuItem onClick={changeUsername}>
-                                            <FormattedMessage
-                                                defaultMessage="Change Username"
-                                                description="Menu bar item for changing the username"
-                                                id="tw.menuBar.changeUsername"
-                                            />
-                                        </MenuItem>
-                                    )}</ChangeUsername>
                                     <CloudVariablesToggler>{(toggleCloudVariables, {enabled, canUseCloudVariables}) => (
                                         <MenuItem
                                             className={classNames({[styles.disabled]: !canUseCloudVariables})}
@@ -912,10 +897,9 @@ class MenuBar extends React.Component {
                             </MenuLabel>
                         )}
 
-                        {this.props.onClickAddonSettings && (
+                        {false && (
                             <div
                                 className={classNames(styles.menuBarItem, styles.hoverable)}
-                                onClick={this.props.onClickAddonSettings}
                             >
                                 <img
                                     src={addonsIcon}
@@ -928,26 +912,6 @@ class MenuBar extends React.Component {
                                         defaultMessage="Addons"
                                         description="Button to open addon settings"
                                         id="tw.menuBar.addons"
-                                    />
-                                </span>
-                            </div>
-                        )}
-                        {this.props.onClickSettingsModal && (
-                            <div
-                                className={classNames(styles.menuBarItem, styles.hoverable)}
-                                onClick={this.props.onClickSettingsModal}
-                            >
-                                <img
-                                    src={advancedIcon}
-                                    draggable={false}
-                                    width={20}
-                                    height={20}
-                                />
-                                <span className={styles.collapsibleLabel}>
-                                    <FormattedMessage
-                                        defaultMessage="Advanced"
-                                        description="Button to open advanced settings menu"
-                                        id="tw.menuBar.advanced"
                                     />
                                 </span>
                             </div>
@@ -1039,7 +1003,7 @@ class MenuBar extends React.Component {
                         ) : []))}
                     </div>
                     {/* tw: add a feedback button */}
-                    <div className={styles.menuBarItem}>
+                    {this.props.feedbackVisible && <div className={styles.menuBarItem}>
                         <a
                             className={styles.feedbackLink}
                             href="https://scratch.mit.edu/users/CubesterYT/#comments"
@@ -1058,10 +1022,10 @@ class MenuBar extends React.Component {
                                 />
                             </Button>
                         </a>
-                    </div>
+                    </div>}
                 </div>
 
-                <div className={styles.accountInfoGroup}>
+                <div className={styles.accountInfoGroup, styles.menuBarItem}>
                     <TWSaveStatus
                         showSaveFilePicker={this.props.showSaveFilePicker}
                     />
@@ -1069,6 +1033,13 @@ class MenuBar extends React.Component {
 
                 {aboutButton}
             </Box>
+        );
+
+        return (
+            <React.Fragment>
+                {menuBar}
+                <TWNews />
+            </React.Fragment>
         );
     }
 }
@@ -1104,6 +1075,7 @@ MenuBar.propTypes = {
     currentLocale: PropTypes.string.isRequired,
     editMenuOpen: PropTypes.bool,
     enableCommunity: PropTypes.bool,
+    feedbackVisible: PropTypes.bool,
     fileMenuOpen: PropTypes.bool,
     handleSaveProject: PropTypes.func,
     intl: intlShape,
@@ -1131,7 +1103,6 @@ MenuBar.propTypes = {
         )
     ]),
     onClickAccount: PropTypes.func,
-    onClickAddonSettings: PropTypes.func,
     onClickDesktopSettings: PropTypes.func,
     onClickPackager: PropTypes.func,
     onClickRestorePoints: PropTypes.func,

@@ -70,7 +70,7 @@ class TargetPane extends React.Component {
         this.props.vm.postSpriteInfo({size});
     }
     handleChangeSpriteVisibility (visible) {
-        this.props.vm.postSpriteInfo({visible});
+        if (!this.props.isFullScreen) this.props.vm.postSpriteInfo({visible});
     }
     handleChangeSpriteX (x) {
         this.props.vm.postSpriteInfo({x});
@@ -100,10 +100,15 @@ class TargetPane extends React.Component {
             downloadBlob(`${spriteName}.sprite3`, content);
         });
     }
-    handleSelectSprite (id) {
+    // This function is called in containers/sprite-selector-item
+    handleSelectSprite (id, shouldGoToFront) {
         this.props.vm.setEditingTarget(id);
         if (this.props.stage && id !== this.props.stage.id) {
             this.props.onHighlightTarget(id);
+
+            if (shouldGoToFront) {
+                this.props.vm.runtime.getTargetById(id).goToFront();
+            }
         }
     }
     async handleSurpriseSpriteClick () {
@@ -160,16 +165,28 @@ class TargetPane extends React.Component {
     setFileInput (input) {
         this.fileInput = input;
     }
-    handleBlockDragEnd (blocks) {
+    handleBlockDragEnd (blocks, topBlockId, group) {
         if (this.props.hoveredTarget.sprite && this.props.hoveredTarget.sprite !== this.props.editingTarget) {
-            this.shareBlocks(blocks, this.props.hoveredTarget.sprite, this.props.editingTarget);
+            this.shareBlocks(blocks, this.props.hoveredTarget.sprite, this.props.editingTarget, group);
             this.props.onReceivedBlocks(true);
         }
     }
-    shareBlocks (payload, targetId, optFromTargetId) {
+    shareBlocks (payload, targetId, optFromTargetId, group) {
         // Position the top-level block based on the scroll position.
+        const topBlock = payload.find(block => block.topLevel);
+        const oldX = topBlock && Number(topBlock.x);
+        const oldY = topBlock && Number(topBlock.y);
         const centered = placeInViewport(payload, this.props.workspaceMetrics.targets[targetId], this.props.isRtl);
-        return this.props.vm.shareBlocksToTarget(centered, targetId, optFromTargetId);
+        if (group && topBlock) {
+            const dx = Number(topBlock.x) - oldX;
+            const dy = Number(topBlock.y) - oldY;
+            centered.filter(block => block.topLevel && block !== topBlock).forEach(block => {
+                block.x = Number(block.x) + dx;
+                block.y = Number(block.y) + dy;
+            });
+            group = Object.assign({}, group, {x: group.x + dx, y: group.y + dy});
+        }
+        return this.props.vm.shareBlocksToTarget(centered, targetId, optFromTargetId, group);
     }
     handleDrop (dragInfo) {
         const {sprite: targetId} = this.props.hoveredTarget;
@@ -192,6 +209,8 @@ class TargetPane extends React.Component {
                 this.props.vm.shareCostumeToTarget(dragInfo.index, targetId);
             } else if (targetId && dragInfo.dragType === DragConstants.SOUND) {
                 this.props.vm.shareSoundToTarget(dragInfo.index, targetId);
+            } else if (targetId && dragInfo.dragType === DragConstants.ASSET) {
+                this.props.vm.shareAssetToTarget(dragInfo.index, targetId);
             } else if (dragInfo.dragType === DragConstants.BACKPACK_COSTUME) {
                 // In scratch 2, this only creates a new sprite from the costume.
                 // We may be able to handle both kinds of drops, depending on where
@@ -215,6 +234,7 @@ class TargetPane extends React.Component {
         /* eslint-disable no-unused-vars */
         const {
             dispatchUpdateRestore,
+            isFullScreen,
             isRtl,
             onActivateTab,
             onCloseImporting,
@@ -267,7 +287,9 @@ TargetPane.propTypes = {
 const mapStateToProps = state => ({
     editingTarget: state.scratchGui.targets.editingTarget,
     hoveredTarget: state.scratchGui.hoveredTarget,
+    isFullScreen: state.scratchGui.mode.isFullScreen,
     isRtl: state.locales.isRtl,
+    preferences: state.scratchGui.preferences,
     spriteLibraryVisible: state.scratchGui.modals.spriteLibrary,
     sprites: state.scratchGui.targets.sprites,
     stage: state.scratchGui.targets.stage,

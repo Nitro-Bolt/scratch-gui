@@ -5,7 +5,6 @@ import Renderer from 'scratch-render';
 import VM from 'scratch-vm';
 import {connect} from 'react-redux';
 
-import {STAGE_DISPLAY_SIZES} from '../lib/layout-constants';
 import {getEventXY} from '../lib/touch-utils';
 import VideoProvider from '../lib/video/video-provider';
 import {BitmapAdapter as V2BitmapAdapter} from '@turbowarp/scratch-svg-renderer';
@@ -90,6 +89,7 @@ class Stage extends React.Component {
         this.attachRectEvents();
         this.attachMouseEvents(this.canvas);
         this.updateRect();
+        this.renderer.resize(this.rect.width, this.rect.height);
         this.props.vm.runtime.addListener('QUESTION', this.questionListener);
     }
     shouldComponentUpdate (nextProps, nextState) {
@@ -193,7 +193,7 @@ class Stage extends React.Component {
         // Set editing target from cursor position, if clicking on a sprite.
         const mousePosition = [x - this.rect.left, y - this.rect.top];
         const drawableId = this.renderer.pick(mousePosition[0], mousePosition[1]);
-        if (drawableId === null) return;
+        if (drawableId === -1) return;
         const targetId = this.props.vm.getTargetIdForDrawableId(drawableId);
         if (targetId === null) return;
         this.props.vm.setEditingTarget(targetId);
@@ -376,7 +376,7 @@ class Stage extends React.Component {
     onStartDrag (x, y) {
         if (this.state.dragId) return;
         const drawableId = this.renderer.pick(x, y);
-        if (drawableId === null) return;
+        if (drawableId === -1) return;
         const targetId = this.props.vm.getTargetIdForDrawableId(drawableId);
         if (targetId === null) return;
 
@@ -480,7 +480,7 @@ Stage.propTypes = {
     micIndicator: PropTypes.bool,
     onActivateColorPicker: PropTypes.func,
     onDeactivateColorPicker: PropTypes.func,
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
+    stageSize: PropTypes.number.isRequired,
     useEditorDragStyle: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired
 };

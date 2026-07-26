@@ -15,14 +15,17 @@ import {
     activateTab,
     BLOCKS_TAB_INDEX,
     COSTUMES_TAB_INDEX,
-    SOUNDS_TAB_INDEX
+    SOUNDS_TAB_INDEX,
+    ASSETS_TAB_INDEX,
+    VARIABLES_TAB_INDEX
 } from '../reducers/editor-tab';
 
 import {
     closeCostumeLibrary,
     closeBackdropLibrary,
     closeTelemetryModal,
-    openExtensionLibrary
+    openExtensionLibrary,
+    openEditorSettingsModal
 } from '../reducers/modals';
 
 import FontLoaderHOC from '../lib/font-loader-hoc.jsx';
@@ -37,6 +40,7 @@ import vmManagerHOC from '../lib/vm-manager-hoc.jsx';
 import cloudManagerHOC from '../lib/cloud-manager-hoc.jsx';
 
 import GUIComponent from '../components/gui/gui.jsx';
+import '../lib/block-color-persistence';
 import {setIsScratchDesktop} from '../lib/isScratchDesktop.js';
 import TWFullScreenResizerHOC from '../lib/tw-fullscreen-resizer-hoc.jsx';
 import TWThemeManagerHOC from './tw-theme-manager-hoc.jsx';
@@ -146,15 +150,19 @@ GUI.defaultProps = {
 
 const mapStateToProps = state => {
     const loadingState = state.scratchGui.projectState.loadingState;
+    const hiddenTabs = state.scratchGui.preferences['hidden-tabs'] || [];
+    const rawActiveTabIndex = state.scratchGui.editorTab.activeTabIndex;
+    const activeTabIndex = hiddenTabs.includes(rawActiveTabIndex) ? BLOCKS_TAB_INDEX : rawActiveTabIndex;
     return {
-        activeTabIndex: state.scratchGui.editorTab.activeTabIndex,
+        activeTabIndex,
         alertsVisible: state.scratchGui.alerts.visible,
+        assetsTabVisible: activeTabIndex === ASSETS_TAB_INDEX,
         backdropLibraryVisible: state.scratchGui.modals.backdropLibrary,
-        blocksTabVisible: state.scratchGui.editorTab.activeTabIndex === BLOCKS_TAB_INDEX,
+        blocksTabVisible: activeTabIndex === BLOCKS_TAB_INDEX,
         cardsVisible: state.scratchGui.cards.visible,
         connectionModalVisible: state.scratchGui.modals.connectionModal,
         costumeLibraryVisible: state.scratchGui.modals.costumeLibrary,
-        costumesTabVisible: state.scratchGui.editorTab.activeTabIndex === COSTUMES_TAB_INDEX,
+        costumesTabVisible: activeTabIndex === COSTUMES_TAB_INDEX,
         error: state.scratchGui.projectState.error,
         isError: getIsError(loadingState),
         isEmbedded: state.scratchGui.mode.isEmbedded,
@@ -164,7 +172,7 @@ const mapStateToProps = state => {
         isShowingProject: getIsShowingProject(loadingState),
         loadingStateVisible: state.scratchGui.modals.loadingProject,
         projectId: state.scratchGui.projectState.projectId,
-        soundsTabVisible: state.scratchGui.editorTab.activeTabIndex === SOUNDS_TAB_INDEX,
+        soundsTabVisible: activeTabIndex === SOUNDS_TAB_INDEX,
         targetIsStage: (
             state.scratchGui.targets.stage &&
             state.scratchGui.targets.stage.id === state.scratchGui.targets.editingTarget
@@ -172,22 +180,27 @@ const mapStateToProps = state => {
         telemetryModalVisible: state.scratchGui.modals.telemetryModal,
         tipsLibraryVisible: state.scratchGui.modals.tipsLibrary,
         liveCollaborationModalVisible: state.scratchGui.modals.liveCollaborationModal,
-        usernameModalVisible: state.scratchGui.modals.usernameModal,
         settingsModalVisible: state.scratchGui.modals.settingsModal,
         customExtensionModalVisible: state.scratchGui.modals.customExtensionModal,
+        customAccentModalVisible: state.scratchGui.modals.customAccentModal,
+        editorSettingsModalVisible: state.scratchGui.modals.editorSettingsModal,
         extensionManagerModalVisible: state.scratchGui.modals.extensionManagerModal,
         fontsModalVisible: state.scratchGui.modals.fontsModal,
         unknownPlatformModalVisible: state.scratchGui.modals.unknownPlatformModal,
         invalidProjectModalVisible: state.scratchGui.modals.invalidProjectModal,
+        variablesTabVisible: activeTabIndex === VARIABLES_TAB_INDEX,
         vm: state.scratchGui.vm
     };
 };
 
 const mapDispatchToProps = dispatch => ({
     onExtensionButtonClick: () => dispatch(openExtensionLibrary()),
+    onEditorSettings: () => dispatch(openEditorSettingsModal()),
     onActivateTab: tab => dispatch(activateTab(tab)),
     onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
     onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
+    onActivateAssetsTab: () => dispatch(activateTab(ASSETS_TAB_INDEX)),
+    onActivateVariablesTab: () => dispatch(activateTab(VARIABLES_TAB_INDEX)),
     onRequestCloseBackdropLibrary: () => dispatch(closeBackdropLibrary()),
     onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
     onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal())

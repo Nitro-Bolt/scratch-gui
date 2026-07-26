@@ -6,7 +6,6 @@ import VM from 'scratch-vm';
 import SpriteLibrary from '../../containers/sprite-library.jsx';
 import SpriteSelectorComponent from '../sprite-selector/sprite-selector.jsx';
 import StageSelector from '../../containers/stage-selector.jsx';
-import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants';
 
 import styles from './target-pane.css';
 
@@ -40,6 +39,7 @@ const TargetPane = ({
     onSelectSprite,
     onSpriteUpload,
     onSurpriseSpriteClick,
+    preferences,
     raiseSprites,
     stage,
     stageSize,
@@ -50,6 +50,10 @@ const TargetPane = ({
     <div
         className={styles.targetPane}
         {...componentProps}
+        style={{
+            display: stageSize === 0 ? 'none' : null,
+            flexDirection: preferences['stage-left'] ? 'row-reverse' : 'row'
+        }}
     >
 
         <SpriteSelectorComponent
@@ -77,6 +81,7 @@ const TargetPane = ({
             onSelectSprite={onSelectSprite}
             onSpriteUpload={onSpriteUpload}
             onSurpriseSpriteClick={onSurpriseSpriteClick}
+            preferences={preferences}
         />
         <div className={styles.stageSelectorWrapper}>
             {stage.id && <StageSelector
@@ -153,11 +158,12 @@ TargetPane.propTypes = {
     onSelectSprite: PropTypes.func,
     onSpriteUpload: PropTypes.func,
     onSurpriseSpriteClick: PropTypes.func,
+    preferences: PropTypes.object,
     raiseSprites: PropTypes.bool,
     spriteLibraryVisible: PropTypes.bool,
     sprites: PropTypes.objectOf(spriteShape),
     stage: spriteShape,
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
+    stageSize: PropTypes.number.isRequired,
     vm: PropTypes.instanceOf(VM)
 };
 

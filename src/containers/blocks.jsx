@@ -115,6 +115,7 @@ class Blocks extends React.Component {
             'handleCustomProceduresClose',
             'sendBlocklyEvent',
             'handleConnection',
+            'handlePeerUpgrade',
             'handlePacket',
             'onScriptGlowOn',
             'onScriptGlowOff',
@@ -131,7 +132,7 @@ class Blocks extends React.Component {
             'onWorkspaceMetricsChange',
             'setBlocks',
             'setLocale',
-            'onExtensionAPI',
+            'onExtensionAPI'
         ]);
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -181,6 +182,7 @@ class Blocks extends React.Component {
             Blocks.defaultOptions
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
+        this.workspace.vm = this.props.vm;
         AddonHooks.blocklyWorkspace = this.workspace;
 
         // Register buttons under new callback keys for creating variables,
@@ -256,7 +258,9 @@ class Blocks extends React.Component {
             this.props.locale !== nextProps.locale ||
             this.props.anyModalVisible !== nextProps.anyModalVisible ||
             this.props.stageSize !== nextProps.stageSize ||
-            this.props.customStageSize !== nextProps.customStageSize
+            this.props.customStageSize !== nextProps.customStageSize ||
+            this.props.hiddenCategories !== nextProps.hiddenCategories ||
+            this.props.nbBlocks !== nextProps.nbBlocks
         );
     }
     componentDidUpdate (prevProps) {
@@ -270,6 +274,14 @@ class Blocks extends React.Component {
         // Do not check against prevProps.toolboxXML because that may not have been rendered.
         if (this.props.isVisible && this.props.toolboxXML !== this._renderedToolboxXML) {
             this.requestToolboxUpdate();
+        }
+
+        if (this.props.hiddenCategories !== prevProps.hiddenCategories ||
+            this.props.nbBlocks !== prevProps.nbBlocks) {
+            const toolboxXML = this.getToolboxXML();
+            if (toolboxXML) {
+                this.props.updateToolboxState(toolboxXML);
+            }
         }
 
         if (this.props.isVisible === prevProps.isVisible) {
@@ -420,18 +432,23 @@ class Blocks extends React.Component {
 
     attachConnectionMananger () {
         this.connectionManager.on(this.connectionManager.Event.PACKET, this.handlePacket);
-        this.connectionManager.on(this.connectionManager.Event.PEERUPGRADE, peer => { if (this.connectionManager.isHost) this.handleConnection(peer) });
+        this.connectionManager.on(this.connectionManager.Event.PEERUPGRADE, this.handlePeerUpgrade);
         this.workspace.addChangeListener(this.sendBlocklyEvent);
     }
     detachConnectionManager () {
         this.connectionManager.off(this.connectionManager.Event.PACKET, this.handlePacket);
-        this.connectionManager.off(this.connectionManager.Event.PEERUPGRADE, peer => { if (this.connectionManager.isHost) this.handleConnection(peer) });
+        this.connectionManager.off(this.connectionManager.Event.PEERUPGRADE, this.handlePeerUpgrade);
         this.workspace.removeChangeListener(this.sendBlocklyEvent);
     }
+    handlePeerUpgrade (peer) {
+        if (this.connectionManager.isHost) {
+            this.handleConnection(peer);
+        }
+    }
 
-    onExtensionAPI(Scratch) {
-      // Assume's the Scratch.gui handle was ran.
-      Scratch.gui.makeToolboxXML = makeToolboxXML;
+    onExtensionAPI (Scratch) {
+        // Assume's the Scratch.gui handle was ran.
+        Scratch.gui.makeToolboxXML = makeToolboxXML;
     }
 
     updateToolboxBlockValue (id, value) {
@@ -630,7 +647,7 @@ class Blocks extends React.Component {
         this.workspace.glowBlock(data.id, false);
     }
     onVisualReport (data) {
-        this.workspace.reportValue(data.id, data.value);
+        this.workspace.reportValue(data.id, data.value, data.error, data.html);
     }
     getToolboxXML () {
         // Use try/catch because this requires digging pretty deep into the VM
@@ -644,6 +661,7 @@ class Blocks extends React.Component {
             const stageCostumes = stage.getCostumes();
             const targetCostumes = target.getCostumes();
             const targetSounds = target.getSounds();
+            const targetAssets = target.getAssets();
             const dynamicBlocksXML = injectExtensionCategoryTheme(
                 this.props.vm.runtime.getBlocksXML(target),
                 this.props.theme
@@ -653,7 +671,10 @@ class Blocks extends React.Component {
                 targetCostumes[targetCostumes.length - 1].name,
                 stageCostumes[stageCostumes.length - 1].name,
                 targetSounds.length > 0 ? targetSounds[targetSounds.length - 1].name : '',
-                this.props.theme.getBlockColors()
+                targetAssets.length > 0 ? targetAssets[targetAssets.length - 1].name : '',
+                this.props.theme.getBlockColors(),
+                this.props.hiddenCategories || [],
+                this.props.nbBlocks
             );
         } catch {
             return null;
@@ -840,7 +861,9 @@ class Blocks extends React.Component {
     handleCustomProceduresClose (data) {
         this.props.onRequestCloseCustomProcedures(data);
         const ws = this.workspace;
-        ws.refreshToolboxSelection_();
+        if (data) {
+            ws.refreshToolboxSelection_();
+        }
         ws.toolbox_.scrollToCategoryById('myBlocks');
     }
     handleDrop (dragInfo) {
@@ -909,6 +932,7 @@ class Blocks extends React.Component {
                         defaultValue={this.state.prompt.defaultValue}
                         isStage={vm.runtime.getEditingTarget().isStage}
                         showListMessage={this.state.prompt.varType === this.ScratchBlocks.LIST_VARIABLE_TYPE}
+                        showTableMessage={this.state.prompt.varType === this.ScratchBlocks.TABLE_VARIABLE_TYPE}
                         label={this.state.prompt.message}
                         showCloudOption={this.state.prompt.showCloudOption}
                         showVariableOptions={this.state.prompt.showVariableOptions}
@@ -971,7 +995,7 @@ Blocks.propTypes = {
         comments: PropTypes.bool,
         collapse: PropTypes.bool
     }),
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
+    stageSize: PropTypes.number.isRequired,
     theme: PropTypes.instanceOf(Theme),
     toolboxXML: PropTypes.string,
     updateMetrics: PropTypes.func,
@@ -980,7 +1004,8 @@ Blocks.propTypes = {
     vm: PropTypes.instanceOf(VM).isRequired,
     workspaceMetrics: PropTypes.shape({
         targets: PropTypes.objectOf(PropTypes.object)
-    })
+    }),
+    hiddenCategories: PropTypes.arrayOf(PropTypes.string)
 };
 
 Blocks.defaultOptions = {
@@ -995,7 +1020,7 @@ Blocks.defaultOptions = {
         colour: '#ddd'
     },
     comments: true,
-    collapse: false,
+    collapse: true,
     sounds: false
 };
 
@@ -1018,7 +1043,9 @@ const mapStateToProps = state => ({
     toolboxXML: state.scratchGui.toolbox.toolboxXML,
     customProceduresVisible: state.scratchGui.customProcedures.active,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
-    useCatBlocks: isTimeTravel2020(state)
+    useCatBlocks: isTimeTravel2020(state),
+    hiddenCategories: state.scratchGui.preferences['hidden-categories'],
+    nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true)
 });
 
 const mapDispatchToProps = dispatch => ({

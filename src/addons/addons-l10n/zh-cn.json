@@ -246,7 +246,6 @@
     "editor-extra-keys/enter-key": "回车",
     "move-to-top-bottom/bottom": "移到底部",
     "move-to-top-bottom/top": "移到顶部",
-    "move-to-top-layer/move-to-front-layer": "移到最前面",
     "rename-broadcasts/RENAME_BROADCAST": "修改信息名",
     "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "修改信息名",
     "rename-broadcasts/RENAME_BROADCAST_TITLE": "将所有的“{name}”信息名改为：",

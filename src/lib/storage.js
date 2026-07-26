@@ -1,4 +1,4 @@
-import ScratchStorage from '@turbowarp/scratch-storage';
+import ScratchStorage from '@nitro-bolt/scratch-storage';
 
 import defaultProject from './default-project';
 
@@ -19,7 +19,7 @@ class Storage extends ScratchStorage {
             this.getProjectUpdateConfig.bind(this)
         );
         this.addWebStore(
-            [this.AssetType.ImageVector, this.AssetType.ImageBitmap, this.AssetType.Sound],
+            [this.AssetType.ImageVector, this.AssetType.ImageBitmap, this.AssetType.Sound, this.AssetType.Font],
             this.getAssetGetConfig.bind(this),
             // We set both the create and update configs to the same method because
             // storage assumes it should update if there is an assetId, but the

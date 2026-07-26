@@ -507,7 +507,7 @@ class TokenTypeStringEnum extends TokenType {
  * The token type for a literal string, like 'Hello World' in the query `say Hello World`
  */
 class TokenTypeStringLiteral extends TokenType {
-  static TERMINATORS = [undefined, " ", "+", "-", "*", "/", "=", "<", ">", ")"];
+  static TERMINATORS = [undefined, " ", "+", "-", "*", "/", "^", "<=", ">=", "=", "<", ">", ")"];
 
   static isTerminator(char) {
     return this.TERMINATORS.includes(char);
@@ -733,6 +733,8 @@ class TokenTypeBlock extends TokenType {
           strings.push(...blockPart.toLowerCase().split(" "));
         } else if (blockPart.type === BlockInputType.ENUM) {
           for (const enumValue of blockPart.values) {
+            if (this.stringForms.length >= WorkspaceQuerier.MAX_RESULTS) return;
+
             enumerateStringForms(
               partIdx + 1,
               [...strings, ...enumValue.string.toLowerCase().split(" ")],
@@ -749,6 +751,13 @@ class TokenTypeBlock extends TokenType {
     };
 
     enumerateStringForms();
+
+    if (this.stringForms.length >= WorkspaceQuerier.MAX_STRING_FORMS) {
+      console.warn(
+        "Warning: Block '" + this.block.id + "' has too many string forms. Search results may not be very good."
+      );
+      this.stringForms.length = 0;
+    }
   }
 
   /**
@@ -1143,15 +1152,19 @@ export default class WorkspaceQuerier {
     "operator_join",
     "operator_round",
     "operator_mathop",
+    "operator_power",
     "operator_mod",
     "operator_divide",
     "operator_multiply",
     "operator_subtract",
     "operator_add",
     "operator_equals",
+    "operator_lte",
     "operator_lt",
+    "operator_gte",
     "operator_gt",
     "operator_or",
+    "operator_xor",
     "operator_and",
     "operator_not",
   ];
@@ -1164,7 +1177,12 @@ export default class WorkspaceQuerier {
   /**
    * The maximum number of tokens to find before giving up.
    */
-  static MAX_TOKENS = 10000;
+  static MAX_TOKENS = 100000;
+
+  /**
+   * The maximum number of string forms a block can have before we give up.
+   */
+  static MAX_STRING_FORMS = 500;
 
   /**
    * Indexes a workspace in preparation for querying it.
@@ -1208,12 +1226,12 @@ export default class WorkspaceQuerier {
       }
       ++query.resultCount;
       if (!limited && query.resultCount >= WorkspaceQuerier.MAX_RESULTS) {
-        console.log("Warning: Workspace query exceeded maximum result count.");
+        console.warn("Warning: Workspace query exceeded maximum result count.");
         limited = true;
       }
 
       if (!query.canCreateMoreTokens()) {
-        console.log("Warning: Workspace query exceeded maximum token count.");
+        console.warn("Warning: Workspace query exceeded maximum token count.");
         limited = true;
         break;
       }

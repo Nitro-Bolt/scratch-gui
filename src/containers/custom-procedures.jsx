@@ -11,9 +11,12 @@ class CustomProcedures extends React.Component {
         super(props);
         bindAll(this, [
             'handleAddLabel',
+            'handleAddDropdown',
+            'handleAddBranch',
             'handleAddInput',
             'handleAddColor',
             'handleToggleWarp',
+            'handleToggleGlobal',
             'handlePropagation',
             'handleInputMenuChange',
             'handleCancel',
@@ -23,8 +26,9 @@ class CustomProcedures extends React.Component {
         this.state = {
             rtlOffset: 0,
             warp: false,
-            colour: "#000000",
-            menuInput: "stringornumber"
+            global: false,
+            colour: '#000000',
+            menuInput: 'stringornumber'
         };
     }
     componentWillUnmount () {
@@ -108,7 +112,11 @@ class CustomProcedures extends React.Component {
         this.mutationRoot.domToMutation(this.props.mutator);
         this.mutationRoot.initSvg();
         this.mutationRoot.render();
-        this.setState({warp: this.mutationRoot.getWarp(), colour: this.mutationRoot.colour_});
+        this.setState({
+            warp: this.mutationRoot.getWarp(),
+            global: this.mutationRoot.getGlobal(),
+            colour: this.mutationRoot.colour_
+        });
         // Allow the initial events to run to position this block, then focus.
         setTimeout(() => {
             this.mutationRoot.focusLastEditor_();
@@ -126,29 +134,39 @@ class CustomProcedures extends React.Component {
             this.mutationRoot.addLabelExternal();
         }
     }
+    handleAddDropdown () {
+        if (this.mutationRoot) {
+            this.mutationRoot.addDropdownExternal();
+        }
+    }
+    handleAddBranch () {
+        if (this.mutationRoot) {
+            this.mutationRoot.addStatementExternal();
+        }
+    }
     handleAddInput () {
         if (this.mutationRoot) {
             switch (this.state.menuInput) {
-                case "stringornumber": // To be split into string and number types on a later date
-                    this.mutationRoot.addStringNumberExternal();
-                    break;
-                case "boolean":
-                    this.mutationRoot.addBooleanExternal();
-                    break;
-                case "object":
-                    this.mutationRoot.addObjectExternal();
-                    break;
-                case "array":
-                    this.mutationRoot.addArrayExternal();
-                    break;
-            };
+            case 'stringornumber': // To be split into string and number types on a later date
+                this.mutationRoot.addStringNumberExternal();
+                break;
+            case 'boolean':
+                this.mutationRoot.addBooleanExternal();
+                break;
+            case 'object':
+                this.mutationRoot.addObjectExternal();
+                break;
+            case 'array':
+                this.mutationRoot.addArrayExternal();
+                break;
+            }
         }
     }
     handleAddColor (element) {
         if (this.mutationRoot) {
-            this.mutationRoot.setColour(element.target.value ?? element.target.getAttribute("color"));
+            this.mutationRoot.setColour(element.target.value ?? element.target.getAttribute('color'));
             this.mutationRoot.updateDisplay_();
-            this.setState({colour: element.target.value ?? element.target.getAttribute("color")});
+            this.setState({colour: element.target.value ?? element.target.getAttribute('color')});
         }
     }
     handleToggleWarp () {
@@ -156,6 +174,13 @@ class CustomProcedures extends React.Component {
             const newWarp = !this.mutationRoot.getWarp();
             this.mutationRoot.setWarp(newWarp);
             this.setState({warp: newWarp});
+        }
+    }
+    handleToggleGlobal () {
+        if (this.mutationRoot) {
+            const newGlobal = !this.mutationRoot.getGlobal();
+            this.mutationRoot.setGlobal(newGlobal);
+            this.setState({global: newGlobal});
         }
     }
     handlePropagation (e) {
@@ -168,9 +193,12 @@ class CustomProcedures extends React.Component {
         return (
             <CustomProceduresComponent
                 componentRef={this.setBlocks}
+                global={this.state.global}
                 warp={this.state.warp}
                 colour={this.state.colour}
                 onAddInput={this.handleAddInput}
+                onAddDropdown={this.handleAddDropdown}
+                onAddBranch={this.handleAddBranch}
                 onAddLabel={this.handleAddLabel}
                 setColor={this.handleAddColor}
                 handlePropagation={this.handlePropagation}
@@ -179,6 +207,7 @@ class CustomProcedures extends React.Component {
                 onCancel={this.handleCancel}
                 onOk={this.handleOk}
                 onToggleWarp={this.handleToggleWarp}
+                onToggleGlobal={this.handleToggleGlobal}
             />
         );
     }

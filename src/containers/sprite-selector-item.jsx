@@ -22,7 +22,10 @@ class SpriteSelectorItem extends React.PureComponent {
             'handleDelete',
             'handleDuplicate',
             'handleExport',
+            'handleExportBitmap',
             'handleRename',
+            'handleMoveToTop',
+            'handleMoveToBottom',
             'handleMouseEnter',
             'handleMouseLeave',
             'handleMouseDown',
@@ -86,8 +89,9 @@ class SpriteSelectorItem extends React.PureComponent {
     }
     handleClick (e) {
         e.preventDefault();
+        const shouldGoToFront = e.shiftKey;
         if (!this.noClick) {
-            this.props.onClick(this.props.id);
+            this.props.onClick(this.props.id, shouldGoToFront);
         }
     }
     handleDelete (e) {
@@ -102,9 +106,21 @@ class SpriteSelectorItem extends React.PureComponent {
         e.stopPropagation();
         this.props.onExportButtonClick(this.props.id);
     }
+    handleExportBitmap (e) {
+        e.stopPropagation();
+        this.props.onExportBitmapButtonClick(this.props.id);
+    }
     handleRename (e) {
         e.stopPropagation();
         this.props.onRenameButtonClick(this.props.id);
+    }
+    handleMoveToTop (e) {
+        e.stopPropagation();
+        this.props.onMoveToTopButtonClick(this.props.id);
+    }
+    handleMoveToBottom (e) {
+        e.stopPropagation();
+        this.props.onMoveToBottomButtonClick(this.props.id);
     }
     handleMouseLeave () {
         this.props.dispatchSetHoveredSprite(null);
@@ -122,12 +138,17 @@ class SpriteSelectorItem extends React.PureComponent {
             asset,
             id,
             index,
+            totalItems,
             onClick,
             onDeleteButtonClick,
             onDuplicateButtonClick,
             onExportButtonClick,
+            onExportBitmapButtonClick,
             onRenameButtonClick,
+            onMoveToTopButtonClick,
+            onMoveToBottomButtonClick,
             dragPayload,
+            isBitmap,
             receivedBlocks,
             costumeURL,
             vm,
@@ -143,7 +164,11 @@ class SpriteSelectorItem extends React.PureComponent {
                 onDeleteButtonClick={onDeleteButtonClick ? this.handleDelete : null}
                 onDuplicateButtonClick={onDuplicateButtonClick ? this.handleDuplicate : null}
                 onExportButtonClick={onExportButtonClick ? this.handleExport : null}
+                onExportBitmapButtonClick={onExportBitmapButtonClick ? this.handleExportBitmap : null}
+                isBitmap={isBitmap}
                 onRenameButtonClick={onRenameButtonClick ? this.handleRename : null}
+                onMoveToTopButtonClick={onMoveToTopButtonClick && index !== 0 ? this.handleMoveToTop : null}
+                onMoveToBottomButtonClick={onMoveToBottomButtonClick && index !== totalItems - 1 ? this.handleMoveToBottom : null}
                 onMouseDown={this.handleMouseDown}
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
@@ -166,6 +191,7 @@ SpriteSelectorItem.propTypes = {
     id: PropTypes.any,
     index: PropTypes.number,
     // eslint-disable-next-line react/forbid-prop-types
+    totalItems: PropTypes.number,
     name: PropTypes.any,
     onClick: PropTypes.func,
     onDeleteButtonClick: PropTypes.func,
@@ -173,6 +199,9 @@ SpriteSelectorItem.propTypes = {
     onDrag: PropTypes.func.isRequired,
     onDuplicateButtonClick: PropTypes.func,
     onExportButtonClick: PropTypes.func,
+    onExportBitmapButtonClick: PropTypes.func,
+    onMoveToTopButtonClick: PropTypes.func,
+    onMoveToBottomButtonClick: PropTypes.func,
     receivedBlocks: PropTypes.bool.isRequired,
     selected: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired

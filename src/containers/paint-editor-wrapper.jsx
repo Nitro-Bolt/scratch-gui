@@ -3,7 +3,7 @@ import React from 'react';
 import bindAll from 'lodash.bindall';
 import VM from 'scratch-vm';
 import PaintEditor from '../lib/tw-scratch-paint';
-import {inlineSvgFonts} from '@turbowarp/scratch-svg-renderer';
+import {inlineSvgFonts, sanitizeSvg} from '@turbowarp/scratch-svg-renderer';
 import ErrorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
 import {openFontsModal} from '../reducers/modals';
 
@@ -32,6 +32,9 @@ class PaintEditorWrapper extends React.Component {
             this.props.name !== nextProps.name ||
             this.props.theme !== nextProps.theme ||
             this.props.customStageSize !== nextProps.customStageSize ||
+            this.props.nudgeMultiplier !== nextProps.nudgeMultiplier ||
+            this.props.noSwapButton !== nextProps.noSwapButton ||
+            this.props.noCutButton !== nextProps.noCutButton ||
             this.state.fonts !== nextState.fonts;
     }
     componentWillUnmount () {
@@ -71,11 +74,11 @@ class PaintEditorWrapper extends React.Component {
             vm,
             ...componentProps
         } = this.props;
-
+        const costume = vm.getCostume(selectedCostumeIndex);
         return (
             <PaintEditor
                 {...componentProps}
-                image={vm.getCostume(selectedCostumeIndex)}
+                image={this.props.imageFormat === 'svg' ? sanitizeSvg.sanitizeSvgText(costume) : costume}
                 onUpdateImage={this.handleUpdateImage}
                 onUpdateName={this.handleUpdateName}
                 fontInlineFn={this.fontInlineFn}
@@ -83,6 +86,9 @@ class PaintEditorWrapper extends React.Component {
                 customFonts={this.state.fonts}
                 width={this.props.customStageSize.width}
                 height={this.props.customStageSize.height}
+                nudgeMultiplier={this.props.nudgeMultiplier}
+                noSwapButton={this.props.noSwapButton}
+                noCutButton={this.props.noCutButton}
             />
         );
     }
@@ -96,6 +102,9 @@ PaintEditorWrapper.propTypes = {
     onManageFonts: PropTypes.func.isRequired,
     imageFormat: PropTypes.string.isRequired,
     imageId: PropTypes.string.isRequired,
+    nudgeMultiplier: PropTypes.number,
+    noSwapButton: PropTypes.bool,
+    noCutButton: PropTypes.bool,
     theme: PropTypes.instanceOf(Theme),
     name: PropTypes.string,
     rotationCenterX: PropTypes.number,
@@ -115,6 +124,9 @@ const mapStateToProps = (state, {selectedCostumeIndex}) => {
     return {
         customStageSize: state.scratchGui.customStageSize,
         name: costume && costume.name,
+        nudgeMultiplier: state.scratchGui.preferences['paint-nudge-multiplier'],
+        noSwapButton: state.scratchGui.preferences['paint-no-swap-button'],
+        noCutButton: state.scratchGui.preferences['paint-no-cut-button'],
         rotationCenterX: costume && costume.rotationCenterX,
         rotationCenterY: costume && costume.rotationCenterY,
         imageFormat: costume && costume.dataFormat,

@@ -14,6 +14,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {getCustomAddons, storeAddon, removeAddon} from '../lib/nb-custom-addons.js';
+import {TextDecoder} from '../lib/tw-text-encoder.js';
 import IntlMessageFormat from 'intl-messageformat';
 import SettingsStore from './settings-store-singleton';
 import dataURLToBlob from '../lib/data-uri-to-blob';
@@ -32,8 +34,20 @@ import reduxInstance from './redux';
 
 /* eslint-disable no-console */
 
+const noop = () => {};
+
 const escapeHTML = str => str.replace(/([<>'"&])/g, (_, l) => `&#${l.charCodeAt(0)};`);
 const kebabCaseToCamelCase = str => str.replace(/-([a-z])/g, g => g[1].toUpperCase());
+
+const arrayBufferToDataURI = buffer => {
+    const blob = new Blob([buffer]);
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(blob);
+    });
+};
 
 let _scratchClassNames = null;
 const getScratchClassNames = () => {
@@ -167,7 +181,7 @@ const compareArrays = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 let _firstAddBlockRan = false;
 
 const contextMenuCallbacks = [];
-const CONTEXT_MENU_ORDER = ['editor-devtools', 'block-switching', 'blocks2image', 'swap-local-global'];
+const CONTEXT_MENU_ORDER = ['blocks2image', 'swap-local-global'];
 let createdAnyBlockContextMenus = false;
 
 const updateClasses = () => {
@@ -200,6 +214,9 @@ class Tab extends EventTargetShim {
         this.traps = {
             get vm () {
                 return reduxInstance.state.scratchGui.vm;
+            },
+            get redux () {
+                return reduxInstance;
             },
             getBlockly: () => {
                 if (AddonHooks.blockly) {
@@ -382,16 +399,16 @@ class Tab extends EventTargetShim {
                           const wrapper = Object.assign(document.createElement('div'), {
                               className: 'sa-paintEditorZoomControls-wrapper'
                           });
-          
+
                           wrapper.style.display = 'flex';
                           wrapper.style.flexDirection = 'row-reverse';
                           wrapper.style.height = 'calc(1.95rem + 2px)';
-          
+
                           const zoomControls = q("[class^='paint-editor_zoom-controls']");
-          
+
                           zoomControls.replaceWith(wrapper);
                           wrapper.appendChild(zoomControls);
-          
+
                           return wrapper;
                       })()
                 ),
@@ -559,19 +576,20 @@ class Tab extends EventTargetShim {
             const oldShow = ScratchBlocks.ContextMenu.show;
             ScratchBlocks.ContextMenu.show = function (event, items, rtl) {
                 const gesture = ScratchBlocks.mainWorkspace.currentGesture_;
-                const block = gesture.targetBlock_;
+                const block = gesture && gesture.targetBlock_;
+                const group = ScratchBlocks.ContextMenu.currentGroup;
 
                 // eslint-disable-next-line no-shadow
                 for (const {callback, workspace, blocks, flyout, comments} of contextMenuCallbacks) {
                     const injectMenu =
                         // Workspace
-                        (workspace && !block && !gesture.flyout_ && !gesture.startBubble_) ||
+                        (workspace && !group && !block && gesture && !gesture.flyout_ && !gesture.startBubble_) ||
                         // Block in workspace
                         (blocks && block && !gesture.flyout_) ||
                         // Block in flyout
-                        (flyout && gesture.flyout_) ||
+                        (flyout && gesture && gesture.flyout_) ||
                         // Comments
-                        (comments && gesture.startBubble_);
+                        (comments && gesture && gesture.startBubble_);
                     if (injectMenu) {
                         try {
                             items = callback(items, block);
@@ -582,16 +600,6 @@ class Tab extends EventTargetShim {
                 }
 
                 oldShow.call(this, event, items, rtl);
-
-                const blocklyContextMenu = ScratchBlocks.WidgetDiv.DIV.firstChild;
-                items.forEach((item, i) => {
-                    if (i !== 0 && item.separator) {
-                        const itemElt = blocklyContextMenu.children[i];
-                        itemElt.style.paddingTop = '2px';
-                        itemElt.classList.add('sa-blockly-menu-item-border');
-                        itemElt.style.borderTop = '1px solid var(--ui-black-transparent)';
-                    }
-                });
             };
         });
     }
@@ -728,11 +736,11 @@ class Self extends EventTargetShim {
 }
 
 class AddonRunner {
-    constructor (id) {
+    constructor (id, manifest, isCustom) {
         AddonRunner.instances.push(this);
-        const manifest = addons[id];
 
         this.id = id;
+        this.isCustom = isCustom;
         this.manifest = manifest;
         this.messageCache = {};
         this.loading = true;
@@ -892,6 +900,7 @@ class AddonRunner {
         this.publicAPI.addon.self.disabled = false;
         this.updateAllStyles();
         this.publicAPI.addon.self.dispatchEvent(new CustomEvent('reenabled'));
+
     }
 
     dynamicDisable () {
@@ -910,8 +919,15 @@ class AddonRunner {
             await untilInEditor();
         }
 
-        const mod = await addonEntries[this.id]();
-        this.resources = mod.resources;
+        if (this.manifest.resources) {
+            this.resources = {};
+            for (const [path, arr] of Object.entries(this.manifest.resources)) {
+                this.resources[path] = await arrayBufferToDataURI(arr);
+            }
+        } else if (addonEntries[this.id]) {
+            const mod = await addonEntries[this.id]();
+            this.resources = mod.resources;
+        }
 
         if (!this.manifest.noTranslations) {
             await addonMessagesPromise;
@@ -949,8 +965,15 @@ class AddonRunner {
                 if (!SettingsStore.evaluateCondition(userscript.if)) {
                     continue;
                 }
-                const fn = this.resources[userscript.url];
-                fn(this.publicAPI);
+                if (this.isCustom) {
+                    // Resources are stored as ArrayBuffers
+                    const str = new TextDecoder().decode(userscript);
+                    const fn = new Function('addon', str);
+                    fn(this.publicAPI.addon);
+                } else {
+                    const fn = this.resources[userscript.url];
+                    fn(this.publicAPI);
+                }
             }
         }
 
@@ -959,8 +982,8 @@ class AddonRunner {
 }
 AddonRunner.instances = [];
 
-const runAddon = addonId => {
-    const runner = new AddonRunner(addonId);
+const runAddon = (addonId, manifest, isCustom) => {
+    const runner = new AddonRunner(addonId, manifest, isCustom);
     runner.run();
 };
 
@@ -974,7 +997,7 @@ SettingsStore.addEventListener('addon-changed', e => {
         if (runner) {
             runner.dynamicEnable();
         } else {
-            runAddon(addonId);
+            runAddon(addonId, addons[addonId], false);
         }
     } else if (e.detail.dynamicDisable) {
         if (runner) {
@@ -983,9 +1006,41 @@ SettingsStore.addEventListener('addon-changed', e => {
     }
 });
 
+SettingsStore.addEventListener('setting-changed', async e => {
+    const {addonId, settingId, reloadRequired, value} = e.detail;
+    if (reloadRequired) {
+        return;
+    }
+    const runner = AddonRunner.instances.find(i => i.id === addonId);
+    if (settingId === 'enabled') {
+        if (value) {
+            if (runner) {
+                runner.dynamicEnable();
+            } else if (addons[addonId]) {
+                runAddon(addonId, addons[addonId], false);
+            } else {
+                const customAddons = await getCustomAddons();
+                runAddon(addonId, customAddons.find(c => c.id === addonId), true);
+            }
+        } else if (runner) {
+            runner.dynamicDisable();
+        }
+    } else if (runner) {
+        runner.settingsChanged();
+    }
+});
 for (const id of Object.keys(addons)) {
     if (!SettingsStore.getAddonEnabled(id)) {
         continue;
     }
-    runAddon(id);
+    runAddon(id, addons[id], false);
 }
+
+getCustomAddons().then(customAddons => {
+    for (const customAddon of customAddons) {
+        if (!SettingsStore.getAddonEnabled(customAddon.id)) {
+            continue;
+        }
+        runAddon(customAddon.id, customAddon, true);
+    }
+});

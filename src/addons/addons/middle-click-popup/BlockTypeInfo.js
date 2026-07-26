@@ -423,12 +423,12 @@ export class BlockTypeInfo {
         }
       } else {
         if (!field.argType_) {
-          if (field.getText().trim().length !== 0) parts.push(field.getText());
+          if (field.getText().trim().length !== 0) parts.push(field.getText().replace("≥", ">=").replace("≤", "<="));
         } else if (field.argType_[0] === "colour") {
           addInput(new BlockInputColour(inputIdx, fieldIdx));
         } else if (field.argType_[1] === "number") {
           addInput(new BlockInputNumber(inputIdx, fieldIdx, field.text_));
-        } else {
+        } else if (field.argType_[0] !== "extendable") {
           addInput(new BlockInputString(inputIdx, fieldIdx, field.text_));
         }
       }

@@ -146,15 +146,6 @@ export default async function ({ addon, console, msg }) {
     },
   };
 
-  // https://github.com/scratchfoundation/scratch-gui/blob/develop/src/components/asset-panel/icon--sound.svg
-  const imageIconSource = `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="100px" height="100px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g id="Sound" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <path d="M12.4785058,12.6666667 C12.3144947,12.6666667 12.1458852,12.6272044 11.9926038,12.5440517 C11.537358,12.2960031 11.3856094,11.7562156 11.6553847,11.3376335 C12.1688774,10.5371131 12.1688774,9.54491867 11.6553847,8.74580756 C11.3856094,8.32581618 11.537358,7.78602861 11.9926038,7.53798001 C12.452448,7.29275014 13.0379829,7.43086811 13.3046926,7.84804076 C14.1737981,9.20103311 14.1737981,10.8809986 13.3046926,12.233991 C13.1268862,12.5130457 12.806528,12.6666667 12.4785058,12.6666667 Z M15.3806784,13.8333333 C15.2408902,13.8333333 15.0958763,13.796281 14.9665396,13.7182064 C14.5785295,13.485306 14.4491928,12.9784829 14.6791247,12.5854634 C15.5949331,11.0160321 15.5949331,9.065491 14.6791247,7.49738299 C14.4491928,7.10436352 14.5785295,6.59621712 14.9665396,6.36331669 C15.3558562,6.13438616 15.8549129,6.26274605 16.0848448,6.65444223 C17.3050517,8.74260632 17.3050517,11.3389168 16.0848448,13.4270809 C15.9319924,13.6890939 15.6602547,13.8333333 15.3806784,13.8333333 Z M10.3043478,5.62501557 L10.3043478,13.873675 C10.3043478,14.850934 9.10969849,15.3625101 8.36478311,14.7038052 L6.7566013,13.2797607 C6.18712394,12.7762834 5.44499329,12.4968737 4.67362297,12.4968737 L4.3923652,12.4968737 C3.62377961,12.4968737 3,11.8935108 3,11.1470686 L3,8.36646989 C3,7.62137743 3.62377961,7.01666471 4.3923652,7.01666471 L4.65830695,7.01666471 C5.42967727,7.01666471 6.17180792,6.73725504 6.74128529,6.23377771 L8.36478311,4.79623519 C9.10969849,4.13753026 10.3043478,4.64910643 10.3043478,5.62501557 Z" id="Combined-Shape" fill="#575E75"></path>
-    </g>
-</svg>`;
-  const soundIconHref = `data:image/svg+xml;base64,${btoa(imageIconSource)}`;
-
   let folderColorStylesheet = null;
   const folderColors = Object.create(null);
   const getFolderColorClass = (folderName) => {
@@ -255,6 +246,14 @@ export default async function ({ addon, console, msg }) {
     }
   };
 
+  const fixAssetOrder = (target = vm.editingTarget) => {
+    const { items, changed } = fixOrderOfItemsInFolders(target.sprite.assets);
+    if (changed) {
+      target.sprite.assets = items;
+      vm.emitTargetsUpdate();
+    }
+  };
+
   const verifySortableHOC = (sortableHOCInstance) => {
     const SortableHOC = sortableHOCInstance.constructor;
     if (
@@ -298,7 +297,8 @@ export default async function ({ addon, console, msg }) {
       typeof target.reorderCostume === "function" &&
       typeof target.reorderSound === "function" &&
       typeof target.addCostume === "function" &&
-      typeof target.addSound === "function"
+      typeof target.addSound === "function" &&
+      typeof target.addAsset === "function"
     )
       return;
     throw new Error("Can not comprehend VM");
@@ -385,7 +385,7 @@ export default async function ({ addon, console, msg }) {
         } else if (item.costume && item.costume.asset) {
           src = item.costume.asset.encodeDataURI();
         } else if (item.url) {
-          src = soundIconHref;
+          src = item.url;
         }
         if (src) {
           result += `<image width="${width}" height="${height}" x="${x}" y="${y}" href="${src}"/>`;
@@ -554,6 +554,7 @@ export default async function ({ addon, console, msg }) {
             folderItem.asset = folderAsset;
             if (!folderItem.dragPayload) folderItem.dragPayload = {};
             folderItem.dragPayload.sa_folder_items = folderItems;
+            folderItem.dragPayload.sa_folder_type = props.dragType;
           }
 
           items.push(folderItem);
@@ -710,7 +711,7 @@ export default async function ({ addon, console, msg }) {
 
   await addon.tab.scratchClassReady();
   addon.tab.createEditorContextMenu((ctxType, ctx) => {
-    if (ctxType !== "sprite" && ctxType !== "costume" && ctxType !== "sound") return;
+    if (ctxType !== "sprite" && ctxType !== "costume" && ctxType !== "sound" && ctxType !== "asset") return;
     const component = ctx.target[addon.tab.traps.getInternalKey(ctx.target)].return.return.return.stateNode;
     const data = getItemData(component.props);
     if (!data) return;
@@ -749,6 +750,14 @@ export default async function ({ addon, console, msg }) {
             }
           }
           fixSoundOrder();
+        } else if (component.props.dragType === "ASSET") {
+          for (let i = 0; i < vm.editingTarget.sprite.assets.length; i++) {
+            const asset = vm.editingTarget.sprite.assets[i];
+            if (getFolderFromName(asset.name) === data.folder) {
+              vm.renameAsset(i, setFolderOfName(asset.name, newName), asset.dataFormat);
+            }
+          }
+          fixAssetOrder();
         }
       };
       const renameFolder = async () => {
@@ -812,6 +821,12 @@ export default async function ({ addon, console, msg }) {
           const asset = vm.editingTarget.sprite.sounds[index];
           vm.renameSound(vm.editingTarget.sprite.sounds.indexOf(asset), setFolderOfName(asset.name, folder));
           fixSoundOrder();
+        } else if (component.props.dragType === "ASSET") {
+          const data = getItemData(component.props);
+          const index = data.realIndex;
+          const asset = vm.editingTarget.sprite.assets[index];
+          vm.renameAsset(vm.editingTarget.sprite.assets.indexOf(asset), setFolderOfName(asset.name, folder), asset.dataFormat);
+          fixAssetOrder();
         }
       };
 
@@ -1022,6 +1037,14 @@ export default async function ({ addon, console, msg }) {
       return r;
     };
 
+    const originalAddAsset = RenderedTarget.prototype.addAsset;
+    RenderedTarget.prototype.addAsset = function (...args) {
+      addDefaultAssetFolderIfMissing(args[0]);
+      const r = originalAddAsset.call(this, ...args);
+      fixAssetOrder(this);
+      return r;
+    };
+
     const abstractReorder = (
       { guiItems, getAll, set, rename, getVMItemFromGUIItem, zeroIndexed, onFolderChanged },
       itemIndex,
@@ -1217,6 +1240,30 @@ export default async function ({ addon, console, msg }) {
         newIndex
       );
     };
+    
+    RenderedTarget.prototype.reorderAsset = function (assetIndex, newIndex) {
+      return abstractReorder(
+        {
+          getAll: () => {
+            return this.sprite.assets;
+          },
+          set: (assets) => {
+            this.sprite.assets = assets;
+          },
+          rename: (item, name) => {
+            this.renameAsset(this.sprite.assets.indexOf(item), name, item.dataFormat);
+          },
+          getVMItemFromGUIItem: (item, assets) => {
+            const itemData = getItemData(item);
+            return assets.find((c) => c.name === itemData.realName);
+          },
+          guiItems: currentAssetItems,
+          zeroIndexed: true
+        },
+        assetIndex,
+        newIndex
+      );
+    };
 
     // Temporal bug fix for #5762
     const originalShareSoundToTarget = vm.shareSoundToTarget;
@@ -1241,11 +1288,7 @@ export default async function ({ addon, console, msg }) {
         let payload;
         let type;
         if (item.dragPayload) {
-          if (item.url) {
-            type = "SOUND";
-          } else {
-            type = "COSTUME";
-          }
+          type = this.sa_queuedType || (item.url ? "SOUND" : "COSTUME");
           payload = item.dragPayload;
         } else if (item.id) {
           type = "SPRITE";
@@ -1271,10 +1314,12 @@ export default async function ({ addon, console, msg }) {
       // When a folder is dropped into the backpack, upload all the items in the folder.
       const dragInfo = args[0];
       const folderItems = dragInfo && dragInfo.payload && dragInfo.payload.sa_folder_items;
+      const folderType = dragInfo && dragInfo.payload && dragInfo.payload.sa_folder_type;
       if (Array.isArray(folderItems)) {
         addon.tab.confirm("", msg("confirm-backpack-folder"), { useEditorClasses: true }).then((result) => {
           if (!result) return;
           this.sa_queuedItems = folderItems;
+          this.sa_queuedType = folderType;
           this.sa_loadNextItem();
         });
         return;

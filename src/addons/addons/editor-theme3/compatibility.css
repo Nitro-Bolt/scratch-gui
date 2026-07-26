@@ -33,6 +33,13 @@
   --sa-block-field-background: var(--editorTheme3-sounds-field, #bd42bd);
 }
 
+.sa-block-color-assets {
+  --sa-block-background-primary: var(--editorTheme3-assets-primary, #FCB103);
+  --sa-block-background-secondary: var(--editorTheme3-assets-secondary, #DB9A37);
+  --sa-block-background-tertiary: var(--editorTheme3-assets-tertiary, #DB8937);
+  --sa-block-field-background: var(--editorTheme3-assets-field, #DB8937);
+}
+
 .sa-block-color-events {
   --sa-block-background-primary: var(--editorTheme3-event-primary, #ffbf00);
   --sa-block-background-secondary: var(--editorTheme3-event-secondary, #e6ac00);

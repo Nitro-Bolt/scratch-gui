@@ -14,6 +14,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {getCustomAddons} from '../lib/nb-custom-addons';
 import addons from './generated/addon-manifests';
 import upstreamMeta from './generated/upstream-meta.json';
 import EventTargetShim from './event-target';
@@ -110,6 +111,7 @@ const asArray = v => {
 class SettingsStore extends EventTargetShim {
     constructor () {
         super();
+        this.addons = {...addons};
         this.store = this.createEmptyStore();
         this.remote = false;
     }
@@ -119,10 +121,23 @@ class SettingsStore extends EventTargetShim {
      */
     createEmptyStore () {
         const result = {};
-        for (const addonId of Object.keys(addons)) {
+        for (const addonId of Object.keys(this.addons)) {
             result[addonId] = {};
         }
         return result;
+    }
+
+    async loadCustomAddons () {
+        const addons = await getCustomAddons();
+        for (const addon of addons) {
+            this.addons[addon.id] = addon;
+            this.store[addon.id] = {};
+        }
+    }
+    
+    createAddonStore (id, addon) {
+        this.addons[id] = addon;
+        this.store[id] = {};
     }
 
     readLocalStorage () {
@@ -160,7 +175,7 @@ class SettingsStore extends EventTargetShim {
             const result = {
                 _: VERSION
             };
-            for (const addonId of Object.keys(addons)) {
+            for (const addonId of Object.keys(this.addons)) {
                 const data = this.getAddonStorage(addonId);
                 if (Object.keys(data).length > 0) {
                     result[addonId] = data;
@@ -186,8 +201,8 @@ class SettingsStore extends EventTargetShim {
      * @private
      */
     getAddonManifest (addonId) {
-        if (addons[addonId]) {
-            return addons[addonId];
+        if (this.addons[addonId]) {
+            return this.addons[addonId];
         }
         throw new Error(`Unknown addon: ${addonId}`);
     }
@@ -345,7 +360,7 @@ class SettingsStore extends EventTargetShim {
     }
 
     resetAllAddons () {
-        for (const addon of Object.keys(addons)) {
+        for (const addon of Object.keys(this.addons)) {
             this.resetAddon(addon, true);
         }
         // In case resetAddon missed some properties, do a hard reset on storage.
@@ -373,7 +388,7 @@ class SettingsStore extends EventTargetShim {
     parseUrlParameter (parameter) {
         this.remote = true;
         const enabled = parameter.split(',');
-        for (const id of Object.keys(addons)) {
+        for (const id of Object.keys(this.addons)) {
             this.setAddonEnabled(id, enabled.includes(id));
         }
     }
@@ -388,7 +403,7 @@ class SettingsStore extends EventTargetShim {
             },
             addons: {}
         };
-        for (const [addonId, manifest] of Object.entries(addons)) {
+        for (const [addonId, manifest] of Object.entries(this.addons)) {
             const enabled = this.getAddonEnabled(addonId);
             const settings = {};
             if (manifest.settings) {
@@ -406,7 +421,7 @@ class SettingsStore extends EventTargetShim {
 
     import (data) {
         for (const [addonId, value] of Object.entries(data.addons)) {
-            if (!Object.prototype.hasOwnProperty.call(addons, addonId)) {
+            if (!Object.prototype.hasOwnProperty.call(this.addons, addonId)) {
                 continue;
             }
             const {enabled, settings} = value;

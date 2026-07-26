@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import log from './log';
 import {getIsShowingProject} from '../reducers/project-state';
 
-const PACKAGER_URL = 'https://packager.turbowarp.org';
+const PACKAGER_URL = 'https://packager.nitrobolt.org';
 const PACKAGER_ORIGIN = PACKAGER_URL;
 
 const PackagerIntegrationHOC = function (WrappedComponent) {

@@ -13,6 +13,7 @@ import DragConstants from '../lib/drag-constants';
 import {emptyCostume} from '../lib/empty-assets';
 import sharedMessages from '../lib/shared-messages';
 import downloadBlob from '../lib/download-blob';
+import getAssetType from '../lib/nb-asset-type.js';
 
 import {
     openCostumeLibrary,
@@ -21,7 +22,8 @@ import {
 
 import {
     activateTab,
-    SOUNDS_TAB_INDEX
+    SOUNDS_TAB_INDEX,
+    ASSETS_TAB_INDEX
 } from '../reducers/editor-tab';
 
 import {setRestore} from '../reducers/restore-deletion';
@@ -79,6 +81,9 @@ class CostumeTab extends React.Component {
             'handleDeleteCostume',
             'handleDuplicateCostume',
             'handleExportCostume',
+            'handleExportBitmapCostume',
+            'handleMoveToTop',
+            'handleMoveToBottom',
             'handleNewCostume',
             'handleNewBlankCostume',
             'handleSurpriseCostume',
@@ -148,6 +153,39 @@ class CostumeTab extends React.Component {
             this.props.vm.getExportedCostume(item)
         ], {type: item.asset.assetType.contentType});
         downloadBlob(`${item.name}.${item.asset.dataFormat}`, blob);
+    }
+    handleExportBitmapCostume (costumeIndex) {
+        const item = this.props.vm.editingTarget.sprite.costumes[costumeIndex];
+        const data = this.props.vm.getExportedCostume(item);
+        const contentType = item.asset.assetType.contentType;
+
+        const blob = new Blob([data], {type: contentType});
+        const url = URL.createObjectURL(blob);
+
+        const img = new Image();
+        img.onload = () => {
+            URL.revokeObjectURL(url);
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth || img.width;
+            canvas.height = img.naturalHeight || img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            canvas.toBlob(pngBlob => {
+                downloadBlob(`${item.name}.png`, pngBlob);
+            }, 'image/png');
+        };
+        img.src = url;
+    }
+    handleMoveToTop (costumeIndex) {
+        this.props.vm.editingTarget.reorderCostume(costumeIndex, 0);
+        this.props.vm.editingTarget.setCostume(0);
+        this.setState({selectedCostumeIndex: 0});
+    }
+    handleMoveToBottom (costumeIndex) {
+        const lastCostumeIndex = this.props.vm.editingTarget.sprite.costumes.length - 1;
+        this.props.vm.editingTarget.reorderCostume(costumeIndex, lastCostumeIndex);
+        this.props.vm.editingTarget.setCostume(lastCostumeIndex);
+        this.setState({selectedCostumeIndex: lastCostumeIndex});
     }
     handleNewCostume (costume, fromCostumeLibrary, targetId) {
         const costumes = Array.isArray(costume) ? costume : [costume];
@@ -231,6 +269,27 @@ class CostumeTab extends React.Component {
                 md5: dropInfo.payload.body,
                 name: dropInfo.payload.name
             });
+        } else if (dropInfo.dragType === DragConstants.BACKPACK_ASSET) {
+            // Detect if the asset can be added as a costume
+            // If it is not a costume, add it to assets
+            const type = getAssetType(dropInfo.payload).type;
+            const payload = dropInfo.payload;
+            const vm = this.props.vm;
+            if (type === 'image') {
+                costumeUpload(payload.bodyData, payload.mime, vm, vmCostume => {
+                    vmCostume[0].name = payload.name;
+                    this.handleNewCostume(vmCostume, false, vm.editingTarget.id);
+                });
+            } else {
+                this.props.onActivateAssetsTab();
+                this.props.vm.addAsset({
+                    md5: dropInfo.payload.body,
+                    lastModified: dropInfo.payload.lastModified,
+                    contentType: dropInfo.payload.mime,
+                    dataFormat: dropInfo.payload.dataFormat,
+                    name: dropInfo.payload.name
+                });
+            }
         }
     }
     setFileInput (input) {
@@ -270,6 +329,7 @@ class CostumeTab extends React.Component {
         const costumeData = target.costumes ? target.costumes.map(costume => ({
             name: costume.name,
             asset: costume.asset,
+            isBitmap: costume.asset && costume.asset.dataFormat !== 'svg',
             details: costume.size ? this.formatCostumeDetails(costume.size, costume.bitmapResolution) : null,
             dragPayload: costume
         })) : [];
@@ -315,7 +375,10 @@ class CostumeTab extends React.Component {
                 onDrop={this.handleDrop}
                 onDuplicateClick={this.handleDuplicateCostume}
                 onExportClick={this.handleExportCostume}
+                onExportBitmapClick={this.handleExportBitmapCostume}
                 onItemClick={this.handleSelectCostume}
+                onMoveToTopClick={this.handleMoveToTop}
+                onMoveToBottomClick={this.handleMoveToBottom}
             >
                 {target.costumes ?
                     <PaintEditorWrapper
@@ -334,6 +397,7 @@ CostumeTab.propTypes = {
     intl: intlShape,
     isRtl: PropTypes.bool,
     onActivateSoundsTab: PropTypes.func.isRequired,
+    onActivateAssetsTab: PropTypes.func.isRequired,
     onCloseImporting: PropTypes.func.isRequired,
     onNewLibraryBackdropClick: PropTypes.func.isRequired,
     onNewLibraryCostumeClick: PropTypes.func.isRequired,
@@ -365,6 +429,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
+    onActivateAssetsTab: () => dispatch(activateTab(ASSETS_TAB_INDEX)),
     onNewLibraryBackdropClick: e => {
         e.preventDefault();
         dispatch(openBackdropLibrary());

@@ -8,6 +8,7 @@ import SpriteList from './sprite-list.jsx';
 import ActionMenu from '../action-menu/action-menu.jsx';
 import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants';
 import {isRtl} from '@turbowarp/scratch-l10n';
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 import styles from './sprite-selector.css';
 
@@ -62,6 +63,7 @@ const SpriteSelectorComponent = function (props) {
         onSelectSprite,
         onSpriteUpload,
         onSurpriseSpriteClick,
+        preferences,
         raised,
         selectedId,
         spriteFileInput,
@@ -75,6 +77,17 @@ const SpriteSelectorComponent = function (props) {
         selectedSprite = {};
         spriteInfoDisabled = true;
     }
+    registerKeyboardShortcut(
+        preferences['keybind-toggle-sprite-visibility'] ?? defaultKeyboardShortcuts['toggle-sprite-visibility'], () => {
+            if (!spriteInfoDisabled) onChangeSpriteVisibility(!selectedSprite.visible);
+        }
+    );
+    registerKeyboardShortcut(
+        preferences['keybind-change-sprite-name'] ?? defaultKeyboardShortcuts['change-sprite-name'],
+        () => {
+            document.querySelector('[class*="sprite-info_sprite-input_"]').focus();
+        }
+    );
     return (
         <Box
             className={styles.spriteSelector}
@@ -170,6 +183,7 @@ SpriteSelectorComponent.propTypes = {
     onSelectSprite: PropTypes.func,
     onSpriteUpload: PropTypes.func,
     onSurpriseSpriteClick: PropTypes.func,
+    preferences: PropTypes.object,
     raised: PropTypes.bool,
     selectedId: PropTypes.string,
     spriteFileInput: PropTypes.func,
@@ -186,7 +200,7 @@ SpriteSelectorComponent.propTypes = {
             order: PropTypes.number.isRequired
         })
     }),
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired
+    stageSize: PropTypes.number.isRequired
 };
 
 export default injectIntl(SpriteSelectorComponent);

@@ -25,6 +25,7 @@ const manuallyTrustExtension = url => {
  */
 const isTrustedExtension = url => (
     // Always trust our official extension repostiory.
+    url.startsWith('https://extensions.nitrobolt.org/') ||
     url.startsWith('https://extensions.turbowarp.org/') ||
 
     // For development.
@@ -34,16 +35,26 @@ const isTrustedExtension = url => (
 );
 
 /**
- * Set of fetch resource origins that were manually trusted by the user.
+ * Set of fetch resource hosts that were manually trusted by the user.
  * @type {Set<string>}
  */
-const fetchOriginsTrustedByUser = new Set();
+const fetchHostsTrustedByUser = new Set();
 
 /**
- * Set of origins manually trusted by the user for embedding.
+ * Set of hosts manually trusted by the user for embedding.
  * @type {Set<string>}
  */
-const embedOriginsTrustedByUser = new Set();
+const embedHostsTrustedByUser = new Set();
+
+/**
+ * @param {URL} parsed Parsed URL object
+ * @returns {boolean} True if path is untrusted.
+ */
+const isUntrustedPath = parsed => (
+    // Cloudflare serves stuff on /cdn-cgi/ that we don't want to let projects access without showing
+    // a permission prompt to a non-trusted domain (/cdn-cgi/trace contains IP)
+    /^\/cdn-cgi\//i.test(parsed.pathname)
+);
 
 /**
  * @param {URL} parsed Parsed URL object
@@ -51,7 +62,6 @@ const embedOriginsTrustedByUser = new Set();
  */
 const isAlwaysTrustedForFetching = parsed => (
     // If we would trust loading an extension from here, we can trust loading resources too.
-    isTrustedExtension(parsed.href) ||
 
     // Any TurboWarp service such as trampoline
     parsed.origin === 'https://turbowarp.org' ||
@@ -233,6 +243,10 @@ class TWSecurityManagerComponent extends React.Component {
      * @returns {string} The VM worker mode to use
      */
     getSandboxMode (url) {
+        if (this.shouldTrustAllExtensions()) {
+            log.info(`Loading extension ${url} automatically without security prompt`);
+            return 'unsandboxed';
+        }
         if (isTrustedExtension(url)) {
             log.info(`Loading extension ${url} unsandboxed`);
             return 'unsandboxed';
@@ -250,11 +264,19 @@ class TWSecurityManagerComponent extends React.Component {
         }));
     }
 
+    shouldTrustAllExtensions () {
+        return this.props.preferences['unrestrict-sandbox'] === true;
+    }
+
     /**
      * @param {string} url The extension's URL
      * @returns {Promise<boolean>} Whether the extension can be loaded
      */
     async canLoadExtensionFromProject (url) {
+        if (this.shouldTrustAllExtensions()) {
+            log.info(`Loading extension ${url} automatically without security prompt`);
+            return true;
+        }
         if (isTrustedExtension(url)) {
             log.info(`Loading extension ${url} automatically`);
             return true;
@@ -289,20 +311,27 @@ class TWSecurityManagerComponent extends React.Component {
         if (!parsed) {
             return false;
         }
-        if (isAlwaysTrustedForFetching(parsed)) {
-            return true;
+        if (this.shouldTrustAllExtensions() || isAlwaysTrustedForFetching(parsed)) {
+            // For untrusted paths, don't even show a dialog, just auto-reject because users won't understand
+            // what the dialog actually does.
+            return !isUntrustedPath(parsed);
         }
         const {showModal, releaseLock} = await this.acquireModalLock();
-        const origin = (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.origin : null;
-        if (origin && fetchOriginsTrustedByUser.has(origin)) {
+        const host = (
+            parsed.protocol === 'http:' ||
+            parsed.protocol === 'https:' ||
+            parsed.protocol === 'ws:' ||
+            parsed.protocol === 'wss:'
+        ) ? parsed.host : null;
+        if (host && fetchHostsTrustedByUser.has(host)) {
             releaseLock();
             return true;
         }
         const allowed = await showModal(SecurityModals.Fetch, {
             url
         });
-        if (origin && allowed) {
-            fetchOriginsTrustedByUser.add(origin);
+        if (host && allowed) {
+            fetchHostsTrustedByUser.add(host);
         }
         return allowed;
     }
@@ -401,15 +430,15 @@ class TWSecurityManagerComponent extends React.Component {
         if (!parsed) {
             return false;
         }
-        const origin = (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.origin : null;
+        const host = (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.host : null;
         const {showModal, releaseLock} = await this.acquireModalLock();
-        if (origin && embedOriginsTrustedByUser.has(origin)) {
+        if (host && embedHostsTrustedByUser.has(host)) {
             releaseLock();
             return true;
         }
         const allowed = await showModal(SecurityModals.Embed, {url});
-        if (origin && allowed) {
-            embedOriginsTrustedByUser.add(origin);
+        if (host && allowed) {
+            embedHostsTrustedByUser.add(host);
         }
         return allowed;
     }
@@ -458,6 +487,7 @@ TWSecurityManagerComponent.propTypes = {
             ).isRequired
         }).isRequired
     }).isRequired,
+    preferences: PropTypes.object,
     securityManager: PropTypes.shape(Object.fromEntries(SECURITY_MANAGER_METHODS.map(i => [i, PropTypes.func])))
 };
 
@@ -466,7 +496,8 @@ TWSecurityManagerComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-    vm: state.scratchGui.vm
+    vm: state.scratchGui.vm,
+    preferences: state.scratchGui.preferences
 });
 
 const mapDispatchToProps = () => ({});

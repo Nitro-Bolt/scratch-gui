@@ -124,8 +124,9 @@ class CustomExtensionModal extends React.Component {
         this.handleClose();
         try {
             const urls = await this.getExtensionURLs();
+            const shouldUnsandboxAll = this.props.preferences['unrestrict-sandbox'] === true;
 
-            if (this.state.type !== 'url') {
+            if (!shouldUnsandboxAll && this.state.type !== 'url') {
                 setPersistedUnsandboxed(this.state.unsandboxed);
                 if (this.state.unsandboxed) {
                     for (const url of urls) {
@@ -192,7 +193,7 @@ class CustomExtensionModal extends React.Component {
 
     isUnsandboxed () {
         if (this.state.type === 'url') {
-            return isTrustedExtension(this.state.url);
+            return isTrustedExtension(this.state.url) || this.props.preferences['unrestrict-sandbox'];
         }
         return this.state.unsandboxed;
     }
@@ -240,11 +241,13 @@ CustomExtensionModal.propTypes = {
         extensionManager: PropTypes.shape({
             loadExtensionURL: PropTypes.func
         })
-    })
+    }),
+    preferences: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-    vm: state.scratchGui.vm
+    vm: state.scratchGui.vm,
+    preferences: state.scratchGui.preferences
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -26,7 +26,10 @@ const Selector = props => {
         onDeleteClick,
         onDuplicateClick,
         onExportClick,
-        onItemClick
+        onExportBitmapClick,
+        onItemClick,
+        onMoveToTopClick,
+        onMoveToBottomClick
     } = props;
 
     const isRelevantDrag = draggingType === dragType;
@@ -74,6 +77,8 @@ const Selector = props => {
                             dragType={dragType}
                             id={index}
                             index={index}
+                            isBitmap={item.isBitmap}
+                            totalItems={items.length}
                             name={item.name}
                             number={index + 1 /* 1-indexed */}
                             selected={index === selectedItemIndex}
@@ -81,6 +86,9 @@ const Selector = props => {
                             onDeleteButtonClick={onDeleteClick}
                             onDuplicateButtonClick={onDuplicateClick}
                             onExportButtonClick={onExportClick}
+                            onExportBitmapButtonClick={onExportBitmapClick}
+                            onMoveToTopButtonClick={onMoveToTopClick}
+                            onMoveToBottomButtonClick={onMoveToBottomClick}
                         />
                     </SortableAsset>
                 ))}
@@ -109,8 +117,11 @@ Selector.propTypes = {
     onDeleteClick: PropTypes.func,
     onDuplicateClick: PropTypes.func,
     onExportClick: PropTypes.func,
+    onExportBitmapClick: PropTypes.func,
     onItemClick: PropTypes.func.isRequired,
     onRemoveSortable: PropTypes.func,
+    onMoveToTopClick: PropTypes.func,
+    onMoveToBottomClick: PropTypes.func,
     ordering: PropTypes.arrayOf(PropTypes.number),
     selectedItemIndex: PropTypes.number.isRequired
 };

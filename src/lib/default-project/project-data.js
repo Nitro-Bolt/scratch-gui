@@ -33,6 +33,7 @@ const projectData = translateFunction => {
                     ]
                 },
                 lists: {},
+                tables: {},
                 broadcasts: {},
                 blocks: {},
                 currentCostume: 0,
@@ -47,6 +48,7 @@ const projectData = translateFunction => {
                     }
                 ],
                 sounds: [],
+                assets: [],
                 volume: 100
             },
             {
@@ -54,6 +56,7 @@ const projectData = translateFunction => {
                 name: translator(messages.sprite, {index: 1}),
                 variables: {},
                 lists: {},
+                tables: {},
                 broadcasts: {},
                 blocks: {},
                 comments: {},
@@ -70,6 +73,7 @@ const projectData = translateFunction => {
                     }
                 ],
                 sounds: [],
+                assets: [],
                 volume: 100,
                 visible: true,
                 x: 0,

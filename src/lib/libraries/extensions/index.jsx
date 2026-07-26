@@ -10,6 +10,9 @@ import penInsetIconURL from './pen/pen-small.svg';
 import videoSensingIconURL from './videoSensing/video-sensing.png';
 import videoSensingInsetIconURL from './videoSensing/video-sensing-small.svg';
 
+import faceSensingIconURL from './faceSensing/face-sensing.svg';
+import faceSensingInsetIconURL from './faceSensing/face-sensing-small.svg';
+
 import text2speechIconURL from './text2speech/text2speech.png';
 import text2speechInsetIconURL from './text2speech/text2speech-small.svg';
 
@@ -46,10 +49,10 @@ import gdxforInsetIconURL from './gdxfor/gdxfor-small.svg';
 import gdxforConnectionIconURL from './gdxfor/gdxfor-illustration.svg';
 import gdxforConnectionSmallIconURL from './gdxfor/gdxfor-small.svg';
 
-import twIcon from './tw/tw.svg';
+import nbIcon from './nb/nb.svg';
 import customExtensionIcon from './custom/custom.svg';
-import returnIcon from './custom/return.svg';
-import galleryIcon from './gallery/gallery.svg';
+import galleryIconNB from './gallery/gallery-nb.svg';
+import galleryIconTW from './gallery/gallery-tw.svg';
 import {APP_NAME} from '../../brand';
 
 export default [
@@ -111,6 +114,28 @@ export default [
                 defaultMessage="Sense motion with the camera."
                 description="Description for the 'Video Sensing' extension"
                 id="gui.extension.videosensing.description"
+            />
+        ),
+        tags: ['scratch'],
+        featured: true
+    },
+    {
+        name: (
+            <FormattedMessage
+                defaultMessage="Face Sensing"
+                description="Name for the 'Face Sensing' extension"
+                id="tw.extension.faceSensing.name"
+            />
+        ),
+        extensionId: 'faceSensing',
+        extensionURL: 'https://extensions.turbowarp.org/lab/face-sensing.js',
+        iconURL: faceSensingIconURL,
+        insetIconURL: faceSensingInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="Sense faces with the camera."
+                description="Description for the 'Face Sensing' extension"
+                id="tw.extension.faceSensing.description"
             />
         ),
         tags: ['scratch'],
@@ -347,7 +372,7 @@ export default [
             />
         ),
         extensionId: 'tw',
-        iconURL: twIcon,
+        iconURL: nbIcon,
         description: (
             <FormattedMessage
                 defaultMessage="Weird new blocks."
@@ -382,80 +407,43 @@ export default [
     }
 ];
 
-export const galleryLoading = {
-    name: (
-        <FormattedMessage
-            defaultMessage="{APP_NAME} Extension Gallery"
-            description="Name of extensions.turbowarp.org in extension library"
-            id="tw.extensionGallery.name"
-            values={{
-                APP_NAME
-            }}
-        />
-    ),
-    href: 'https://extensions.turbowarp.org/',
-    extensionId: 'gallery',
-    iconURL: galleryIcon,
-    description: (
-        <FormattedMessage
-            // eslint-disable-next-line max-len
-            defaultMessage="Loading extension gallery..."
-            description="Appears while loading extension list from the custom extension gallery"
-            id="tw.extensionGallery.loading"
-        />
-    ),
-    tags: ['tw'],
-    featured: true
+const gallerySourceDisplay = {
+    nitrobolt: {
+        name: 'NitroBolt Extension Gallery',
+        href: 'https://extensions.nitrobolt.org/',
+        iconURL: galleryIconNB,
+        tag: 'nb'
+    },
+    turbowarp: {
+        name: 'TurboWarp Extension Gallery',
+        href: 'https://extensions.turbowarp.org/',
+        iconURL: galleryIconTW,
+        tag: 'tw'
+    }
 };
 
-export const galleryMore = {
-    name: (
-        <FormattedMessage
-            defaultMessage="{APP_NAME} Extension Gallery"
-            description="Name of extensions.turbowarp.org in extension library"
-            id="tw.extensionGallery.name"
-            values={{
-                APP_NAME
-            }}
-        />
-    ),
-    href: 'https://extensions.turbowarp.org/',
-    extensionId: 'gallery',
-    iconURL: galleryIcon,
-    description: (
-        <FormattedMessage
-            // eslint-disable-next-line max-len
-            defaultMessage="Learn more about extensions at extensions.turbowarp.org."
-            description="Appears after the extension list from the gallery was loaded successfully"
-            id="tw.extensionGallery.more"
-        />
-    ),
-    tags: ['tw'],
-    featured: true
+const createGalleryStatusItem = (sourceId, description) => {
+    const source = gallerySourceDisplay[sourceId];
+    return {
+        name: source.name,
+        href: source.href,
+        extensionId: `gallery_${sourceId}`,
+        iconURL: source.iconURL,
+        description,
+        tags: [source.tag],
+        featured: true
+    };
 };
 
-export const galleryError = {
-    name: (
-        <FormattedMessage
-            defaultMessage="{APP_NAME} Extension Gallery"
-            description="Name of extensions.turbowarp.org in extension library"
-            id="tw.extensionGallery.name"
-            values={{
-                APP_NAME
-            }}
-        />
-    ),
-    href: 'https://extensions.turbowarp.org/',
-    extensionId: 'gallery',
-    iconURL: galleryIcon,
-    description: (
-        <FormattedMessage
-            // eslint-disable-next-line max-len
-            defaultMessage="Error loading extension gallery. Visit extensions.turbowarp.org to find more extensions."
-            description="Appears when an error occurred loading extension list from the custom extension gallery"
-            id="tw.extensionGallery.error"
-        />
-    ),
-    tags: ['tw'],
-    featured: true
+export const galleryStatusItems = {
+    nitrobolt: {
+        loading: createGalleryStatusItem('nitrobolt', 'Loading NitroBolt extension gallery...'),
+        more: createGalleryStatusItem('nitrobolt', 'Learn more about extensions at extensions.nitrobolt.org.'),
+        error: createGalleryStatusItem('nitrobolt', 'Error loading NitroBolt extension gallery. Visit extensions.nitrobolt.org to find more extensions.')
+    },
+    turbowarp: {
+        loading: createGalleryStatusItem('turbowarp', 'Loading TurboWarp extension gallery...'),
+        more: createGalleryStatusItem('turbowarp', 'Learn more about extensions at extensions.turbowarp.org.'),
+        error: createGalleryStatusItem('turbowarp', 'Error loading TurboWarp extension gallery. Visit extensions.turbowarp.org to find more extensions.')
+    }
 };

@@ -9,19 +9,21 @@ import Box from '../box/box.jsx';
 import Button from '../button/button.jsx';
 import ToggleButtons from '../toggle-buttons/toggle-buttons.jsx';
 import Controls from '../../containers/controls.jsx';
-import {getStageDimensions} from '../../lib/screen-utils';
-import {STAGE_DISPLAY_SIZES, STAGE_SIZE_MODES} from '../../lib/layout-constants';
+import {getStageDimensions, getMinWidth} from '../../lib/screen-utils';
+import {STAGE_SIZE_MODES} from '../../lib/layout-constants';
 
 import fullScreenIcon from './icon--fullscreen.svg';
 import unFullScreenIcon from './icon--unfullscreen.svg';
 import largeStageIcon from '!../../lib/tw-recolor/build!./icon--large-stage.svg';
 import smallStageIcon from '!../../lib/tw-recolor/build!./icon--small-stage.svg';
+import hiddenStageIcon from '!../../lib/tw-recolor/build!./icon--hidden-stage.svg';
 import fullStageIcon from '!../../lib/tw-recolor/build!./icon--full-stage.svg';
 import settingsIcon from './icon--settings.svg';
 
 import styles from './stage-header.css';
 
 import FullscreenAPI from '../../lib/tw-fullscreen-api';
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 const messages = defineMessages({
     largeStageSizeMessage: {
@@ -33,6 +35,11 @@ const messages = defineMessages({
         defaultMessage: 'Switch to small stage',
         description: 'Button to change stage size to small',
         id: 'gui.stageHeader.stageSizeSmall'
+    },
+    hiddenStageSizeMessage: {
+        defaultMessage: 'Hide stage',
+        description: 'Button to hide the stage and sprite pane',
+        id: 'gui.stageHeader.stageSizeHidden'
     },
     fullStageSizeMessage: {
         defaultMessage: 'Switch to full stage',
@@ -69,22 +76,26 @@ const StageHeaderComponent = function (props) {
         showFixedLargeSize,
         isFullScreen,
         isPlayerOnly,
+        isRtl,
         onKeyPress,
         onSetStageFullScreen,
         onSetStageUnFullScreen,
-        onSetStageLarge,
-        onSetStageSmall,
-        onSetStageFull,
         onOpenSettings,
         isEmbedded,
+        preferences,
         stageSize,
-        stageSizeMode,
+        setStageSize,
         vm
     } = props;
 
     let header = null;
 
-    const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen || isEmbedded);
+    const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen || isEmbedded, isPlayerOnly);
+
+    registerKeyboardShortcut(
+        preferences['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen'],
+        () => (isFullScreen ? onSetStageUnFullScreen() : onSetStageFullScreen())
+    );
 
     if (isFullScreen || isEmbedded) {
         const settingsButton = isEmbedded && enableSettingsButton ? (
@@ -142,7 +153,7 @@ const StageHeaderComponent = function (props) {
                 })}
             >
                 <Box
-                    className={styles.stageMenuWrapper}
+                    className={classNames(styles.stageMenuWrapper, stageSize === 0 ? styles.stageHidden : null)}
                     style={{width: stageDimensions.width}}
                 >
                     <Controls vm={vm} />
@@ -165,26 +176,27 @@ const StageHeaderComponent = function (props) {
                     <ToggleButtons
                         buttons={[
                             {
-                                handleClick: onSetStageSmall,
+                                handleClick: () => setStageSize(0),
+                                icon: hiddenStageIcon,
+                                iconClassName: classNames(styles.stageButtonIcon, preferences['stage-left'] ?
+                                    styles.stageLeft : null),
+                                isSelected: stageSize === 0,
+                                title: props.intl.formatMessage(messages.hiddenStageSizeMessage)
+                            },
+                            {
+                                handleClick: () => setStageSize(270),
                                 icon: smallStageIcon,
-                                iconClassName: styles.stageButtonIcon,
-                                isSelected: stageSizeMode === STAGE_SIZE_MODES.small,
+                                iconClassName: classNames(styles.stageButtonIcon, preferences['stage-left'] ?
+                                    styles.stageLeft : null),
+                                isSelected: stageSize <= 430 && stageSize !== 0,
                                 title: props.intl.formatMessage(messages.smallStageSizeMessage)
                             },
-                            ...(showFixedLargeSize ? [
-                                {
-                                    handleClick: onSetStageLarge,
-                                    icon: largeStageIcon,
-                                    iconClassName: styles.stageButtonIcon,
-                                    isSelected: stageSizeMode === STAGE_SIZE_MODES.large,
-                                    title: props.intl.formatMessage(messages.largeStageSizeMessage)
-                                }
-                            ] : []),
                             {
-                                handleClick: onSetStageFull,
+                                handleClick: () => setStageSize(480),
                                 icon: showFixedLargeSize ? fullStageIcon : largeStageIcon,
-                                iconClassName: styles.stageButtonIcon,
-                                isSelected: stageSizeMode === STAGE_SIZE_MODES.full,
+                                iconClassName: classNames(styles.stageButtonIcon, preferences['stage-left'] ?
+                                    styles.stageLeft : null),
+                                isSelected: stageSize > 430,
                                 title: props.intl.formatMessage(messages.fullStageSizeMessage)
                             }
                         ]}
@@ -195,12 +207,21 @@ const StageHeaderComponent = function (props) {
             <Box
                 className={styles.stageHeaderWrapper}
                 // + 2 px because the stage will have 2 pixels of border around it
-                style={{minWidth: `${stageDimensions.width + 2}px`}}
+                style={{
+                    minWidth: `${(
+                        isPlayerOnly ?
+                            stageDimensions.width :
+                            Math.max(stageDimensions.width, getMinWidth(stageSize))
+                    ) + 2}px`,
+                    left: preferences['stage-left'] && !isRtl ? 0 : null,
+                    right: preferences['stage-left'] && isRtl ? 0 : null
+                }}
             >
-                <Box className={styles.stageMenuWrapper}>
+                <Box className={classNames(styles.stageMenuWrapper, stageSize === 0 ? styles.stageHidden : null)}>
                     <Controls
                         vm={vm}
-                        isSmall={stageSizeMode === STAGE_SIZE_MODES.small}
+                        isSmall={stageSize < 430}
+                        isHidden={stageSize === 0}
                     />
                     <div
                         className={styles.stageSizeRow}
@@ -244,15 +265,15 @@ StageHeaderComponent.propTypes = {
     showFixedLargeSize: PropTypes.bool,
     isFullScreen: PropTypes.bool.isRequired,
     isPlayerOnly: PropTypes.bool.isRequired,
+    isRtl: PropTypes.bool.isRequired,
     onKeyPress: PropTypes.func.isRequired,
     onSetStageFullScreen: PropTypes.func.isRequired,
     onSetStageUnFullScreen: PropTypes.func.isRequired,
-    onSetStageLarge: PropTypes.func.isRequired,
-    onSetStageSmall: PropTypes.func.isRequired,
-    onSetStageFull: PropTypes.func.isRequired,
     onOpenSettings: PropTypes.func.isRequired,
     isEmbedded: PropTypes.bool.isRequired,
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)),
+    preferences: PropTypes.object.isRequired,
+    stageSize: PropTypes.number.isRequired,
+    setStageSize: PropTypes.func.isRequired,
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
     vm: PropTypes.instanceOf(VM).isRequired
 };

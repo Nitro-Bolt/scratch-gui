@@ -12,7 +12,6 @@ const MODAL_SOUND_RECORDER = 'soundRecorder';
 const MODAL_CONNECTION = 'connectionModal';
 const MODAL_TIPS_LIBRARY = 'tipsLibrary';
 const MODAL_LIVE_COLLABORATION = 'liveCollaborationModal';
-const MODAL_USERNAME = 'usernameModal';
 const MODAL_SETTINGS = 'settingsModal';
 const MODAL_CUSTOM_EXTENSION = 'customExtensionModal';
 const MODAL_EXTENSION_MANAGER = 'extensionManagerModal';
@@ -20,6 +19,8 @@ const MODAL_RESTORE_POINTS = 'restorePointModal';
 const MODAL_FONTS = 'fontsModal';
 const MODAL_UNKNOWN_PLATFORM = 'unknownPlatformModal';
 const MODAL_INVALID_PROJECT = 'invalidProjectModal';
+const MODAL_CUSTOM_ACCENT = 'customAccentModal';
+const MODAL_EDITOR_SETTINGS = 'editorSettingsModal';
 
 const initialState = {
     [MODAL_BACKDROP_LIBRARY]: false,
@@ -33,14 +34,16 @@ const initialState = {
     [MODAL_CONNECTION]: false,
     [MODAL_TIPS_LIBRARY]: false,
     [MODAL_LIVE_COLLABORATION]: false,
-    [MODAL_USERNAME]: false,
     [MODAL_SETTINGS]: false,
     [MODAL_CUSTOM_EXTENSION]: false,
     [MODAL_EXTENSION_MANAGER]: false,
     [MODAL_RESTORE_POINTS]: false,
     [MODAL_FONTS]: false,
     [MODAL_UNKNOWN_PLATFORM]: false,
-    [MODAL_INVALID_PROJECT]: false
+    [MODAL_INVALID_PROJECT]: false,
+    [MODAL_CUSTOM_ACCENT]: false,
+    [MODAL_EDITOR_SETTINGS]: false,
+    editorSettingsModalTab: 0
 };
 
 const reducer = function (state, action) {
@@ -48,7 +51,10 @@ const reducer = function (state, action) {
     switch (action.type) {
     case OPEN_MODAL:
         return Object.assign({}, state, {
-            [action.modal]: true
+            [action.modal]: true,
+            ...(action.modal === MODAL_EDITOR_SETTINGS && {
+                editorSettingsModalTab: action.tab ?? 0
+            })
         });
     case CLOSE_MODAL:
         return Object.assign({}, state, {
@@ -102,9 +108,6 @@ const openTipsLibrary = function () {
 };
 const openLiveCollaborationModal = function () {
     return openModal(MODAL_LIVE_COLLABORATION);
-}
-const openUsernameModal = function () {
-    return openModal(MODAL_USERNAME);
 };
 const openSettingsModal = function () {
     return openModal(MODAL_SETTINGS);
@@ -126,6 +129,16 @@ const openUnknownPlatformModal = function () {
 };
 const openInvalidProjectModal = function () {
     return openModal(MODAL_INVALID_PROJECT);
+};
+const openCustomAccentModal = function () {
+    return openModal(MODAL_CUSTOM_ACCENT);
+};
+const openEditorSettingsModal = function (tab = 0) {
+    return {
+        type: OPEN_MODAL,
+        modal: MODAL_EDITOR_SETTINGS,
+        tab
+    };
 };
 const closeBackdropLibrary = function () {
     return closeModal(MODAL_BACKDROP_LIBRARY);
@@ -159,9 +172,6 @@ const closeConnectionModal = function () {
 };
 const closeLiveCollaborationModal = function () {
     return closeModal(MODAL_LIVE_COLLABORATION);
-}
-const closeUsernameModal = function () {
-    return closeModal(MODAL_USERNAME);
 };
 const closeSettingsModal = function () {
     return closeModal(MODAL_SETTINGS);
@@ -184,6 +194,12 @@ const closeUnknownPlatformModal = function () {
 const closeInvalidProjectModal = function () {
     return closeModal(MODAL_INVALID_PROJECT);
 };
+const closeCustomAccentModal = function () {
+    return closeModal(MODAL_CUSTOM_ACCENT);
+};
+const closeEditorSettingsModal = function () {
+    return closeModal(MODAL_EDITOR_SETTINGS);
+};
 export {
     reducer as default,
     initialState as modalsInitialState,
@@ -198,7 +214,6 @@ export {
     openTipsLibrary,
     openConnectionModal,
     openLiveCollaborationModal,
-    openUsernameModal,
     openSettingsModal,
     openCustomExtensionModal,
     openExtensionManagerModal,
@@ -206,6 +221,8 @@ export {
     openFontsModal,
     openUnknownPlatformModal,
     openInvalidProjectModal,
+    openCustomAccentModal,
+    openEditorSettingsModal,
     closeBackdropLibrary,
     closeCostumeLibrary,
     closeExtensionLibrary,
@@ -217,12 +234,13 @@ export {
     closeTipsLibrary,
     closeConnectionModal,
     closeLiveCollaborationModal,
-    closeUsernameModal,
     closeSettingsModal,
     closeCustomExtensionModal,
     closeExtensionManagerModal,
     closeRestorePointModal,
     closeFontsModal,
     closeUnknownPlatformModal,
-    closeInvalidProjectModal
+    closeInvalidProjectModal,
+    closeCustomAccentModal,
+    closeEditorSettingsModal
 };

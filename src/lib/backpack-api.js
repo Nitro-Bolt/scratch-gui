@@ -1,6 +1,7 @@
 import xhr from 'xhr';
 import costumePayload from './backpack/costume-payload';
 import soundPayload from './backpack/sound-payload';
+import assetPayload from './backpack/asset-payload';
 import spritePayload from './backpack/sprite-payload';
 import codePayload from './backpack/code-payload';
 import localBackpackAPI from './tw-local-backpack-api';
@@ -49,7 +50,8 @@ const saveBackpackObject = ({
     mime, // Mime-type of the object being saved
     name, // User-facing name of the object being saved
     body, // Base64-encoded body of the object being saved
-    thumbnail // Base64-encoded JPEG thumbnail of the object being saved
+    thumbnail, // Base64-encoded JPEG thumbnail of the object being saved
+    ...extra // Any other data that a payload may contain
 }) => new Promise((resolve, reject) => {
     if (host === LOCAL_API) {
         return resolve(localBackpackAPI.saveBackpackObject({
@@ -57,14 +59,15 @@ const saveBackpackObject = ({
             mime,
             name,
             body,
-            thumbnail
+            thumbnail,
+            ...extra
         }));
     }
     xhr({
         method: 'POST',
         uri: `${host}/${username}`,
         headers: {'x-token': token},
-        json: {type, mime, name, body, thumbnail}
+        json: {type, mime, name, body, thumbnail, ...extra}
     }, (error, response) => {
         if (error || response.statusCode !== 200) {
             return reject(new Error(response.status));
@@ -133,6 +136,7 @@ export {
     updateBackpackObject,
     costumePayload,
     soundPayload,
+    assetPayload,
     spritePayload,
     codePayload,
     fetchCode,

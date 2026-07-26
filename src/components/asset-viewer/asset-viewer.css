@@ -1,0 +1,147 @@
+@import "../../css/colors.css";
+@import "../../css/units.css";
+
+.viewer-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: calc(2 * $space);
+    align-items: center;
+    justify-items: center
+}
+
+.text-mode {
+    width: 100%;
+    min-height: 0;
+    align-items: stretch;
+}
+
+.attribute {
+    margin: $space;
+}
+
+.attribute span {
+    font-size: 0.75rem;
+}
+
+.media-preview {
+    max-height: calc(50 * $space);
+    border-radius: 0.25rem;
+    margin: 1rem
+}
+
+.editor-header-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.editor-surface {
+    width: 100%;
+    min-height: 12rem;
+    flex: 1 1 auto;
+    margin-top: calc(2 * $space);
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.info-row {
+    margin-top: $space;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+[dir="ltr"] .info-row .attribute + .attribute {
+    margin-left: calc(2 * $space);
+}
+
+[dir="rtl"] .info-row .attribute + .attribute {
+    margin-right: calc(2 * $space);
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+.name-input {
+    min-width: 20rem;
+}
+
+[dir="ltr"] .button-group {
+    margin-left: 1rem;
+}
+
+[dir="rtl"] .button-group {
+    margin-right: 1rem;
+}
+
+.button-group {
+    display: flex;
+}
+
+.button {
+    height: 2rem;
+    padding: 0.35rem;
+    outline: none;
+    background: $ui-white;
+    border-radius: 0;
+    border: 1px solid $ui-black-transparent;
+    cursor: pointer;
+    font-size: 0.85rem;
+    user-select: none;
+    margin: 0;
+    position: relative;
+}
+
+.button:not(:last-child) {
+    border-right: none;
+}
+
+[dir="rtl"] .button:not(:last-child) {
+    border-left: none;
+    border-right: 1px solid $ui-black-transparent;
+}
+
+.button-group .button:first-child,
+[dir="rtl"] .button-group .button:last-child {
+    border-radius: $form-radius 0 0 $form-radius;
+}
+
+.button-group .button:last-child,
+[dir="rtl"] .button-group .button:first-child {
+    border-radius: 0 $form-radius $form-radius 0;
+}
+
+.button:active {
+    background: $looks-transparent;
+}
+
+.button:focus::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    bottom: -1px;
+    left: -1px;
+    border: 1px solid $looks-secondary;
+    z-index: 1;
+}
+
+.button > img {
+    flex-grow: 1;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 1.25rem;
+}
+
+[dir="rtl"] .undo-icon,
+[dir="rtl"] .redo-icon {
+    transform: scaleX(-1);
+}
+
+.button:disabled > img {
+    opacity: 0.25;
+}

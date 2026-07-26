@@ -10,6 +10,7 @@ import DefaultMonitor from './default-monitor.jsx';
 import LargeMonitor from './large-monitor.jsx';
 import SliderMonitor from '../../containers/slider-monitor.jsx';
 import ListMonitor from '../../containers/list-monitor.jsx';
+import TableMonitor from '../../containers/table-monitor.jsx';
 import {Theme} from '../../lib/themes/index.js';
 
 import styles from './monitor.css';
@@ -22,6 +23,7 @@ const categoryColorMap = {
     looks: 'looks',
     motion: 'motion',
     list: 'data_lists',
+    table: 'data_tables',
     extension: 'pen'
 };
 
@@ -29,7 +31,8 @@ const modes = {
     default: DefaultMonitor,
     large: LargeMonitor,
     slider: SliderMonitor,
-    list: ListMonitor
+    list: ListMonitor,
+    table: TableMonitor
 };
 
 const getCategoryColor = (theme, category) => {
@@ -45,7 +48,7 @@ const MonitorComponent = props => (
         // TW: if export is defined, we always show it, even outside of the editor
         disable={!props.draggable && !props.onExport}
         holdToDisplay={props.mode === 'slider' ? -1 : 1000}
-        id={`monitor-${props.label}`}
+        id={`monitor-${props.id}`}
     >
         <Draggable
             bounds=".monitor-overlay" // Class for monitor container
@@ -60,7 +63,13 @@ const MonitorComponent = props => (
             <Box
                 className={styles.monitorContainer}
                 componentRef={props.componentRef}
-                onDoubleClick={props.mode === 'list' || !props.draggable ? null : props.onNextMode}
+                onDoubleClick={
+                    (
+                        props.mode === 'table' ||
+                        props.mode === 'list' ||
+                        !props.draggable
+                    ) ? null : props.onNextMode
+                }
                 data-id={props.id}
                 data-opcode={props.opcode}
             >
@@ -75,7 +84,7 @@ const MonitorComponent = props => (
             // positioning conflicts between the monitors `transform: scale` and
             // the context menus `position: fixed`. For more details, see
             // http://meyerweb.com/eric/thoughts/2011/09/12/un-fixing-fixed-elements-with-css-transforms/
-            <ContextMenu id={`monitor-${props.label}`}>
+            <ContextMenu id={`monitor-${props.id}`}>
                 {props.draggable && props.onSetModeToDefault &&
                     <MenuItem onClick={props.onSetModeToDefault}>
                         <FormattedMessage
@@ -112,7 +121,7 @@ const MonitorComponent = props => (
                     <MenuItem onClick={props.onImport}>
                         <FormattedMessage
                             defaultMessage="import"
-                            description="Menu item to import into list monitors"
+                            description="Menu item to import into table and list monitors"
                             id="gui.monitor.contextMenu.import"
                         />
                     </MenuItem>}
@@ -120,7 +129,7 @@ const MonitorComponent = props => (
                     <MenuItem onClick={props.onExport}>
                         <FormattedMessage
                             defaultMessage="export"
-                            description="Menu item to export from list monitors"
+                            description="Menu item to export from table and list monitors"
                             id="gui.monitor.contextMenu.export"
                         />
                     </MenuItem>}

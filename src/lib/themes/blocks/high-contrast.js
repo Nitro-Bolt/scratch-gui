@@ -23,7 +23,12 @@ const blockColors = {
         secondary: '#FFB3FF',
         tertiary: '#BD42BD',
         quaternary: '#FFCCFF'
-
+    },
+    assets: {
+        primary: '#FFD87F',
+        secondary: '#C98D02',
+        tertiary: '#C98D02',
+        quaternary: '#C98D02'
     },
     control: {
         primary: '#FFBE4C',
@@ -69,6 +74,13 @@ const blockColors = {
         tertiary: '#E64D00',
         quaternary: '#FFDDCC'
     },
+    // Same reasoning as data_lists, but this is to differentiate tables
+    data_tables: {
+        primary: '#ACF0A4',
+        secondary: '#4A8A43',
+        tertiary: '#4A8A43',
+        quaternary: '#4A8A43'
+    },
     json: {
         primary: '#9A99FF',
         secondary: '#4240A1',
@@ -80,12 +92,6 @@ const blockColors = {
         secondary: '#FFCCD5',
         tertiary: '#FF3355',
         quaternary: '#FFE5EA'
-    },
-    comments: {
-        primary: '#FFFACF',
-        secondary: '#EEE9C1',
-        tertiary: '#B1AA6C',
-        quaternary: '#B1AA6C'
     },
     addons: {
         primary: '#34e4d0',
