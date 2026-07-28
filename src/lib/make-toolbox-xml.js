@@ -226,7 +226,7 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                     </shadow>
                 </value>
             </block>
-            <block type="looks_nextcostume"/>
+            <block type="looks_nextcostume"/>        ${blockSeparator}
             <block type="looks_switchbackdropto">
                 <value name="BACKDROP">
                     <shadow type="looks_backdrops">
@@ -257,7 +257,7 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
             <value name="VALUE">
                 ${numberShadow(0)}
             </value>
-        </block>
+        </block>        ${blockSeparator}
         <block type="looks_cleargraphiceffects"/>
         ${blockSeparator}
         ${isStage ? '' : `
@@ -272,7 +272,7 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                     </shadow>
                 </value>
             </block>
-        `}
+        `}        ${blockSeparator}
         ${isStage ? `
             <block id="backdropnumbername" type="looks_backdropnumbername"/>
         ` : `
@@ -301,7 +301,7 @@ const sound = function (isInitialSetup, isStage, targetId, soundName, colors, nb
                     <field name="SOUND_MENU">${soundName}</field>
                 </shadow>
             </value>
-        </block>
+        </block>        ${blockSeparator}
         <block type="sound_stopallsounds"/>
         ${blockSeparator}
         <block type="sound_changeeffectby">
@@ -314,6 +314,7 @@ const sound = function (isInitialSetup, isStage, targetId, soundName, colors, nb
                 ${numberShadow(100)}
             </value>
         </block>
+                ${blockSeparator}
         <block type="sound_cleareffects"/>
         ${blockSeparator}
         <block type="sound_changevolumeby">
@@ -462,7 +463,12 @@ const control = function (isInitialSetup, isStage, targetId, colors, nbBlocks = 
         <block type="control_if_extendable"/>
         <block type="control_if_else_extendable"/>
         <block type="control_switch"/>
-        <block type="control_inline_if_else">
+        ` : `
+        <block type="control_if"/>
+        <block type="control_if_else"/>
+        `}
+        ${blockSeparator}
+                <block type="control_inline_if_else">
           <value name="THEN">
             <shadow type="text">
               <field name="TEXT">apple</field>
@@ -473,12 +479,7 @@ const control = function (isInitialSetup, isStage, targetId, colors, nbBlocks = 
               <field name="TEXT">banana</field>
             </shadow>
           </value>
-        </block>
-        ` : `
-        <block type="control_if"/>
-        <block type="control_if_else"/>
-        `}
-        ${blockSeparator}
+        </block>        ${blockSeparator}
         <block id="wait_until" type="control_wait_until"/>
         <block id="repeat_until" type="control_repeat_until"/>
         <block id="while" type="control_while"/>
@@ -682,8 +683,9 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
         <block type="operator_or"/>
         `}
         ${nbBlocks ? `<block type="operator_xor_extendable"/>` : ''}
-        <block type="operator_not"/>
         ${blockSeparator}
+                <block type="operator_not"/>
+                        ${blockSeparator}
         ${isInitialSetup ? '' : `
             ${nbBlocks ? `
             <block type="operator_join_extendable">
@@ -709,6 +711,7 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
                 </value>
             </block>
             `}
+                    ${blockSeparator}
             <block type="operator_letter_of">
                 <value name="LETTER">
                     <shadow type="math_whole_number">
@@ -738,6 +741,7 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
                     </shadow>
                 </value>
             </block>` : ""}
+                    ${blockSeparator}
             <block type="operator_length">
                 <value name="STRING">
                     <shadow type="text">
@@ -745,6 +749,7 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
                     </shadow>
                 </value>
             </block>
+                    ${blockSeparator}
             <block type="operator_contains" id="operator_contains">
               <value name="STRING1">
                 <shadow type="text">
@@ -767,16 +772,17 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
                 ${numberShadow()}
             </value>
         </block>
+                ${blockSeparator}
         <block type="operator_round">
             <value name="NUM">
                 ${numberShadow()}
             </value>
-        </block>
+        </block>        ${blockSeparator}
         <block type="operator_mathop">
             <value name="NUM">
                 ${numberShadow()}
             </value>
-        </block>
+        </block>        ${blockSeparator}
         ${nbBlocks ? `
         <block type="operator_constant"/>
         ${blockSeparator}
