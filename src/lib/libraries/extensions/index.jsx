@@ -173,7 +173,7 @@ export default [
             />
         ),
         extensionId: 'translate',
-        collaborator: 'Google',
+        collaborator: 'Google, Nitro',
         iconURL: translateIconURL,
         insetIconURL: translateInsetIconURL,
         description: (
@@ -186,22 +186,6 @@ export default [
         tags: ['scratch'],
         featured: true,
         internetConnectionRequired: true
-    },
-    {
-        name: 'Makey Makey',
-        extensionId: 'makeymakey',
-        collaborator: 'JoyLabz',
-        iconURL: makeymakeyIconURL,
-        insetIconURL: makeymakeyInsetIconURL,
-        description: (
-            <FormattedMessage
-                defaultMessage="Make anything into a key."
-                description="Description for the 'Makey Makey' extension"
-                id="gui.extension.makeymakey.description"
-            />
-        ),
-        tags: ['scratch'],
-        featured: true
     },
     {
         name: 'micro:bit',
@@ -266,6 +250,53 @@ export default [
         helpLink: 'https://scratch.mit.edu/ev3'
     },
     {
+        name: 'Go Direct Force & Acceleration',
+        extensionId: 'gdxfor',
+        collaborator: 'Vernier',
+        iconURL: gdxforIconURL,
+        insetIconURL: gdxforInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="Sense push, pull, motion, and spin."
+                description="Description for the Vernier Go Direct Force and Acceleration sensor extension"
+                id="gui.extension.gdxfor.description"
+            />
+        ),
+        tags: ['scratch'],
+        featured: true,
+        disabled: false,
+        bluetoothRequired: true,
+        internetConnectionRequired: true,
+        launchPeripheralConnectionFlow: true,
+        useAutoScan: false,
+        connectionIconURL: gdxforConnectionIconURL,
+        connectionSmallIconURL: gdxforConnectionSmallIconURL,
+        connectingMessage: (
+            <FormattedMessage
+                defaultMessage="Connecting"
+                description="Message to help people connect to their force and acceleration sensor."
+                id="gui.extension.gdxfor.connectingMessage"
+            />
+        ),
+        helpLink: 'https://scratch.mit.edu/vernier'
+    },
+        {
+        name: 'Makey Makey',
+        extensionId: 'makeymakey',
+        collaborator: 'JoyLabz',
+        iconURL: makeymakeyIconURL,
+        insetIconURL: makeymakeyInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="Make anything into a key."
+                description="Description for the 'Makey Makey' extension"
+                id="gui.extension.makeymakey.description"
+            />
+        ),
+        tags: ['scratch'],
+        featured: true
+    },
+        {
         name: 'LEGO BOOST',
         extensionId: 'boost',
         collaborator: 'LEGO',
@@ -330,40 +361,9 @@ export default [
         helpLink: 'https://scratch.mit.edu/wedo'
     },
     {
-        name: 'Go Direct Force & Acceleration',
-        extensionId: 'gdxfor',
-        collaborator: 'Vernier',
-        iconURL: gdxforIconURL,
-        insetIconURL: gdxforInsetIconURL,
-        description: (
-            <FormattedMessage
-                defaultMessage="Sense push, pull, motion, and spin."
-                description="Description for the Vernier Go Direct Force and Acceleration sensor extension"
-                id="gui.extension.gdxfor.description"
-            />
-        ),
-        tags: ['scratch'],
-        featured: true,
-        disabled: false,
-        bluetoothRequired: true,
-        internetConnectionRequired: true,
-        launchPeripheralConnectionFlow: true,
-        useAutoScan: false,
-        connectionIconURL: gdxforConnectionIconURL,
-        connectionSmallIconURL: gdxforConnectionSmallIconURL,
-        connectingMessage: (
-            <FormattedMessage
-                defaultMessage="Connecting"
-                description="Message to help people connect to their force and acceleration sensor."
-                id="gui.extension.gdxfor.connectingMessage"
-            />
-        ),
-        helpLink: 'https://scratch.mit.edu/vernier'
-    },
-    {
         name: (
             <FormattedMessage
-                defaultMessage="{APP_NAME} Blocks"
+                defaultMessage="{APP_NAME} Block"
                 description="Name of the strange 'NitroBolt Blocks' extension"
                 id="tw.twExtension.name"
                 values={{
@@ -396,7 +396,7 @@ export default [
         iconURL: customExtensionIcon,
         description: (
             <FormattedMessage
-                defaultMessage="Load custom extensions from URLs, files, or JavaScript source code."
+                defaultMessage="Load URLs, files, or JavaScript code."
                 description="Description of library item to load a custom extension from a custom source"
                 id="tw.customExtension.description"
             />
@@ -438,12 +438,12 @@ const createGalleryStatusItem = (sourceId, description) => {
 export const galleryStatusItems = {
     nitrobolt: {
         loading: createGalleryStatusItem('nitrobolt', 'Loading NitroBolt extension gallery...'),
-        more: createGalleryStatusItem('nitrobolt', 'Learn more about extensions at extensions.nitrobolt.org.'),
-        error: createGalleryStatusItem('nitrobolt', 'Error loading NitroBolt extension gallery. Visit extensions.nitrobolt.org to find more extensions.')
+        more: createGalleryStatusItem('nitrobolt', 'Learn more about NitroBolt extensions at extensions.nitrobolt.org.'),
+        error: createGalleryStatusItem('nitrobolt', 'Error loading NitroBolt extension gallery.')
     },
     turbowarp: {
         loading: createGalleryStatusItem('turbowarp', 'Loading TurboWarp extension gallery...'),
-        more: createGalleryStatusItem('turbowarp', 'Learn more about extensions at extensions.turbowarp.org.'),
-        error: createGalleryStatusItem('turbowarp', 'Error loading TurboWarp extension gallery. Visit extensions.turbowarp.org to find more extensions.')
+        more: createGalleryStatusItem('turbowarp', 'Learn more about TurboWarp extensions at extensions.turbowarp.org.'),
+        error: createGalleryStatusItem('turbowarp', 'Error loading TurboWarp extension gallery.')
     }
 };
