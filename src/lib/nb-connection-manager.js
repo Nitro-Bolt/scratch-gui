@@ -6,6 +6,9 @@ import bindAll from 'lodash.bindall';
 
 const AUTHENTICATION_TIMEOUT = 25000;
 const JOIN_TIMEOUT = 30000;
+const COLLABORATION_CONNECTION_OPTIONS = Object.freeze({
+  reliable: true
+});
 
 /**
  * @typedef {DataConnection} CollaborationPeer
@@ -307,7 +310,7 @@ class NBConnectionManager extends EventEmitter {
 
     let host;
     try {
-      host = this.peer.connect(normalizedRoomId);
+      host = this.peer.connect(normalizedRoomId, COLLABORATION_CONNECTION_OPTIONS);
     } catch (error) {
       console.warn('Unable to connect to collaboration host', error);
       this._setConnectionLocked(false);
@@ -791,7 +794,7 @@ class NBConnectionManager extends EventEmitter {
         const acceptedHost = this.host;
         for (const id of packet.clients) {
           if (typeof id !== 'string' || id === this.peerId || id === this.hostId) continue;
-          const conn = this.peer.connect(id);
+          const conn = this.peer.connect(id, COLLABORATION_CONNECTION_OPTIONS);
 
           conn.on('open', () => {
             // A mesh connection may finish opening after this client has
@@ -994,4 +997,5 @@ class NBConnectionManager extends EventEmitter {
   }
 }
 
+export {NBConnectionManager};
 export default new NBConnectionManager();

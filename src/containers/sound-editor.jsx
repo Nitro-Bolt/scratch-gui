@@ -25,6 +25,25 @@ const UNDO_STACK_SIZE = 99;
 
 const MAX_RMS = 1.2;
 
+/**
+ * Resolve the current index of the exact sound an asynchronous edit started
+ * from. Reordering preserves object identity, while project replacement,
+ * deletion, and replacement invalidate the edit.
+ * @param {object} runtime Scratch VM runtime
+ * @param {string} targetId original target ID
+ * @param {object} target original target object
+ * @param {object} sound original sound object
+ * @returns {number} current sound index, or -1 if the edit is stale
+ */
+const resolveSoundEditIndex = (runtime, targetId, target, sound) => {
+    if (!runtime || typeof runtime.getTargetById !== 'function' ||
+        !target || !sound || runtime.getTargetById(targetId) !== target ||
+        !target.sprite || !Array.isArray(target.sprite.sounds)) {
+        return -1;
+    }
+    return target.sprite.sounds.indexOf(sound);
+};
+
 class SoundEditor extends React.Component {
     constructor (props) {
         super(props);
@@ -185,6 +204,10 @@ class SoundEditor extends React.Component {
         });
     }
     submitNewSamples (channel1Samples, channel2Samples, sampleRate, skipUndo) {
+        const targetId = this.props.targetId;
+        const target = this.props.vm.runtime.getTargetById(targetId);
+        const sound = target && target.sprite && target.sprite.sounds[this.props.soundIndex];
+
         this.props.showEncodingAlert();
         return downsampleIfNeeded({channel1Samples, channel2Samples, sampleRate}, this.resampleBufferToRate)
             .then(({
@@ -215,13 +238,23 @@ class SoundEditor extends React.Component {
                 });
             })
                 .then(buffer => {
-                    this.resetState(newChannel1Samples, newChannel2Samples, newSampleRate);
-                    const target = this.props.vm.runtime.getTargetById(this.props.targetId);
-                    if (!target) {
-                        throw new Error('The edited sound target no longer exists');
+                    const currentSoundIndex = resolveSoundEditIndex(
+                        this.props.vm.runtime,
+                        targetId,
+                        target,
+                        sound
+                    );
+                    if (currentSoundIndex === -1) {
+                        // A snapshot, deletion, or replacement invalidated this
+                        // delayed encoder result. Reordering is safe because the
+                        // same object is resolved at its new index.
+                        this.props.closeEncodingAlert();
+                        return false;
                     }
+
+                    this.resetState(newChannel1Samples, newChannel2Samples, newSampleRate);
                     this.props.vm.updateSoundBuffer(
-                        this.props.soundIndex,
+                        currentSoundIndex,
                         this.audioBufferPlayer.buffer,
                         new Uint8Array(buffer),
                         true,
@@ -739,6 +772,11 @@ const mapDispatchToProps = dispatch => ({
     showEncodingAlert: () => dispatch(showStandardAlert('nbEncodingAudio')),
     showEncodingErrorAlert: () => dispatch(showStandardAlert('nbEncodingAudioError'))
 });
+
+export {
+    resolveSoundEditIndex,
+    SoundEditor
+};
 
 export default connect(
     mapStateToProps,

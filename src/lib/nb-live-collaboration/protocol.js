@@ -161,6 +161,12 @@ const validatePayload = (kind, payload) => {
             'snapshot.snapshotId must be a non-empty string');
         requireCondition(errors, isSequence(payload.baseSequence),
             'snapshot.baseSequence must be a non-negative safe integer');
+        requireCondition(errors, isSequence(payload.catchUpSequence),
+            'snapshot.catchUpSequence must be a non-negative safe integer');
+        if (isSequence(payload.baseSequence) && isSequence(payload.catchUpSequence)) {
+            requireCondition(errors, payload.catchUpSequence >= payload.baseSequence,
+                'snapshot.catchUpSequence must not precede baseSequence');
+        }
         requireCondition(errors, isBinary(payload.projectData) && getByteLength(payload.projectData) > 0,
             'snapshot.projectData must contain binary project data');
         requireCondition(errors, isPlainObject(payload.targetManifest),
@@ -187,6 +193,10 @@ const validatePayload = (kind, payload) => {
             requireCondition(errors, isIdentifier(payload.failedOperationId),
                 'snapshotRequest.failedOperationId must be a non-empty string');
         }
+        if (Object.prototype.hasOwnProperty.call(payload, 'currentSnapshotId')) {
+            requireCondition(errors, isIdentifier(payload.currentSnapshotId),
+                'snapshotRequest.currentSnapshotId must be a non-empty string');
+        }
         break;
     case MESSAGE_KIND.OPERATION_PROPOSAL: {
         requireCondition(errors, isSequence(payload.baseSequence),
@@ -210,6 +220,8 @@ const validatePayload = (kind, payload) => {
         requireCondition(errors,
             typeof payload.reason === 'string' && payload.reason.length > 0 && payload.reason.length <= 1024,
             'reject.reason must be a non-empty string');
+        requireCondition(errors, typeof payload.willResynchronize === 'boolean',
+            'reject.willResynchronize must be a boolean');
         if (Object.prototype.hasOwnProperty.call(payload, 'lastCommittedSequence')) {
             requireCondition(errors, isSequence(payload.lastCommittedSequence),
                 'reject.lastCommittedSequence must be a non-negative safe integer');
@@ -361,6 +373,7 @@ const createHelloEnvelope = (hello, options = {}) => createEnvelope(
  * @param {object} snapshot Snapshot fields.
  * @param {string} snapshot.sessionId Collaboration session identifier.
  * @param {number} snapshot.baseSequence Sequence represented by the snapshot.
+ * @param {number} snapshot.catchUpSequence Fixed sequence sent after the snapshot before readiness.
  * @param {ArrayBuffer|ArrayBufferView} snapshot.projectData Serialized SB3 bytes.
  * @param {object} snapshot.targetManifest Canonical target manifest.
  * @param {object} snapshot.extensionManifest Ordered loaded-extension manifest.
@@ -375,6 +388,7 @@ const createSnapshotEnvelope = (snapshot, options = {}) => {
     const payload = {
         snapshotId: resolveId(snapshot.snapshotId, options.uuidFactory),
         baseSequence: snapshot.baseSequence,
+        catchUpSequence: snapshot.catchUpSequence,
         projectData: snapshot.projectData,
         targetManifest: snapshot.targetManifest,
         extensionManifest: snapshot.extensionManifest
@@ -395,6 +409,7 @@ const createSnapshotEnvelope = (snapshot, options = {}) => {
  * @param {string} request.reason Machine-stable recovery reason.
  * @param {number} [request.failedSequence] Sequence which could not be applied.
  * @param {string} [request.failedOperationId] Operation which could not be applied.
+ * @param {string} [request.currentSnapshotId] Snapshot currently loaded or being replaced.
  * @param {object} [options] Envelope creation options.
  * @returns {object} Valid snapshot request envelope.
  */
@@ -408,6 +423,9 @@ const createSnapshotRequestEnvelope = (request, options = {}) => {
     }
     if (typeof request.failedOperationId !== 'undefined') {
         payload.failedOperationId = request.failedOperationId;
+    }
+    if (typeof request.currentSnapshotId !== 'undefined') {
+        payload.currentSnapshotId = request.currentSnapshotId;
     }
     return createEnvelope(MESSAGE_KIND.SNAPSHOT_REQUEST, payload, {
         sessionId: request.sessionId,
@@ -468,6 +486,7 @@ const createOperationCommitEnvelope = (commit, options = {}) => createEnvelope(
  * @param {string} rejection.sessionId Collaboration session identifier.
  * @param {string} rejection.operationId Rejected operation identifier.
  * @param {string} rejection.reason Human-readable or machine-stable rejection reason.
+ * @param {boolean} rejection.willResynchronize Whether the host will send an authoritative snapshot.
  * @param {number} [rejection.lastCommittedSequence] Host sequence at rejection time.
  * @param {object} [options] Envelope creation options.
  * @returns {object} Valid rejection envelope.
@@ -475,7 +494,8 @@ const createOperationCommitEnvelope = (commit, options = {}) => createEnvelope(
 const createOperationRejectEnvelope = (rejection, options = {}) => {
     const payload = {
         operationId: rejection.operationId,
-        reason: rejection.reason
+        reason: rejection.reason,
+        willResynchronize: rejection.willResynchronize
     };
     if (typeof rejection.lastCommittedSequence !== 'undefined') {
         payload.lastCommittedSequence = rejection.lastCommittedSequence;

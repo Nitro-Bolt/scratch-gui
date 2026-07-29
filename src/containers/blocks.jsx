@@ -171,6 +171,8 @@ class Blocks extends React.Component {
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
         this.workspace.vm = this.props.vm;
+        this.workspace.vmTargetId = this.props.vm.editingTarget ?
+            this.props.vm.editingTarget.id : null;
         AddonHooks.blocklyWorkspace = this.workspace;
 
         // Register buttons under new callback keys for creating variables,
@@ -503,6 +505,12 @@ class Blocks extends React.Component {
         }
     }
     onWorkspaceUpdate (data) {
+        // Blockly events are dispatched asynchronously. Tag events with the
+        // target represented by this workspace so switching sprites before the
+        // event queue flushes cannot redirect the mutation.
+        this.workspace.vmTargetId = this.props.vm.editingTarget ?
+            this.props.vm.editingTarget.id : null;
+
         // When we change sprites, update the toolbox to have the new sprite's blocks
         const toolboxXML = this.getToolboxXML();
         if (toolboxXML) {

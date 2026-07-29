@@ -43,6 +43,7 @@ class CollaborationSession extends EventEmitter {
      * @param {Function} options.applyOperation apply a committed remote operation
      * @param {Function} options.createExtensionManifest capture the loaded extension set
      * @param {Function} options.applyExtensionManifest reconcile the loaded extension set
+     * @param {Function} [options.prepareForSnapshot] prepare local state for project replacement
      * @param {Function} [options.uuidFactory] injectable UUID factory
      */
     constructor ({
@@ -52,6 +53,7 @@ class CollaborationSession extends EventEmitter {
         applyOperation,
         createExtensionManifest,
         applyExtensionManifest,
+        prepareForSnapshot = () => null,
         uuidFactory = defaultUuidFactory
     }) {
         super();
@@ -59,12 +61,16 @@ class CollaborationSession extends EventEmitter {
             typeof applyExtensionManifest !== 'function') {
             throw new TypeError('CollaborationSession requires extension manifest callbacks');
         }
+        if (typeof prepareForSnapshot !== 'function') {
+            throw new TypeError('CollaborationSession prepareForSnapshot must be a function');
+        }
         this.connectionManager = connectionManager;
         this.vm = vm;
         this.registry = registry;
         this.applyOperation = applyOperation;
         this.createExtensionManifest = createExtensionManifest;
         this.applyExtensionManifest = applyExtensionManifest;
+        this.prepareForSnapshot = prepareForSnapshot;
         this.uuidFactory = uuidFactory;
 
         this.state = SESSION_STATE.IDLE;
@@ -86,10 +92,14 @@ class CollaborationSession extends EventEmitter {
         this.activeSnapshotRequests = new Map();
         this.snapshotRequestPending = null;
         this.snapshotApplyFailures = 0;
+        this.activeSnapshotApplication = null;
         this.replayRequestedFrom = null;
+        this.commitBufferGeneration = 0;
+        this.commitWaiters = new Set();
 
         this.incomingQueue = Promise.resolve();
         this.hostQueue = Promise.resolve();
+        this.lifecycleEpoch = 0;
         this.hostRemoteApplyCount = 0;
         this.hostResyncAfterRemote = false;
         this.started = false;
@@ -102,6 +112,21 @@ class CollaborationSession extends EventEmitter {
 
     get ready () {
         return this.state === SESSION_STATE.READY;
+    }
+
+    /**
+     * Record that an editor mutation completed while a replacement project was
+     * being installed. That snapshot must not be acknowledged because the
+     * mutation was not submitted and the resulting project is already dirty.
+     * @returns {boolean} true when an active snapshot was marked dirty
+     */
+    noteLocalMutationDuringSnapshot () {
+        if (this.state !== SESSION_STATE.SYNCHRONIZING ||
+            !this.activeSnapshotApplication) {
+            return false;
+        }
+        this.activeSnapshotApplication.dirty = true;
+        return true;
     }
 
     start () {
@@ -139,6 +164,8 @@ class CollaborationSession extends EventEmitter {
      */
     submit (draft) {
         if (!this.ready || !draft || typeof draft.type !== 'string') return null;
+        const lifecycleEpoch = this.lifecycleEpoch;
+        const sessionId = this.sessionId;
 
         let operation;
         try {
@@ -165,15 +192,32 @@ class CollaborationSession extends EventEmitter {
             this._commitOperation(
                 operation,
                 this.connectionManager.peerId,
-                false
-            ).catch(error => this._handleQueueError('local host operation', error));
+                false,
+                lifecycleEpoch,
+                sessionId
+            ).catch(error => this._handleQueueError(
+                'local host operation',
+                error,
+                lifecycleEpoch
+            ));
         } else {
             const envelope = createOperationProposalEnvelope({
-                sessionId: this.sessionId,
+                sessionId,
                 baseSequence: this.lastAppliedSequence,
                 operation
             }, {uuidFactory: this.uuidFactory});
-            this._sendToHost(envelope);
+            try {
+                this._sendToHost(envelope);
+            } catch (error) {
+                this._consumeOptimisticOperation(operation.operationId);
+                console.error('Unable to send collaboration operation', error);
+                if (!this._requestSnapshot('proposal-send-failed', {
+                    failedOperationId: operation.operationId
+                })) {
+                    this._setState(SESSION_STATE.ERROR);
+                }
+                return null;
+            }
         }
         return operation.operationId;
     }
@@ -190,15 +234,29 @@ class CollaborationSession extends EventEmitter {
         this._reset();
         if (this.connectionManager.isHost) {
             this.sessionId = this.uuidFactory();
-            this.registry.createManifest(this.vm.runtime);
-            this._setState(SESSION_STATE.READY);
-            Object.values(this.connectionManager.connections || {})
-                .filter(peer => peer && peer.open && peer.authenticated)
-                .forEach(peer => {
-                    this._queueSnapshot(peer).catch(error => {
-                        console.error('Failed to synchronize existing collaboration peer', error);
+            this._setState(SESSION_STATE.SYNCHRONIZING);
+            const lifecycleEpoch = this.lifecycleEpoch;
+            const sessionId = this.sessionId;
+            const lifecycleBarrier = Promise.all([this.incomingQueue, this.hostQueue]);
+            const initialize = lifecycleBarrier.then(() => {
+                if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return;
+                this.registry.createManifest(this.vm.runtime);
+                this._setState(SESSION_STATE.READY);
+                Object.values(this.connectionManager.connections || {})
+                    .filter(peer => peer && peer.open && peer.authenticated)
+                    .forEach(peer => {
+                        this._queueSnapshot(peer).catch(error => {
+                            if (this._isCurrentLifecycle(lifecycleEpoch, sessionId)) {
+                                console.error('Failed to synchronize existing collaboration peer', error);
+                            }
+                        });
                     });
-                });
+            });
+            this.hostQueue = initialize.catch(error => this._handleQueueError(
+                'collaboration room initialization',
+                error,
+                lifecycleEpoch
+            ));
         } else {
             this._setState(SESSION_STATE.SYNCHRONIZING);
             if (this.connectionManager.host && this.connectionManager.host.open) {
@@ -238,9 +296,36 @@ class CollaborationSession extends EventEmitter {
             return;
         }
 
+        const lifecycleEpoch = this.lifecycleEpoch;
+        if (envelope.kind === MESSAGE_KIND.OPERATION_COMMIT &&
+            !this.connectionManager.isHost) {
+            if (!this._bufferCommit(envelope, peer, lifecycleEpoch)) return;
+            this.incomingQueue = this.incomingQueue
+                .then(() => {
+                    if (!this._isCurrentLifecycle(lifecycleEpoch) ||
+                        this.state !== SESSION_STATE.READY) {
+                        return;
+                    }
+                    return this._drainCommits(lifecycleEpoch);
+                })
+                .catch(error => this._handleQueueError(
+                    'incoming collaboration commit',
+                    error,
+                    lifecycleEpoch
+                ));
+            return;
+        }
+
         this.incomingQueue = this.incomingQueue
-            .then(() => this._dispatchEnvelope(envelope, peer))
-            .catch(error => this._handleQueueError('incoming collaboration packet', error));
+            .then(() => {
+                if (!this._isCurrentLifecycle(lifecycleEpoch)) return;
+                return this._dispatchEnvelope(envelope, peer);
+            })
+            .catch(error => this._handleQueueError(
+                'incoming collaboration packet',
+                error,
+                lifecycleEpoch
+            ));
     }
 
     _dispatchEnvelope (envelope, peer) {
@@ -266,21 +351,26 @@ class CollaborationSession extends EventEmitter {
         }
     }
 
-    _sendSnapshot (peer) {
+    _sendSnapshot (peer, options = {}, lifecycleEpoch = this.lifecycleEpoch) {
         const peerId = peer && peer.peer;
-        if (!peerId || !peer.open) return Promise.resolve(null);
+        if (!this._isCurrentLifecycle(lifecycleEpoch) || !peerId || !peer.open) {
+            return Promise.resolve(null);
+        }
+        const retransmitPending = options.retransmitPending !== false;
 
         const inFlight = this.snapshotPromises.get(peerId);
         if (inFlight) return inFlight;
 
         const pending = this.pendingSnapshots.get(peerId);
         if (pending) {
-            this._sendToPeer(peer, pending.envelope);
+            if (retransmitPending) {
+                this._sendPendingSnapshot(peer, pending);
+            }
             return Promise.resolve(pending.snapshotId);
         }
 
         this.readyPeers.delete(peerId);
-        const snapshotPromise = this._createAndSendSnapshot(peer)
+        const snapshotPromise = this._createAndSendSnapshot(peer, lifecycleEpoch)
             .finally(() => {
                 if (this.snapshotPromises.get(peerId) === snapshotPromise) {
                     this.snapshotPromises.delete(peerId);
@@ -295,7 +385,7 @@ class CollaborationSession extends EventEmitter {
             return;
         }
         this.readyPeers.delete(peer.peer);
-        return this._queueSnapshot(peer);
+        return this._queueSnapshot(peer, {retransmitPending: false});
     }
 
     /**
@@ -304,17 +394,24 @@ class CollaborationSession extends EventEmitter {
      * _sendSnapshot directly from within hostQueue remains intentional for
      * recovery paths, avoiding a promise-chain self-deadlock.
      * @param {object} peer destination peer
+     * @param {object} [options] snapshot delivery options
      * @returns {Promise<?string>} queued snapshot result
      */
-    _queueSnapshot (peer) {
-        const queued = this.hostQueue.then(() => this._sendSnapshot(peer));
+    _queueSnapshot (peer, options) {
+        const lifecycleEpoch = this.lifecycleEpoch;
+        const queued = this.hostQueue.then(() => {
+            if (!this._isCurrentLifecycle(lifecycleEpoch)) return null;
+            return this._sendSnapshot(peer, options, lifecycleEpoch);
+        });
         this.hostQueue = queued.catch(error => {
-            console.error('Failed to process queued collaboration snapshot', error);
+            if (this._isCurrentLifecycle(lifecycleEpoch)) {
+                console.error('Failed to process queued collaboration snapshot', error);
+            }
         });
         return queued;
     }
 
-    async _createAndSendSnapshot (peer) {
+    async _createAndSendSnapshot (peer, lifecycleEpoch = this.lifecycleEpoch) {
         // _saveProjectZip captures JSON and assets synchronously before the
         // returned compression promise continues, so this sequence and manifest
         // describe the same editor state.
@@ -324,13 +421,19 @@ class CollaborationSession extends EventEmitter {
         const extensionManifest = this.createExtensionManifest();
         const projectPromise = this.vm.saveProjectSb3('uint8array');
         const projectData = await projectPromise;
-        if (!peer.open || !this.connectionManager.isHost || this.sessionId !== sessionId) {
+        if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId) ||
+            !peer.open || !this.connectionManager.isHost) {
             return null;
         }
 
+        // Freeze the end of this snapshot's catch-up window before sending
+        // anything. Later commits are delivered normally, but READY is not
+        // accepted until the client has applied every sequence through here.
+        const catchUpSequence = this.sequence;
         const envelope = createSnapshotEnvelope({
             sessionId,
             baseSequence,
+            catchUpSequence,
             projectData,
             targetManifest,
             extensionManifest
@@ -338,22 +441,29 @@ class CollaborationSession extends EventEmitter {
         this.pendingSnapshots.set(peer.peer, {
             snapshotId: envelope.payload.snapshotId,
             baseSequence,
+            catchUpSequence,
             envelope
         });
-        this._sendToPeer(peer, envelope);
+        this._sendPendingSnapshot(peer, this.pendingSnapshots.get(peer.peer));
+        return envelope.payload.snapshotId;
+    }
 
-        // Host-local edits can be sequenced while SB3 compression is awaiting.
-        // That peer was excluded from their live broadcast, so replay exactly
-        // the commits newer than the synchronously captured snapshot after the
-        // snapshot envelope on the same ordered data channel.
-        for (let sequence = baseSequence + 1; sequence <= this.sequence; sequence++) {
+    _sendPendingSnapshot (peer, pending) {
+        this._sendToPeer(peer, pending.envelope);
+
+        // The peer was excluded from live broadcasts while the SB3 was being
+        // captured. Replay the fixed range advertised by the envelope after it
+        // on the same ordered channel. Repeating that same range also makes a
+        // lost READY safe: duplicate commits are idempotently ignored.
+        for (let sequence = pending.baseSequence + 1;
+            sequence <= pending.catchUpSequence;
+            sequence++) {
             const commit = this.operationLog.get(sequence);
             if (!commit) {
                 throw new Error(`Snapshot delta ${sequence} is no longer available`);
             }
             this._sendToPeer(peer, commit);
         }
-        return envelope.payload.snapshotId;
     }
 
     async _receiveSnapshot (envelope, peer) {
@@ -362,11 +472,17 @@ class CollaborationSession extends EventEmitter {
             return;
         }
 
+        const lifecycleEpoch = this.lifecycleEpoch;
+        const snapshotSessionId = envelope.sessionId;
+        const snapshotId = envelope.payload.snapshotId;
+        const catchUpSequence = envelope.payload.catchUpSequence;
         const snapshotKey = `${envelope.sessionId}:${envelope.payload.snapshotId}`;
         if (this.appliedSnapshots.has(snapshotKey)) {
             // A duplicate can mean the host missed READY. A snapshot which
             // predates an active recovery request must not end that recovery.
-            if (!this.snapshotRequestPending && this.sessionId === envelope.sessionId) {
+            if (!this.snapshotRequestPending &&
+                this.sessionId === envelope.sessionId &&
+                this.lastAppliedSequence >= catchUpSequence) {
                 this._sendReady(envelope.payload.snapshotId);
             }
             return;
@@ -382,52 +498,82 @@ class CollaborationSession extends EventEmitter {
             this.snapshotRequestPending = null;
         }
 
+        const snapshotApplication = {
+            dirty: false,
+            key: snapshotKey
+        };
+        this.activeSnapshotApplication = snapshotApplication;
         this._setState(SESSION_STATE.SYNCHRONIZING);
         this.sessionId = envelope.sessionId;
         this.snapshotId = envelope.payload.snapshotId;
 
+        let finishSnapshot = null;
         try {
-            await this.vm.loadProject(envelope.payload.projectData);
-            this.registry.bindManifest(envelope.payload.targetManifest, this.vm.runtime);
-            await this.applyExtensionManifest(envelope.payload.extensionManifest);
-        } catch (error) {
-            console.error('Failed to apply collaboration snapshot', error);
-            this.snapshotRequestPending = null;
-            const permissionDenied = error && typeof error.message === 'string' &&
-                /permission|denied/i.test(error.message);
-            if (!permissionDenied &&
-                this.snapshotApplyFailures < MAX_SNAPSHOT_APPLY_RETRIES) {
-                this.snapshotApplyFailures++;
-                if (!this._requestSnapshot('snapshot-apply-failed')) {
+            try {
+                finishSnapshot = this.prepareForSnapshot();
+                await this.vm.loadProject(envelope.payload.projectData, false);
+                if (!this._isCurrentLifecycle(lifecycleEpoch, snapshotSessionId)) return;
+                this.registry.bindManifest(envelope.payload.targetManifest, this.vm.runtime);
+                await this.applyExtensionManifest(envelope.payload.extensionManifest);
+                if (!this._isCurrentLifecycle(lifecycleEpoch, snapshotSessionId)) return;
+            } catch (error) {
+                if (!this._isCurrentLifecycle(lifecycleEpoch, snapshotSessionId)) return;
+                console.error('Failed to apply collaboration snapshot', error);
+                this.snapshotRequestPending = null;
+                const permissionDenied = error && typeof error.message === 'string' &&
+                    /permission|denied/i.test(error.message);
+                if (!permissionDenied &&
+                    this.snapshotApplyFailures < MAX_SNAPSHOT_APPLY_RETRIES) {
+                    this.snapshotApplyFailures++;
+                    if (!this._requestSnapshot('snapshot-apply-failed')) {
+                        this._setState(SESSION_STATE.ERROR);
+                    }
+                } else {
                     this._setState(SESSION_STATE.ERROR);
                 }
-            } else {
-                this._setState(SESSION_STATE.ERROR);
+                return;
             }
-            return;
-        }
-        this.snapshotApplyFailures = 0;
-        this.lastAppliedSequence = envelope.payload.baseSequence;
-        this.optimisticOperations.clear();
-        this.optimisticOrder.length = 0;
-        this.seenOperations.clear();
+            this.snapshotApplyFailures = 0;
+            this.lastAppliedSequence = envelope.payload.baseSequence;
+            this.optimisticOperations.clear();
+            this.optimisticOrder.length = 0;
+            this.seenOperations.clear();
 
-        // Discard commits already represented by the snapshot, then apply every
-        // contiguous operation which arrived while project loading was in flight.
-        for (const [sequence, commit] of this.bufferedCommits) {
-            if (commit.sessionId !== this.sessionId || sequence <= this.lastAppliedSequence) {
-                this.bufferedCommits.delete(sequence);
+            // Discard commits already represented by the snapshot, then apply every
+            // contiguous operation which arrived while project loading was in flight.
+            for (const [sequence, commit] of this.bufferedCommits) {
+                if (commit.sessionId !== this.sessionId || sequence <= this.lastAppliedSequence) {
+                    this.bufferedCommits.delete(sequence);
+                }
             }
-        }
-        this.snapshotRequestPending = null;
-        this.appliedSnapshots.add(snapshotKey);
-        while (this.appliedSnapshots.size > 32) {
-            this.appliedSnapshots.delete(this.appliedSnapshots.values().next().value);
-        }
-        if (!await this._drainCommits()) return;
+            this.snapshotRequestPending = null;
+            if (!await this._drainCommits(lifecycleEpoch)) return;
+            while (this.lastAppliedSequence < catchUpSequence) {
+                const generation = this.commitBufferGeneration;
+                await this._waitForCommitChange(generation, lifecycleEpoch);
+                if (!this._isCurrentLifecycle(lifecycleEpoch, snapshotSessionId)) return;
+                if (!await this._drainCommits(lifecycleEpoch)) return;
+            }
+            if (!this._isCurrentLifecycle(lifecycleEpoch, snapshotSessionId)) return;
 
-        this._sendReady(this.snapshotId);
-        this._setState(SESSION_STATE.READY);
+            this.appliedSnapshots.add(snapshotKey);
+            while (this.appliedSnapshots.size > 32) {
+                this.appliedSnapshots.delete(this.appliedSnapshots.values().next().value);
+            }
+            if (snapshotApplication.dirty) {
+                if (!this._requestSnapshot('local-mutation-during-snapshot')) {
+                    this._setState(SESSION_STATE.ERROR);
+                }
+                return;
+            }
+            this._sendReady(snapshotId);
+            this._setState(SESSION_STATE.READY);
+        } finally {
+            if (this.activeSnapshotApplication === snapshotApplication) {
+                this.activeSnapshotApplication = null;
+            }
+            if (typeof finishSnapshot === 'function') finishSnapshot();
+        }
     }
 
     _sendReady (snapshotId) {
@@ -440,8 +586,8 @@ class CollaborationSession extends EventEmitter {
 
     _receiveProposal (envelope, peer) {
         if (!this.connectionManager.isHost || envelope.sessionId !== this.sessionId) return;
-        if (!peer || !this.readyPeers.has(peer.peer)) {
-            console.warn('Ignoring collaboration operation from a peer which is not synchronized');
+        if (!peer || !peer.open || !peer.authenticated) {
+            console.warn('Ignoring collaboration operation from an unauthenticated peer');
             return;
         }
 
@@ -449,11 +595,14 @@ class CollaborationSession extends EventEmitter {
         const validation = validateOperation(operation);
         if (!validation.valid) return;
         const baseSequence = envelope.payload.baseSequence;
+        const lifecycleEpoch = this.lifecycleEpoch;
+        const sessionId = this.sessionId;
         let commitStarted = false;
 
         this.hostQueue = this.hostQueue
             .then(async () => {
-                if (!peer.open || !this.readyPeers.has(peer.peer)) {
+                if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return;
+                if (!peer.open || !peer.authenticated || !this.readyPeers.has(peer.peer)) {
                     throw new Error('Collaboration peer is no longer synchronized');
                 }
                 // A client can legitimately have several editor events in flight
@@ -473,12 +622,21 @@ class CollaborationSession extends EventEmitter {
                 commitStarted = true;
                 this.hostRemoteApplyCount++;
                 try {
-                    await this._commitOperation(operation, peer.peer, true);
+                    await this._commitOperation(
+                        operation,
+                        peer.peer,
+                        true,
+                        lifecycleEpoch,
+                        sessionId
+                    );
                 } finally {
-                    this.hostRemoteApplyCount--;
+                    if (this._isCurrentLifecycle(lifecycleEpoch, sessionId)) {
+                        this.hostRemoteApplyCount--;
+                    }
                 }
             })
             .catch(async error => {
+                if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return;
                 console.error('Failed to apply proposed collaboration operation', error);
                 if (peer.open) {
                     try {
@@ -489,33 +647,50 @@ class CollaborationSession extends EventEmitter {
                             sessionId: this.sessionId,
                             operationId: operation.operationId,
                             reason: message.slice(0, 1024) || 'Operation failed',
+                            willResynchronize: true,
                             lastCommittedSequence: this.sequence
                         }, {uuidFactory: this.uuidFactory}));
                     } catch (sendError) {
                         console.error('Failed to reject collaboration operation', sendError);
                     }
                 }
-                if (commitStarted) {
+                const mutationWasNotStarted = error &&
+                    error.collaborationMutationStarted === false;
+                if (commitStarted && !mutationWasNotStarted) {
                     // applyOperation may have mutated the host before rejecting.
                     // Invalidate every ready peer and converge all of them on the
                     // resulting authoritative host state, not just the author.
-                    await this._resynchronizeReadyPeers(peer);
+                    await this._resynchronizeReadyPeers(peer, lifecycleEpoch, sessionId);
                     this.hostResyncAfterRemote = false;
                 } else {
                     // A proposal rejected before application only diverged on
                     // its optimistic author.
-                    await this._sendSnapshot(peer);
+                    await this._sendSnapshot(
+                        peer,
+                        {retransmitPending: false},
+                        lifecycleEpoch
+                    );
                 }
             })
             .then(async () => {
+                if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return;
                 if (this.hostRemoteApplyCount === 0 && this.hostResyncAfterRemote) {
                     this.hostResyncAfterRemote = false;
-                    await this._resynchronizeReadyPeers();
+                    await this._resynchronizeReadyPeers(
+                        null,
+                        lifecycleEpoch,
+                        sessionId
+                    );
                 }
             });
     }
 
-    async _resynchronizeReadyPeers (fallbackPeer) {
+    async _resynchronizeReadyPeers (
+        fallbackPeer,
+        lifecycleEpoch = this.lifecycleEpoch,
+        sessionId = this.sessionId
+    ) {
+        if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return;
         const peerIds = Array.from(this.readyPeers);
         this.readyPeers.clear();
         const connections = this.connectionManager.connections || {};
@@ -526,14 +701,28 @@ class CollaborationSession extends EventEmitter {
             peers.push(fallbackPeer);
         }
 
-        await Promise.all(peers.map(peer => this._sendSnapshot(peer).catch(error => {
-            console.error(`Failed to resynchronize collaboration peer ${peer.peer}`, error);
+        await Promise.all(peers.map(peer => this._sendSnapshot(
+            peer,
+            {},
+            lifecycleEpoch
+        ).catch(error => {
+            if (this._isCurrentLifecycle(lifecycleEpoch, sessionId)) {
+                console.error(`Failed to resynchronize collaboration peer ${peer.peer}`, error);
+            }
         })));
     }
 
-    async _commitOperation (operation, authorId, applyLocally) {
+    async _commitOperation (
+        operation,
+        authorId,
+        applyLocally,
+        lifecycleEpoch = this.lifecycleEpoch,
+        sessionId = this.sessionId
+    ) {
+        if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return;
         if (this.seenOperations.has(operation.operationId)) return;
         if (applyLocally) await this.applyOperation(operation);
+        if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return;
 
         this.seenOperations.add(operation.operationId);
         this._consumeOptimisticOperation(operation.operationId);
@@ -541,7 +730,7 @@ class CollaborationSession extends EventEmitter {
         this.lastAppliedSequence = this.sequence;
 
         const envelope = createOperationCommitEnvelope({
-            sessionId: this.sessionId,
+            sessionId,
             sequence: this.sequence,
             authorId,
             operation
@@ -566,19 +755,28 @@ class CollaborationSession extends EventEmitter {
         this.connectionManager.sendToList(eligiblePeerIds, this._wrap(envelope));
     }
 
-    async _receiveCommit (envelope, peer) {
+    _receiveCommit (envelope, peer) {
+        const lifecycleEpoch = this.lifecycleEpoch;
+        if (!this._bufferCommit(envelope, peer, lifecycleEpoch)) return;
+        if (this.state !== SESSION_STATE.READY) return;
+        return this._drainCommits(lifecycleEpoch);
+    }
+
+    _bufferCommit (envelope, peer, lifecycleEpoch = this.lifecycleEpoch) {
+        if (!this._isCurrentLifecycle(lifecycleEpoch)) return false;
         if (this.connectionManager.isHost || peer !== this.connectionManager.host) return;
         if (this.sessionId && envelope.sessionId !== this.sessionId) return;
 
         const sequence = envelope.payload.sequence;
-        if (sequence <= this.lastAppliedSequence) return;
+        if (sequence <= this.lastAppliedSequence) return false;
         this.bufferedCommits.set(sequence, envelope);
-
-        if (this.state !== SESSION_STATE.READY) return;
-        await this._drainCommits();
+        this._notifyCommitWaiters();
+        return true;
     }
 
-    async _drainCommits () {
+    async _drainCommits (lifecycleEpoch = this.lifecycleEpoch) {
+        const sessionId = this.sessionId;
+        if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return false;
         let nextSequence = this.lastAppliedSequence + 1;
         while (this.bufferedCommits.has(nextSequence)) {
             const envelope = this.bufferedCommits.get(nextSequence);
@@ -607,6 +805,7 @@ class CollaborationSession extends EventEmitter {
                 try {
                     await this.applyOperation(operation);
                 } catch (error) {
+                    if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return false;
                     console.error(
                         `Failed to apply collaboration commit ${nextSequence}; requesting a fresh snapshot`,
                         error
@@ -617,6 +816,7 @@ class CollaborationSession extends EventEmitter {
                     });
                     return false;
                 }
+                if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return false;
                 if (this.optimisticOrder.length > 0) {
                     // A genuine local edit can occur while an asynchronous
                     // remote media/extension operation is awaiting. Its exact
@@ -630,11 +830,13 @@ class CollaborationSession extends EventEmitter {
                     return false;
                 }
             }
+            if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return false;
             this.bufferedCommits.delete(nextSequence);
             this.seenOperations.add(operation.operationId);
             this.lastAppliedSequence = nextSequence;
             nextSequence++;
         }
+        if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return false;
 
         if (this.bufferedCommits.size > 0) {
             const firstBuffered = Math.min(...this.bufferedCommits.keys());
@@ -655,9 +857,18 @@ class CollaborationSession extends EventEmitter {
 
     _receiveRejection (envelope, peer) {
         if (this.connectionManager.isHost || peer !== this.connectionManager.host) return;
+        if (this.sessionId && envelope.sessionId !== this.sessionId) return;
         const operationId = envelope.payload.operationId;
-        this._consumeOptimisticOperation(operationId);
+        // A snapshot can replace the local optimistic state before a delayed
+        // rejection reaches us. That operation is no longer present and the
+        // snapshot already converged it, so requesting another snapshot would
+        // only start a redundant recovery loop.
+        if (!this._consumeOptimisticOperation(operationId)) return;
         console.error(`Collaboration operation was rejected: ${envelope.payload.reason}`);
+        if (envelope.payload.willResynchronize) {
+            this._setState(SESSION_STATE.SYNCHRONIZING);
+            return;
+        }
         this._requestSnapshot('operation-rejected', {
             failedOperationId: operationId
         });
@@ -669,13 +880,17 @@ class CollaborationSession extends EventEmitter {
         }
 
         this._setState(SESSION_STATE.SYNCHRONIZING);
-        const envelope = createSnapshotRequestEnvelope({
+        const request = {
             sessionId: this.sessionId,
             lastAppliedSequence: this.lastAppliedSequence,
             reason,
             failedSequence: details.failedSequence,
             failedOperationId: details.failedOperationId
-        }, {uuidFactory: this.uuidFactory});
+        };
+        if (this.snapshotId) request.currentSnapshotId = this.snapshotId;
+        const envelope = createSnapshotRequestEnvelope(request, {
+            uuidFactory: this.uuidFactory
+        });
         this.snapshotRequestPending = envelope.messageId;
         try {
             this._sendToHost(envelope);
@@ -700,21 +915,32 @@ class CollaborationSession extends EventEmitter {
             this.seenSnapshotRequests.delete(this.seenSnapshotRequests.values().next().value);
         }
 
-        // An in-flight snapshot is already fresh. A completed but
-        // unacknowledged snapshot is retransmitted by _sendSnapshot.
-        if (envelope.payload.reason === 'snapshot-apply-failed') {
+        // A request naming the currently pending snapshot proves that the
+        // client has already received it and is asking to replace it. Never
+        // answer that request by retransmitting the same snapshot.
+        const pending = this.pendingSnapshots.get(peer.peer);
+        let supersededSnapshotPromise = null;
+        if (pending &&
+            pending.snapshotId === envelope.payload.currentSnapshotId) {
+            supersededSnapshotPromise = this.snapshotPromises.get(peer.peer) || null;
             this.pendingSnapshots.delete(peer.peer);
-            // A client can reject more than one independently malformed
-            // snapshot. Its new request supersedes the active request which
-            // produced the snapshot it just failed to apply.
             this.activeSnapshotRequests.delete(peer.peer);
         }
         if (this.activeSnapshotRequests.has(peer.peer)) return;
         this.activeSnapshotRequests.set(peer.peer, envelope.messageId);
         this.readyPeers.delete(peer.peer);
+        const lifecycleEpoch = this.lifecycleEpoch;
+        const sessionId = this.sessionId;
         this.hostQueue = this.hostQueue
-            .then(() => this._sendSnapshot(peer))
+            .then(async () => {
+                if (supersededSnapshotPromise) {
+                    await supersededSnapshotPromise.catch(() => null);
+                }
+                if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return;
+                return this._sendSnapshot(peer, {}, lifecycleEpoch);
+            })
             .catch(error => {
+                if (!this._isCurrentLifecycle(lifecycleEpoch, sessionId)) return;
                 this.activeSnapshotRequests.delete(peer.peer);
                 console.error('Failed to send requested collaboration snapshot', error);
             });
@@ -742,7 +968,7 @@ class CollaborationSession extends EventEmitter {
         if (!this.connectionManager.isHost || envelope.sessionId !== this.sessionId || !peer) return;
         const pending = this.pendingSnapshots.get(peer.peer);
         if (!pending || pending.snapshotId !== envelope.payload.snapshotId) return;
-        if (envelope.payload.lastAppliedSequence < pending.baseSequence ||
+        if (envelope.payload.lastAppliedSequence < pending.catchUpSequence ||
             envelope.payload.lastAppliedSequence > this.sequence) {
             return;
         }
@@ -801,18 +1027,43 @@ class CollaborationSession extends EventEmitter {
         return true;
     }
 
+    _isCurrentLifecycle (lifecycleEpoch, sessionId) {
+        return lifecycleEpoch === this.lifecycleEpoch &&
+            (typeof sessionId === 'undefined' || sessionId === this.sessionId);
+    }
+
+    _notifyCommitWaiters () {
+        this.commitBufferGeneration++;
+        const waiters = Array.from(this.commitWaiters);
+        this.commitWaiters.clear();
+        waiters.forEach(resolve => resolve());
+    }
+
+    _waitForCommitChange (generation, lifecycleEpoch) {
+        if (!this._isCurrentLifecycle(lifecycleEpoch) ||
+            generation !== this.commitBufferGeneration) {
+            return Promise.resolve();
+        }
+        return new Promise(resolve => {
+            this.commitWaiters.add(resolve);
+        });
+    }
+
     _setState (state) {
         if (this.state === state) return;
         this.state = state;
         this.emit('state', state);
     }
 
-    _handleQueueError (context, error) {
+    _handleQueueError (context, error, lifecycleEpoch = this.lifecycleEpoch) {
+        if (!this._isCurrentLifecycle(lifecycleEpoch)) return;
         console.error(`Failed to process ${context}`, error);
         this._setState(SESSION_STATE.ERROR);
     }
 
     _reset () {
+        this.lifecycleEpoch++;
+        this._notifyCommitWaiters();
         this.state = SESSION_STATE.IDLE;
         this.sessionId = null;
         this.sequence = 0;
@@ -831,12 +1082,11 @@ class CollaborationSession extends EventEmitter {
         this.activeSnapshotRequests.clear();
         this.snapshotRequestPending = null;
         this.snapshotApplyFailures = 0;
+        this.activeSnapshotApplication = null;
         this.replayRequestedFrom = null;
         this.hostRemoteApplyCount = 0;
         this.hostResyncAfterRemote = false;
         this.registry.clear();
-        this.incomingQueue = Promise.resolve();
-        this.hostQueue = Promise.resolve();
     }
 }
 

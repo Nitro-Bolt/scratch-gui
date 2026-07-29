@@ -19,6 +19,27 @@ const DERIVED_COMMENT_MOVE_REASONS = new Set([
 const GROUP_BLOCK_MOVE_REASON = 'group_move';
 const TRANSITION_DURATION_MS = 500;
 const TRANSITION_STYLE = `transform ${TRANSITION_DURATION_MS}ms`;
+const SINGLE_EVENT_OPERATION = 'blockly.event';
+const BATCH_EVENT_OPERATION = 'blockly.events';
+const VARIABLE_EVENT_TYPES = new Set([
+    'var_create',
+    'var_delete',
+    'var_rename'
+]);
+const SUPPORTED_EVENT_TYPES = new Set([
+    'create',
+    'change',
+    'move',
+    'delete',
+    'var_create',
+    'var_delete',
+    'var_rename',
+    'comment_create',
+    'comment_change',
+    'comment_move',
+    'comment_delete',
+    'group_change'
+]);
 
 /**
  * Convert the target currently selected in the VM into a collaboration target
@@ -67,18 +88,27 @@ class BlocklyCollaborationAdapter {
 
         this.applyingRemote = 0;
         this.transitionTimers = new Map();
+        this.pendingLocalEvents = [];
+        this.localEventFlushScheduled = false;
+        this.document = typeof document === 'undefined' ? null : document;
         this.handleLocalEvent = this.handleLocalEvent.bind(this);
+        this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
     }
 
     attach () {
         this.workspace.addChangeListener(this.handleLocalEvent);
+        if (this.document) {
+            this.document.addEventListener('visibilitychange', this.handleVisibilityChange);
+        }
     }
 
     detach () {
         this.workspace.removeChangeListener(this.handleLocalEvent);
-        for (const key of Array.from(this.transitionTimers.keys())) {
-            this._clearTransition(key);
+        if (this.document) {
+            this.document.removeEventListener('visibilitychange', this.handleVisibilityChange);
         }
+        this._flushLocalEvents();
+        this._clearAllTransitions();
     }
 
     /**
@@ -91,7 +121,9 @@ class BlocklyCollaborationAdapter {
             return;
         }
 
-        const targetId = getEditingTargetReference(this.vm, this.registry);
+        const targetId = event.targetId ?
+            this.registry.getCanonicalRef(event.targetId) :
+            getEditingTargetReference(this.vm, this.registry);
         if (!targetId || typeof event.toJson !== 'function') return;
 
         const json = event.toJson();
@@ -101,13 +133,12 @@ class BlocklyCollaborationAdapter {
             event.element === 'mutation'
         );
 
-        this.submitOperation({
-            type: 'blockly.event',
+        this._queueLocalEvent({
             targetId,
-            payload: {
-                event: json,
-                refreshToolbox
-            }
+            json,
+            refreshToolbox,
+            groupId: typeof json.group === 'string' && json.group ?
+                json.group : null
         });
     }
 
@@ -116,57 +147,636 @@ class BlocklyCollaborationAdapter {
      * @param {object} operation semantic collaboration operation
      */
     apply (operation) {
-        if (operation.type !== 'blockly.event') {
-            throw new Error(`Unsupported Blockly collaboration operation: ${operation.type}`);
-        }
+        this._flushPendingBlocklyEvents();
+        let target;
+        let payload;
+        let jsonEvents;
+        let events;
+        let isVisibleTarget;
+        try {
+            if (operation.type !== SINGLE_EVENT_OPERATION &&
+                operation.type !== BATCH_EVENT_OPERATION) {
+                throw new Error(`Unsupported Blockly collaboration operation: ${operation.type}`);
+            }
 
-        const target = this.registry.resolveTarget(operation.targetId, this.vm.runtime);
-        if (!target) {
-            throw new Error(`Collaboration target does not exist: ${operation.targetId}`);
-        }
+            target = this.registry.resolveTarget(operation.targetId, this.vm.runtime);
+            if (!target) {
+                throw new Error(`Collaboration target does not exist: ${operation.targetId}`);
+            }
 
-        const json = operation.payload && operation.payload.event;
-        if (!json || typeof json.type !== 'string') {
-            throw new Error('Invalid Blockly collaboration event');
-        }
+            payload = operation.payload || {};
+            jsonEvents = operation.type === BATCH_EVENT_OPERATION ?
+                payload.events :
+                [payload.event];
+            if (!Array.isArray(jsonEvents) || jsonEvents.length === 0 ||
+                jsonEvents.some(json => !json || typeof json.type !== 'string' ||
+                    !SUPPORTED_EVENT_TYPES.has(json.type))) {
+                throw new Error('Invalid Blockly collaboration event');
+            }
 
-        const event = this.ScratchBlocks.Events.fromJson(json, this.workspace);
-        event.isCollaborationReplay = true;
-        const editingTarget = this.vm.editingTarget;
-        const isVisibleTarget = Boolean(editingTarget && editingTarget.id === target.id);
-        const isDerivedCommentMove = this._isDerivedCommentMove(event, json);
+            events = jsonEvents.map(json => {
+                const event = this.ScratchBlocks.Events.fromJson(json, this.workspace);
+                event.isCollaborationReplay = true;
+                return event;
+            });
+            const editingTarget = this.vm.editingTarget;
+            isVisibleTarget = Boolean(editingTarget && editingTarget.id === target.id);
+            this._assertEventsCanApply(target, events, isVisibleTarget);
+        } catch (error) {
+            if (error && typeof error === 'object') {
+                error.collaborationMutationStarted = false;
+            }
+            throw error;
+        }
 
         this.applyingRemote++;
         try {
-            if (isVisibleTarget) {
-                this._clearPresentationForRemoval(event);
-                if (!isDerivedCommentMove) this._preparePresentation(event, json);
+            events.forEach((event, index) => {
+                this._applyEvent(target, event, jsonEvents[index], isVisibleTarget);
+            });
 
-                // An attached comment already moved when the preceding block event
-                // updated its anchor. Running its final absolute-position event
-                // would move the visible bubble twice. The target model still
-                // consumes the event below.
-                if (!isDerivedCommentMove) {
-                    this.ScratchBlocks.Events.disable();
-                    try {
-                        event.run(true);
-                    } finally {
-                        this.ScratchBlocks.Events.enable();
-                    }
-                }
-            }
-
-            // Always update the target resolved from the operation. Using
-            // vm.blockListener here would redirect through whichever sprite happens
-            // to be selected locally.
-            target.blocks.blocklyListen(event);
-
-            if (operation.payload.refreshToolbox && isVisibleTarget && this.refreshToolbox) {
+            if (payload.refreshToolbox && isVisibleTarget && this.refreshToolbox) {
                 this.refreshToolbox();
             }
         } finally {
             this.applyingRemote--;
         }
+    }
+
+    /**
+     * Keep Blockly from emitting stale end-of-gesture events while a snapshot
+     * replaces its workspace. The returned callback keeps replay suppression in
+     * place until the VM and extension manifests have both finished loading.
+     * @returns {Function} cleanup callback
+     */
+    prepareForSnapshot () {
+        this.applyingRemote++;
+        // Snapshot replacement invalidates every queued event from the old
+        // workspace. Drain Scratch Blocks' delayed task and our microtask while
+        // replay suppression is active so a backgrounded tab cannot submit
+        // stale block, comment, or group IDs after the new project loads.
+        this._flushPendingBlocklyEvents();
+        this._clearAllTransitions();
+        const wasVisible = typeof this.workspace.isVisible === 'function' ?
+            this.workspace.isVisible() : true;
+        try {
+            if (typeof this.workspace.cancelCurrentGesture === 'function') {
+                this.workspace.cancelCurrentGesture();
+            }
+            if (wasVisible && typeof this.workspace.setVisible === 'function') {
+                this.workspace.setVisible(false);
+            }
+        } catch (error) {
+            this.applyingRemote--;
+            throw error;
+        }
+        return () => {
+            try {
+                if (wasVisible && typeof this.workspace.setVisible === 'function') {
+                    this.workspace.setVisible(true);
+                }
+            } finally {
+                this.applyingRemote = Math.max(0, this.applyingRemote - 1);
+            }
+        };
+    }
+
+    _queueLocalEvent (entry) {
+        this.pendingLocalEvents.push(entry);
+        if (this.localEventFlushScheduled) return;
+        this.localEventFlushScheduled = true;
+        Promise.resolve().then(() => this._flushLocalEvents());
+    }
+
+    _flushLocalEvents () {
+        const entries = this.pendingLocalEvents;
+        this.pendingLocalEvents = [];
+        this.localEventFlushScheduled = false;
+        let batch = null;
+        const submitBatch = () => {
+            if (!batch) return;
+            this.submitOperation({
+                type: BATCH_EVENT_OPERATION,
+                targetId: batch.targetId,
+                payload: {
+                    events: batch.events,
+                    refreshToolbox: batch.refreshToolbox
+                }
+            });
+            batch = null;
+        };
+
+        entries.forEach(entry => {
+            // Blockly uses one group ID for all events which make up a single
+            // user action. Keep only contiguous events together so batching
+            // cannot reorder unrelated activity which happens to reuse an ID.
+            if (entry.groupId) {
+                if (!batch || batch.targetId !== entry.targetId ||
+                    batch.groupId !== entry.groupId) {
+                    submitBatch();
+                    batch = {
+                        targetId: entry.targetId,
+                        groupId: entry.groupId,
+                        events: [],
+                        refreshToolbox: false
+                    };
+                }
+                batch.events.push(entry.json);
+                batch.refreshToolbox = batch.refreshToolbox || entry.refreshToolbox;
+                return;
+            }
+
+            submitBatch();
+            this.submitOperation({
+                type: SINGLE_EVENT_OPERATION,
+                targetId: entry.targetId,
+                payload: {
+                    event: entry.json,
+                    refreshToolbox: entry.refreshToolbox
+                }
+            });
+        });
+        submitBatch();
+    }
+
+    _flushPendingBlocklyEvents () {
+        const events = this.ScratchBlocks.Events;
+        if (events && Array.isArray(events.FIRE_QUEUE_) &&
+            events.FIRE_QUEUE_.length > 0 &&
+            typeof events.fireNow_ === 'function') {
+            events.fireNow_();
+        }
+        this._flushLocalEvents();
+    }
+
+    /**
+     * Background-tab timer throttling can leave a completed movement's CSS
+     * transition installed long after its logical position changed. Clear it
+     * both when hiding and restoring the tab so hit testing matches the model.
+     */
+    handleVisibilityChange () {
+        this._clearAllTransitions();
+    }
+
+    _applyEvent (target, event, json, isVisibleTarget) {
+        const isDerivedCommentMove = this._isDerivedCommentMove(event, json);
+        if (isVisibleTarget) {
+            this._clearPresentationForRemoval(event);
+            if (!isDerivedCommentMove) this._preparePresentation(event, json);
+
+            // An attached comment already moved when the preceding block event
+            // updated its anchor. Running its final absolute-position event
+            // would move the visible bubble twice. The target model still
+            // consumes the event below.
+            if (!isDerivedCommentMove) {
+                this.ScratchBlocks.Events.disable();
+                try {
+                    event.run(true);
+                } finally {
+                    this.ScratchBlocks.Events.enable();
+                }
+            }
+        }
+
+        // Always update the target resolved from the operation. Using
+        // vm.blockListener here would redirect through whichever sprite happens
+        // to be selected locally.
+        target.blocks.blocklyListen(event);
+    }
+
+    _assertEventsCanApply (target, events, isVisibleTarget) {
+        const createdBlocks = new Set();
+        const deletedBlocks = new Set();
+        const createdComments = new Set();
+        const deletedComments = new Set();
+        const createdGroups = new Set();
+        const deletedGroups = new Set();
+        const groupBlockIds = new Map();
+        const hasOwn = (object, id) => Boolean(object) &&
+            Object.prototype.hasOwnProperty.call(object, id);
+        const hasBlock = id => createdBlocks.has(id) ||
+            (!deletedBlocks.has(id) && Boolean(target.blocks.getBlock(id)));
+        const hasComment = id => createdComments.has(id) ||
+            (!deletedComments.has(id) && hasOwn(target.comments, id));
+        const hasGroup = id => createdGroups.has(id) ||
+            (!deletedGroups.has(id) && hasOwn(target.groups, id));
+        const assertVisible = (kind, id, created) => {
+            if (!isVisibleTarget || created.has(id)) return;
+            let entity = null;
+            if (kind === 'block' && typeof this.workspace.getBlockById === 'function') {
+                entity = this.workspace.getBlockById(id);
+            } else if (kind === 'comment' && typeof this.workspace.getCommentById === 'function') {
+                entity = this.workspace.getCommentById(id);
+            } else if (kind === 'group' && typeof this.workspace.getGroupById === 'function') {
+                entity = this.workspace.getGroupById(id);
+            }
+            if (!entity) {
+                throw new Error(`Collaboration ${kind} is missing from the visible workspace: ${id}`);
+            }
+        };
+        const assertVisibleAbsent = (kind, id) => {
+            if (!isVisibleTarget) return;
+            let entity = null;
+            if (kind === 'block' && typeof this.workspace.getBlockById === 'function') {
+                entity = this.workspace.getBlockById(id);
+            } else if (kind === 'comment' && typeof this.workspace.getCommentById === 'function') {
+                entity = this.workspace.getCommentById(id);
+            } else if (kind === 'group' && typeof this.workspace.getGroupById === 'function') {
+                entity = this.workspace.getGroupById(id);
+            }
+            if (entity) {
+                throw new Error(`Collaboration ${kind} already exists in the visible workspace: ${id}`);
+            }
+        };
+        const requireEntity = (kind, id, exists, created) => {
+            if (!id || !exists(id)) {
+                throw new Error(`Collaboration ${kind} does not exist: ${id || '(missing id)'}`);
+            }
+            assertVisible(kind, id, created);
+        };
+        const applyVariablePreflight = events.some(event =>
+            VARIABLE_EVENT_TYPES.has(event.type)) ?
+            this._createVariablePreflight(target, isVisibleTarget) :
+            null;
+
+        events.forEach(event => {
+            if (VARIABLE_EVENT_TYPES.has(event.type)) {
+                applyVariablePreflight(event);
+                return;
+            }
+
+            if (event.type === 'create') {
+                const ids = Array.isArray(event.ids) ? event.ids :
+                    (event.blockId ? [event.blockId] : []);
+                ids.forEach(id => {
+                    if (hasBlock(id)) {
+                        throw new Error(`Collaboration block already exists: ${id}`);
+                    }
+                    assertVisibleAbsent('block', id);
+                    createdBlocks.add(id);
+                    deletedBlocks.delete(id);
+                });
+                if (event.xml && typeof event.xml.getElementsByTagName === 'function') {
+                    Array.from(event.xml.getElementsByTagName('comment')).forEach(comment => {
+                        const id = comment.getAttribute('id');
+                        if (!id || hasComment(id)) {
+                            throw new Error(
+                                `Collaboration comment already exists: ${id || '(missing id)'}`
+                            );
+                        }
+                        assertVisibleAbsent('comment', id);
+                        createdComments.add(id);
+                        deletedComments.delete(id);
+                    });
+                }
+                return;
+            }
+
+            if (event.type === 'change' || event.type === 'move') {
+                requireEntity('block', event.blockId, hasBlock, createdBlocks);
+                if (event.type === 'move' && event.newParentId) {
+                    requireEntity('block', event.newParentId, hasBlock, createdBlocks);
+                }
+                if (event.type === 'move' && event.newCoordinate &&
+                    (!Number.isFinite(event.newCoordinate.x) ||
+                        !Number.isFinite(event.newCoordinate.y))) {
+                    throw new Error('Collaboration block move has an invalid coordinate');
+                }
+                return;
+            }
+
+            if (event.type === 'delete') {
+                const ids = Array.isArray(event.ids) ? event.ids :
+                    (event.blockId ? [event.blockId] : []);
+                ids.forEach(id => {
+                    deletedBlocks.add(id);
+                    createdBlocks.delete(id);
+                });
+                return;
+            }
+
+            if (event.type === 'comment_create') {
+                if (!event.commentId || hasComment(event.commentId)) {
+                    throw new Error(`Collaboration comment already exists: ${event.commentId || '(missing id)'}`);
+                }
+                assertVisibleAbsent('comment', event.commentId);
+                if (event.blockId) {
+                    requireEntity('block', event.blockId, hasBlock, createdBlocks);
+                }
+                createdComments.add(event.commentId);
+                deletedComments.delete(event.commentId);
+                return;
+            }
+
+            if (event.type === 'comment_change' || event.type === 'comment_move') {
+                requireEntity('comment', event.commentId, hasComment, createdComments);
+                if (event.type === 'comment_change' &&
+                    (!event.newContents_ || typeof event.newContents_ !== 'object' ||
+                        Array.isArray(event.newContents_))) {
+                    throw new Error('Collaboration comment change has invalid contents');
+                }
+                if (event.type === 'comment_move' &&
+                    (!event.newCoordinate_ ||
+                        !Number.isFinite(event.newCoordinate_.x) ||
+                        !Number.isFinite(event.newCoordinate_.y))) {
+                    throw new Error('Collaboration comment move has an invalid coordinate');
+                }
+                return;
+            }
+
+            if (event.type === 'comment_delete') {
+                if (event.commentId) {
+                    deletedComments.add(event.commentId);
+                    createdComments.delete(event.commentId);
+                }
+                return;
+            }
+
+            if (event.type === 'group_change') {
+                if (!event.groupId || typeof event.groupId !== 'string') {
+                    throw new Error('Collaboration group has a missing ID');
+                }
+                if (event.newState) {
+                    const blockIds = this._assertValidGroupState(
+                        event.groupId,
+                        event.newState
+                    );
+                    const isCreation = !event.oldState;
+                    if (!isCreation) {
+                        requireEntity('group', event.groupId, hasGroup, createdGroups);
+                    } else if (hasGroup(event.groupId)) {
+                        throw new Error(`Collaboration group already exists: ${event.groupId}`);
+                    } else {
+                        assertVisibleAbsent('group', event.groupId);
+                    }
+                    let previousBlockIds = groupBlockIds.get(event.groupId);
+                    if (!previousBlockIds && !isCreation) {
+                        const existingGroup = target.groups[event.groupId];
+                        previousBlockIds = new Set(
+                            existingGroup && Array.isArray(existingGroup.blocks) ?
+                                existingGroup.blocks :
+                                []
+                        );
+                    }
+                    if (!previousBlockIds) previousBlockIds = new Set();
+                    blockIds
+                        .filter(id => !previousBlockIds.has(id))
+                        .forEach(id =>
+                            requireEntity('block', id, hasBlock, createdBlocks));
+                    groupBlockIds.set(event.groupId, new Set(blockIds));
+                    if (isCreation) createdGroups.add(event.groupId);
+                    deletedGroups.delete(event.groupId);
+                } else if (event.groupId) {
+                    groupBlockIds.delete(event.groupId);
+                    deletedGroups.add(event.groupId);
+                    createdGroups.delete(event.groupId);
+                }
+            }
+        });
+    }
+
+    _createVariablePreflight (target, isVisibleTarget) {
+        const runtime = this.vm.runtime;
+        const stage = runtime && typeof runtime.getTargetForStage === 'function' ?
+            runtime.getTargetForStage() : null;
+        if (!stage) {
+            throw new Error('Collaboration variable owner stage does not exist');
+        }
+
+        const ownerStates = new Map();
+        const stateFor = owner => {
+            if (!ownerStates.has(owner)) {
+                const state = new Map();
+                const variables = owner && owner.variables;
+                if (variables && typeof variables === 'object') {
+                    Object.keys(variables).forEach(id => {
+                        const variable = variables[id];
+                        state.set(id, {
+                            id,
+                            name: variable && variable.name,
+                            type: variable && variable.type,
+                            isCloud: Boolean(variable && variable.isCloud),
+                            owner
+                        });
+                    });
+                }
+                ownerStates.set(owner, state);
+            }
+            return ownerStates.get(owner);
+        };
+        const targetState = stateFor(target);
+        const stageState = stateFor(stage);
+        const originalTargets = Array.isArray(runtime.targets) ?
+            runtime.targets.filter(candidate => candidate && candidate.isOriginal) :
+            [];
+        [target, stage].forEach(owner => {
+            if (owner && originalTargets.indexOf(owner) === -1) {
+                originalTargets.push(owner);
+            }
+        });
+        const uniqueOwners = owners => owners.filter((owner, index) =>
+            owner && owners.indexOf(owner) === index);
+        const allOwners = uniqueOwners(originalTargets);
+        allOwners.forEach(stateFor);
+        const ownersInScope = owner => {
+            if (owner === stage) return allOwners;
+            return uniqueOwners([owner, stage]);
+        };
+        const findById = id => {
+            for (const owner of allOwners) {
+                const variable = stateFor(owner).get(id);
+                if (variable) return variable;
+            }
+            return null;
+        };
+        const resolveVariable = id =>
+            targetState.get(id) ||
+            (target === stage ? null : stageState.get(id)) ||
+            null;
+        const findNameConflict = (owner, name, type, excludedVariable) => {
+            for (const scopeOwner of ownersInScope(owner)) {
+                for (const variable of stateFor(scopeOwner).values()) {
+                    if (variable !== excludedVariable &&
+                        variable.name === name &&
+                        variable.type === type) {
+                        return variable;
+                    }
+                }
+            }
+            return null;
+        };
+        const assertNonEmptyString = (value, field) => {
+            if (typeof value !== 'string' || !value.trim()) {
+                throw new Error(`Collaboration variable has an invalid ${field}`);
+            }
+        };
+        const assertBoolean = (value, field) => {
+            if (typeof value !== 'boolean') {
+                throw new Error(`Collaboration variable has an invalid ${field}`);
+            }
+        };
+        const modifiedVariableIds = new Set();
+        const assertVisibleExisting = variable => {
+            if (!isVisibleTarget || modifiedVariableIds.has(variable.id) ||
+                typeof this.workspace.getVariableById !== 'function') {
+                return;
+            }
+            const visibleVariable = this.workspace.getVariableById(variable.id);
+            const expectedLocal = variable.owner !== stage;
+            if (!visibleVariable ||
+                visibleVariable.name !== variable.name ||
+                visibleVariable.type !== variable.type ||
+                Boolean(visibleVariable.isLocal) !== expectedLocal ||
+                Boolean(visibleVariable.isCloud) !== variable.isCloud) {
+                throw new Error(
+                    `Collaboration variable does not match the visible workspace: ${variable.id}`
+                );
+            }
+        };
+        const assertVisibleAbsent = id => {
+            if (!isVisibleTarget || modifiedVariableIds.has(id) ||
+                typeof this.workspace.getVariableById !== 'function') {
+                return;
+            }
+            if (this.workspace.getVariableById(id)) {
+                throw new Error(`Collaboration variable already exists in the visible workspace: ${id}`);
+            }
+        };
+        const assertVisibleNameAvailable = (name, type, excludedId) => {
+            if (!isVisibleTarget || typeof this.workspace.getVariable !== 'function') {
+                return;
+            }
+            const visibleVariable = this.workspace.getVariable(name, type);
+            if (!visibleVariable) return;
+            const visibleId = typeof visibleVariable.getId === 'function' ?
+                visibleVariable.getId() : visibleVariable.id;
+            if (visibleId === excludedId || modifiedVariableIds.has(visibleId)) return;
+            throw new Error(`Collaboration variable name already exists in the visible workspace: ${name}`);
+        };
+        const requireVariable = event => {
+            assertNonEmptyString(event.varId, 'ID');
+            const variable = resolveVariable(event.varId);
+            if (!variable) {
+                throw new Error(`Collaboration variable does not exist: ${event.varId}`);
+            }
+            assertVisibleExisting(variable);
+            return variable;
+        };
+        const assertCreatePayload = event => {
+            assertNonEmptyString(event.varId, 'ID');
+            assertNonEmptyString(event.varName, 'name');
+            if (typeof event.varType !== 'string') {
+                throw new Error('Collaboration variable has an invalid type');
+            }
+            assertBoolean(event.isLocal, 'local flag');
+            assertBoolean(event.isCloud, 'cloud flag');
+            if ((event.isLocal && event.isCloud) ||
+                (event.isLocal && target.isStage)) {
+                throw new Error('Collaboration variable has an invalid scope');
+            }
+        };
+        const assertDeletePayload = (event, variable) => {
+            assertNonEmptyString(event.varName, 'name');
+            if (typeof event.varType !== 'string') {
+                throw new Error('Collaboration variable has an invalid type');
+            }
+            assertBoolean(event.isLocal, 'local flag');
+            assertBoolean(event.isCloud, 'cloud flag');
+            if (event.varName !== variable.name ||
+                event.varType !== variable.type ||
+                event.isLocal !== (variable.owner !== stage) ||
+                event.isCloud !== variable.isCloud) {
+                throw new Error(`Collaboration variable state does not match: ${event.varId}`);
+            }
+        };
+
+        return event => {
+            if (event.type === 'var_create') {
+                assertCreatePayload(event);
+                if (findById(event.varId)) {
+                    throw new Error(`Collaboration variable already exists: ${event.varId}`);
+                }
+                const owner = event.isLocal ? target : stage;
+                const nameConflict = findNameConflict(
+                    owner,
+                    event.varName,
+                    event.varType,
+                    null
+                );
+                if (nameConflict) {
+                    throw new Error(
+                        `Collaboration variable name already exists: ${event.varName}`
+                    );
+                }
+                assertVisibleAbsent(event.varId);
+                assertVisibleNameAvailable(event.varName, event.varType, null);
+                stateFor(owner).set(event.varId, {
+                    id: event.varId,
+                    name: event.varName,
+                    type: event.varType,
+                    isCloud: event.isCloud,
+                    owner
+                });
+                modifiedVariableIds.add(event.varId);
+                return;
+            }
+
+            const variable = requireVariable(event);
+            if (event.type === 'var_rename') {
+                assertNonEmptyString(event.oldName, 'old name');
+                assertNonEmptyString(event.newName, 'new name');
+                if (event.oldName !== variable.name) {
+                    throw new Error(`Collaboration variable state does not match: ${event.varId}`);
+                }
+                if (findNameConflict(
+                    variable.owner,
+                    event.newName,
+                    variable.type,
+                    variable
+                )) {
+                    throw new Error(
+                        `Collaboration variable name already exists: ${event.newName}`
+                    );
+                }
+                assertVisibleNameAvailable(event.newName, variable.type, event.varId);
+                variable.name = event.newName;
+                modifiedVariableIds.add(event.varId);
+                return;
+            }
+
+            assertDeletePayload(event, variable);
+            stateFor(variable.owner).delete(event.varId);
+            modifiedVariableIds.add(event.varId);
+        };
+    }
+
+    _assertValidGroupState (groupId, state) {
+        if (!state || typeof state !== 'object' || Array.isArray(state) ||
+            state.id !== groupId ||
+            typeof state.title !== 'string' ||
+            !(state.colour === null || typeof state.colour === 'string') ||
+            typeof state.collapsed !== 'boolean' ||
+            !Array.isArray(state.blocks)) {
+            throw new Error(`Collaboration group state is invalid: ${groupId}`);
+        }
+        const numericFields = [
+            'x',
+            'y',
+            'width',
+            'height',
+            'expandedWidth',
+            'expandedHeight'
+        ];
+        if (numericFields.some(field => !Number.isFinite(state[field])) ||
+            state.width < 160 ||
+            state.height < (state.collapsed ? 32 : 96) ||
+            state.expandedWidth < 160 ||
+            state.expandedHeight < 96 ||
+            state.blocks.some(id => typeof id !== 'string' || !id) ||
+            new Set(state.blocks).size !== state.blocks.length) {
+            throw new Error(`Collaboration group state is invalid: ${groupId}`);
+        }
+        return state.blocks;
     }
 
     _isDerivedCommentMove (event, json) {
@@ -323,6 +933,12 @@ class BlocklyCollaborationAdapter {
         clearTimeout(record.timer);
         this._restoreTransition(record);
         this.transitionTimers.delete(key);
+    }
+
+    _clearAllTransitions () {
+        for (const key of Array.from(this.transitionTimers.keys())) {
+            this._clearTransition(key);
+        }
     }
 
     _clearPresentationForRemoval (event) {

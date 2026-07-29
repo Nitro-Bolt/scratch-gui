@@ -45,7 +45,8 @@ class CollaborationController {
             registry: this.registry,
             applyOperation: operation => this.applyOperation(operation),
             createExtensionManifest: () => this.extensionAdapter.createManifest(),
-            applyExtensionManifest: manifest => this.extensionAdapter.applyManifest(manifest)
+            applyExtensionManifest: manifest => this.extensionAdapter.applyManifest(manifest),
+            prepareForSnapshot: () => this.blocklyAdapter.prepareForSnapshot()
         });
         this.blocklyAdapter = new BlocklyCollaborationAdapter({
             vm,
@@ -87,7 +88,7 @@ class CollaborationController {
     }
 
     applyOperation (operation) {
-        if (operation.type === 'blockly.event') {
+        if (operation.type === 'blockly.event' || operation.type === 'blockly.events') {
             return this.blocklyAdapter.apply(operation);
         }
         if (EXTENSION_TYPES.has(operation.type)) {
@@ -100,7 +101,10 @@ class CollaborationController {
     }
 
     _handleVMMutation (mutation) {
-        if (!this.session.ready) return;
+        if (!this.session.ready) {
+            this.session.noteLocalMutationDuringSnapshot();
+            return;
+        }
         try {
             const operation = this.vmAdapter.captureMutation(mutation);
             if (operation) this.session.submit(operation);
@@ -110,7 +114,10 @@ class CollaborationController {
     }
 
     _handleExtensionMutation (mutation) {
-        if (!this.session.ready) return;
+        if (!this.session.ready) {
+            this.session.noteLocalMutationDuringSnapshot();
+            return;
+        }
         try {
             const operation = this.extensionAdapter.captureMutation(mutation);
             if (operation) this.session.submit(operation);
