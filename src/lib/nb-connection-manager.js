@@ -251,8 +251,9 @@ class NBConnectionManager extends EventEmitter {
       'Anonymous';
     this.peer = new Peer(connectionSettings ?? {
       host: 'api.nitrobolt.org',
-      port: 80,
+      port: 443,
       path: '/peerjs',
+      secure: true,
       debug: 3,
       config: {
         iceServers: [
