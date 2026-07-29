@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/default
 import EncoderWorker from 'worker-loader!../nb-encode-mp3-worker.js';
 
 const _computeRMS = function (samples, start, end, scaling = 0.55) {
@@ -31,7 +32,16 @@ const computeChunkedRMS = function (channels, chunkSize = 1024) {
     return channelChunkLevels;
 };
 
-const encodeAndAddSoundToVM = function (vm, preferences, channel1Samples, channel2Samples, sampleRate, name, callback) {
+const encodeAndAddSoundToVM = function (
+    vm,
+    preferences,
+    channel1Samples,
+    channel2Samples,
+    sampleRate,
+    name,
+    callback,
+    targetId
+) {
     return new Promise((resolve, reject) => {
         const encoderWorker = new EncoderWorker();
         encoderWorker.onerror = event => {
@@ -61,9 +71,10 @@ const encodeAndAddSoundToVM = function (vm, preferences, channel1Samples, channe
             // The VM will update the sound name to a fresh name
             vmSound.name = name;
 
-            vm.addSound(vmSound).then(() => {
-                if (callback) resolve(callback());
-            });
+            vm.addSound(vmSound, targetId).then(
+                () => resolve(callback ? callback() : null),
+                reject
+            );
         };
         encoderWorker.postMessage({
             channel1Samples,

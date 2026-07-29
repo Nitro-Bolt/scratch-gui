@@ -17,6 +17,7 @@ import AudioBufferPlayer from '../lib/audio/audio-buffer-player.js';
 import DragRecognizer from '../lib/drag-recognizer';
 import {getEventXY} from '../lib/touch-utils';
 import log from '../lib/log.js';
+// eslint-disable-next-line import/default
 import EncoderWorker from 'worker-loader!../lib/nb-encode-mp3-worker.js';
 import {closeAlertWithId, showStandardAlert} from '../reducers/alerts.js';
 
@@ -215,10 +216,16 @@ class SoundEditor extends React.Component {
             })
                 .then(buffer => {
                     this.resetState(newChannel1Samples, newChannel2Samples, newSampleRate);
+                    const target = this.props.vm.runtime.getTargetById(this.props.targetId);
+                    if (!target) {
+                        throw new Error('The edited sound target no longer exists');
+                    }
                     this.props.vm.updateSoundBuffer(
                         this.props.soundIndex,
                         this.audioBufferPlayer.buffer,
-                        new Uint8Array(buffer)
+                        new Uint8Array(buffer),
+                        true,
+                        target
                     );
 
                     this.props.closeEncodingAlert();
@@ -263,7 +270,8 @@ class SoundEditor extends React.Component {
         this.setState({trimChannel});
     }
     handleChangeName (name) {
-        this.props.vm.renameSound(this.props.soundIndex, name);
+        const target = this.props.vm.runtime.getTargetById(this.props.targetId);
+        if (target) this.props.vm.renameSound(this.props.soundIndex, name, true, target);
     }
     handleDelete () {
         const {channel1Samples, channel2Samples, sampleRate} = this.copyCurrentBuffer();
@@ -467,7 +475,8 @@ class SoundEditor extends React.Component {
                 this.state.copyBuffer.channel2Samples,
                 this.state.copyBuffer.sampleRate,
                 this.props.name,
-                this.props.closeEncodingAlert
+                this.props.closeEncodingAlert,
+                this.props.targetId
             );
         });
     }
@@ -699,16 +708,18 @@ SoundEditor.propTypes = {
     showEncodingErrorAlert: PropTypes.func.isRequired,
     soundId: PropTypes.string,
     soundIndex: PropTypes.number,
+    targetId: PropTypes.string.isRequired,
     preferences: PropTypes.object,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 
-const mapStateToProps = (state, {soundIndex}) => {
-    const sprite = state.scratchGui.vm.editingTarget.sprite;
+const mapStateToProps = (state, {soundIndex, targetId}) => {
+    const target = state.scratchGui.vm.runtime.getTargetById(targetId);
+    const sprite = target.sprite;
     // Make sure the sound index doesn't go out of range.
     const index = soundIndex < sprite.sounds.length ? soundIndex : sprite.sounds.length - 1;
-    const sound = state.scratchGui.vm.editingTarget.sprite.sounds[index];
-    const audioBuffer = state.scratchGui.vm.getSoundBuffer(index);
+    const sound = sprite.sounds[index];
+    const audioBuffer = state.scratchGui.vm.getSoundBuffer(index, target);
     return {
         isStereo: audioBuffer.numberOfChannels !== 1,
         duration: sound.sampleCount / sound.rate,

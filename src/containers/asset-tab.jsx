@@ -20,11 +20,29 @@ import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
 
 import {connect} from 'react-redux';
 
+const messages = defineMessages({
+    fileUploadAsset: {
+        defaultMessage: 'Upload Asset',
+        description: 'Button to upload asset from file in the editor tab',
+        id: 'gui.assetTab.fileUploadAsset'
+    },
+    newTextFile: {
+        defaultMessage: 'New Text File',
+        description: 'Button to create a blank text file in the asset tab',
+        id: 'gui.assetTab.newTextFile'
+    },
+    newTextFileName: {
+        defaultMessage: 'file',
+        description: 'Default name for new blank text files in the asset tab',
+        id: 'gui.assetTab.newTextFileName'
+    }
+});
+
 const formatSize = bytes => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(2)} KB`;
-    if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(2)} MB`;
-    return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
+    if (bytes < 1024 ** 3) return `${(bytes / (1024 ** 2)).toFixed(2)} MB`;
+    return `${(bytes / (1024 ** 3)).toFixed(2)} GB`;
 };
 
 class AssetTab extends React.Component {
@@ -58,8 +76,9 @@ class AssetTab extends React.Component {
         this.setState({selectedAssetIndex: assetIndex});
     }
 
-    handleNewAsset () {
-        if (!this.props.vm.editingTarget) {
+    handleNewAsset (targetId = this.props.vm.editingTarget && this.props.vm.editingTarget.id) {
+        if (!this.props.vm.editingTarget ||
+            this.props.vm.editingTarget.id !== targetId) {
             return null;
         }
         const sprite = this.props.vm.editingTarget.sprite;
@@ -97,11 +116,13 @@ class AssetTab extends React.Component {
             assetId: asset.assetId
         };
 
-        vm.addAsset(newAsset, targetId).then(this.handleNewAsset);
+        vm.addAsset(newAsset, targetId).then(() => this.handleNewAsset(targetId));
     }
 
     handleDeleteAsset (assetIndex) {
-        this.props.vm.deleteAsset(assetIndex);
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        this.props.vm.deleteAsset(assetIndex, true, target);
         if (assetIndex >= this.state.selectedAssetIndex) {
             this.setState({selectedAssetIndex: Math.max(0, assetIndex - 1)});
         }
@@ -117,7 +138,7 @@ class AssetTab extends React.Component {
                 newAsset.contentType = newAsset.asset.assetType.contentType;
                 newAsset.lastModified = lastModified;
                 this.props.vm.addAsset(newAsset, targetId).then(() => {
-                    this.handleNewAsset();
+                    this.handleNewAsset(targetId);
                     if (fileIndex === fileCount - 1) {
                         this.props.onCloseImporting();
                     }
@@ -127,9 +148,17 @@ class AssetTab extends React.Component {
     }
 
     handleDrop (dropInfo) {
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        const targetId = target.id;
         if (dropInfo.dragType === DragConstants.ASSET) {
-            this.props.vm.reorderAsset(this.props.vm.editingTarget.id,
-                dropInfo.index, dropInfo.newIndex);
+            this.props.vm.reorderAsset(
+                targetId,
+                dropInfo.index,
+                dropInfo.newIndex,
+                true,
+                target
+            );
             this.setState({selectedAssetIndex: dropInfo.newIndex});
         } else if (dropInfo.dragType === DragConstants.BACKPACK_COSTUME) {
             this.props.vm.addAsset({
@@ -138,7 +167,7 @@ class AssetTab extends React.Component {
                 contentType: dropInfo.payload.mime,
                 dataFormat: dropInfo.payload.dataFormat,
                 name: dropInfo.payload.name
-            }).then(this.handleNewAsset);
+            }, targetId).then(() => this.handleNewAsset(targetId));
         } else if (dropInfo.dragType === DragConstants.BACKPACK_SOUND) {
             this.props.vm.addAsset({
                 md5: dropInfo.payload.body,
@@ -146,7 +175,7 @@ class AssetTab extends React.Component {
                 contentType: dropInfo.payload.mime,
                 dataFormat: dropInfo.payload.dataFormat,
                 name: dropInfo.payload.name
-            }).then(this.handleNewAsset);
+            }, targetId).then(() => this.handleNewAsset(targetId));
         } else if (dropInfo.dragType === DragConstants.BACKPACK_ASSET) {
             this.props.vm.addAsset({
                 md5: dropInfo.payload.body,
@@ -154,12 +183,17 @@ class AssetTab extends React.Component {
                 contentType: dropInfo.payload.mime,
                 dataFormat: dropInfo.payload.dataFormat,
                 name: dropInfo.payload.name
-            }).then(this.handleNewAsset);
+            }, targetId).then(() => this.handleNewAsset(targetId));
         }
     }
 
     handleDuplicateAsset (assetIndex) {
-        this.props.vm.duplicateAsset(assetIndex).then(() => {
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        const targetId = target.id;
+        this.props.vm.duplicateAsset(assetIndex, true, target).then(() => {
+            if (!this.props.vm.editingTarget ||
+                this.props.vm.editingTarget.id !== targetId) return;
             this.setState({selectedAssetIndex: assetIndex + 1});
         });
     }
@@ -233,8 +267,10 @@ class AssetTab extends React.Component {
                 />
                 {sprite.assets && selectedAsset &&
                     <AssetViewer
+                        key={vm.editingTarget.id}
                         icon={this.getAssetIcon(selectedAsset)}
                         selectedAssetIndex={this.state.selectedAssetIndex}
+                        targetId={vm.editingTarget.id}
                     />
                 }
             </AssetPanel>
@@ -242,26 +278,7 @@ class AssetTab extends React.Component {
     }
 }
 
-const messages = defineMessages({
-    fileUploadAsset: {
-        defaultMessage: 'Upload Asset',
-        description: 'Button to upload asset from file in the editor tab',
-        id: 'gui.assetTab.fileUploadAsset'
-    },
-    newTextFile: {
-        defaultMessage: 'New Text File',
-        description: 'Button to create a blank text file in the asset tab',
-        id: 'gui.assetTab.newTextFile'
-    },
-    newTextFileName: {
-        defaultMessage: 'file',
-        description: 'Default name for new blank text files in the asset tab',
-        id: 'gui.assetTab.newTextFileName'
-    }
-});
-
 AssetTab.propTypes = {
-    dispatchUpdateRestore: PropTypes.func,
     editingTarget: PropTypes.string,
     intl: intlShape,
     isRtl: PropTypes.bool,

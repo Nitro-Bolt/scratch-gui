@@ -134,18 +134,23 @@ class CostumeTab extends React.Component {
         }
     }
     handleSelectCostume (costumeIndex) {
-        this.props.vm.editingTarget.setCostume(costumeIndex);
-        this.setState({selectedCostumeIndex: costumeIndex});
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        const selectedCostumeIndex = this.props.vm.setCostume(costumeIndex, true, target);
+        this.setState({selectedCostumeIndex});
     }
     handleDeleteCostume (costumeIndex) {
-        const restoreCostumeFun = this.props.vm.deleteCostume(costumeIndex);
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        const restoreCostumeFun = this.props.vm.deleteCostume(costumeIndex, true, target);
         this.props.dispatchUpdateRestore({
             restoreFun: restoreCostumeFun,
             deletedItem: 'Costume'
         });
     }
     handleDuplicateCostume (costumeIndex) {
-        this.props.vm.duplicateCostume(costumeIndex);
+        const target = this.props.vm.editingTarget;
+        if (target) this.props.vm.duplicateCostume(costumeIndex, true, target);
     }
     handleExportCostume (costumeIndex) {
         const item = this.props.vm.editingTarget.sprite.costumes[costumeIndex];
@@ -177,36 +182,54 @@ class CostumeTab extends React.Component {
         img.src = url;
     }
     handleMoveToTop (costumeIndex) {
-        this.props.vm.editingTarget.reorderCostume(costumeIndex, 0);
-        this.props.vm.editingTarget.setCostume(0);
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        this.props.vm.reorderCostume(target.id, costumeIndex, 0, true, target);
+        this.props.vm.setCostume(0, true, target);
         this.setState({selectedCostumeIndex: 0});
     }
     handleMoveToBottom (costumeIndex) {
-        const lastCostumeIndex = this.props.vm.editingTarget.sprite.costumes.length - 1;
-        this.props.vm.editingTarget.reorderCostume(costumeIndex, lastCostumeIndex);
-        this.props.vm.editingTarget.setCostume(lastCostumeIndex);
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        const lastCostumeIndex = target.sprite.costumes.length - 1;
+        this.props.vm.reorderCostume(
+            target.id,
+            costumeIndex,
+            lastCostumeIndex,
+            true,
+            target
+        );
+        this.props.vm.setCostume(lastCostumeIndex, true, target);
         this.setState({selectedCostumeIndex: lastCostumeIndex});
     }
     handleNewCostume (costume, fromCostumeLibrary, targetId) {
         const costumes = Array.isArray(costume) ? costume : [costume];
+        const target = targetId ?
+            this.props.vm.runtime.getTargetById(targetId) :
+            this.props.vm.editingTarget;
+        if (!target) return Promise.reject(new Error('No target available for costume.'));
 
         return Promise.all(costumes.map(c => {
             if (fromCostumeLibrary) {
-                return this.props.vm.addCostumeFromLibrary(c.md5, c);
+                return this.props.vm.addCostumeFromLibrary(c.md5, c, true, target);
             }
             // If targetId is falsy, VM should default it to editingTarget.id
             // However, targetId should be provided to prevent #5876,
             // if making new costume takes a while
-            return this.props.vm.addCostume(c.md5, c, targetId);
+            return this.props.vm.addCostume(c.md5, c, target.id);
         }));
     }
     handleNewBlankCostume () {
-        const name = this.props.vm.editingTarget.isStage ?
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        const name = target.isStage ?
             this.props.intl.formatMessage(messages.backdrop, {index: 1}) :
             this.props.intl.formatMessage(messages.costume, {index: 1});
-        this.handleNewCostume(emptyCostume(name));
+        this.handleNewCostume(emptyCostume(name), false, target.id);
     }
     async handleSurpriseCostume () {
+        const targetId = this.props.vm.editingTarget && this.props.vm.editingTarget.id;
+        if (!targetId) return;
         const costumeLibraryContent = await getCostumeLibrary();
         const item = costumeLibraryContent[Math.floor(Math.random() * costumeLibraryContent.length)];
         const vmCostume = {
@@ -217,9 +240,11 @@ class CostumeTab extends React.Component {
             bitmapResolution: item.bitmapResolution,
             skinId: null
         };
-        this.handleNewCostume(vmCostume, true /* fromCostumeLibrary */);
+        this.handleNewCostume(vmCostume, true /* fromCostumeLibrary */, targetId);
     }
     async handleSurpriseBackdrop () {
+        const targetId = this.props.vm.editingTarget && this.props.vm.editingTarget.id;
+        if (!targetId) return;
         const backdropLibraryContent = await getBackdropLibrary();
         const item = backdropLibraryContent[Math.floor(Math.random() * backdropLibraryContent.length)];
         const vmCostume = {
@@ -230,7 +255,7 @@ class CostumeTab extends React.Component {
             bitmapResolution: item.bitmapResolution,
             skinId: null
         };
-        this.handleNewCostume(vmCostume);
+        this.handleNewCostume(vmCostume, false, targetId);
     }
     handleCostumeUpload (e) {
         const vm = this.props.vm;
@@ -253,22 +278,30 @@ class CostumeTab extends React.Component {
         this.fileInput.click();
     }
     handleDrop (dropInfo) {
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        const targetId = target.id;
         if (dropInfo.dragType === DragConstants.COSTUME) {
-            const sprite = this.props.vm.editingTarget.sprite;
+            const sprite = target.sprite;
             const activeCostume = sprite.costumes[this.state.selectedCostumeIndex];
-            this.props.vm.reorderCostume(this.props.vm.editingTarget.id,
-                dropInfo.index, dropInfo.newIndex);
+            this.props.vm.reorderCostume(
+                targetId,
+                dropInfo.index,
+                dropInfo.newIndex,
+                true,
+                target
+            );
             this.setState({selectedCostumeIndex: sprite.costumes.indexOf(activeCostume)});
         } else if (dropInfo.dragType === DragConstants.BACKPACK_COSTUME) {
             this.props.vm.addCostume(dropInfo.payload.body, {
                 name: dropInfo.payload.name
-            });
+            }, targetId);
         } else if (dropInfo.dragType === DragConstants.BACKPACK_SOUND) {
             this.props.onActivateSoundsTab();
             this.props.vm.addSound({
                 md5: dropInfo.payload.body,
                 name: dropInfo.payload.name
-            });
+            }, targetId);
         } else if (dropInfo.dragType === DragConstants.BACKPACK_ASSET) {
             // Detect if the asset can be added as a costume
             // If it is not a costume, add it to assets
@@ -278,7 +311,7 @@ class CostumeTab extends React.Component {
             if (type === 'image') {
                 costumeUpload(payload.bodyData, payload.mime, vm, vmCostume => {
                     vmCostume[0].name = payload.name;
-                    this.handleNewCostume(vmCostume, false, vm.editingTarget.id);
+                    this.handleNewCostume(vmCostume, false, targetId);
                 });
             } else {
                 this.props.onActivateAssetsTab();
@@ -288,7 +321,7 @@ class CostumeTab extends React.Component {
                     contentType: dropInfo.payload.mime,
                     dataFormat: dropInfo.payload.dataFormat,
                     name: dropInfo.payload.name
-                });
+                }, targetId);
             }
         }
     }
@@ -382,7 +415,9 @@ class CostumeTab extends React.Component {
             >
                 {target.costumes ?
                     <PaintEditorWrapper
+                        key={vm.editingTarget.id}
                         selectedCostumeIndex={this.state.selectedCostumeIndex}
+                        targetId={vm.editingTarget.id}
                     /> :
                     null
                 }

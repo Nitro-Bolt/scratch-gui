@@ -90,8 +90,9 @@ class RecordModal extends React.Component {
                 'recording1',
                 () => {
                     this.props.onClose();
-                    this.props.onNewSound();
-                }
+                    this.props.onNewSound(this.props.targetId);
+                },
+                this.props.targetId
             );
         });
     }
@@ -133,6 +134,7 @@ RecordModal.propTypes = {
     onClose: PropTypes.func,
     onNewSound: PropTypes.func,
     preferences: PropTypes.object,
+    targetId: PropTypes.string.isRequired,
     vm: PropTypes.instanceOf(VM)
 };
 

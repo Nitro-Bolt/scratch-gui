@@ -23,6 +23,7 @@
     margin: 0.5rem 0 0 0;
     font-weight: bold;
 }
+
 .divider {
     flex-grow: 1;
     margin-left: 1rem;
@@ -87,10 +88,11 @@
     margin: 0;
     border-radius: 4px;
     cursor: pointer;
-    font-family: inherit;
     font-weight: bold;
 }
-.button:active, .button:focus-within {
+
+.button:active,
+.button:focus-within {
     box-shadow: 0 0 0 3px $looks-transparent;
 }
 
@@ -99,16 +101,16 @@
     font-size: 14px;
     background: white;
     color: black;
-    border: none;
     padding: 0.5rem 1rem;
     margin: 0;
     border: 1px solid $ui-black-transparent;
     border-radius: 4px;
     cursor: pointer;
-    font-family: inherit;
     font-weight: bold;
 }
-.button-alternate:active, .button-alternate:focus-within {
+
+.button-alternate:active,
+.button-alternate:focus-within {
     box-shadow: 0 0 0 3px $ui-black-transparent;
 }
 
@@ -152,20 +154,6 @@
     align-items: center;
 }
 
-.test-button {
-    text-align: center;
-    border: 2px solid $ui-black-transparent;
-    border-radius: $space;
-    padding: calc($space * 1);
-    flex-grow: 1;
-    background: $ui-white;
-
-    display: flex;
-    flex-direction: column;
-    gap: $space;
-
-}
-
 .kick-option {
     background-image: url("../../lib/assets/icon--leave.svg");
     appearance: none;
@@ -177,10 +165,12 @@
     border-radius: 4px;
     outline: none;
     transition: all 0.2s;
+    cursor: pointer;
 }
+
 .kick-option:hover {
     border: 1px solid $looks-secondary;
-    box-shadow: 0px 0px 0px 4px $looks-transparent;
+    box-shadow: 0 0 0 4px $looks-transparent;
 }
 
 .multi-select-row {
@@ -207,6 +197,11 @@
     color: white;
     font-weight: bold;
     font-size: 0.85rem;
+}
+
+.multi-select-kick[disabled] {
+    cursor: default;
+    opacity: 0.5;
 }
 
 [dir="ltr"] .multi-select-normal + .multi-select-kick {

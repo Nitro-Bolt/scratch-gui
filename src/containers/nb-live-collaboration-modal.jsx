@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {intlShape} from 'react-intl';
 import bindAll from 'lodash.bindall';
+
 import {closeLiveCollaborationModal} from '../reducers/modals';
 import LiveCollaborationModalComponent from '../components/nb-live-collaboration-modal/live-collaboration-modal.jsx';
 import connectionManager from '../lib/nb-connection-manager.js';
@@ -16,39 +16,37 @@ class NBLiveCollaborationModal extends React.Component {
             'handlePeersUpdate',
             'handleUsernameUpdate',
             'handleRoomChange',
-            'handlePacket',
             'handleClose',
             'handleInput',
-            'handlePacketInput',
-            'handlePacketSend',
             'handleJoinRoom',
             'handleCreateRoom',
             'handleCopyURL',
             'handleCopyID',
             'handleLeaveRoom',
             'handleCloseRoom',
-            'handleMultiSelectState',
-            'kickUser',
-            'updateUserList',
-            'kickUsers'
+            'handleToggleMultiSelect',
+            'handleKickUser',
+            'handleUserSelectionChange',
+            'handleKickSelected'
         ]);
         this.state = {
             input: '',
             connected: connectionManager.connected,
             isHost: connectionManager.isHost,
-            users: connectionManager.users,
+            users: new Map(connectionManager.users),
             selectedUsers: [],
             multiSelect: false,
-            packetInput: '',
+            copyStatus: null,
             connectionLocked: connectionManager.connectionLocked
         };
-
-
+        this.copyStatusTimer = null;
+        this.mounted = false;
     }
 
     componentDidMount () {
+        this.mounted = true;
         if (!connectionManager.initialized) {
-            connectionManager.init(localStorage.getItem('tw:username'));
+            connectionManager.init(localStorage.getItem('tw:username') || 'Anonymous');
         }
 
         connectionManager.on(connectionManager.Event.CONNECTIONSUPDATE, this.handlePeersUpdate);
@@ -56,185 +54,180 @@ class NBLiveCollaborationModal extends React.Component {
         connectionManager.on(connectionManager.Event.JOINLOCK, this.handleConnectionLock);
         connectionManager.on(connectionManager.Event.JOINUNLOCK, this.handleConnectionUnlock);
         connectionManager.on(connectionManager.Event.USERNAMEUPDATE, this.handleUsernameUpdate);
-        connectionManager.on(connectionManager.Event.HOSTDISCONNECT, this.handleRoomChange);
     }
 
     componentWillUnmount () {
+        this.mounted = false;
+        if (this.copyStatusTimer) clearTimeout(this.copyStatusTimer);
         connectionManager.off(connectionManager.Event.CONNECTIONSUPDATE, this.handlePeersUpdate);
         connectionManager.off(connectionManager.Event.ROOMCHANGE, this.handleRoomChange);
         connectionManager.off(connectionManager.Event.JOINLOCK, this.handleConnectionLock);
         connectionManager.off(connectionManager.Event.JOINUNLOCK, this.handleConnectionUnlock);
         connectionManager.off(connectionManager.Event.USERNAMEUPDATE, this.handleUsernameUpdate);
-        connectionManager.off(connectionManager.Event.HOSTDISCONNECT, this.handleRoomChange);
     }
 
-    handleConnectionLock () { this.setState({connectionLocked: true}); console.log('connection lock'); }
+    handleConnectionLock () {
+        this.setState({connectionLocked: true});
+    }
+
     handleConnectionUnlock () {
-        this.setState({connectionLocked: false}); console.log('connection unlock');
+        this.setState({connectionLocked: false});
     }
 
     handlePeersUpdate () {
-        this.setState({users: connectionManager.users});
+        const users = new Map(connectionManager.users);
+        this.setState(previousState => {
+            const selectedUsers = previousState.selectedUsers.filter(peerId => users.has(peerId));
+            return {
+                users,
+                selectedUsers,
+                multiSelect: previousState.multiSelect && users.size > 0
+            };
+        });
     }
 
     handleUsernameUpdate () {
-        this.setState({users: connectionManager.users});
+        this.setState({users: new Map(connectionManager.users)});
     }
 
     handleRoomChange () {
-        this.setState({connected: connectionManager.connected});
-    }
-
-    handlePacket (data, peer) {
-        console.log('Received data from peer', data, peer);
+        if (this.copyStatusTimer) {
+            clearTimeout(this.copyStatusTimer);
+            this.copyStatusTimer = null;
+        }
+        this.setState({
+            connected: connectionManager.connected,
+            isHost: connectionManager.isHost,
+            users: new Map(connectionManager.users),
+            selectedUsers: [],
+            multiSelect: false,
+            copyStatus: null
+        });
     }
 
     handleClose () {
         this.props.onClose();
     }
 
-    handleInput (input) {
-        this.setState({input: input.target.value});
-    }
-
-    handlePacketInput (input) {
-        this.setState({packetInput: input.target.value});
-    }
-
-    handlePacketSend () {
-        connectionManager.sendToAll({
-            type: 'PACKET',
-            payload: this.state.packetInput
-        });
-
-        this.setState({packetInput: ''});
+    handleInput (event) {
+        this.setState({input: event.target.value});
     }
 
     handleJoinRoom () {
-        connectionManager.joinRoom(this.state.input);
-        this.setState({connected: true});
+        const result = connectionManager.joinRoom(this.state.input.trim());
+        if (result && typeof result.catch === 'function') result.catch(() => {});
     }
 
     handleCreateRoom () {
-        console.log('trying to create room;');
         connectionManager.createRoom();
-        this.setState({connected: true, isHost: true});
     }
 
     handleCopyURL () {
-        navigator.clipboard.writeText(window.location.href)
-        .then(() => {
-            alert('URL copied to clipboard!');
-        })
-        .catch(err => {});
+        this.copyText(window.location.href, 'url');
     }
 
     handleCopyID () {
-        navigator.clipboard.writeText(connectionManager.roomId)
-        .then(() => {
-            alert('ID copied to clipboard!');
-        })
-        .catch(err => {});
+        this.copyText(connectionManager.roomId, 'id');
     }
 
     handleLeaveRoom () {
         connectionManager.leaveRoom();
-        this.setState({connected: false, input: ''});
     }
 
     handleCloseRoom () {
         connectionManager.close();
-        connectionManager._clearRoomInUrl();
-        connectionManager.init(localStorage.getItem('tw:username'));
-        this.setState({connected: false, isHost: false});
     }
 
-    handleMultiSelectState () {
-        if (!this.state.multiSelect) {
-            this.setState({extensions: []});
-        }
-        this.setState({multiSelect: !this.state.multiSelect});
+    handleToggleMultiSelect () {
+        this.setState(previousState => ({
+            multiSelect: !previousState.multiSelect,
+            selectedUsers: []
+        }));
     }
 
-    kickUser (userID) {
-        connectionManager.kickPeer(userID);
-        this.props.onClose();
+    handleKickUser (peerId) {
+        connectionManager.kickPeer(peerId);
     }
 
-    updateUserList (checkbox) {
-        if (checkbox.target.checked) {
-            this.setState({selectedUsers: [...this.state.selectedUsers, checkbox.target.value]});
-        } else {
-            this.setState({selectedUsers: this.state.selectedUsers.filter(user => user !== checkbox.target.value)});
-        }
+    handleUserSelectionChange (event) {
+        const peerId = event.target.value;
+        const checked = event.target.checked;
+        this.setState(previousState => ({
+            selectedUsers: checked ?
+                [...previousState.selectedUsers, peerId] :
+                previousState.selectedUsers.filter(user => user !== peerId)
+        }));
     }
 
-    kickUsers (users) {
-        users.forEach(user => {
-            connectionManager.kickPeer(user);
+    handleKickSelected () {
+        this.state.selectedUsers.forEach(peerId => {
+            connectionManager.kickPeer(peerId);
         });
-        this.props.onClose();
+        this.setState({
+            selectedUsers: [],
+            multiSelect: false
+        });
+    }
+
+    copyText (text, item) {
+        if (!text || !navigator.clipboard ||
+            typeof navigator.clipboard.writeText !== 'function') {
+            this.showCopyStatus(`${item}-error`);
+            return;
+        }
+        Promise.resolve(navigator.clipboard.writeText(text))
+            .then(() => this.showCopyStatus(item))
+            .catch(() => this.showCopyStatus(`${item}-error`));
+    }
+
+    showCopyStatus (copyStatus) {
+        if (!this.mounted) return;
+        if (this.copyStatusTimer) clearTimeout(this.copyStatusTimer);
+        this.setState({copyStatus});
+        this.copyStatusTimer = setTimeout(() => {
+            this.copyStatusTimer = null;
+            if (!this.mounted) return;
+            this.setState({copyStatus: null});
+        }, 2500);
     }
 
     render () {
         return (
             <LiveCollaborationModalComponent
-                onClose={this.handleClose}
-                connectionLocked={this.state.connectionLocked}
-                isHost={this.state.isHost}
-                users={this.state.users}
-                multiSelect={this.state.multiSelect}
-                input={this.state.input}
-                changeMultiSelectState={this.handleMultiSelectState}
-                selectedUsers={this.state.selectedUsers}
                 connected={this.state.connected}
-                onInput={this.handleInput}
-                onPacketInput={this.handlePacketInput}
-                packetInput={this.state.packetInput}
-                onPacketSend={this.handlePacketSend}
-                onJoinRoom={this.handleJoinRoom}
-                onCreateRoom={this.handleCreateRoom}
-                onCopyURL={this.handleCopyURL}
-                onCopyID={this.handleCopyID}
-                onLeaveRoom={this.handleLeaveRoom}
+                connectionLocked={this.state.connectionLocked}
+                copyStatus={this.state.copyStatus}
+                input={this.state.input}
+                isHost={this.state.isHost}
+                multiSelect={this.state.multiSelect}
+                selectedUsers={this.state.selectedUsers}
+                users={this.state.users}
+                onClose={this.handleClose}
                 onCloseRoom={this.handleCloseRoom}
-                kickUser={this.kickUser}
-                updateUserList={this.updateUserList}
-                kickUsers={this.kickUsers}
+                onCopyID={this.handleCopyID}
+                onCopyURL={this.handleCopyURL}
+                onCreateRoom={this.handleCreateRoom}
+                onInput={this.handleInput}
+                onJoinRoom={this.handleJoinRoom}
+                onKickSelected={this.handleKickSelected}
+                onKickUser={this.handleKickUser}
+                onLeaveRoom={this.handleLeaveRoom}
+                onToggleMultiSelect={this.handleToggleMultiSelect}
+                onUserSelectionChange={this.handleUserSelectionChange}
             />
         );
     }
-};
+}
 
 NBLiveCollaborationModal.propTypes = {
-    intl: intlShape,
-    onClose: PropTypes.func.isRequired,
-    isHost: PropTypes.bool,
-    users: PropTypes.array,
-    multiSelect: PropTypes.bool,
-    input: PropTypes.string,
-    changeMultiSelectState: PropTypes.func,
-    selectedUsers: PropTypes.array,
-    connected: PropTypes.bool,
-    onInput: PropTypes.func,
-    onJoinRoom: PropTypes.func,
-    onCreateRoom: PropTypes.func,
-    onCopyURL: PropTypes.func,
-    onCopyID: PropTypes.func,
-    onLeaveRoom: PropTypes.func,
-    onCloseRoom: PropTypes.func,
-    kickUser: PropTypes.func,
-    updateUserList: PropTypes.func,
-    kickUsers: PropTypes.func
+    onClose: PropTypes.func.isRequired
 };
-
-const mapStateToProps = state => ({});
 
 const mapDispatchToProps = dispatch => ({
     onClose: () => dispatch(closeLiveCollaborationModal())
 });
 
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
 )(NBLiveCollaborationModal);

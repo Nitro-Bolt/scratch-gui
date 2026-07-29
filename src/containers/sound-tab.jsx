@@ -88,7 +88,9 @@ class SoundTab extends React.Component {
     }
 
     handleDeleteSound (soundIndex) {
-        const restoreFun = this.props.vm.deleteSound(soundIndex);
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        const restoreFun = this.props.vm.deleteSound(soundIndex, true, target);
         if (soundIndex >= this.state.selectedSoundIndex) {
             this.setState({selectedSoundIndex: Math.max(0, soundIndex - 1)});
         }
@@ -102,24 +104,37 @@ class SoundTab extends React.Component {
     }
 
     handleDuplicateSound (soundIndex) {
-        this.props.vm.duplicateSound(soundIndex).then(() => {
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        this.props.vm.duplicateSound(soundIndex, true, target).then(() => {
             this.setState({selectedSoundIndex: soundIndex + 1});
         });
     }
 
     handleMoveToTop (soundIndex) {
-        this.props.vm.editingTarget.reorderSound(soundIndex, 0);
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        this.props.vm.reorderSound(target.id, soundIndex, 0, true, target);
         this.setState({selectedSoundIndex: 0});
     }
 
     handleMoveToBottom (soundIndex) {
-        const lastSoundIndex = this.props.vm.editingTarget.sprite.sounds.length - 1;
-        this.props.vm.editingTarget.reorderSound(soundIndex, lastSoundIndex);
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        const lastSoundIndex = target.sprite.sounds.length - 1;
+        this.props.vm.reorderSound(
+            target.id,
+            soundIndex,
+            lastSoundIndex,
+            true,
+            target
+        );
         this.setState({selectedSoundIndex: lastSoundIndex});
     }
 
-    handleNewSound () {
-        if (!this.props.vm.editingTarget) {
+    handleNewSound (targetId = this.props.vm.editingTarget && this.props.vm.editingTarget.id) {
+        if (!this.props.vm.editingTarget ||
+            this.props.vm.editingTarget.id !== targetId) {
             return null;
         }
         const sprite = this.props.vm.editingTarget.sprite;
@@ -128,6 +143,8 @@ class SoundTab extends React.Component {
     }
 
     async handleSurpriseSound () {
+        const targetId = this.props.vm.editingTarget && this.props.vm.editingTarget.id;
+        if (!targetId) return;
         const soundLibraryContent = await getSoundLibrary();
         const soundItem = soundLibraryContent[Math.floor(Math.random() * soundLibraryContent.length)];
         const vmSound = {
@@ -137,8 +154,8 @@ class SoundTab extends React.Component {
             sampleCount: soundItem.sampleCount,
             name: soundItem.name
         };
-        this.props.vm.addSound(vmSound).then(() => {
-            this.handleNewSound();
+        this.props.vm.addSound(vmSound, targetId).then(() => {
+            this.handleNewSound(targetId);
         });
     }
 
@@ -154,7 +171,7 @@ class SoundTab extends React.Component {
             soundUpload(buffer, fileType, storage, newSound => {
                 newSound.name = fileName;
                 this.props.vm.addSound(newSound, targetId).then(() => {
-                    this.handleNewSound();
+                    this.handleNewSound(targetId);
                     if (fileIndex === fileCount - 1) {
                         this.props.onCloseImporting();
                     }
@@ -164,36 +181,43 @@ class SoundTab extends React.Component {
     }
 
     handleDrop (dropInfo) {
+        const target = this.props.vm.editingTarget;
+        if (!target) return;
+        const targetId = target.id;
         if (dropInfo.dragType === DragConstants.SOUND) {
-            const sprite = this.props.vm.editingTarget.sprite;
+            const sprite = target.sprite;
             const activeSound = sprite.sounds[this.state.selectedSoundIndex];
 
-            this.props.vm.reorderSound(this.props.vm.editingTarget.id,
-                dropInfo.index, dropInfo.newIndex);
+            this.props.vm.reorderSound(
+                targetId,
+                dropInfo.index,
+                dropInfo.newIndex,
+                true,
+                target
+            );
 
             this.setState({selectedSoundIndex: sprite.sounds.indexOf(activeSound)});
         } else if (dropInfo.dragType === DragConstants.BACKPACK_COSTUME) {
             this.props.onActivateCostumesTab();
             this.props.vm.addCostume(dropInfo.payload.body, {
                 name: dropInfo.payload.name
-            });
+            }, targetId);
         } else if (dropInfo.dragType === DragConstants.BACKPACK_SOUND) {
             this.props.vm.addSound({
                 md5: dropInfo.payload.body,
                 name: dropInfo.payload.name
-            }).then(this.handleNewSound);
+            }, targetId).then(() => this.handleNewSound(targetId));
         } else if (dropInfo.dragType === DragConstants.BACKPACK_ASSET) {
             // Detect if the asset can be added as a sound
             // If it is not a sound, add it to assets
             const payload = dropInfo.payload;
             const type = getAssetType(payload).type;
             const storage = this.props.vm.runtime.storage;
-            const targetId = this.props.vm.editingTarget.id;
             if (type === 'sound') {
                 soundUpload(payload.bodyData, payload.mime, storage, sound => {
                     sound.name = payload.name;
                     this.props.vm.addSound(sound, targetId)
-                        .then(this.handleNewSound);
+                        .then(() => this.handleNewSound(targetId));
                 });
             } else {
                 this.props.onActivateAssetsTab();
@@ -203,7 +227,7 @@ class SoundTab extends React.Component {
                     contentType: payload.mime,
                     dataFormat: payload.dataFormat,
                     name: payload.name
-                });
+                }, targetId);
             }
         }
     }
@@ -304,7 +328,9 @@ class SoundTab extends React.Component {
                 {sprite.sounds && sprite.sounds[this.state.selectedSoundIndex] ? (
                     isSupported ? (
                         <SoundEditor
+                            key={`${vm.editingTarget.id}:${this.state.selectedSoundIndex}`}
                             soundIndex={this.state.selectedSoundIndex}
+                            targetId={vm.editingTarget.id}
                             preferences={this.props.preferences}
                         />
                     ) : (
@@ -313,12 +339,14 @@ class SoundTab extends React.Component {
                 ) : null}
                 {this.props.soundRecorderVisible ? (
                     <RecordModal
+                        targetId={vm.editingTarget.id}
                         onNewSound={this.handleNewSound}
                         preferences={this.props.preferences}
                     />
                 ) : null}
                 {this.props.soundLibraryVisible ? (
                     <SoundLibrary
+                        targetId={vm.editingTarget.id}
                         vm={this.props.vm}
                         onNewSound={this.handleNewSound}
                         onRequestClose={this.props.onRequestCloseSoundLibrary}

@@ -34,8 +34,8 @@ class AssetViewer extends React.Component {
         this.editor = null;
         this.editorDisposable = null;
         this.initialContent = '';
-        this.saveTextAssetDebounced = debounce(value => {
-            this.saveTextAsset(value);
+        this.saveTextAssetDebounced = debounce((value, target, assetObject) => {
+            this.saveTextAsset(value, target, assetObject);
         }, 150);
     }
 
@@ -48,6 +48,7 @@ class AssetViewer extends React.Component {
         if (
             prevProps.assetId !== this.props.assetId ||
             prevProps.assetIndex !== this.props.assetIndex ||
+            prevProps.targetId !== this.props.targetId ||
             prevProps.contentType !== this.props.contentType ||
             prevProps.mediaType !== this.props.mediaType
         ) {
@@ -58,6 +59,7 @@ class AssetViewer extends React.Component {
     }
 
     componentWillUnmount () {
+        this.saveTextAssetDebounced.flush();
         this.revokeBlobURL();
         this.clearEditorListener();
         this.saveTextAssetDebounced.cancel();
@@ -76,9 +78,13 @@ class AssetViewer extends React.Component {
         }
     }
 
+    getTarget () {
+        return this.props.vm.runtime.getTargetById(this.props.targetId);
+    }
+
     getAssetObject () {
-        const sprite = this.props.vm.editingTarget.sprite;
-        return sprite.assets[this.props.assetIndex];
+        const target = this.getTarget();
+        return target && target.sprite.assets[this.props.assetIndex];
     }
 
     decodeAssetData () {
@@ -133,12 +139,12 @@ class AssetViewer extends React.Component {
         });
     }
 
-    saveTextAsset (value) {
-        if (!this.props.isTextEditable) {
-            return;
+    saveTextAsset (value, target, assetObject) {
+        if (!target || this.props.vm.runtime.getTargetById(target.id) !== target) return;
+        const assetIndex = target.getAssets().indexOf(assetObject);
+        if (assetIndex !== -1) {
+            this.props.vm.updateTextAsset(assetIndex, value, true, target);
         }
-
-        this.props.vm.updateTextAsset(this.props.assetIndex, value);
     }
 
     updateUndoRedoState () {
@@ -188,8 +194,9 @@ class AssetViewer extends React.Component {
     }
 
     handleTextContentChange (value) {
+        if (!this.props.isTextEditable) return;
         this.setState({textContent: value});
-        this.saveTextAssetDebounced(value);
+        this.saveTextAssetDebounced(value, this.getTarget(), this.getAssetObject());
         this.updateUndoRedoState();
     }
 
@@ -229,9 +236,15 @@ class AssetViewer extends React.Component {
     }
 
     handleAssetRename (newName) {
+        const target = this.getTarget();
+        const assetObject = this.getAssetObject();
+        if (!target || !assetObject) return;
         const [name, ...extensionParts] = newName.split('.');
         const extension = extensionParts.join('.') || 'file';
-        this.props.vm.renameAsset(this.props.assetIndex, name, extension);
+        const assetIndex = target.getAssets().indexOf(assetObject);
+        if (assetIndex !== -1) {
+            this.props.vm.renameAsset(assetIndex, name, extension, true, target);
+        }
     }
 
     render () {
@@ -279,12 +292,14 @@ AssetViewer.propTypes = {
     mediaType: PropTypes.string,
     isTextEditable: PropTypes.bool,
     textLanguage: PropTypes.string,
+    targetId: PropTypes.string.isRequired,
     theme: PropTypes.object,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 
-const mapStateToProps = (state, {selectedAssetIndex}) => {
-    const sprite = state.scratchGui.vm.editingTarget.sprite;
+const mapStateToProps = (state, {selectedAssetIndex, targetId}) => {
+    const target = state.scratchGui.vm.runtime.getTargetById(targetId);
+    const sprite = target.sprite;
     const index = selectedAssetIndex >= 0 && selectedAssetIndex < sprite.assets.length ?
         selectedAssetIndex : sprite.assets.length - 1;
     const assetObject = sprite.assets[index];
@@ -293,9 +308,9 @@ const mapStateToProps = (state, {selectedAssetIndex}) => {
     return {
         vm: state.scratchGui.vm,
         theme: state.scratchGui.theme.theme,
-        name: assetObject.dataFormat !== '' ?
-            `${assetObject.name}.${assetObject.dataFormat}` :
-            assetObject.name,
+        name: assetObject.dataFormat === '' ?
+            assetObject.name :
+            `${assetObject.name}.${assetObject.dataFormat}`,
         lastModified: assetObject.lastModified ?
             new Date(assetObject.lastModified).toLocaleString() :
             'Unknown',

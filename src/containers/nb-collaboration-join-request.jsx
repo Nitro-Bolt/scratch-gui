@@ -14,7 +14,8 @@ class NBCollaborationJoinRequest extends React.Component {
         bindAll(this, [
             'handleJoinRequest',
             'handleAllow',
-            'handleDeny'
+            'handleDeny',
+            'handleClientDisconnect'
         ]);
         this.state = {
             requests: []
@@ -25,34 +26,68 @@ class NBCollaborationJoinRequest extends React.Component {
     componentDidMount () {
         this.previousJoinRequestHandler = connectionManager.joinRequestHandler;
         connectionManager.joinRequestHandler = this.handleJoinRequest;
+        connectionManager.on(
+            connectionManager.Event.CLIENTDISCONNECT,
+            this.handleClientDisconnect
+        );
     }
 
     componentWillUnmount () {
         if (connectionManager.joinRequestHandler === this.handleJoinRequest) {
             connectionManager.joinRequestHandler = this.previousJoinRequestHandler;
         }
-        this.state.requests.forEach(request => request.resolve(false));
+        connectionManager.off(
+            connectionManager.Event.CLIENTDISCONNECT,
+            this.handleClientDisconnect
+        );
+        this.state.requests.forEach(request => {
+            clearTimeout(request.timeout);
+            request.resolve(false);
+        });
     }
 
     handleJoinRequest (username, peer) {
-        return new Promise(resolve => {
-            this.setState(previousState => ({
-                requests: [...previousState.requests, {
-                    username,
-                    peerId: peer.peer,
-                    resolve
-                }]
-            }));
+        const existing = this.state.requests.find(request => request.peerId === peer.peer);
+        if (existing) return existing.promise;
+
+        let resolveRequest;
+        const promise = new Promise(resolve => {
+            resolveRequest = resolve;
         });
+        const request = {
+            username: username.trim().slice(0, 64) || 'Anonymous',
+            peer,
+            peerId: peer.peer,
+            resolve: resolveRequest,
+            promise,
+            timeout: null
+        };
+        request.timeout = setTimeout(() => {
+            this.resolveRequest(request.peerId, false);
+        }, 20000);
+        this.setState(previousState => ({
+            requests: [...previousState.requests, request]
+        }));
+        return promise;
+    }
+
+    resolveRequest (peerId, allowed) {
+        const request = this.state.requests.find(item => item.peerId === peerId);
+        if (!request) return;
+        clearTimeout(request.timeout);
+        request.resolve(Boolean(allowed && request.peer.open));
+        this.setState(previousState => ({
+            requests: previousState.requests.filter(item => item !== request)
+        }));
     }
 
     resolveCurrentRequest (allowed) {
         const request = this.state.requests[0];
-        if (!request) return;
-        request.resolve(allowed);
-        this.setState(previousState => ({
-            requests: previousState.requests.slice(1)
-        }));
+        if (request) this.resolveRequest(request.peerId, allowed);
+    }
+
+    handleClientDisconnect (peerId) {
+        this.resolveRequest(peerId, false);
     }
 
     handleAllow () {

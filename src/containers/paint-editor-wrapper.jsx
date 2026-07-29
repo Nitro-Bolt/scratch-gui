@@ -46,22 +46,35 @@ class PaintEditorWrapper extends React.Component {
         });
     }
     handleUpdateName (name) {
-        this.props.vm.renameCostume(this.props.selectedCostumeIndex, name);
+        const target = this.props.vm.runtime.getTargetById(this.props.targetId);
+        if (!target) return;
+        this.props.vm.renameCostume(
+            this.props.selectedCostumeIndex,
+            name,
+            true,
+            target
+        );
     }
     handleUpdateImage (isVector, image, rotationCenterX, rotationCenterY) {
+        const target = this.props.vm.runtime.getTargetById(this.props.targetId);
+        if (!target) return;
         if (isVector) {
             this.props.vm.updateSvg(
                 this.props.selectedCostumeIndex,
                 image,
                 rotationCenterX,
-                rotationCenterY);
+                rotationCenterY,
+                true,
+                target);
         } else {
             this.props.vm.updateBitmap(
                 this.props.selectedCostumeIndex,
                 image,
                 rotationCenterX,
                 rotationCenterY,
-                2 /* bitmapResolution */);
+                2 /* bitmapResolution */,
+                true,
+                target);
         }
     }
     fontInlineFn (svgString) {
@@ -74,7 +87,9 @@ class PaintEditorWrapper extends React.Component {
             vm,
             ...componentProps
         } = this.props;
-        const costume = vm.getCostume(selectedCostumeIndex);
+        const target = vm.runtime.getTargetById(this.props.targetId);
+        if (!target) return null;
+        const costume = vm.getCostume(selectedCostumeIndex, target);
         return (
             <PaintEditor
                 {...componentProps}
@@ -111,16 +126,17 @@ PaintEditorWrapper.propTypes = {
     rotationCenterY: PropTypes.number,
     rtl: PropTypes.bool,
     selectedCostumeIndex: PropTypes.number.isRequired,
+    targetId: PropTypes.string.isRequired,
     vm: PropTypes.instanceOf(VM)
 };
 
-const mapStateToProps = (state, {selectedCostumeIndex}) => {
-    const targetId = state.scratchGui.vm.editingTarget.id;
-    const sprite = state.scratchGui.vm.editingTarget.sprite;
+const mapStateToProps = (state, {selectedCostumeIndex, targetId}) => {
+    const target = state.scratchGui.vm.runtime.getTargetById(targetId);
+    const sprite = target.sprite;
     // Make sure the costume index doesn't go out of range.
     const index = selectedCostumeIndex < sprite.costumes.length ?
         selectedCostumeIndex : sprite.costumes.length - 1;
-    const costume = state.scratchGui.vm.editingTarget.sprite.costumes[index];
+    const costume = sprite.costumes[index];
     return {
         customStageSize: state.scratchGui.customStageSize,
         name: costume && costume.name,

@@ -72,10 +72,13 @@ class SoundLibrary extends React.PureComponent {
     componentDidMount () {
         const soundLibrary = getSoundLibrary();
         if (soundLibrary.then) {
+            // The async library is the component's initial data source.
+            // eslint-disable-next-line react/no-did-mount-set-state
             soundLibrary.then(data => this.setState({
                 data: getSoundLibraryThumbnailData(data, this.props.isRtl)
             }));
         } else {
+            // eslint-disable-next-line react/no-did-mount-set-state
             this.setState({
                 data: getSoundLibraryThumbnailData(soundLibrary, this.props.isRtl)
             });
@@ -174,8 +177,9 @@ class SoundLibrary extends React.PureComponent {
             sampleCount: soundItem.sampleCount,
             name: soundItem.name
         };
-        this.props.vm.addSound(vmSound).then(() => {
-            this.props.onNewSound();
+        const targetId = this.props.targetId;
+        this.props.vm.addSound(vmSound, targetId).then(() => {
+            this.props.onNewSound(targetId);
         });
     }
     render () {
@@ -201,6 +205,7 @@ SoundLibrary.propTypes = {
     isRtl: PropTypes.bool,
     onNewSound: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func,
+    targetId: PropTypes.string.isRequired,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 
