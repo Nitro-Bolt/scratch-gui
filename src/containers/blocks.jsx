@@ -29,7 +29,8 @@ import {
     closeExtensionLibrary,
     openSoundRecorder,
     openConnectionModal,
-    openCustomExtensionModal
+    openCustomExtensionModal,
+    openInspectBlockModal
 } from '../reducers/modals';
 import {activateCustomProcedures, deactivateCustomProcedures} from '../reducers/custom-procedures';
 import {setConnectionModalExtensionId} from '../reducers/connection-modal';
@@ -118,6 +119,7 @@ class Blocks extends React.Component {
             'handleExtensionReordered',
             'handleExtensionRemoved',
             'handleBlocksInfoUpdate',
+            'handleInspectBlock',
             'onTargetsUpdate',
             'onVisualReport',
             'onWorkspaceUpdate',
@@ -129,6 +131,7 @@ class Blocks extends React.Component {
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
+        this.ScratchBlocks.inspectBlockCallback = this.handleInspectBlock;
 
         this.state = {
             prompt: null
@@ -141,6 +144,7 @@ class Blocks extends React.Component {
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
+        this.ScratchBlocks.inspectBlockCallback = this.handleInspectBlock;
 
         this.ScratchBlocks.FieldColourSlider.activateEyedropper_ = this.props.onActivateColorPicker;
         this.ScratchBlocks.Procedures.externalProcedureDefCallback = this.props.onActivateCustomProcedures;
@@ -651,6 +655,74 @@ class Blocks extends React.Component {
         this.props.onOpenSoundRecorder();
     }
 
+    handleInspectBlock (block) {
+        try {
+            if (!block || block.isInFlyout) {
+                return;
+            }
+            const snapshotBlock = target => {
+                if (!target) {
+                    return null;
+                }
+                return {
+                    id: target.id,
+                    type: target.type,
+                    text: target.toString(300),
+                    isShadow: target.isShadow()
+                };
+            };
+            const inputTypeLabel = type => {
+                if (type === this.ScratchBlocks.INPUT_VALUE) return 'value';
+                if (type === this.ScratchBlocks.NEXT_STATEMENT) return 'statement';
+                if (type === this.ScratchBlocks.DUMMY_INPUT) return 'dummy';
+                return String(type);
+            };
+            const position = block.getRelativeToSurfaceXY();
+            const size = block.getHeightWidth();
+            const fields = (block.fieldRow || []).map(field => {
+                let value = null;
+                let text = null;
+                try {
+                    value = field.getValue();
+                    text = field.getText();
+                } catch (e) { /* empty */}
+                return {
+                    name: field.name,
+                    value,
+                    text
+                };
+            });
+            const connectionState = connection => !!(connection && connection.isConnected());
+            // @todo Possibly pass all properties instead of
+            // a selected few
+            this.props.onInspectBlock({
+                id: block.id,
+                type: block.type,
+                text: block.toString(300),
+                category: block.getCategory() || null,
+                isShadow: block.isShadow(),
+                x: Math.round(position.x * 100) / 100,
+                y: Math.round(position.y * 100) / 100,
+                width: Math.round(size.width * 100) / 100,
+                height: Math.round(size.height * 100) / 100,
+                inputs: (block.inputList || []).map(input => ({
+                    name: input.name,
+                    type: inputTypeLabel(input.type),
+                    block: snapshotBlock(input.connection ? input.connection.targetBlock() : null)
+                })),
+                fields,
+                hasPreviousConnection: connectionState(block.previousConnection),
+                hasNextConnection: connectionState(block.nextConnection),
+                hasOutputConnection: connectionState(block.outputConnection),
+                parentId: block.getParent() ? block.getParent().id : null,
+                nextId: block.getNextBlock() ? block.getNextBlock().id : null,
+                descendantCount: block.getDescendants(false, true).length
+            });
+        } catch (e) {
+            log.error('Failed to inspect block', e);
+        }
+    }
+
     /*
      * Pass along information about proposed name and variable options (scope and isCloud)
      * and additional potentially conflicting variable names from the VM
@@ -790,6 +862,7 @@ Blocks.propTypes = {
     onOpenConnectionModal: PropTypes.func,
     onOpenSoundRecorder: PropTypes.func,
     onOpenCustomExtensionModal: PropTypes.func,
+    onInspectBlock: PropTypes.func,
     reduxOnOpenCustomExtensionModal: PropTypes.func,
     onRequestCloseCustomProcedures: PropTypes.func,
     onRequestCloseExtensionLibrary: PropTypes.func,
@@ -868,6 +941,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch(openSoundRecorder());
     },
     reduxOnOpenCustomExtensionModal: () => dispatch(openCustomExtensionModal()),
+    onInspectBlock: block => dispatch(openInspectBlockModal(block)),
     onRequestCloseExtensionLibrary: () => {
         dispatch(closeExtensionLibrary());
     },

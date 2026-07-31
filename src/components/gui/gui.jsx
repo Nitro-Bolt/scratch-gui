@@ -37,6 +37,7 @@ import TWCustomExtensionModal from '../../containers/tw-custom-extension-modal.j
 import NBCustomAccentModal from '../../containers/nb-custom-accent-modal.jsx';
 import NBEditorSettingsModal from '../../containers/nb-editor-settings-modal.jsx';
 import NBExtensionManagerModal from '../../containers/nb-extension-manager-modal.jsx';
+import NBInspectBlockModal from '../../containers/nb-inspect-block-modal.jsx';
 import TWRestorePointManager from '../../containers/tw-restore-point-manager.jsx';
 import TWFontsModal from '../../containers/tw-fonts-modal.jsx';
 import TWUnknownPlatformModal from '../../containers/tw-unknown-platform-modal.jsx';
@@ -166,6 +167,7 @@ const GUIComponent = props => {
         customAccentModalVisible,
         editorSettingsModalVisible,
         extensionManagerModalVisible,
+        inspectBlockModalVisible,
         fontsModalVisible,
         unknownPlatformModalVisible,
         invalidProjectModalVisible,
@@ -238,6 +240,7 @@ const GUIComponent = props => {
                 {customAccentModalVisible && <NBCustomAccentModal />}
                 {editorSettingsModalVisible && <NBEditorSettingsModal />}
                 {extensionManagerModalVisible && <NBExtensionManagerModal />}
+                {inspectBlockModalVisible && <NBInspectBlockModal />}
                 {fontsModalVisible && <TWFontsModal />}
                 {unknownPlatformModalVisible && <TWUnknownPlatformModal />}
                 {invalidProjectModalVisible && <TWInvalidProjectModal />}
@@ -692,6 +695,7 @@ GUIComponent.propTypes = {
     customAccentModalVisible: PropTypes.bool,
     editorSettingsModalVisible: PropTypes.bool,
     extensionManagerModalVisible: PropTypes.bool,
+    inspectBlockModalVisible: PropTypes.bool,
     fontsModalVisible: PropTypes.bool,
     unknownPlatformModalVisible: PropTypes.bool,
     invalidProjectModalVisible: PropTypes.bool,
