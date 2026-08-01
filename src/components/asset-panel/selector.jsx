@@ -50,10 +50,12 @@ const Selector = props => {
     const {
         displayLength,
         dropIndexMap,
+        entries,
+        folderAtDisplayIndex,
         folderDisplayOrder,
-        groups,
         hasFolders,
-        itemDisplayOrder
+        itemDisplayOrder,
+        parentFolderAtDisplayIndex
     } = buildFolderLayout(items, props.vm.runtime.projectFolders, closedFolders);
 
     const isRelevantDrag = draggingType === dragType;
@@ -95,81 +97,78 @@ const Selector = props => {
             componentRef={containerRef}
         >
             <Box className={styles.listArea}>
-                {groups.map(group => {
-                    const {folder} = group;
-                    const firstItem = items[group.firstIndex];
+                {entries.map(entry => {
+                    if (entry.type === 'folder') {
+                        return (
+                            <SortableAsset
+                                index={getDisplayOrder(folderDisplayOrder[entry.folder.id])}
+                                key={entry.folder.id}
+                                onAddSortable={onAddSortable}
+                                onRemoveSortable={onRemoveSortable}
+                            >
+                                <FolderTile
+                                    className={styles.listItem}
+                                    dragType={dragType}
+                                    dropIndexMap={dropIndexMap}
+                                    folder={entry.folder}
+                                    folderAtDisplayIndex={folderAtDisplayIndex}
+                                    index={entry.firstIndex}
+                                    open={entry.isOpen}
+                                    parentFolderAtDisplayIndex={parentFolderAtDisplayIndex}
+                                    showMoveActions
+                                    vm={props.vm}
+                                    onReorder={onFolderReorder}
+                                    onToggle={handleToggleFolder}
+                                />
+                            </SortableAsset>
+                        );
+                    }
+                    const candidateIndex = entry.itemIndex;
+                    const candidate = items[candidateIndex];
+                    const folder = entry.folder;
                     return (
-                        <React.Fragment key={folder ? folder.id : firstItem.name}>
-                            {folder ? (
-                                <SortableAsset
-                                    index={getDisplayOrder(folderDisplayOrder[folder.id])}
-                                    onAddSortable={onAddSortable}
-                                    onRemoveSortable={onRemoveSortable}
-                                >
-                                    <FolderTile
-                                        className={styles.listItem}
-                                        dragType={dragType}
-                                        dropIndexMap={dropIndexMap}
-                                        folder={folder}
-                                        index={group.firstIndex}
-                                        open={group.isOpen}
-                                        showMoveActions
-                                        vm={props.vm}
-                                        onReorder={onFolderReorder}
-                                        onToggle={handleToggleFolder}
-                                    />
-                                </SortableAsset>
-                            ) : null}
-                            {group.isOpen ? group.itemIndices.map(candidateIndex => {
-                                const candidate = items[candidateIndex];
-                                return (
-                                    <SortableAsset
-                                        id={candidate.name}
-                                        index={!hasFolders && isRelevantDrag ? ordering.indexOf(candidateIndex) :
-                                            getDisplayOrder(itemDisplayOrder[candidateIndex])}
-                                        key={candidate.name}
-                                        onAddSortable={onAddSortable}
-                                        onRemoveSortable={onRemoveSortable}
-                                    >
-                                        <SpriteSelectorItem
-                                            asset={candidate.asset}
-                                            className={classNames(styles.listItem, {
-                                                [styles.placeholder]: isRelevantDrag &&
-                                                    candidateIndex === draggingIndex,
-                                                [styles.folderChild]: Boolean(folder)
-                                            })}
-                                            style={folder ? {
-                                                backgroundColor: `${folder.color || '#d8b24a'}40`
-                                            } : null}
-                                            costumeURL={candidate.url}
-                                            details={candidate.details}
-                                            dragPayload={candidate.dragPayload}
-                                            dragType={dragType}
-                                            dropIndexMap={dropIndexMap}
-                                            id={candidateIndex}
-                                            folderId={folder ? candidate.folderId : null}
-                                            index={candidateIndex}
-                                            isBitmap={candidate.isBitmap}
-                                            totalItems={items.length}
-                                            name={candidate.name}
-                                            number={candidateIndex + 1 /* 1-indexed */}
-                                            selected={candidateIndex === selectedItemIndex}
-                                            onClick={onItemClick}
-                                            onDeleteButtonClick={onDeleteClick}
-                                            onDuplicateButtonClick={onDuplicateClick}
-                                            onExportButtonClick={onExportClick}
-                                            onExportBitmapButtonClick={onExportBitmapClick}
-                                            onFolderChangeComplete={onItemFolderChangeComplete && selectedItem ?
-                                                targetId => onItemFolderChangeComplete(
-                                                    selectedItem.dragPayload, targetId
-                                                ) : null}
-                                            onMoveToTopButtonClick={onMoveToTopClick}
-                                            onMoveToBottomButtonClick={onMoveToBottomClick}
-                                        />
-                                    </SortableAsset>
-                                );
-                            }) : null}
-                        </React.Fragment>
+                        <SortableAsset
+                            id={candidate.name}
+                            index={!hasFolders && isRelevantDrag ? ordering.indexOf(candidateIndex) :
+                                getDisplayOrder(itemDisplayOrder[candidateIndex])}
+                            key={candidate.name}
+                            onAddSortable={onAddSortable}
+                            onRemoveSortable={onRemoveSortable}
+                        >
+                            <SpriteSelectorItem
+                                asset={candidate.asset}
+                                className={classNames(styles.listItem, {
+                                    [styles.placeholder]: isRelevantDrag && candidateIndex === draggingIndex,
+                                    [styles.folderChild]: Boolean(folder)
+                                })}
+                                style={folder ? {
+                                    backgroundColor: `${folder.color || '#d8b24a'}40`
+                                } : null}
+                                costumeURL={candidate.url}
+                                details={candidate.details}
+                                dragPayload={candidate.dragPayload}
+                                dragType={dragType}
+                                dropIndexMap={dropIndexMap}
+                                id={candidateIndex}
+                                folderId={folder ? candidate.folderId : null}
+                                folderAtDisplayIndex={folderAtDisplayIndex}
+                                index={candidateIndex}
+                                isBitmap={candidate.isBitmap}
+                                totalItems={items.length}
+                                name={candidate.name}
+                                number={candidateIndex + 1 /* 1-indexed */}
+                                selected={candidateIndex === selectedItemIndex}
+                                onClick={onItemClick}
+                                onDeleteButtonClick={onDeleteClick}
+                                onDuplicateButtonClick={onDuplicateClick}
+                                onExportButtonClick={onExportClick}
+                                onExportBitmapButtonClick={onExportBitmapClick}
+                                onFolderChangeComplete={onItemFolderChangeComplete && selectedItem ?
+                                    targetId => onItemFolderChangeComplete(selectedItem.dragPayload, targetId) : null}
+                                onMoveToTopButtonClick={onMoveToTopClick}
+                                onMoveToBottomButtonClick={onMoveToBottomClick}
+                            />
+                        </SortableAsset>
                     );
                 })}
             </Box>

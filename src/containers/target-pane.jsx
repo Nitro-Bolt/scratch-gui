@@ -191,9 +191,26 @@ class TargetPane extends React.Component {
     handleDrop (dragInfo) {
         if (dragInfo.dragType === DragConstants.FOLDER_SPRITE &&
             dragInfo.payload && dragInfo.payload.nativeFolderId) {
+            const sourceId = dragInfo.payload.nativeFolderId;
+            const hoveredFolderId = dragInfo.payload.folderAtDisplayIndex &&
+                dragInfo.payload.folderAtDisplayIndex[dragInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const structuralIndex = typeof dragInfo.hoveredIndex === 'number' ?
+                dragInfo.hoveredIndex : dragInfo.newIndex;
+            const destinationParentId = hoveredFolder && hoveredFolder._isOpen !== false &&
+                hoveredFolder.id !== sourceId ?
+                hoveredFolder.id : dragInfo.rootDrop ? null : dragInfo.payload.parentFolderAtDisplayIndex &&
+                    dragInfo.payload.parentFolderAtDisplayIndex[structuralIndex];
+            if (destinationParentId !== sourceId) {
+                try {
+                    this.props.vm.setFolderParent(sourceId, destinationParentId || null);
+                } catch (error) {
+                    return;
+                }
+            }
             const mappedIndex = dragInfo.payload.dropIndexMap &&
                 dragInfo.payload.dropIndexMap[dragInfo.newIndex];
-            this.props.vm.moveFolderToIndex(dragInfo.payload.nativeFolderId,
+            this.props.vm.moveFolderToIndex(sourceId,
                 (typeof mappedIndex === 'number' ? mappedIndex : dragInfo.newIndex) + 1);
             return;
         }
@@ -204,8 +221,11 @@ class TargetPane extends React.Component {
             const mappedIndex = dragInfo.dropIndexMap && dragInfo.dropIndexMap[dragInfo.newIndex];
             const newIndex = typeof mappedIndex === 'number' ? mappedIndex : dragInfo.newIndex;
             const destination = sprites[newIndex];
-            const destinationFolder = destination && destination.folderId &&
-                this.props.vm.runtime.projectFolders.find(folder => folder.id === destination.folderId);
+            const hoveredFolderId = dragInfo.folderAtDisplayIndex &&
+                dragInfo.folderAtDisplayIndex[dragInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const destinationFolder = hoveredFolder || (destination && destination.folderId &&
+                this.props.vm.runtime.projectFolders.find(folder => folder.id === destination.folderId));
             if (dragged) {
                 this.props.vm.setItemFolder('sprite', dragged.id, null,
                     !dragInfo.rootDrop && destinationFolder && destinationFolder._isOpen !== false ?

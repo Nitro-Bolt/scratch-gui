@@ -6,6 +6,7 @@ import classNames from 'classnames';
 
 import SpriteSelectorItem from '../../containers/sprite-selector-item.jsx';
 import DragConstants from '../../lib/drag-constants';
+import getFolderForeground from '../../lib/folder-color';
 import folderIcon from './folder.svg';
 import styles from './folder-tile.css';
 
@@ -13,7 +14,7 @@ class FolderTile extends React.PureComponent {
     constructor (props) {
         super(props);
         bindAll(this, ['handleChooseColor', 'handleClick', 'handleColor', 'handleDelete', 'handleMoveBottom',
-            'handleMoveTop', 'handleRename', 'setColorInput']);
+            'handleFolderChange', 'handleMoveTop', 'handleRename', 'setColorInput']);
     }
     handleClick () {
         this.props.onToggle(this.props.folder.id);
@@ -46,12 +47,25 @@ class FolderTile extends React.PureComponent {
         if (this.props.onReorder) this.props.onReorder(this.props.folder.id, Number.MAX_SAFE_INTEGER);
         else this.props.vm.moveFolderToIndex(this.props.folder.id, Number.MAX_SAFE_INTEGER);
     }
+    handleFolderChange (parentId, event) {
+        if (event) event.stopPropagation();
+        try {
+            if (this.props.onFolderChange) this.props.onFolderChange(this.props.folder.id, parentId, event);
+            else this.props.vm.setFolderParent(this.props.folder.id, parentId);
+        } catch (error) {
+            // The destination can become invalid while its context menu is open.
+        }
+    }
     async handleRename () {
         // eslint-disable-next-line no-alert
         const name = await prompt('Rename folder:', this.props.folder.name);
         if (name && name.trim()) {
-            if (this.props.onRename) this.props.onRename(this.props.folder.id, name.trim());
-            else this.props.vm.renameFolder(this.props.folder.id, name);
+            try {
+                if (this.props.onRename) this.props.onRename(this.props.folder.id, name.trim());
+                else this.props.vm.renameFolder(this.props.folder.id, name);
+            } catch (error) {
+                // The name can conflict with a sibling created while the prompt is open.
+            }
         }
     }
     render () {
@@ -61,11 +75,36 @@ class FolderTile extends React.PureComponent {
             [DragConstants.COSTUME]: DragConstants.FOLDER_COSTUME,
             [DragConstants.SPRITE]: DragConstants.FOLDER_SPRITE
         };
+        const folders = this.props.folderOptions || this.props.vm.runtime.projectFolders;
+        const descendantIds = new Set([this.props.folder.id]);
+        let foundDescendant = true;
+        while (foundDescendant) {
+            foundDescendant = false;
+            for (const folder of folders) {
+                if (descendantIds.has(folder.parentId) && !descendantIds.has(folder.id)) {
+                    descendantIds.add(folder.id);
+                    foundDescendant = true;
+                }
+            }
+        }
+        const scopedFolders = folders.filter(folder =>
+            folder.kind === this.props.folder.kind && folder.scopeId === this.props.folder.scopeId &&
+            !descendantIds.has(folder.id)
+        );
+        const hasSiblingNameConflict = parentId => Boolean(this.props.vm) && scopedFolders.some(folder =>
+            folder.id !== this.props.folder.id && folder.parentId === parentId &&
+            folder.name.toLocaleLowerCase() === this.props.folder.name.toLocaleLowerCase()
+        );
+        const folderOptions = scopedFolders.filter(folder => !hasSiblingNameConflict(folder.id));
+        const color = this.props.folder.color || '#d8b24a';
+        const foreground = getFolderForeground(color);
         return (
             <div
                 className={classNames(styles.folderTile, this.props.className)}
                 draggable={this.props.nativeDraggable}
-                style={{backgroundColor: this.props.folder.color || '#d8b24a'}}
+                style={{
+                    backgroundColor: color
+                }}
                 onDragOver={this.props.onNativeDragOver}
                 onDragStart={this.props.onNativeDragStart}
                 onDrop={this.props.onNativeDrop}
@@ -76,21 +115,29 @@ class FolderTile extends React.PureComponent {
                 <SpriteSelectorItem
                     costumeURL={folderIcon}
                     disableDrag={this.props.nativeDraggable}
-                    disableFolderManagement
                     disableTargetHover
                     details={this.props.open ? 'Open' : 'Closed'}
                     dragPayload={{
                         nativeFolderId: this.props.folder.id,
-                        dropIndexMap: this.props.dropIndexMap
+                        dropIndexMap: this.props.dropIndexMap,
+                        folderAtDisplayIndex: this.props.folderAtDisplayIndex,
+                        parentFolderAtDisplayIndex: this.props.parentFolderAtDisplayIndex
                     }}
                     dragType={folderDragTypes[this.props.dragType]}
                     id={this.props.folder.id}
+                    folderId={this.props.folder.parentId || this.props.folder.folderId || null}
+                    folderOptions={folderOptions}
+                    foregroundColor={foreground}
+                    canRemoveFromFolder={!hasSiblingNameConflict(null)}
                     name={this.props.folder.name}
                     index={this.props.index}
+                    iconFilter={foreground === '#ffffff' ? 'invert(1)' : 'none'}
                     selected={false}
+                    style={{backgroundColor: 'transparent', height: '100%', width: '100%'}}
                     onClick={this.handleClick}
                     onColorButtonClick={this.handleChooseColor}
                     onDeleteButtonClick={this.handleDelete}
+                    onFolderChange={this.handleFolderChange}
                     onMoveToBottomButtonClick={this.props.showMoveActions ? this.handleMoveBottom : null}
                     onMoveToTopButtonClick={this.props.showMoveActions ? this.handleMoveTop : null}
                     onRenameButtonClick={this.handleRename}
@@ -112,10 +159,16 @@ FolderTile.propTypes = {
     className: PropTypes.string,
     dragType: PropTypes.string,
     dropIndexMap: PropTypes.arrayOf(PropTypes.number),
+    folderAtDisplayIndex: PropTypes.objectOf(PropTypes.string),
+    folderOptions: PropTypes.arrayOf(PropTypes.object),
     folder: PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
-        color: PropTypes.string
+        color: PropTypes.string,
+        folderId: PropTypes.string,
+        kind: PropTypes.string,
+        parentId: PropTypes.string,
+        scopeId: PropTypes.string
     }).isRequired,
     open: PropTypes.bool.isRequired,
     index: PropTypes.number,
@@ -123,6 +176,7 @@ FolderTile.propTypes = {
     showMoveActions: PropTypes.bool,
     onColorChange: PropTypes.func,
     onDelete: PropTypes.func,
+    onFolderChange: PropTypes.func,
     nativeDraggable: PropTypes.bool,
     onNativeDragOver: PropTypes.func,
     onNativeDragStart: PropTypes.func,
@@ -130,14 +184,19 @@ FolderTile.propTypes = {
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
     onMouseMove: PropTypes.func,
+    parentFolderAtDisplayIndex: PropTypes.objectOf(PropTypes.string),
     onRename: PropTypes.func,
     onReorder: PropTypes.func,
     vm: PropTypes.shape({
         deleteFolder: PropTypes.func.isRequired,
         moveFolderToIndex: PropTypes.func.isRequired,
         renameFolder: PropTypes.func.isRequired,
+        setFolderParent: PropTypes.func.isRequired,
         setFolderOpen: PropTypes.func.isRequired,
-        setFolderColor: PropTypes.func.isRequired
+        setFolderColor: PropTypes.func.isRequired,
+        runtime: PropTypes.shape({
+            projectFolders: PropTypes.arrayOf(PropTypes.object).isRequired
+        })
     })
 };
 

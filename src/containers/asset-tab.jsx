@@ -145,8 +145,25 @@ class AssetTab extends React.Component {
     handleDrop (dropInfo) {
         if (dropInfo.dragType === DragConstants.FOLDER_ASSET &&
             dropInfo.payload && dropInfo.payload.nativeFolderId) {
+            const sourceId = dropInfo.payload.nativeFolderId;
+            const hoveredFolderId = dropInfo.payload.folderAtDisplayIndex &&
+                dropInfo.payload.folderAtDisplayIndex[dropInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const structuralIndex = typeof dropInfo.hoveredIndex === 'number' ?
+                dropInfo.hoveredIndex : dropInfo.newIndex;
+            const destinationParentId = hoveredFolder && hoveredFolder._isOpen !== false &&
+                hoveredFolder.id !== sourceId ?
+                hoveredFolder.id : dropInfo.rootDrop ? null : dropInfo.payload.parentFolderAtDisplayIndex &&
+                    dropInfo.payload.parentFolderAtDisplayIndex[structuralIndex];
+            if (destinationParentId !== sourceId) {
+                try {
+                    this.props.vm.setFolderParent(sourceId, destinationParentId || null);
+                } catch (error) {
+                    return;
+                }
+            }
             const mappedIndex = dropInfo.payload.dropIndexMap && dropInfo.payload.dropIndexMap[dropInfo.newIndex];
-            this.handleFolderReorder(dropInfo.payload.nativeFolderId,
+            this.handleFolderReorder(sourceId,
                 typeof mappedIndex === 'number' ? mappedIndex : dropInfo.newIndex);
             return;
         }
@@ -156,8 +173,11 @@ class AssetTab extends React.Component {
             const mappedIndex = dropInfo.dropIndexMap && dropInfo.dropIndexMap[dropInfo.newIndex];
             const newIndex = typeof mappedIndex === 'number' ? mappedIndex : dropInfo.newIndex;
             const destination = assets[newIndex];
-            const destinationFolder = destination && destination.folderId &&
-                this.props.vm.runtime.projectFolders.find(folder => folder.id === destination.folderId);
+            const hoveredFolderId = dropInfo.folderAtDisplayIndex &&
+                dropInfo.folderAtDisplayIndex[dropInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const destinationFolder = hoveredFolder || (destination && destination.folderId &&
+                this.props.vm.runtime.projectFolders.find(folder => folder.id === destination.folderId));
             this.props.vm.setItemFolder('asset', this.props.vm.editingTarget.id,
                 dropInfo.index, !dropInfo.rootDrop && destinationFolder && destinationFolder._isOpen !== false ?
                     destinationFolder.id : null, newIndex);

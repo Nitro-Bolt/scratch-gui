@@ -76,6 +76,7 @@ class SpriteSelectorItem extends React.PureComponent {
             dragging: true,
             dragType: this.props.dragType,
             dropIndexMap: this.props.dropIndexMap,
+            folderAtDisplayIndex: this.props.folderAtDisplayIndex,
             index: this.props.index,
             payload: this.props.dragPayload
         });
@@ -245,6 +246,7 @@ class SpriteSelectorItem extends React.PureComponent {
             costumeURL,
             vm,
             folderId,
+            folderAtDisplayIndex,
             disableDrag,
             /* eslint-enable no-unused-vars */
             ...props
@@ -285,6 +287,7 @@ class SpriteSelectorItem extends React.PureComponent {
 SpriteSelectorItem.propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     asset: PropTypes.any,
+    canRemoveFromFolder: PropTypes.bool,
     costumeURL: PropTypes.string,
     dispatchSetHoveredSprite: PropTypes.func.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
@@ -296,6 +299,7 @@ SpriteSelectorItem.propTypes = {
     disableTargetHover: PropTypes.bool,
     dragging: PropTypes.bool,
     folderId: PropTypes.string,
+    folderAtDisplayIndex: PropTypes.objectOf(PropTypes.string),
     folderOptions: PropTypes.arrayOf(PropTypes.object),
     // eslint-disable-next-line react/forbid-prop-types
     id: PropTypes.any,

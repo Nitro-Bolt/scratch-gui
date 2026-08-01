@@ -24,10 +24,8 @@ export default async function ({ addon, console, msg }) {
     const containsQuery = (str) => str.toLowerCase().includes(query);
 
     for (const sprite of spritesContainer.children) {
-      // Search the rendered tile text instead of depending on the old folders
-      // addon's private DOM shape. Folder tiles and sprite tiles can
-      // then be filtered without either one causing an out-of-bounds lookup.
-      const visible = !query || containsQuery(sprite.textContent || "");
+      const tile = sprite.querySelector("[data-searchable-name]");
+      const visible = !query || (tile && containsQuery(tile.dataset.searchableName || ""));
       sprite.style.display = visible ? "" : "none";
     }
   };

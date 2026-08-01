@@ -3,6 +3,7 @@ import md5 from 'js-md5';
 import {soundThumbnail} from './backpack/sound-payload';
 import {arrayBufferToBase64, base64ToArrayBuffer} from './tw-base64-utils';
 import {requestPersistentStorage} from './tw-persistent-storage';
+import normalizeBackpackFolders from './backpack-folder-utils';
 
 // Special constants -- do not change without care.
 const DATABASE_NAME = 'TW_Backpack';
@@ -123,10 +124,12 @@ const getBackpackContents = async ({
 }) => {
     const db = await openDB();
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(STORE_NAME, 'readonly');
+        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        let result;
         transaction.onerror = event => {
             reject(new Error(`Getting contents: ${event.target.error}`));
         };
+        transaction.oncomplete = () => resolve(result);
         const store = transaction.objectStore(STORE_NAME);
         const items = [];
         const request = store.openCursor(null, 'prev');
@@ -136,10 +139,14 @@ const getBackpackContents = async ({
                 items.push(cursor.value);
                 cursor.continue();
             } else {
+                const normalizedItems = normalizeBackpackFolders(items);
+                normalizedItems.forEach((item, index) => {
+                    if (item !== items[index]) store.put(item);
+                });
                 const start = typeof offset === 'number' ? offset : 0;
-                const end = typeof limit === 'number' ? start + limit : items.length;
-                resolve(sortBackpackItems(items).slice(start, end)
-                    .map(idbItemToBackpackItem));
+                const end = typeof limit === 'number' ? start + limit : normalizedItems.length;
+                result = sortBackpackItems(normalizedItems).slice(start, end)
+                    .map(item => idbItemToBackpackItem({...item}));
             }
         };
     });
@@ -230,7 +237,7 @@ const updateBackpackObject = async ({
 /**
  * Delete an item while keeping folder membership consistent. All records
  * are examined in the same transaction so this is safe when the UI is paginated.
- * Deleting a folder moves all of its children to the backpack root. Deleting the
+ * Deleting a folder moves all of its children to its parent. Deleting the
  * final child of a folder also deletes the now-empty folder.
  * @param {object} options delete options
  * @param {string} options.id item ID
@@ -270,7 +277,7 @@ const deleteBackpackObjectWithFolders = async ({id}) => {
 
             if (item.type === 'folder') {
                 const children = records.filter(record => idsEqual(record.folderId, item.id));
-                children.forEach(child => store.put({...child, folderId: null}));
+                children.forEach(child => store.put({...child, folderId: item.folderId || null}));
                 store.delete(numericId);
                 result = {
                     deletedFolderId: `${item.id}`,
@@ -281,11 +288,23 @@ const deleteBackpackObjectWithFolders = async ({id}) => {
 
             store.delete(numericId);
             const oldFolderId = item.folderId || null;
-            const oldFolderHasChildren = oldFolderId && records.some(record =>
-                !idsEqual(record.id, item.id) && idsEqual(record.folderId, oldFolderId));
-            if (oldFolderId && !oldFolderHasChildren) store.delete(+oldFolderId);
+            const removedIds = new Set([`${item.id}`]);
+            let candidate = oldFolderId && records.find(record =>
+                record.type === 'folder' && idsEqual(record.id, oldFolderId));
+            while (candidate) {
+                const candidateId = candidate.id;
+                if (records.some(record => !removedIds.has(`${record.id}`) &&
+                    idsEqual(record.folderId, candidateId))) break;
+                removedIds.add(`${candidate.id}`);
+                store.delete(+candidate.id);
+                const parentId = candidate.folderId;
+                candidate = parentId && records.find(record =>
+                    record.type === 'folder' && idsEqual(record.id, parentId));
+            }
+            const deletedFolderIds = Array.from(removedIds).filter(removedId => !idsEqual(removedId, item.id));
             result = {
-                deletedFolderId: oldFolderId && !oldFolderHasChildren ? `${oldFolderId}` : null,
+                deletedFolderId: deletedFolderIds[0] || null,
+                deletedFolderIds,
                 detachedItemIds: []
             };
         };
@@ -334,11 +353,36 @@ const moveBackpackObjectToFolder = async ({id, folderId, destinationId = null, i
             const destinationFolder = destinationFolderId && records.find(record =>
                 record.type === 'folder' && idsEqual(record.id, destinationFolderId));
             const dropDestination = destinationId && records.find(record => idsEqual(record.id, destinationId));
-            if (!item || item.type === 'folder' || (destinationFolderId && !destinationFolder) ||
+            if (!item || (destinationFolderId && !destinationFolder) ||
                 (destinationId && !dropDestination)) {
                 failed = true;
                 reject(new Error('Invalid backpack folder move'));
                 return;
+            }
+            if (item.type === 'folder') {
+                if (destinationFolder && idsEqual(destinationFolder.id, item.id)) {
+                    failed = true;
+                    reject(new Error('A backpack folder cannot contain itself'));
+                    return;
+                }
+                let ancestor = destinationFolder;
+                const visitedAncestorIds = new Set();
+                while (ancestor && !visitedAncestorIds.has(`${ancestor.id}`)) {
+                    if (idsEqual(ancestor.id, item.id)) {
+                        failed = true;
+                        reject(new Error('A backpack folder cannot be moved into its descendant'));
+                        return;
+                    }
+                    visitedAncestorIds.add(`${ancestor.id}`);
+                    const ancestorFolderId = ancestor.folderId;
+                    ancestor = ancestorFolderId && records.find(record =>
+                        record.type === 'folder' && idsEqual(record.id, ancestorFolderId));
+                }
+                if (ancestor) {
+                    failed = true;
+                    reject(new Error('Backpack folder hierarchy contains a cycle'));
+                    return;
+                }
             }
 
             const oldFolderId = item.folderId || null;
@@ -355,14 +399,25 @@ const moveBackpackObjectToFolder = async ({id, folderId, destinationId = null, i
 
             const oldFolder = oldFolderId && records.find(record =>
                 record.type === 'folder' && idsEqual(record.id, oldFolderId));
-            const oldFolderHasChildren = oldFolder &&
-                records.some(record => !idsEqual(record.id, item.id) && idsEqual(record.folderId, oldFolderId));
-            const deletedFolderId = membershipChanged && oldFolder && !oldFolderHasChildren ? `${oldFolderId}` : null;
-            if (deletedFolderId) store.delete(+deletedFolderId);
+            const removedIds = new Set([`${item.id}`]);
+            const deletedFolderIds = [];
+            let emptyCandidate = membershipChanged && oldFolder;
+            while (emptyCandidate) {
+                const candidateId = emptyCandidate.id;
+                if (destinationFolderId && idsEqual(candidateId, destinationFolderId)) break;
+                if (records.some(record => !removedIds.has(`${record.id}`) &&
+                    idsEqual(record.folderId, candidateId))) break;
+                deletedFolderIds.push(`${emptyCandidate.id}`);
+                removedIds.add(`${emptyCandidate.id}`);
+                store.delete(+emptyCandidate.id);
+                const parentId = emptyCandidate.folderId;
+                emptyCandidate = parentId && records.find(record =>
+                    record.type === 'folder' && idsEqual(record.id, parentId));
+            }
+            const deletedFolderId = deletedFolderIds[0] || null;
 
             const originalIndex = records.indexOf(item);
-            const reordered = records.filter(record => !idsEqual(record.id, item.id) &&
-                (!deletedFolderId || !idsEqual(record.id, deletedFolderId)));
+            const reordered = records.filter(record => !removedIds.has(`${record.id}`));
             let insertionIndex = Math.min(originalIndex, reordered.length);
             if (reorderRequested) {
                 const destinationIndex = reordered.findIndex(record =>
@@ -404,6 +459,7 @@ const moveBackpackObjectToFolder = async ({id, folderId, destinationId = null, i
             result = {
                 item: storedItem,
                 deletedFolderId,
+                deletedFolderIds,
                 orderedIds
             };
         };
@@ -413,82 +469,11 @@ const moveBackpackObjectToFolder = async ({id, folderId, destinationId = null, i
     }));
 };
 
-/**
- * Persist a folder drag by assigning a stable order to every backpack record.
- * Folder children travel with their folder, including children outside the
- * currently loaded UI page.
- * @param {object} options reorder options
- * @param {string} options.sourceId dragged folder ID
- * @param {string} options.destinationId destination item or folder ID
- * @param {boolean} options.insertAfter whether to insert after the destination group
- * @returns {Promise<Array<string>>} complete ordered list of record IDs
- */
-const reorderBackpackFolder = async ({sourceId, destinationId, insertAfter = false}) => {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction(STORE_NAME, 'readwrite');
-        const store = transaction.objectStore(STORE_NAME);
-        const records = [];
-        let failed = false;
-        let orderedIds = [];
-
-        transaction.onerror = event => {
-            reject(new Error(`Reordering backpack folder: ${event.target.error}`));
-        };
-        transaction.oncomplete = () => {
-            if (!failed) resolve(orderedIds);
-        };
-
-        const cursorRequest = store.openCursor();
-        cursorRequest.onsuccess = event => {
-            const cursor = event.target.result;
-            if (cursor) {
-                records.push(cursor.value);
-                cursor.continue();
-                return;
-            }
-
-            sortBackpackItems(records);
-            const source = records.find(record => record.type === 'folder' && idsEqual(record.id, sourceId));
-            const destinationItem = records.find(record => idsEqual(record.id, destinationId));
-            const destinationFolder = destinationItem && destinationItem.folderId && records.find(record =>
-                record.type === 'folder' && idsEqual(record.id, destinationItem.folderId));
-            const destination = destinationFolder || destinationItem;
-            if (!source || !destination) {
-                failed = true;
-                reject(new Error('Invalid backpack folder reorder'));
-                return;
-            }
-
-            if (idsEqual(source.id, destination.id)) {
-                orderedIds = records.map(record => `${record.id}`);
-                return;
-            }
-
-            const group = [source].concat(records.filter(record =>
-                !idsEqual(record.id, source.id) && idsEqual(record.folderId, source.id)));
-            const remainder = records.filter(record =>
-                !idsEqual(record.id, source.id) && !idsEqual(record.folderId, source.id));
-            let destinationIndex = remainder.findIndex(record => idsEqual(record.id, destination.id));
-            if (insertAfter) {
-                destinationIndex++;
-                if (destination.type === 'folder') {
-                    while (destinationIndex < remainder.length &&
-                        idsEqual(remainder[destinationIndex].folderId, destination.id)) destinationIndex++;
-                }
-            }
-            remainder.splice(destinationIndex, 0, ...group);
-            orderedIds = persistBackpackOrder(store, remainder);
-        };
-    });
-};
-
 export default {
     getBackpackContents,
     saveBackpackObject,
     deleteBackpackObject,
     updateBackpackObject,
     deleteBackpackObjectWithFolders,
-    moveBackpackObjectToFolder,
-    reorderBackpackFolder
+    moveBackpackObjectToFolder
 };

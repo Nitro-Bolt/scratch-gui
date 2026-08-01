@@ -4,16 +4,6 @@
     overflow: hidden;
 }
 
-.folder-tile > :first-child {
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-}
-
-.folder-tile > :first-child > div {
-    background-color: transparent;
-}
-
 .color-picker {
     position: fixed;
     width: 1px;

@@ -14,6 +14,15 @@ import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-k
 const noop = () => {};
 const BACKPACK_FOLDER_DRAG_TYPE = 'application/x-nitrobolt-folder';
 const idsEqual = (first, second) => `${first}` === `${second}`;
+const getHorizontalDropPosition = (element, event) => {
+    const box = element.getBoundingClientRect();
+    const position = box.width ? (event.clientX - box.left) / box.width : 0.5;
+    const isRtl = document.documentElement.dir === 'rtl';
+    return {
+        insertAfter: isRtl ? position < 0.5 : position > 0.5,
+        isCenter: position >= 0.25 && position <= 0.75
+    };
+};
 
 const dragTypeMap = { // Keys correspond with the backpack-server item types
     costume: DragConstants.BACKPACK_COSTUME,
@@ -75,7 +84,6 @@ const Backpack = ({
     onCreateFolder,
     onFolderColorChange,
     onFolderDropTargetChange,
-    onFolderReorder,
     onFolderToggle,
     onMoveToFolder,
     foldersEnabled,
@@ -86,15 +94,28 @@ const Backpack = ({
         .map(item => item.id);
     const [draggedFolderId, setDraggedFolderId] = React.useState(null);
     const isFolderClosed = folderId => closedFolders.some(id => idsEqual(id, folderId));
+    const folders = foldersEnabled ? contents.filter(item => item.type === 'folder') : [];
+    const getDescendantFolderIds = folderId => {
+        const descendantIds = new Set([`${folderId}`]);
+        let foundDescendant = true;
+        while (foundDescendant) {
+            foundDescendant = false;
+            for (const folder of folders) {
+                if (folder.folderId && descendantIds.has(`${folder.folderId}`) &&
+                    !descendantIds.has(`${folder.id}`)) {
+                    descendantIds.add(`${folder.id}`);
+                    foundDescendant = true;
+                }
+            }
+        }
+        return descendantIds;
+    };
     const setFolderDropTarget = (folderId, destinationId = null, insertAfter = false) => {
         if (onFolderDropTargetChange) onFolderDropTargetChange(folderId, destinationId, insertAfter);
     };
-    const updateFolderDropTarget = (folderId, destinationId, event) => {
-        const box = event.currentTarget.getBoundingClientRect();
-        const midpoint = box.left + (box.width / 2);
-        const isRtl = document.documentElement.dir === 'rtl';
-        const insertAfter = isRtl ? event.clientX < midpoint : event.clientX > midpoint;
-        setFolderDropTarget(folderId, destinationId, insertAfter);
+    const updateFolderDropTarget = (folderId, destinationId, event, edgeFolderId = folderId) => {
+        const {insertAfter, isCenter} = getHorizontalDropPosition(event.currentTarget, event);
+        setFolderDropTarget(isCenter ? folderId : edgeFolderId, destinationId, insertAfter);
     };
     registerKeyboardShortcut(
         preferences['keybind-open-backpack'] ?? defaultKeyboardShortcuts['open-backpack'],
@@ -122,15 +143,23 @@ const Backpack = ({
             return;
         }
         if (sourceId) {
-            const box = event.currentTarget.getBoundingClientRect();
-            const midpoint = box.left + (box.width / 2);
-            const isRtl = document.documentElement.dir === 'rtl';
-            const insertAfter = isRtl ? event.clientX < midpoint : event.clientX > midpoint;
-            onFolderReorder(sourceId, destinationId, insertAfter);
+            const destinationFolder = contents.find(item => item.type === 'folder' && idsEqual(item.id, destinationId));
+            const {insertAfter, isCenter} = getHorizontalDropPosition(event.currentTarget, event);
+            if (destinationFolder && !isFolderClosed(destinationFolder.id) && isCenter) {
+                if (getDescendantFolderIds(sourceId).has(`${destinationFolder.id}`)) {
+                    setDraggedFolderId(null);
+                    return;
+                }
+                onMoveToFolder(sourceId, destinationFolder.id, event, destinationFolder.id);
+                setDraggedFolderId(null);
+                return;
+            }
+            const destinationItem = contents.find(item => idsEqual(item.id, destinationId));
+            onMoveToFolder(sourceId, (destinationItem && destinationItem.folderId) || null,
+                event, destinationId, insertAfter);
         }
         setDraggedFolderId(null);
     };
-    const folders = foldersEnabled ? contents.filter(item => item.type === 'folder') : [];
     const renderedIds = new Set();
     const renderItem = item => {
         const folder = item.folderId && folders.find(candidate => idsEqual(candidate.id, item.folderId));
@@ -167,8 +196,56 @@ const Backpack = ({
                     updateFolderDropTarget(dropFolderId, item.id, event) : null}
                 onNativeDragOver={foldersEnabled ? handleFolderDragOver : null}
                 onNativeDrop={foldersEnabled ? event =>
-                    handleFolderDrop(folder ? folder.id : item.id, event) : null}
+                    handleFolderDrop(item.id, event) : null}
             />
+        );
+    };
+    const renderFolder = item => {
+        if (renderedIds.has(item.id)) return null;
+        const descendantIds = getDescendantFolderIds(item.id);
+        const folderOptions = folders.filter(folder => !descendantIds.has(`${folder.id}`));
+        const children = contents.filter(child => idsEqual(child.folderId, item.id));
+        renderedIds.add(item.id);
+        return (
+            <React.Fragment key={item.id}>
+                <FolderTile
+                    className={styles.backpackItem}
+                    folder={item}
+                    folderOptions={folderOptions}
+                    nativeDraggable
+                    open={!isFolderClosed(item.id)}
+                    onColorChange={onFolderColorChange}
+                    onDelete={onDelete}
+                    onFolderChange={(id, parentId, event) => onMoveToFolder(id, parentId, event)}
+                    onMouseEnter={event => updateFolderDropTarget(
+                        isFolderClosed(item.id) ? null : item.id,
+                        item.id,
+                        event,
+                        item.folderId || null
+                    )}
+                    onMouseLeave={() => setFolderDropTarget(null)}
+                    onMouseMove={event => updateFolderDropTarget(
+                        isFolderClosed(item.id) ? null : item.id,
+                        item.id,
+                        event,
+                        item.folderId || null
+                    )}
+                    onRename={onRename}
+                    onToggle={toggleFolder}
+                    onNativeDragOver={handleFolderDragOver}
+                    onNativeDragStart={event => {
+                        event.dataTransfer.setData(BACKPACK_FOLDER_DRAG_TYPE, item.id);
+                        event.dataTransfer.effectAllowed = 'move';
+                        setDraggedFolderId(item.id);
+                    }}
+                    onNativeDrop={event => handleFolderDrop(item.id, event)}
+                />
+                {isFolderClosed(item.id) ? null : children.map(child => {
+                    if (child.type === 'folder') return renderFolder(child);
+                    renderedIds.add(child.id);
+                    return renderItem(child);
+                })}
+            </React.Fragment>
         );
     };
     return (
@@ -234,10 +311,12 @@ const Backpack = ({
                             contents.length > 0 ? (
                                 <div
                                     className={styles.backpackListInner}
+                                    onDragOver={foldersEnabled ? handleFolderDragOver : null}
                                     onDragEnd={() => {
                                         setDraggedFolderId(null);
                                         setFolderDropTarget(null);
                                     }}
+                                    onDrop={foldersEnabled ? event => handleFolderDrop(null, event) : null}
                                 >
                                     {contents.map(item => {
                                         if (renderedIds.has(item.id) || (item.folderId && folders.some(
@@ -247,41 +326,7 @@ const Backpack = ({
                                             renderedIds.add(item.id);
                                             return renderItem(item);
                                         }
-                                        const children = contents.filter(child => idsEqual(child.folderId, item.id));
-                                        renderedIds.add(item.id);
-                                        children.forEach(child => renderedIds.add(child.id));
-                                        return (
-                                            <React.Fragment key={item.id}>
-                                                <FolderTile
-                                                    className={styles.backpackItem}
-                                                    folder={item}
-                                                    nativeDraggable
-                                                    open={!isFolderClosed(item.id)}
-                                                    onColorChange={onFolderColorChange}
-                                                    onDelete={onDelete}
-                                                    onMouseEnter={() => setFolderDropTarget(
-                                                        isFolderClosed(item.id) ? null : item.id,
-                                                        item.id
-                                                    )}
-                                                    onMouseLeave={() => setFolderDropTarget(null)}
-                                                    onMouseMove={event => updateFolderDropTarget(
-                                                        isFolderClosed(item.id) ? null : item.id,
-                                                        item.id,
-                                                        event
-                                                    )}
-                                                    onRename={onRename}
-                                                    onToggle={toggleFolder}
-                                                    onNativeDragOver={handleFolderDragOver}
-                                                    onNativeDragStart={event => {
-                                                        event.dataTransfer.setData(BACKPACK_FOLDER_DRAG_TYPE, item.id);
-                                                        event.dataTransfer.effectAllowed = 'move';
-                                                        setDraggedFolderId(item.id);
-                                                    }}
-                                                    onNativeDrop={event => handleFolderDrop(item.id, event)}
-                                                />
-                                                {isFolderClosed(item.id) ? null : children.map(renderItem)}
-                                            </React.Fragment>
-                                        );
+                                        return renderFolder(item);
                                     })}
                                     {showMore && (
                                         <button
@@ -334,7 +379,6 @@ Backpack.propTypes = {
     onCreateFolder: PropTypes.func,
     onFolderColorChange: PropTypes.func,
     onFolderDropTargetChange: PropTypes.func,
-    onFolderReorder: PropTypes.func,
     onFolderToggle: PropTypes.func,
     onMoveToFolder: PropTypes.func,
     onMouseEnter: PropTypes.func,

@@ -50,10 +50,12 @@ const SpriteList = function (props) {
     const {
         displayLength,
         dropIndexMap,
+        entries,
+        folderAtDisplayIndex,
         folderDisplayOrder,
-        groups,
         hasFolders,
-        itemDisplayOrder
+        itemDisplayOrder,
+        parentFolderAtDisplayIndex
     } = buildFolderLayout(items, vm.runtime.projectFolders, closedFolders);
 
     const isSpriteDrag = draggingType === DragConstants.SPRITE;
@@ -118,6 +120,7 @@ const SpriteList = function (props) {
                     dropIndexMap={dropIndexMap}
                     id={candidate.id}
                     folderId={candidateFolder ? candidate.folderId : null}
+                    folderAtDisplayIndex={folderAtDisplayIndex}
                     index={candidateIndex}
                     key={candidate.id}
                     name={candidate.name}
@@ -141,36 +144,29 @@ const SpriteList = function (props) {
             <Box
                 className={styles.itemsWrapper}
             >
-                {groups.map(group => {
-                    const {folder} = group;
-                    if (!folder) {
-                        return renderSprite(items[group.firstIndex], group.firstIndex, null);
-                    }
-                    return (
-                        <React.Fragment key={folder.id}>
-                            <SortableAsset
-                                className={styles.spriteWrapper}
-                                index={getDisplayOrder(folderDisplayOrder[folder.id])}
-                                onAddSortable={onAddSortable}
-                                onRemoveSortable={onRemoveSortable}
-                            >
-                                <FolderTile
-                                    className={styles.sprite}
-                                    dragType={DragConstants.SPRITE}
-                                    dropIndexMap={dropIndexMap}
-                                    folder={folder}
-                                    index={group.firstIndex}
-                                    open={group.isOpen}
-                                    vm={vm}
-                                    onToggle={handleToggleFolder}
-                                />
-                            </SortableAsset>
-                            {group.isOpen ? group.itemIndices.map(candidateIndex =>
-                                renderSprite(items[candidateIndex], candidateIndex, folder)
-                            ) : null}
-                        </React.Fragment>
-                    );
-                })}
+                {entries.map(entry => (entry.type === 'item' ?
+                    renderSprite(items[entry.itemIndex], entry.itemIndex, entry.folder) : (
+                        <SortableAsset
+                            className={styles.spriteWrapper}
+                            index={getDisplayOrder(folderDisplayOrder[entry.folder.id])}
+                            key={entry.folder.id}
+                            onAddSortable={onAddSortable}
+                            onRemoveSortable={onRemoveSortable}
+                        >
+                            <FolderTile
+                                className={styles.sprite}
+                                dragType={DragConstants.SPRITE}
+                                dropIndexMap={dropIndexMap}
+                                folder={entry.folder}
+                                folderAtDisplayIndex={folderAtDisplayIndex}
+                                index={entry.firstIndex}
+                                open={entry.isOpen}
+                                parentFolderAtDisplayIndex={parentFolderAtDisplayIndex}
+                                vm={vm}
+                                onToggle={handleToggleFolder}
+                            />
+                        </SortableAsset>
+                    )))}
             </Box>
         </Box>
     );

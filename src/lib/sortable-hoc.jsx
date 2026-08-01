@@ -36,6 +36,7 @@ const SortableHOC = function (WrappedComponent) {
                 const newIndex = this.getMouseOverIndex();
                 if (newIndex !== null) {
                     this.props.onDrop(Object.assign({}, this.props.dragInfo, {
+                        hoveredIndex: this.getHoveredIndex(),
                         newIndex,
                         rootDrop: this.isRootDrop()
                     }));
@@ -90,6 +91,13 @@ const SortableHOC = function (WrappedComponent) {
                 }
             }
             return mouseOverIndex;
+        }
+        getHoveredIndex () {
+            if (!this.props.dragInfo.currentOffset || !this.boxes) return null;
+            const {x, y} = this.props.dragInfo.currentOffset;
+            const index = this.boxes.findIndex(box => box &&
+                x >= box.left && x <= box.right && y >= box.top && y <= box.bottom);
+            return index < 0 ? null : index;
         }
         isRootDrop () {
             if (!this.props.dragInfo.currentOffset || !this.boxes || this.boxes.length === 0) return false;

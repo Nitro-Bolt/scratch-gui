@@ -10,7 +10,6 @@ import {
     updateBackpackObject,
     deleteBackpackObjectWithFolders,
     moveBackpackObjectToFolder,
-    reorderBackpackFolder,
     soundPayload,
     assetPayload,
     costumePayload,
@@ -63,7 +62,6 @@ class Backpack extends React.Component {
             'handleCreateFolder',
             'handleFolderColorChange',
             'handleFolderDropTargetChange',
-            'handleFolderReorder',
             'handleFolderToggle',
             'handleMoveToFolder',
             'getBackpackAssetURL',
@@ -208,10 +206,11 @@ class Backpack extends React.Component {
                         folderId: destinationFolderId,
                         destinationId: dropTarget && dropTarget.destinationId,
                         insertAfter: dropTarget && dropTarget.insertAfter
-                    }).then(({item: updatedItem, deletedFolderId, orderedIds}) => this.setState({
+                    }).then(({item: updatedItem, deletedFolderId, deletedFolderIds = [], orderedIds}) => this.setState({
                         loading: false,
                         contents: sortByBackpackOrder(contents
-                            .filter(candidate => !deletedFolderId || !idsEqual(candidate.id, deletedFolderId))
+                            .filter(candidate => !deletedFolderIds.some(folderId => idsEqual(candidate.id, folderId)) &&
+                                (!deletedFolderId || !idsEqual(candidate.id, deletedFolderId)))
                             .map(candidate => (idsEqual(candidate.id, item.id) ? updatedItem : candidate)), orderedIds)
                     }));
                 })
@@ -251,10 +250,11 @@ class Backpack extends React.Component {
                 id: item.id,
                 folderId: folder.id
             })
-                .then(({item: updatedItem, deletedFolderId, orderedIds}) => this.setState({
+                .then(({item: updatedItem, deletedFolderId, deletedFolderIds = [], orderedIds}) => this.setState({
                     loading: false,
                     contents: sortByBackpackOrder(contents
-                        .filter(candidate => !deletedFolderId || !idsEqual(candidate.id, deletedFolderId))
+                        .filter(candidate => !deletedFolderIds.some(deletedId => idsEqual(candidate.id, deletedId)) &&
+                            (!deletedFolderId || !idsEqual(candidate.id, deletedFolderId)))
                         .map(candidate => (idsEqual(candidate.id, item.id) ? updatedItem : candidate)), orderedIds)
                 }))
                 .catch(error => deleteBackpackObject({
@@ -283,13 +283,15 @@ class Backpack extends React.Component {
             }
 
             deleteBackpackObjectWithFolders({host: this.props.host, id})
-                .then(({deletedFolderId}) => this.setState({
+                .then(({deletedFolderId, deletedFolderIds = []}) => this.setState({
                     loading: false,
                     contents: this.state.contents
                         .filter(candidate => !idsEqual(candidate.id, id) &&
+                            !deletedFolderIds.some(folderId => idsEqual(candidate.id, folderId)) &&
                             (!deletedFolderId || !idsEqual(candidate.id, deletedFolderId)))
                         .map(candidate => (item && item.type === 'folder' &&
-                            idsEqual(candidate.folderId, id) ? {...candidate, folderId: null} : candidate))
+                            idsEqual(candidate.folderId, id) ?
+                            {...candidate, folderId: item.folderId || null} : candidate))
                 }))
                 .catch(error => this.handleError(error));
         });
@@ -343,19 +345,6 @@ class Backpack extends React.Component {
             insertAfter: Boolean(insertAfter)
         };
     }
-    handleFolderReorder (sourceId, destinationId, insertAfter) {
-        if (this.props.host !== LOCAL_API || idsEqual(sourceId, destinationId)) return;
-        this.setState({loading: true}, () => {
-            reorderBackpackFolder({host: this.props.host, sourceId, destinationId, insertAfter})
-                .then(orderedIds => {
-                    this.setState({
-                        loading: false,
-                        contents: sortByBackpackOrder(this.state.contents, orderedIds)
-                    });
-                })
-                .catch(error => this.handleError(error));
-        });
-    }
     handleFolderToggle (id, open) {
         if (this.props.host !== LOCAL_API) return;
         this.setState({
@@ -382,10 +371,11 @@ class Backpack extends React.Component {
                 destinationId,
                 insertAfter
             })
-                .then(({item: newItem, deletedFolderId, orderedIds}) => this.setState({
+                .then(({item: newItem, deletedFolderId, deletedFolderIds = [], orderedIds}) => this.setState({
                     loading: false,
                     contents: sortByBackpackOrder(this.state.contents
-                        .filter(candidate => !deletedFolderId || !idsEqual(candidate.id, deletedFolderId))
+                        .filter(candidate => !deletedFolderIds.some(deletedId => idsEqual(candidate.id, deletedId)) &&
+                            (!deletedFolderId || !idsEqual(candidate.id, deletedFolderId)))
                         .map(candidate => (idsEqual(candidate.id, id) ? newItem : candidate)), orderedIds)
                 }))
                 .catch(error => this.handleError(error));
@@ -469,7 +459,6 @@ class Backpack extends React.Component {
                 onCreateFolder={this.handleCreateFolder}
                 onFolderColorChange={this.handleFolderColorChange}
                 onFolderDropTargetChange={this.handleFolderDropTargetChange}
-                onFolderReorder={this.handleFolderReorder}
                 onFolderToggle={this.handleFolderToggle}
                 onMoveToFolder={this.handleMoveToFolder}
                 onMouseEnter={this.handleMouseEnter}

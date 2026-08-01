@@ -136,13 +136,6 @@ const moveBackpackObjectToFolder = ({host, id, folderId, destinationId, insertAf
         reject(new Error('Native backpack folders are not supported by this host'));
     });
 
-const reorderBackpackFolder = ({host, sourceId, destinationId, insertAfter}) => new Promise((resolve, reject) => {
-    if (host === LOCAL_API) {
-        return resolve(localBackpackAPI.reorderBackpackFolder({sourceId, destinationId, insertAfter}));
-    }
-    reject(new Error('Native backpack folders are not supported by this host'));
-});
-
 // Two types of backpack items are not retreivable through storage
 // code, as json and sprite3 as arraybuffer zips.
 const fetchAs = (responseType, uri) => new Promise((resolve, reject) => {
@@ -166,7 +159,6 @@ export {
     updateBackpackObject,
     deleteBackpackObjectWithFolders,
     moveBackpackObjectToFolder,
-    reorderBackpackFolder,
     costumePayload,
     soundPayload,
     assetPayload,

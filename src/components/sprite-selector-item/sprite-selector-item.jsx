@@ -27,9 +27,24 @@ FolderMenuItem.propTypes = {
     onSelect: PropTypes.func.isRequired
 };
 
+const getFolderLabel = (folder, folders) => {
+    const foldersById = new Map(folders.map(candidate => [`${candidate.id}`, candidate]));
+    const names = [];
+    const visitedIds = new Set();
+    let current = folder;
+    while (current && !visitedIds.has(`${current.id}`)) {
+        names.unshift(current.name);
+        visitedIds.add(`${current.id}`);
+        const parentId = current.parentId || current.folderId;
+        current = parentId ? foldersById.get(`${parentId}`) : null;
+    }
+    return names.join(' / ');
+};
+
 const hasContextMenu = props => Boolean(props.onDuplicateButtonClick || props.onDeleteButtonClick ||
     props.onExportButtonClick || props.onExportBitmapButtonClick || props.onMoveToTopButtonClick ||
-    props.onMoveToBottomButtonClick || props.onCreateFolder || props.onColorButtonClick);
+    props.onMoveToBottomButtonClick || props.onCreateFolder || props.onColorButtonClick ||
+    props.onRenameButtonClick || props.onFolderChange);
 
 const SpriteSelectorItem = props => (
     <ContextMenuTrigger
@@ -37,6 +52,7 @@ const SpriteSelectorItem = props => (
             className: classNames(props.className, styles.spriteSelectorItem, {
                 [styles.isSelected]: props.selected
             }),
+            ...(typeof props.name === 'string' ? {'data-searchable-name': props.name} : {}),
             style: props.style,
             onClick: props.onClick,
             onDragOver: props.onNativeDragOver,
@@ -58,15 +74,20 @@ const SpriteSelectorItem = props => (
             <div className={styles.spriteImageOuter}>
                 <div className={styles.spriteImageInner}>
                     <img
+                        alt=""
                         className={styles.spriteImage}
                         draggable={false}
                         loading="lazy"
                         src={props.costumeURL}
+                        style={props.iconFilter ? {filter: props.iconFilter} : null}
                     />
                 </div>
             </div>
         ) : null}
-        <div className={styles.spriteInfo}>
+        <div
+            className={styles.spriteInfo}
+            style={props.foregroundColor ? {color: props.foregroundColor} : null}
+        >
             <div className={styles.spriteName}>{props.name}</div>
             {props.details ? (
                 <div className={styles.spriteDetails}>{props.details}</div>
@@ -152,7 +173,7 @@ const SpriteSelectorItem = props => (
                         />
                     </MenuItem>
                 ) : null}
-                {props.folderId ? (
+                {props.folderId && props.canRemoveFromFolder ? (
                     <FolderMenuItem
                         folderId={null}
                         onSelect={props.onFolderChange}
@@ -182,7 +203,7 @@ const SpriteSelectorItem = props => (
                                 key={folder.id}
                                 onSelect={props.onFolderChange}
                             >
-                                {folder.name}
+                                {getFolderLabel(folder, props.folderOptions)}
                             </FolderMenuItem>
                         ))}
                     </SubMenu>
@@ -202,12 +223,14 @@ const SpriteSelectorItem = props => (
 );
 
 SpriteSelectorItem.propTypes = {
+    canRemoveFromFolder: PropTypes.bool,
     className: PropTypes.string,
     componentRef: PropTypes.func,
     contextMenuId: PropTypes.string.isRequired,
     costumeURL: PropTypes.string,
     details: PropTypes.string,
     folderId: PropTypes.string,
+    foregroundColor: PropTypes.string,
     folderOptions: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired
@@ -222,6 +245,7 @@ SpriteSelectorItem.propTypes = {
     onExportButtonClick: PropTypes.func,
     onExportBitmapButtonClick: PropTypes.func,
     isBitmap: PropTypes.bool,
+    iconFilter: PropTypes.string,
     onRenameButtonClick: PropTypes.func,
     onMoveToTopButtonClick: PropTypes.func,
     onMoveToBottomButtonClick: PropTypes.func,
@@ -240,6 +264,7 @@ SpriteSelectorItem.propTypes = {
 };
 
 SpriteSelectorItem.defaultProps = {
+    canRemoveFromFolder: true,
     folderOptions: []
 };
 
