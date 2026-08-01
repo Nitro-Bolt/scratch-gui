@@ -271,9 +271,9 @@ const InspectBlockModal = props => {
                         </DetailRow>
                         <DetailRow label="Size">
                             <span>{`${
-                                block.getHeightWidth().width
+                                round(block.getHeightWidth().width)
                             } x ${
-                                block.getHeightWidth().height
+                                round(block.getHeightWidth().height)
                             }`}</span>
                         </DetailRow>
                         <DetailRow label="Shadow">
