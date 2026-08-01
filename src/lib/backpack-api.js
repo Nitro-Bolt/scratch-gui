@@ -116,9 +116,9 @@ const updateBackpackObject = options => new Promise((resolve, reject) => {
     reject(new Error('updateBackpackObject not supported'));
 });
 
-const deleteBackpackObjectWithFolders = ({host, id}) => new Promise((resolve, reject) => {
+const deleteBackpackObjectWithFolders = ({host, id, deleteContents}) => new Promise((resolve, reject) => {
     if (host === LOCAL_API) {
-        return resolve(localBackpackAPI.deleteBackpackObjectWithFolders({id}));
+        return resolve(localBackpackAPI.deleteBackpackObjectWithFolders({id, deleteContents}));
     }
     reject(new Error('Native backpack folders are not supported by this host'));
 });

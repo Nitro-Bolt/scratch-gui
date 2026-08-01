@@ -241,9 +241,10 @@ const updateBackpackObject = async ({
  * final child of a folder also deletes the now-empty folder.
  * @param {object} options delete options
  * @param {string} options.id item ID
+ * @param {boolean} options.deleteContents recursively delete folder contents
  * @returns {Promise<object>} information needed to update the loaded UI page
  */
-const deleteBackpackObjectWithFolders = async ({id}) => {
+const deleteBackpackObjectWithFolders = async ({id, deleteContents = false}) => {
     const numericId = +id;
     const db = await openDB();
     return new Promise((resolve, reject) => {
@@ -276,11 +277,50 @@ const deleteBackpackObjectWithFolders = async ({id}) => {
             }
 
             if (item.type === 'folder') {
+                if (deleteContents) {
+                    const folderIds = new Set([`${item.id}`]);
+                    let foundDescendant = true;
+                    while (foundDescendant) {
+                        foundDescendant = false;
+                        for (const record of records) {
+                            if (record.type === 'folder' && record.folderId &&
+                                folderIds.has(`${record.folderId}`) && !folderIds.has(`${record.id}`)) {
+                                folderIds.add(`${record.id}`);
+                                foundDescendant = true;
+                            }
+                        }
+                    }
+                    const removedIds = new Set(records
+                        .filter(record => folderIds.has(`${record.id}`) ||
+                            (record.folderId && folderIds.has(`${record.folderId}`)))
+                        .map(record => `${record.id}`));
+                    let emptyCandidate = item.folderId && records.find(record =>
+                        record.type === 'folder' && idsEqual(record.id, item.folderId));
+                    while (emptyCandidate) {
+                        const candidateId = emptyCandidate.id;
+                        if (records.some(record => !removedIds.has(`${record.id}`) &&
+                            idsEqual(record.folderId, candidateId))) break;
+                        folderIds.add(`${candidateId}`);
+                        removedIds.add(`${candidateId}`);
+                        const parentId = emptyCandidate.folderId;
+                        emptyCandidate = parentId && records.find(record =>
+                            record.type === 'folder' && idsEqual(record.id, parentId));
+                    }
+                    removedIds.forEach(deletedId => store.delete(+deletedId));
+                    result = {
+                        deletedFolderId: `${item.id}`,
+                        deletedFolderIds: Array.from(folderIds),
+                        deletedIds: Array.from(removedIds),
+                        detachedItemIds: []
+                    };
+                    return;
+                }
                 const children = records.filter(record => idsEqual(record.folderId, item.id));
                 children.forEach(child => store.put({...child, folderId: item.folderId || null}));
                 store.delete(numericId);
                 result = {
                     deletedFolderId: `${item.id}`,
+                    deletedIds: [`${item.id}`],
                     detachedItemIds: children.map(child => `${child.id}`)
                 };
                 return;

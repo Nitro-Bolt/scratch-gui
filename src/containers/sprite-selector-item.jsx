@@ -21,6 +21,7 @@ class SpriteSelectorItem extends React.PureComponent {
             'handleClick',
             'handleColor',
             'handleDelete',
+            'handleDeleteContents',
             'handleDuplicate',
             'handleExport',
             'handleExportBitmap',
@@ -107,6 +108,10 @@ class SpriteSelectorItem extends React.PureComponent {
     handleDelete (e) {
         e.stopPropagation(); // To prevent from bubbling back to handleClick
         this.props.onDeleteButtonClick(this.props.id);
+    }
+    handleDeleteContents (e) {
+        e.stopPropagation();
+        this.props.onDeleteContentsButtonClick(this.props.id);
     }
     handleDuplicate (e) {
         e.stopPropagation(); // To prevent from bubbling back to handleClick
@@ -233,6 +238,7 @@ class SpriteSelectorItem extends React.PureComponent {
             onClick,
             onColorButtonClick,
             onDeleteButtonClick,
+            onDeleteContentsButtonClick,
             onDuplicateButtonClick,
             onExportButtonClick,
             onExportBitmapButtonClick,
@@ -260,6 +266,7 @@ class SpriteSelectorItem extends React.PureComponent {
                 onClick={this.handleClick}
                 onColorButtonClick={onColorButtonClick ? this.handleColor : null}
                 onDeleteButtonClick={onDeleteButtonClick ? this.handleDelete : null}
+                onDeleteContentsButtonClick={onDeleteContentsButtonClick ? this.handleDeleteContents : null}
                 onDuplicateButtonClick={onDuplicateButtonClick ? this.handleDuplicate : null}
                 onExportButtonClick={onExportButtonClick ? this.handleExport : null}
                 onExportBitmapButtonClick={onExportBitmapButtonClick ? this.handleExportBitmap : null}
@@ -312,6 +319,7 @@ SpriteSelectorItem.propTypes = {
     onColorButtonClick: PropTypes.func,
     onCreateFolder: PropTypes.func,
     onDeleteButtonClick: PropTypes.func,
+    onDeleteContentsButtonClick: PropTypes.func,
     onRenameButtonClick: PropTypes.func,
     onDrag: PropTypes.func.isRequired,
     onDuplicateButtonClick: PropTypes.func,

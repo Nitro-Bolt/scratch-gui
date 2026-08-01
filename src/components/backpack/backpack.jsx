@@ -77,6 +77,7 @@ const Backpack = ({
     showMore,
     onToggle,
     onDelete,
+    onDeleteContents,
     onRename,
     onMouseEnter,
     onMouseLeave,
@@ -216,6 +217,7 @@ const Backpack = ({
                     open={!isFolderClosed(item.id)}
                     onColorChange={onFolderColorChange}
                     onDelete={onDelete}
+                    onDeleteContents={onDeleteContents}
                     onFolderChange={(id, parentId, event) => onMoveToFolder(id, parentId, event)}
                     onMouseEnter={event => updateFolderDropTarget(
                         isFolderClosed(item.id) ? null : item.id,
@@ -374,6 +376,7 @@ Backpack.propTypes = {
     intl: intlShape,
     loading: PropTypes.bool,
     onDelete: PropTypes.func,
+    onDeleteContents: PropTypes.func,
     onRename: PropTypes.func,
     onMore: PropTypes.func,
     onCreateFolder: PropTypes.func,

@@ -14,7 +14,7 @@ class FolderTile extends React.PureComponent {
     constructor (props) {
         super(props);
         bindAll(this, ['handleChooseColor', 'handleClick', 'handleColor', 'handleDelete', 'handleMoveBottom',
-            'handleFolderChange', 'handleMoveTop', 'handleRename', 'setColorInput']);
+            'handleDeleteContents', 'handleFolderChange', 'handleMoveTop', 'handleRename', 'setColorInput']);
     }
     handleClick () {
         this.props.onToggle(this.props.folder.id);
@@ -22,6 +22,10 @@ class FolderTile extends React.PureComponent {
     handleDelete () {
         if (this.props.onDelete) this.props.onDelete(this.props.folder.id);
         else this.props.vm.deleteFolder(this.props.folder.id);
+    }
+    handleDeleteContents () {
+        if (this.props.onDeleteContents) this.props.onDeleteContents(this.props.folder.id);
+        else this.props.vm.deleteFolderWithContents(this.props.folder.id);
     }
     handleColor (event) {
         event.stopPropagation();
@@ -137,6 +141,7 @@ class FolderTile extends React.PureComponent {
                     onClick={this.handleClick}
                     onColorButtonClick={this.handleChooseColor}
                     onDeleteButtonClick={this.handleDelete}
+                    onDeleteContentsButtonClick={this.handleDeleteContents}
                     onFolderChange={this.handleFolderChange}
                     onMoveToBottomButtonClick={this.props.showMoveActions ? this.handleMoveBottom : null}
                     onMoveToTopButtonClick={this.props.showMoveActions ? this.handleMoveTop : null}
@@ -176,6 +181,7 @@ FolderTile.propTypes = {
     showMoveActions: PropTypes.bool,
     onColorChange: PropTypes.func,
     onDelete: PropTypes.func,
+    onDeleteContents: PropTypes.func,
     onFolderChange: PropTypes.func,
     nativeDraggable: PropTypes.bool,
     onNativeDragOver: PropTypes.func,
@@ -189,6 +195,7 @@ FolderTile.propTypes = {
     onReorder: PropTypes.func,
     vm: PropTypes.shape({
         deleteFolder: PropTypes.func.isRequired,
+        deleteFolderWithContents: PropTypes.func.isRequired,
         moveFolderToIndex: PropTypes.func.isRequired,
         renameFolder: PropTypes.func.isRequired,
         setFolderParent: PropTypes.func.isRequired,

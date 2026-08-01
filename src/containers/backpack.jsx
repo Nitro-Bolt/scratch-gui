@@ -58,6 +58,7 @@ class Backpack extends React.Component {
             'handleDrop',
             'handleToggle',
             'handleDelete',
+            'handleDeleteContents',
             'handleRename',
             'handleCreateFolder',
             'handleFolderColorChange',
@@ -264,7 +265,7 @@ class Backpack extends React.Component {
         })
             .catch(error => this.handleError(error));
     }
-    handleDelete (id) {
+    handleDelete (id, deleteContents = false) {
         const item = this.findItemById(id);
         this.setState({loading: true}, () => {
             if (this.props.host !== LOCAL_API) {
@@ -282,19 +283,23 @@ class Backpack extends React.Component {
                 return;
             }
 
-            deleteBackpackObjectWithFolders({host: this.props.host, id})
-                .then(({deletedFolderId, deletedFolderIds = []}) => this.setState({
+            deleteBackpackObjectWithFolders({host: this.props.host, id, deleteContents})
+                .then(({deletedFolderId, deletedFolderIds = [], deletedIds = []}) => this.setState({
                     loading: false,
                     contents: this.state.contents
                         .filter(candidate => !idsEqual(candidate.id, id) &&
+                            !deletedIds.some(deletedId => idsEqual(candidate.id, deletedId)) &&
                             !deletedFolderIds.some(folderId => idsEqual(candidate.id, folderId)) &&
                             (!deletedFolderId || !idsEqual(candidate.id, deletedFolderId)))
-                        .map(candidate => (item && item.type === 'folder' &&
+                        .map(candidate => (!deleteContents && item && item.type === 'folder' &&
                             idsEqual(candidate.folderId, id) ?
                             {...candidate, folderId: item.folderId || null} : candidate))
                 }))
                 .catch(error => this.handleError(error));
         });
+    }
+    handleDeleteContents (id) {
+        this.handleDelete(id, true);
     }
     findItemById (id) {
         return this.state.contents.find(i => i.id === id);
@@ -450,6 +455,7 @@ class Backpack extends React.Component {
                 loading={this.state.loading}
                 showMore={this.state.moreToLoad}
                 onDelete={this.handleDelete}
+                onDeleteContents={this.handleDeleteContents}
                 onRename={this.handleRename}
                 onDrop={this.handleDrop}
                 onMore={this.handleMore}

@@ -5,7 +5,14 @@ import React from 'react';
 import DeleteButton from '../delete-button/delete-button.jsx';
 import styles from './sprite-selector-item.css';
 import {ContextMenuTrigger} from 'react-contextmenu';
-import {DangerousMenuItem, ContextMenu, MenuItem, SubMenu, subMenuProps} from '../context-menu/context-menu.jsx';
+import {
+    DangerousMenuItem,
+    UnborderedDangerousMenuItem,
+    ContextMenu,
+    MenuItem,
+    SubMenu,
+    subMenuProps
+} from '../context-menu/context-menu.jsx';
 import {FormattedMessage} from 'react-intl';
 
 class FolderMenuItem extends React.PureComponent {
@@ -42,6 +49,7 @@ const getFolderLabel = (folder, folders) => {
 };
 
 const hasContextMenu = props => Boolean(props.onDuplicateButtonClick || props.onDeleteButtonClick ||
+    props.onDeleteContentsButtonClick ||
     props.onExportButtonClick || props.onExportBitmapButtonClick || props.onMoveToTopButtonClick ||
     props.onMoveToBottomButtonClick || props.onCreateFolder || props.onColorButtonClick ||
     props.onRenameButtonClick || props.onFolderChange);
@@ -217,6 +225,15 @@ const SpriteSelectorItem = props => (
                         />
                     </DangerousMenuItem>
                 ) : null }
+                {props.onDeleteContentsButtonClick ? (
+                    <UnborderedDangerousMenuItem onClick={props.onDeleteContentsButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="delete with contents"
+                            description="Menu item to delete a folder and everything inside it"
+                            id="gui.folders.deleteContents"
+                        />
+                    </UnborderedDangerousMenuItem>
+                ) : null }
             </ContextMenu>
         ) : null}
     </ContextMenuTrigger>
@@ -241,6 +258,7 @@ SpriteSelectorItem.propTypes = {
     onClick: PropTypes.func,
     onColorButtonClick: PropTypes.func,
     onDeleteButtonClick: PropTypes.func,
+    onDeleteContentsButtonClick: PropTypes.func,
     onDuplicateButtonClick: PropTypes.func,
     onExportButtonClick: PropTypes.func,
     onExportBitmapButtonClick: PropTypes.func,
