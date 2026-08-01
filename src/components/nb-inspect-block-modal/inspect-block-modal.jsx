@@ -1,11 +1,57 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
 
 import styles from './inspect-block-modal.css';
+
+const round = value => Math.round(value * 100) / 100;
+
+const blockToJSON = block => {
+    if (!block) {
+        return null;
+    }
+    const position = block.getRelativeToSurfaceXY();
+    const size = block.getHeightWidth();
+    const fieldToJSON = field => {
+        let value = null;
+        let text = null;
+        try {
+            value = field.getValue();
+            text = field.getText();
+        } catch (e) { /* empty */ }
+        return {
+            name: field.name,
+            text,
+            value
+        };
+    };
+    return {
+        id: block.id,
+        type: block.type,
+        text: block.toString(100),
+        category: block.getCategory() || null,
+        color: block.getColour(),
+        isShadow: block.isShadow(),
+        x: position.x,
+        y: position.y,
+        width: size.width,
+        height: size.height,
+        fields: (block.fieldRow || []).map(fieldToJSON),
+        inputs: (block.inputList || []).map(input => ({
+            name: input.name,
+            type: input.type,
+            fields: (input.fieldRow || []).map(fieldToJSON),
+            block: blockToJSON(input.connection ? input.connection.targetBlock() : null)
+        })),
+        parentId: block.getParent() ? block.getParent().id : null,
+        nextId: block.getNextBlock() ? block.getNextBlock().id : null,
+        rootId: block.getRootBlock() ? block.getRootBlock().id : null,
+        descendantCount: block.getDescendants(false, true).length
+    };
+};
 
 const DetailRow = ({label, children}) => (
     <div className={styles.row}>
@@ -16,6 +62,21 @@ const DetailRow = ({label, children}) => (
 DetailRow.propTypes = {
     label: PropTypes.node.isRequired,
     children: PropTypes.node
+};
+
+const Connection = ({block, onReplaceBlock}) => (
+    (!block || !block.id) ?
+        <span className={styles.empty}>{'None'}</span> :
+        <span
+            style={{cursor: 'pointer'}}
+            onClick={() => onReplaceBlock(block)}
+        >
+            {block.id}
+        </span>
+);
+Connection.propTypes = {
+    block: PropTypes.object.isRequired,
+    onReplaceBlock: PropTypes.func
 };
 
 const Section = ({title, children}) => {
@@ -51,33 +112,31 @@ Section.propTypes = {
     children: PropTypes.node
 };
 
-const InputBlock = ({block}) => {
-    if (!block) {
-        return <span className={styles.empty}>Empty</span>;
+const buildXml = block => {
+    const blockly = window.ScratchBlocks;
+    if (!blockly || !blockly.Xml || !block) {
+        return '';
     }
-    return (
-        <div className={styles.inputBlock}>
-            <DetailRow label="Value">
-                <span>{block.text}</span>
-            </DetailRow>
-            <DetailRow label={block.type}>
-                <span>{}</span>
-            </DetailRow>
-        </div>
-    );
-};
-InputBlock.propTypes = {
-    block: PropTypes.shape({
-        id: PropTypes.string,
-        type: PropTypes.string,
-        text: PropTypes.string,
-        isShadow: PropTypes.bool
-    })
+    try {
+        const root = document.createElement('xml');
+        root.appendChild(blockly.Xml.blockToDom(block, true));
+        return blockly.Xml.domToPrettyText(root);
+    } catch (e) {
+        return '';
+    }
 };
 
 const InspectBlockModal = props => {
-    const data = props.block;
-    if (!data) {
+    const {block} = props;
+    const [xmlText, setXmlText] = useState(() => buildXml(block));
+    const [xmlError, setXmlError] = useState(null);
+
+    useEffect(() => {
+        setXmlText(buildXml(block));
+        setXmlError(null);
+    }, [block]);
+
+    if (!block) {
         return null;
     }
 
@@ -85,12 +144,93 @@ const InspectBlockModal = props => {
 
     const handleCopy = () => {
         if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+            navigator.clipboard.writeText(JSON.stringify(blockToJSON(block), null, 2));
         }
     };
 
-    const inputList = data.inputs || [];
-    const fieldList = data.fields || [];
+    const handleReloadXml = () => {
+        setXmlText(buildXml(block));
+        setXmlError(null);
+    };
+
+    const handleApply = () => {
+        const blockly = window.ScratchBlocks;
+        if (!blockly || !blockly.Xml) {
+            setXmlError('Blockly is not available');
+            return;
+        }
+
+        let doc;
+        try {
+            doc = blockly.Xml.textToDom(xmlText);
+        } catch (e) {
+            setXmlError(`Invalid XML: ${e.message}`);
+            return;
+        }
+
+        let xmlBlock = null;
+        for (let i = 0; i < doc.childNodes.length; i++) {
+            const node = doc.childNodes[i];
+            if (node.nodeName === 'block' || node.nodeName === 'shadow') {
+                xmlBlock = node;
+                break;
+            }
+        }
+        if (!xmlBlock) {
+            setXmlError('No <block> or <shadow> element found in the XML');
+            return;
+        }
+        if (xmlBlock.getAttribute('id')) {
+            xmlBlock.removeAttribute('id');
+        }
+        if (xmlBlock.querySelectorAll) {
+            xmlBlock.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+        }
+
+        const workspace = block.workspace;
+        if (!workspace) {
+            setXmlError('The block is no longer on a workspace');
+            return;
+        }
+        const xy = block.getRelativeToSurfaceXY();
+        const parent = block.getParent();
+        const parentInput = parent ? parent.getInputWithBlock(block) : null;
+        const prevConn = block.previousConnection && block.previousConnection.isConnected() ?
+            block.previousConnection.targetConnection : null;
+        const nextConn = block.nextConnection && block.nextConnection.isConnected() ?
+            block.nextConnection.targetConnection : null;
+
+        let newBlock;
+        try {
+            newBlock = blockly.Xml.domToBlock(xmlBlock, workspace);
+        } catch (e) {
+            setXmlError(`Failed to create block: ${e.message}`);
+            return;
+        }
+
+        try {
+            newBlock.moveBy(xy.x, xy.y);
+            const newConn = newBlock.outputConnection || newBlock.previousConnection;
+            if (parentInput && parentInput.connection && newConn) {
+                parentInput.connection.connect(newConn);
+            } else if (prevConn && newBlock.previousConnection) {
+                prevConn.connect(newBlock.previousConnection);
+            }
+            if (nextConn && newBlock.nextConnection && !newBlock.nextConnection.isConnected()) {
+                newBlock.nextConnection.connect(nextConn);
+            }
+            block.dispose(false, false);
+        } catch (e) {
+            newBlock.dispose(false, false);
+            setXmlError(`Failed to replace block: ${e.message}`);
+            return;
+        }
+
+        if (props.onReplaceBlock) {
+            props.onReplaceBlock(newBlock);
+        }
+        setXmlError(null);
+    };
 
     return (
         <Modal
@@ -100,9 +240,9 @@ const InspectBlockModal = props => {
             id="inspectBlockModal"
         >
             <Box className={styles.body}>
-                <div className={styles.blockText}>{data.text}</div>
+                <div className={styles.blockText}>{block.toString(100)}</div>
                 <button
-                    className={styles.copyButton}
+                    className={styles.coolButton}
                     onClick={handleCopy}
                 >
                     {'Copy JSON'}
@@ -111,128 +251,108 @@ const InspectBlockModal = props => {
                 <Section title="Details">
                     <div className={styles.detailsGrid}>
                         <DetailRow label="ID">
-                            <span>{data.id}</span>
+                            <span>{block.id}</span>
                         </DetailRow>
                         <DetailRow label="Type">
-                            <span>{data.type}</span>
+                            <span>{block.type}</span>
                         </DetailRow>
                         <DetailRow label="Category">
-                            {data.category}
+                            {block.getCategory()}
+                        </DetailRow>
+                        <DetailRow label="Color">
+                            {block.getColour()}
                         </DetailRow>
                         <DetailRow label="Position">
-                            <span>{`${data.x}, ${data.y}`}</span>
+                            <span>{`${
+                                round(block.getRelativeToSurfaceXY().x)
+                            }, ${
+                                round(block.getRelativeToSurfaceXY().y)
+                            }`}</span>
                         </DetailRow>
                         <DetailRow label="Size">
-                            <span>{`${data.width} x ${data.height}`}</span>
+                            <span>{`${
+                                block.getHeightWidth().width
+                            } x ${
+                                block.getHeightWidth().height
+                            }`}</span>
                         </DetailRow>
                         <DetailRow label="Shadow">
-                            {connectionLabel(data.isShadow)}
-                        </DetailRow>
-                        <DetailRow label="Descendants">
-                            {data.descendantCount}
+                            {connectionLabel(block.isShadow())}
                         </DetailRow>
                     </div>
                 </Section>
 
                 <Section title="Connections">
                     <div className={styles.detailsGrid}>
+                        <DetailRow label="Descendants">
+                            {block.getDescendants(false, true).length}
+                        </DetailRow>
                         <DetailRow label="Previous">
-                            {connectionLabel(data.hasPreviousConnection)}
+                            <Connection
+                                block={block.getPreviousBlock()}
+                                onReplaceBlock={props.onReplaceBlock}
+                            />
                         </DetailRow>
                         <DetailRow label="Next">
-                            {connectionLabel(data.hasNextConnection)}
+                            <Connection
+                                block={block.getNextBlock()}
+                                onReplaceBlock={props.onReplaceBlock}
+                            />
                         </DetailRow>
                         <DetailRow label="Output">
-                            {connectionLabel(data.hasOutputConnection)}
+                            <Connection
+                                block={block?.outputConnection?.targetBlock()}
+                                onReplaceBlock={props.onReplaceBlock}
+                            />
                         </DetailRow>
                         <DetailRow label="Parent">
-                            {data.parentId ?
-                                <span>{data.parentId}</span> :
-                                <span className={styles.empty}>{'None'}</span>
-                            }
+                            <Connection
+                                block={block.getParent()}
+                                onReplaceBlock={props.onReplaceBlock}
+                            />
                         </DetailRow>
-                        <DetailRow label="Next block">
-                            {data.nextId ?
-                                <span>{data.nextId}</span> :
-                                <span className={styles.empty}>{'None'}</span>
-                            }
+                        <DetailRow label="Root">
+                            <Connection
+                                block={block.getRootBlock()}
+                                onReplaceBlock={props.onReplaceBlock}
+                            />
                         </DetailRow>
                     </div>
                 </Section>
 
-                <Section title="Inputs">
-                    {inputList.length === 0 ? (
-                        <span className={styles.empty}>{'None'}</span>
-                    ) : (
-                        <ul className={styles.inputList}>
-                            {inputList.filter(i => i.name || i.block).map((i, idx) => (
-                                <li key={idx}>
-                                    <div className={styles.inputHeader}>
-                                        <span className={styles.valueName}>{i.name || 'Unnamed'}</span>
-                                        <span className={styles.inputType}>{i.type}</span>
-                                        {i.shadow && <span className={styles.inputType}>{'shadow'}</span>}
-                                        {i.block && <span className={styles.inputType}>{i.block.id}</span>}
-                                    </div>
-                                    <InputBlock block={i.block} />
-                                </li>
-                            ))}
-                        </ul>
+                <Section title="XML">
+                    <div className={styles.xmlActions}>
+                        <button
+                            className={styles.coolButton}
+                            onClick={handleApply}
+                        >
+                            {'Apply'}
+                        </button>
+                        <button
+                            className={styles.coolButton}
+                            onClick={handleReloadXml}
+                        >
+                            {'Reload XML'}
+                        </button>
+                    </div>
+                    {xmlError && (
+                        <div className={styles.xmlError}>{xmlError}</div>
                     )}
-                </Section>
-
-                <Section title="Fields">
-                    {fieldList.length === 0 ? (
-                        <span className={styles.empty}>{'None'}</span>
-                    ) : (
-                        <ul className={styles.valueList}>
-                            {fieldList.map((field, index) => (
-                                <li key={index}>
-                                    <span className={styles.valueName}>
-                                        {`Name: ${field.name}`}
-                                    </span>
-                                    <span className={styles.value}>
-                                        {`Value: ${field.text || field.value}`}
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                    <textarea
+                        className={styles.xmlTextarea}
+                        value={xmlText}
+                        onChange={e => setXmlText(e.target.value)}
+                        spellCheck={false}
+                    />
                 </Section>
             </Box>
         </Modal>
     );
 };
-
 InspectBlockModal.propTypes = {
-    block: PropTypes.shape({
-        id: PropTypes.string,
-        type: PropTypes.string,
-        text: PropTypes.string,
-        category: PropTypes.string,
-        isShadow: PropTypes.bool,
-        x: PropTypes.number,
-        y: PropTypes.number,
-        width: PropTypes.number,
-        height: PropTypes.number,
-        inputs: PropTypes.arrayOf(PropTypes.shape({
-            name: PropTypes.string,
-            type: PropTypes.string,
-            block: PropTypes.shape({
-                id: PropTypes.string,
-                type: PropTypes.string,
-                text: PropTypes.string,
-                isShadow: PropTypes.bool
-            })
-        })),
-        fields: PropTypes.arrayOf(PropTypes.object),
-        hasPreviousConnection: PropTypes.bool,
-        hasNextConnection: PropTypes.bool,
-        hasOutputConnection: PropTypes.bool,
-        parentId: PropTypes.string,
-        nextId: PropTypes.string,
-        descendantCount: PropTypes.number
-    }),
-    onClose: PropTypes.func.isRequired
+    block: PropTypes.object,
+    onClose: PropTypes.func.isRequired,
+    onReplaceBlock: PropTypes.func
 };
 
 export default InspectBlockModal;
