@@ -94,6 +94,8 @@
 
     user-select: none;
     white-space: nowrap;
+
+    transition: 0.1s ease background-color;
 }
 
 [dir="ltr"] .tab {
