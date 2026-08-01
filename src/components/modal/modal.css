@@ -137,13 +137,6 @@ $sides: 20rem;
     font-weight: normal;
     padding-right: 0;
     padding-left: 0;
-
-    transition: 0.1s ease padding, 0.1s ease background-color;
-}
-
-.back-button:hover{
-    background-color: #444444;
-    padding: 4px 8px;
 }
 
 [dir="rtl"] .back-button img {
