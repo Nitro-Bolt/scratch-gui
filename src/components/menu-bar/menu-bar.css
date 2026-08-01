@@ -63,8 +63,6 @@
     align-items: center;
     white-space: nowrap;
     height: $menu-bar-height;
-
-    transition: 0.1s ease background-color;
 }
 
 .menu-bar-item.hoverable {
