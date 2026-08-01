@@ -2,7 +2,8 @@
 @import "../../css/units.css";
 
 .wrapper {
-    width: 150px;
+    /* Changed from 150px to fit the inner assets sizes */
+    width: 6rem;
     position: relative;
     display: flex;
     flex-direction: column;
