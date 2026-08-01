@@ -121,9 +121,9 @@ class SpriteSelectorItem extends React.PureComponent {
         e.stopPropagation();
         this.props.onExportButtonClick(this.props.id);
     }
-    handleExportBitmap (e) {
+    handleExportBitmap (scale, e) {
         e.stopPropagation();
-        this.props.onExportBitmapButtonClick(this.props.id);
+        this.props.onExportBitmapButtonClick(this.props.id, scale);
     }
     handleRename (e) {
         e.stopPropagation();

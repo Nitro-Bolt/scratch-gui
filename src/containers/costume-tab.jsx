@@ -156,7 +156,7 @@ class CostumeTab extends React.Component {
         ], {type: item.asset.assetType.contentType});
         downloadBlob(`${item.name}.${item.asset.dataFormat}`, blob);
     }
-    handleExportBitmapCostume (costumeIndex) {
+    handleExportBitmapCostume (costumeIndex, scale = 1) {
         const item = this.props.vm.editingTarget.sprite.costumes[costumeIndex];
         const data = this.props.vm.getExportedCostume(item);
         const contentType = item.asset.assetType.contentType;
@@ -168,12 +168,12 @@ class CostumeTab extends React.Component {
         img.onload = () => {
             URL.revokeObjectURL(url);
             const canvas = document.createElement('canvas');
-            canvas.width = img.naturalWidth || img.width;
-            canvas.height = img.naturalHeight || img.height;
+            canvas.width = (img.naturalWidth || img.width) * scale;
+            canvas.height = (img.naturalHeight || img.height) * scale;
             const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             canvas.toBlob(pngBlob => {
-                downloadBlob(`${item.name}.png`, pngBlob);
+                downloadBlob(`${item.name}${scale > 1 ? `@${scale}x` : ''}.png`, pngBlob);
             }, 'image/png');
         };
         img.src = url;
