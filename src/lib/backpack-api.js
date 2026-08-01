@@ -7,6 +7,12 @@ import codePayload from './backpack/code-payload';
 import localBackpackAPI from './tw-local-backpack-api';
 
 export const LOCAL_API = '_local_';
+const MUTABLE_FIELDS = ['name', 'folderId', 'color', 'open', 'backpackOrder'];
+
+const mutableChangesFrom = object => MUTABLE_FIELDS.reduce((changes, field) => {
+    if (Object.prototype.hasOwnProperty.call(object, field)) changes[field] = object[field];
+    return changes;
+}, {});
 
 // Add a new property for the full thumbnail url, which includes the host.
 // Also include a full body url for loading sprite zips
@@ -99,19 +105,36 @@ const deleteBackpackObject = ({
     });
 });
 
-const updateBackpackObject = ({
-    host,
-    id,
-    name
-}) => new Promise((resolve, reject) => {
+const updateBackpackObject = options => new Promise((resolve, reject) => {
+    const {host, id} = options;
     if (host === LOCAL_API) {
         return resolve(localBackpackAPI.updateBackpackObject({
             id,
-            name
+            ...mutableChangesFrom(options)
         }));
     }
     reject(new Error('updateBackpackObject not supported'));
 });
+
+const deleteBackpackObjectWithFolders = ({host, id, deleteContents}) => new Promise((resolve, reject) => {
+    if (host === LOCAL_API) {
+        return resolve(localBackpackAPI.deleteBackpackObjectWithFolders({id, deleteContents}));
+    }
+    reject(new Error('Native backpack folders are not supported by this host'));
+});
+
+const moveBackpackObjectToFolder = ({host, id, folderId, destinationId, insertAfter}) =>
+    new Promise((resolve, reject) => {
+        if (host === LOCAL_API) {
+            return resolve(localBackpackAPI.moveBackpackObjectToFolder({
+                id,
+                folderId,
+                destinationId,
+                insertAfter
+            }));
+        }
+        reject(new Error('Native backpack folders are not supported by this host'));
+    });
 
 // Two types of backpack items are not retreivable through storage
 // code, as json and sprite3 as arraybuffer zips.
@@ -134,6 +157,8 @@ export {
     saveBackpackObject,
     deleteBackpackObject,
     updateBackpackObject,
+    deleteBackpackObjectWithFolders,
+    moveBackpackObjectToFolder,
     costumePayload,
     soundPayload,
     assetPayload,

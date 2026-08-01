@@ -189,10 +189,48 @@ class TargetPane extends React.Component {
         return this.props.vm.shareBlocksToTarget(centered, targetId, optFromTargetId, group);
     }
     handleDrop (dragInfo) {
+        if (dragInfo.dragType === DragConstants.FOLDER_SPRITE &&
+            dragInfo.payload && dragInfo.payload.nativeFolderId) {
+            const sourceId = dragInfo.payload.nativeFolderId;
+            const hoveredFolderId = dragInfo.payload.folderAtDisplayIndex &&
+                dragInfo.payload.folderAtDisplayIndex[dragInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const structuralIndex = typeof dragInfo.hoveredIndex === 'number' ?
+                dragInfo.hoveredIndex : dragInfo.newIndex;
+            const destinationParentId = hoveredFolder && hoveredFolder._isOpen !== false &&
+                hoveredFolder.id !== sourceId ?
+                hoveredFolder.id : dragInfo.rootDrop ? null : dragInfo.payload.parentFolderAtDisplayIndex &&
+                    dragInfo.payload.parentFolderAtDisplayIndex[structuralIndex];
+            if (destinationParentId !== sourceId) {
+                try {
+                    this.props.vm.setFolderParent(sourceId, destinationParentId || null);
+                } catch (error) {
+                    return;
+                }
+            }
+            const mappedIndex = dragInfo.payload.dropIndexMap &&
+                dragInfo.payload.dropIndexMap[dragInfo.newIndex];
+            this.props.vm.moveFolderToIndex(sourceId,
+                (typeof mappedIndex === 'number' ? mappedIndex : dragInfo.newIndex) + 1);
+            return;
+        }
         const {sprite: targetId} = this.props.hoveredTarget;
         if (dragInfo.dragType === DragConstants.SPRITE) {
-            // Add one to both new and target index because we are not counting/moving the stage
-            this.props.vm.reorderTarget(dragInfo.index + 1, dragInfo.newIndex + 1);
+            const sprites = this.props.vm.runtime.targets.filter(target => target.isOriginal && !target.isStage);
+            const dragged = sprites[dragInfo.index];
+            const mappedIndex = dragInfo.dropIndexMap && dragInfo.dropIndexMap[dragInfo.newIndex];
+            const newIndex = typeof mappedIndex === 'number' ? mappedIndex : dragInfo.newIndex;
+            const destination = sprites[newIndex];
+            const hoveredFolderId = dragInfo.folderAtDisplayIndex &&
+                dragInfo.folderAtDisplayIndex[dragInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const destinationFolder = hoveredFolder || (destination && destination.folderId &&
+                this.props.vm.runtime.projectFolders.find(folder => folder.id === destination.folderId));
+            if (dragged) {
+                this.props.vm.setItemFolder('sprite', dragged.id, null,
+                    !dragInfo.rootDrop && destinationFolder && destinationFolder._isOpen !== false ?
+                        destinationFolder.id : null, newIndex + 1);
+            }
         } else if (dragInfo.dragType === DragConstants.BACKPACK_SPRITE) {
             // TODO storage does not have a way of loading zips right now, and may never need it.
             // So for now just grab the zip manually.

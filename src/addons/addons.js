@@ -42,7 +42,6 @@ const addons = [
     'sprite-properties',
     'gamepad',
     'editor-sounds',
-    'folders',
     'load-extensions',
     'custom-zoom',
     'initialise-sprite-position',

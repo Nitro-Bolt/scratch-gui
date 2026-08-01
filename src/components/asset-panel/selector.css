@@ -51,6 +51,10 @@ $fade-out-distance: 100px;
     flex-direction: column;
 }
 
+.folder-child {
+    border-radius: 0.5rem;
+}
+
 .list-area:after {
     /* Make sure there is room to scroll beyond the last tile */
     content: '';
