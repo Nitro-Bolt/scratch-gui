@@ -26,8 +26,10 @@ import {placeInViewport} from '../lib/backpack/code-payload.js';
 const dragTypes = [
     DragConstants.COSTUME,
     DragConstants.SOUND,
+    DragConstants.ASSET,
     DragConstants.BACKPACK_COSTUME,
     DragConstants.BACKPACK_SOUND,
+    DragConstants.BACKPACK_ASSET,
     DragConstants.BACKPACK_CODE
 ];
 
@@ -135,6 +137,8 @@ class StageSelector extends React.Component {
             this.props.vm.shareCostumeToTarget(dragInfo.index, this.props.id);
         } else if (dragInfo.dragType === DragConstants.SOUND) {
             this.props.vm.shareSoundToTarget(dragInfo.index, this.props.id);
+        } else if (dragInfo.dragType === DragConstants.ASSET) {
+            this.props.vm.shareAssetToTarget(dragInfo.index, this.props.id);
         } else if (dragInfo.dragType === DragConstants.BACKPACK_COSTUME) {
             this.props.vm.addCostume(dragInfo.payload.body, {
                 name: dragInfo.payload.name

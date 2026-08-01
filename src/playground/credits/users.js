@@ -8,18 +8,65 @@ const shuffle = list => {
     return list;
 };
 
-const fromHardcoded = ({userID = '0', username}) => {
+const fromHardcoded = ({github, userID = '0', username}) => {
     const result = {
-        image: `https://trampoline.turbowarp.org/avatars/${userID}`,
+        image: github ? `https://avatars.githubusercontent.com/u/${userID}` : `https://trampoline.turbowarp.org/avatars/${userID}`,
         text: username
     };
     if (username && userID !== '0') {
-        result.href = `https://scratch.mit.edu/users/${username}/`;
+        result.href = github ? `https://github.com/${username}/` : `https://scratch.mit.edu/users/${username}/`;
     }
     return result;
 };
 
 // The lists below are in no particular order.
+
+const team = [
+    {
+        userID: '41219524',
+        username: 'CubesterYT'
+    },
+    {
+        userID: '64691048',
+        username: 'CST1229'
+    },
+    {
+        userID: '128887584',
+        username: 'FurryR'
+    },
+    {
+        userID: '161761456',
+        username: 'lordcat__'
+    },
+    {
+        userID: '138703180',
+        username: 'ddededodediamante'
+    },
+    {
+        userID: '150145748',
+        username: 'Penthusiast'
+    },
+    {
+        userID: '54392956',
+        username: 'fath11'
+    },
+    {
+        userID: '55189061',
+        username: 'insanetaco2000'
+    },
+    {
+        userID: '139575624',
+        username: 'breakfast_for_dinner'
+    },
+    {
+        userID: '60627927',
+        username: 'jwklongYT'
+    },
+    {
+        userID: '53190566',
+        username: 'Code_Magician'
+    }
+].map(fromHardcoded);
 
 const contributors = [
     {
@@ -182,18 +229,18 @@ const extensionDevelopers = [
         username: '0832'
     },
     {
-        userID: '74246431',
-        username: '0znzw'
-    },
-    {
         userID: '17235330',
         username: 'aleb2005'
+    },
+    {
+        userID: '129742989',
+        username: 'BludIsAnLemon'
     },
     {
         username: 'BlueDome77'
     },
     {
-        username: 'ClaytonTDM'
+        username: 'clay-rip'
     },
     {
         userID: '37070511',
@@ -212,7 +259,15 @@ const extensionDevelopers = [
         username: 'D-ScratchNinja'
     },
     {
+        userID: '20632822',
+        username: 'dogeiscut'
+    },
+    {
         username: 'DT'
+    },
+    {
+        userID: '54392956',
+        username: 'Fath11'
     },
     {
         userID: '1882674',
@@ -227,7 +282,15 @@ const extensionDevelopers = [
         username: 'LilyMakesThings'
     },
     {
+        userID: '29571977',
+        username: 'man-o-valor'
+    },
+    {
         username: 'MikeDEV'
+    },
+    {
+        userID: '74246431',
+        username: '0znzw'
     },
     {
         userID: '62325737',
@@ -238,11 +301,17 @@ const extensionDevelopers = [
         username: 'NamelessCat'
     },
     {
+        username: 'NishiOwO'
+    },
+    {
         username: 'NOname-awa'
     },
     {
         userID: '26959223',
         username: 'pinksheep2917'
+    },
+    {
+        username: 'Pen-Group'
     },
     {
         username: 'pumpkinhasapatch'
@@ -282,6 +351,10 @@ const extensionDevelopers = [
     {
         userID: '52066199',
         username: 'softed'
+    },
+    {
+        userID: '166646203',
+        username: 'Staevski_G'
     },
     {
         username: 'TheShovel'
@@ -356,6 +429,7 @@ const docs = [
 ].map(fromHardcoded);
 
 export default {
+    team: shuffle(team),
     contributors: shuffle(contributors),
     addonDevelopers: shuffle(addonDevelopers),
     extensionDevelopers: shuffle(extensionDevelopers),

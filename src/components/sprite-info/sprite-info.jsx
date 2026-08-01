@@ -10,7 +10,6 @@ import DirectionPicker from '../../containers/direction-picker.jsx';
 
 import {injectIntl, intlShape, defineMessages, FormattedMessage} from 'react-intl';
 
-import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants.js';
 import {isWideLocale} from '../../lib/locale-utils.js';
 
 import styles from './sprite-info.css';
@@ -61,6 +60,8 @@ class SpriteInfo extends React.Component {
             stageSize
         } = this.props;
 
+        const smallThreshold = 430;
+
         const sprite = (
             <FormattedMessage
                 defaultMessage="Sprite"
@@ -105,7 +106,7 @@ class SpriteInfo extends React.Component {
         const xPosition = (
             <div className={styles.group}>
                 {
-                    (stageSize === STAGE_DISPLAY_SIZES.full || stageSize === STAGE_DISPLAY_SIZES.large) ?
+                    (stageSize > smallThreshold) ?
                         <div className={styles.iconWrapper}>
                             <img
                                 aria-hidden="true"
@@ -133,7 +134,7 @@ class SpriteInfo extends React.Component {
         const yPosition = (
             <div className={styles.group}>
                 {
-                    (stageSize === STAGE_DISPLAY_SIZES.full || stageSize === STAGE_DISPLAY_SIZES.large) ?
+                    (stageSize > smallThreshold) ?
                         <div className={styles.iconWrapper}>
                             <img
                                 aria-hidden="true"
@@ -158,15 +159,99 @@ class SpriteInfo extends React.Component {
             </div>
         );
 
-        if (stageSize === STAGE_DISPLAY_SIZES.small) {
+        const visibility = (
+            <ToggleButtons
+                buttons={[
+                    {
+                        handleClick: this.props.onClickVisible,
+                        icon: showIcon,
+                        isSelected: this.props.visible && !this.props.disabled,
+                        title: this.props.intl.formatMessage(messages.showSpriteAction)
+                    },
+                    {
+                        handleClick: this.props.onClickNotVisible,
+                        icon: hideIcon,
+                        isSelected: !this.props.visible && !this.props.disabled,
+                        title: this.props.intl.formatMessage(messages.hideSpriteAction)
+                    }
+                ]}
+                disabled={this.props.disabled}
+            />
+        );
+
+        const size = (
+            <div className={classNames(styles.group, styles.largerInput)}>
+                <Label
+                    secondary
+                    above={labelAbove}
+                    text={sizeLabel}
+                >
+                    <BufferedInput
+                        small
+                        disabled={this.props.disabled}
+                        label={sizeLabel}
+                        tabIndex="0"
+                        type="number"
+                        value={this.props.disabled ? '' : Math.round(this.props.size)}
+                        onSubmit={this.props.onChangeSize}
+                    />
+                </Label>
+            </div>
+        );
+
+        const direction = (
+            <div className={classNames(styles.group, styles.largerInput)}>
+                <DirectionPicker
+                    direction={Math.round(this.props.direction)}
+                    disabled={this.props.disabled}
+                    labelAbove={labelAbove}
+                    rotationStyle={this.props.rotationStyle}
+                    onChangeDirection={this.props.onChangeDirection}
+                    onChangeRotationStyle={this.props.onChangeRotationStyle}
+                />
+            </div>
+        );
+
+        if (stageSize <= smallThreshold && stageSize > smallThreshold - 100) {
+            return (
+                <Box className={styles.spriteInfo}>
+                    <div
+                        className={classNames(styles.row, styles.rowPrimary, styles.rowSmall)}
+                    >
+                        <div
+                            className={styles.group}
+                            style={{
+                                flexGrow: 1
+                            }}
+                        >
+                            {spriteNameInput}
+                        </div>
+                        {xPosition}
+                    </div>
+                    <div className={classNames(styles.row, styles.rowSecondary)}>
+                        {visibility}
+                        {size}
+                        {yPosition}
+                    </div>
+                </Box>
+            );
+        }
+
+        if (stageSize <= smallThreshold) {
             return (
                 <Box className={styles.spriteInfo}>
                     <div className={classNames(styles.row, styles.rowPrimary)}>
-                        <div className={styles.group}>
+                        <div
+                            className={styles.group}
+                            style={{
+                                flexGrow: 1
+                            }}
+                        >
                             {spriteNameInput}
                         </div>
                     </div>
                     <div className={classNames(styles.row, styles.rowSecondary)}>
+                        {stageSize > smallThreshold - 100 && visibility}
                         {xPosition}
                         {yPosition}
                     </div>
@@ -177,7 +262,12 @@ class SpriteInfo extends React.Component {
         return (
             <Box className={styles.spriteInfo}>
                 <div className={classNames(styles.row, styles.rowPrimary)}>
-                    <div className={styles.group}>
+                    <div
+                        className={styles.group}
+                        style={{
+                            flexGrow: 1
+                        }}
+                    >
                         <Label
                             above={labelAbove}
                             text={sprite}
@@ -191,58 +281,17 @@ class SpriteInfo extends React.Component {
                 <div className={classNames(styles.row, styles.rowSecondary)}>
                     <div className={labelAbove ? styles.column : styles.group}>
                         {
-                            stageSize === STAGE_DISPLAY_SIZES.full || stageSize === STAGE_DISPLAY_SIZES.large ?
+                            stageSize > smallThreshold ?
                                 <Label
                                     secondary
                                     text={showLabel}
                                 /> :
                                 null
                         }
-                        <ToggleButtons
-                            buttons={[
-                                {
-                                    handleClick: this.props.onClickVisible,
-                                    icon: showIcon,
-                                    isSelected: this.props.visible && !this.props.disabled,
-                                    title: this.props.intl.formatMessage(messages.showSpriteAction)
-                                },
-                                {
-                                    handleClick: this.props.onClickNotVisible,
-                                    icon: hideIcon,
-                                    isSelected: !this.props.visible && !this.props.disabled,
-                                    title: this.props.intl.formatMessage(messages.hideSpriteAction)
-                                }
-                            ]}
-                            disabled={this.props.disabled}
-                        />
+                        {visibility}
                     </div>
-                    <div className={classNames(styles.group, styles.largerInput)}>
-                        <Label
-                            secondary
-                            above={labelAbove}
-                            text={sizeLabel}
-                        >
-                            <BufferedInput
-                                small
-                                disabled={this.props.disabled}
-                                label={sizeLabel}
-                                tabIndex="0"
-                                type="number"
-                                value={this.props.disabled ? '' : Math.round(this.props.size)}
-                                onSubmit={this.props.onChangeSize}
-                            />
-                        </Label>
-                    </div>
-                    <div className={classNames(styles.group, styles.largerInput)}>
-                        <DirectionPicker
-                            direction={Math.round(this.props.direction)}
-                            disabled={this.props.disabled}
-                            labelAbove={labelAbove}
-                            rotationStyle={this.props.rotationStyle}
-                            onChangeDirection={this.props.onChangeDirection}
-                            onChangeRotationStyle={this.props.onChangeRotationStyle}
-                        />
-                    </div>
+                    {size}
+                    {direction}
                 </div>
             </Box>
         );
@@ -270,7 +319,7 @@ SpriteInfo.propTypes = {
         PropTypes.string,
         PropTypes.number
     ]),
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
+    stageSize: PropTypes.number.isRequired,
     visible: PropTypes.bool,
     x: PropTypes.oneOfType([
         PropTypes.string,

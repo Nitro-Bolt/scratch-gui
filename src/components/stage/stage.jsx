@@ -35,7 +35,7 @@ const StageComponent = props => {
         ...boxProps
     } = props;
 
-    const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen);
+    const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen, isPlayerOnly);
     const minWidth = getMinWidth(stageSize);
     const transformStyle = stageDimensions.width < minWidth && !isFullScreen ? {
         transform: `translateX(${(minWidth - stageDimensions.width) / (isRtl ? -2 : 2)}px)`

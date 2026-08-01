@@ -1,11 +1,18 @@
 import xhr from 'xhr';
 import costumePayload from './backpack/costume-payload';
 import soundPayload from './backpack/sound-payload';
+import assetPayload from './backpack/asset-payload';
 import spritePayload from './backpack/sprite-payload';
 import codePayload from './backpack/code-payload';
 import localBackpackAPI from './tw-local-backpack-api';
 
 export const LOCAL_API = '_local_';
+const MUTABLE_FIELDS = ['name', 'folderId', 'color', 'open', 'backpackOrder'];
+
+const mutableChangesFrom = object => MUTABLE_FIELDS.reduce((changes, field) => {
+    if (Object.prototype.hasOwnProperty.call(object, field)) changes[field] = object[field];
+    return changes;
+}, {});
 
 // Add a new property for the full thumbnail url, which includes the host.
 // Also include a full body url for loading sprite zips
@@ -49,7 +56,8 @@ const saveBackpackObject = ({
     mime, // Mime-type of the object being saved
     name, // User-facing name of the object being saved
     body, // Base64-encoded body of the object being saved
-    thumbnail // Base64-encoded JPEG thumbnail of the object being saved
+    thumbnail, // Base64-encoded JPEG thumbnail of the object being saved
+    ...extra // Any other data that a payload may contain
 }) => new Promise((resolve, reject) => {
     if (host === LOCAL_API) {
         return resolve(localBackpackAPI.saveBackpackObject({
@@ -57,14 +65,15 @@ const saveBackpackObject = ({
             mime,
             name,
             body,
-            thumbnail
+            thumbnail,
+            ...extra
         }));
     }
     xhr({
         method: 'POST',
         uri: `${host}/${username}`,
         headers: {'x-token': token},
-        json: {type, mime, name, body, thumbnail}
+        json: {type, mime, name, body, thumbnail, ...extra}
     }, (error, response) => {
         if (error || response.statusCode !== 200) {
             return reject(new Error(response.status));
@@ -96,19 +105,36 @@ const deleteBackpackObject = ({
     });
 });
 
-const updateBackpackObject = ({
-    host,
-    id,
-    name
-}) => new Promise((resolve, reject) => {
+const updateBackpackObject = options => new Promise((resolve, reject) => {
+    const {host, id} = options;
     if (host === LOCAL_API) {
         return resolve(localBackpackAPI.updateBackpackObject({
             id,
-            name
+            ...mutableChangesFrom(options)
         }));
     }
     reject(new Error('updateBackpackObject not supported'));
 });
+
+const deleteBackpackObjectWithFolders = ({host, id, deleteContents}) => new Promise((resolve, reject) => {
+    if (host === LOCAL_API) {
+        return resolve(localBackpackAPI.deleteBackpackObjectWithFolders({id, deleteContents}));
+    }
+    reject(new Error('Native backpack folders are not supported by this host'));
+});
+
+const moveBackpackObjectToFolder = ({host, id, folderId, destinationId, insertAfter}) =>
+    new Promise((resolve, reject) => {
+        if (host === LOCAL_API) {
+            return resolve(localBackpackAPI.moveBackpackObjectToFolder({
+                id,
+                folderId,
+                destinationId,
+                insertAfter
+            }));
+        }
+        reject(new Error('Native backpack folders are not supported by this host'));
+    });
 
 // Two types of backpack items are not retreivable through storage
 // code, as json and sprite3 as arraybuffer zips.
@@ -131,8 +157,11 @@ export {
     saveBackpackObject,
     deleteBackpackObject,
     updateBackpackObject,
+    deleteBackpackObjectWithFolders,
+    moveBackpackObjectToFolder,
     costumePayload,
     soundPayload,
+    assetPayload,
     spritePayload,
     codePayload,
     fetchCode,

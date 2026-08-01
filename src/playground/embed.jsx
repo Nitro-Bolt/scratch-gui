@@ -9,17 +9,18 @@ import runAddons from '../addons/entry';
 import {Theme} from '../lib/themes/index.js';
 
 import GUI from './render-gui.jsx';
+import TWWindchimeSubmitter from '../containers/tw-windchime-submitter.jsx';
 import render from './app-target';
 
 const getProjectId = () => {
     // For compatibility reasons, we first look at the hash.
-    // eg. https://turbowarp.org/embed.html#1
+    // eg. https://nitrobolt.org/embed.html#1
     const hashMatch = location.hash.match(/#(\d+)/);
     if (hashMatch !== null) {
         return hashMatch[1];
     }
     // Otherwise, we'll recreate what "wildcard" routing does.
-    // eg. https://turbowarp.org/1/embed
+    // eg. https://nitrobolt.org/1/embed
     const pathMatch = location.pathname.match(/(\d+)\/embed/);
     if (pathMatch !== null) {
         return pathMatch[pathMatch.length - 1];
@@ -43,11 +44,18 @@ const onProjectLoaded = () => {
     }
 };
 
+const Embed = props => (
+    <React.Fragment>
+        <GUI {...props} />
+        <TWWindchimeSubmitter />
+    </React.Fragment>
+);
+
 const WrappedGUI = compose(
     AppStateHOC,
     TWStateManagerHOC,
     TWEmbedFullScreenHOC
-)(GUI);
+)(Embed);
 
 render(<WrappedGUI
     isEmbedded

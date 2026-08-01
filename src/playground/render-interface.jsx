@@ -36,6 +36,7 @@ import FeaturedProjects from '../components/tw-featured-projects/featured-projec
 import Description from '../components/tw-description/description.jsx';
 import BrowserModal from '../components/browser-modal/browser-modal.jsx';
 import CloudVariableBadge from '../containers/tw-cloud-variable-badge.jsx';
+import TWWindchimeSubmitter from '../containers/tw-windchime-submitter.jsx';
 import {isBrowserSupported} from '../lib/tw-environment-support-prober';
 import AddonChannels from '../addons/channels';
 import {loadServiceWorker} from './load-service-worker';
@@ -46,13 +47,6 @@ import {APP_NAME} from '../lib/brand.js';
 import styles from './interface.css';
 
 const isInvalidEmbed = window.parent !== window;
-
-const handleClickAddonSettings = addonId => {
-    // addonId might be a string of the addon to focus on, undefined, or an event (treat like undefined)
-    const path = process.env.ROUTING_STYLE === 'wildcard' ? 'addons' : 'addons.html';
-    const url = `${process.env.ROOT}${path}${typeof addonId === 'string' ? `#${addonId}` : ''}`;
-    window.open(url);
-};
 
 const messages = defineMessages({
     defaultTitle: {
@@ -78,6 +72,14 @@ if (AddonChannels.changeChannel) {
         SettingsStore.setStoreWithVersionCheck(e.data);
     });
 }
+
+// BroadcastChannel won't deliver messages back to the same browsing context
+window.addEventListener('addon-settings-changed', e => {
+    SettingsStore.setStoreWithVersionCheck(e.detail);
+});
+window.addEventListener('addon-settings-reload', () => {
+    location.reload();
+});
 
 runAddons();
 
@@ -127,29 +129,29 @@ const Footer = () => (
                     </a>
                 </div>
                 <div className={styles.footerSection}>
-                    <a href="https://desktop.turbowarp.org/">
+                    <a href="https://desktop.nitrobolt.org/">
                         {/* Do not translate */}
-                        {'TurboWarp Desktop'}
+                        {'NitroBolt Desktop'}
                     </a>
-                    <a href="https://nitro-bolt.github.io/packager">
+                    <a href="https://packager.nitrobolt.org/">
                         {/* Do not translate */}
                         {'NitroBolt Packager'}
                     </a>
-                    <a href="https://docs.turbowarp.org/embedding">
+                    <a href="https://docs.nitrobolt.org/website/embedding">
                         <FormattedMessage
                             defaultMessage="Embedding"
                             description="Link in footer to embedding documentation for embedding link"
                             id="tw.footer.embed"
                         />
                     </a>
-                    <a href="https://docs.turbowarp.org/url-parameters">
+                    <a href="https://docs.nitrobolt.org/website/url-parameters">
                         <FormattedMessage
                             defaultMessage="URL Parameters"
                             description="Link in footer to URL parameters documentation"
                             id="tw.footer.parameters"
                         />
                     </a>
-                    <a href="https://docs.turbowarp.org/">
+                    <a href="https://docs.nitrobolt.org/">
                         <FormattedMessage
                             defaultMessage="Documentation"
                             description="Link in footer to additional documentation"
@@ -230,6 +232,7 @@ class Interface extends React.Component {
                 })}
                 dir={isRtl ? 'rtl' : 'ltr'}
             >
+                <TWWindchimeSubmitter />
                 {isHomepage ? (
                     <div className={styles.menu}>
                         <WrappedMenuBar
@@ -237,7 +240,6 @@ class Interface extends React.Component {
                             canManageFiles
                             canChangeTheme
                             enableSeeInside
-                            onClickAddonSettings={handleClickAddonSettings}
                         />
                     </div>
                 ) : null}
@@ -249,9 +251,7 @@ class Interface extends React.Component {
                     }) : null}
                 >
                     <GUI
-                        onClickAddonSettings={handleClickAddonSettings}
                         onUpdateProjectTitle={this.handleUpdateProjectTitle}
-                        backpackVisible
                         backpackHost="_local_"
                         {...props}
                     />

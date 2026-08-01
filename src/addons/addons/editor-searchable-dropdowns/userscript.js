@@ -53,6 +53,16 @@ export default async function ({ addon, console, msg }) {
 
   const oldDropDownDivShow = Blockly.DropDownDiv.show;
   Blockly.DropDownDiv.show = function (...args) {
+    // This is an editor for constructing a dropdown, not a dropdown whose
+    // values should be searched. Its menu also contains an "Add Option" row
+    // which deliberately has no matching entry in getOptions().
+    if (
+      Blockly.FieldDropdownEditor &&
+      args[0] instanceof Blockly.FieldDropdownEditor
+    ) {
+      return oldDropDownDivShow.call(this, ...args);
+    }
+
     blocklyDropdownMenu = document.querySelector(".blocklyDropdownMenu");
     if (!blocklyDropdownMenu) {
       return oldDropDownDivShow.call(this, ...args);
@@ -125,6 +135,14 @@ export default async function ({ addon, console, msg }) {
     return options;
   };
 
+  const oldFieldTextDropdownGetOptions = Blockly.FieldTextDropdown.prototype.getOptions;
+  Blockly.FieldTextDropdown.prototype.getOptions = function () {
+    const options = oldFieldTextDropdownGetOptions.call(this);
+    // Options aren't normally stored anywhere, so we'll store them ourselves.
+    resultOfLastGetOptions = options;
+    return options;
+  };
+
   const oldFieldVariableOnItemSelected = Blockly.FieldVariable.prototype.onItemSelected;
   Blockly.FieldVariable.prototype.onItemSelected = function (menu, menuItem) {
     const sourceBlock = this.sourceBlock_;
@@ -172,6 +190,9 @@ export default async function ({ addon, console, msg }) {
       // Negative number will hide
       // Higher numbers will appear first
       const option = currentDropdownOptions[index];
+      if (!option) {
+        return 0;
+      }
       const optionId = option[1];
       if (SCRATCH_ITEMS_TO_HIDE.includes(optionId)) {
         return query ? -1 : 0;

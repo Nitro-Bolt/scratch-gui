@@ -56,9 +56,9 @@ class NBExtensionManagerModal extends React.Component {
     }
 
     removeExtensions (extensions) {
-        extensions.forEach((extension) => {
+        extensions.forEach(extension => {
             this.props.vm.extensionManager.removeExtension(extension);
-        })
+        });
         this.props.onClose();
     }
 
@@ -97,7 +97,7 @@ class NBExtensionManagerModal extends React.Component {
             />
         );
     }
-};
+}
 
 NBExtensionManagerModal.propTypes = {
     intl: intlShape,

@@ -173,7 +173,9 @@ const CustomAccentModal = props => {
                             </div>
                         </div>
                         <p>
-                            <label>
+                            <label
+                                className={styles.setting}
+                            >
                                 <FancyCheckbox
                                     checked={props.isGradient}
                                     onChange={props.onChangeGradient}
@@ -198,7 +200,9 @@ const CustomAccentModal = props => {
                                         border: 'none'
                                     }}
                                 />
-                                <label>
+                                <label
+                                    className={styles.setting}
+                                >
                                     <input
                                         type="number"
                                         min={0}

@@ -82,7 +82,9 @@ class LibraryComponent extends React.Component {
         }
     }
     handleSelect (id) {
-        this.handleClose();
+        if (!this._lastClickWasShift) {
+            this.handleClose();
+        }
         this.props.onItemSelected(this.getFilteredData()[id]);
     }
     readFavoritesFromStorage () {
@@ -229,7 +231,13 @@ class LibraryComponent extends React.Component {
                     }
                 }
                 if (dataItem.description) {
-                    search.push(dataItem.description);
+                    if (typeof dataItem.description === 'string') {
+                        search.push(dataItem.description);
+                    } else {
+                        search.push(this.props.intl.formatMessage(dataItem.description.props, {
+                            APP_NAME
+                        }));
+                    }
                 }
                 return search
                     .join('\n')
@@ -297,6 +305,9 @@ class LibraryComponent extends React.Component {
                         [styles.withFilterBar]: this.props.filterable || this.props.tags
                     })}
                     ref={this.setFilteredDataRef}
+                    onClickCapture={e => {
+                        this._lastClickWasShift = e.shiftKey;
+                    }}
                 >
                     {filteredData && this.getFilteredData().map((dataItem, index) => (
                         dataItem === '---' ? (

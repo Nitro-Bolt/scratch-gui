@@ -11,7 +11,6 @@ const MODAL_SPRITE_LIBRARY = 'spriteLibrary';
 const MODAL_SOUND_RECORDER = 'soundRecorder';
 const MODAL_CONNECTION = 'connectionModal';
 const MODAL_TIPS_LIBRARY = 'tipsLibrary';
-const MODAL_USERNAME = 'usernameModal';
 const MODAL_SETTINGS = 'settingsModal';
 const MODAL_CUSTOM_EXTENSION = 'customExtensionModal';
 const MODAL_EXTENSION_MANAGER = 'extensionManagerModal';
@@ -21,6 +20,8 @@ const MODAL_UNKNOWN_PLATFORM = 'unknownPlatformModal';
 const MODAL_INVALID_PROJECT = 'invalidProjectModal';
 const MODAL_CUSTOM_ACCENT = 'customAccentModal';
 const MODAL_GIT = 'gitModal';
+const MODAL_EDITOR_SETTINGS = 'editorSettingsModal';
+const MODAL_INSPECT_BLOCK = 'inspectBlockModal';
 
 const initialState = {
     [MODAL_BACKDROP_LIBRARY]: false,
@@ -33,7 +34,6 @@ const initialState = {
     [MODAL_SOUND_RECORDER]: false,
     [MODAL_CONNECTION]: false,
     [MODAL_TIPS_LIBRARY]: false,
-    [MODAL_USERNAME]: false,
     [MODAL_SETTINGS]: false,
     [MODAL_CUSTOM_EXTENSION]: false,
     [MODAL_EXTENSION_MANAGER]: false,
@@ -42,7 +42,11 @@ const initialState = {
     [MODAL_UNKNOWN_PLATFORM]: false,
     [MODAL_INVALID_PROJECT]: false,
     [MODAL_CUSTOM_ACCENT]: false,
-    [MODAL_GIT]: false
+    [MODAL_GIT]: false,
+    [MODAL_EDITOR_SETTINGS]: false,
+    [MODAL_INSPECT_BLOCK]: false,
+    editorSettingsModalTab: 0,
+    inspectBlockModalBlock: null
 };
 
 const reducer = function (state, action) {
@@ -50,7 +54,13 @@ const reducer = function (state, action) {
     switch (action.type) {
     case OPEN_MODAL:
         return Object.assign({}, state, {
-            [action.modal]: true
+            [action.modal]: true,
+            ...(action.modal === MODAL_EDITOR_SETTINGS && {
+                editorSettingsModalTab: action.tab ?? 0
+            }),
+            ...(action.modal === MODAL_INSPECT_BLOCK && {
+                inspectBlockModalBlock: action.block
+            })
         });
     case CLOSE_MODAL:
         return Object.assign({}, state, {
@@ -102,9 +112,6 @@ const openConnectionModal = function () {
 const openTipsLibrary = function () {
     return openModal(MODAL_TIPS_LIBRARY);
 };
-const openUsernameModal = function () {
-    return openModal(MODAL_USERNAME);
-};
 const openSettingsModal = function () {
     return openModal(MODAL_SETTINGS);
 };
@@ -131,7 +138,21 @@ const openCustomAccentModal = function () {
 };
 const openGitModal = function () {
     return openModal(MODAL_GIT);
-}
+};
+const openEditorSettingsModal = function (tab = 0) {
+    return {
+        type: OPEN_MODAL,
+        modal: MODAL_EDITOR_SETTINGS,
+        tab
+    };
+};
+const openInspectBlockModal = function (block) {
+    return {
+        type: OPEN_MODAL,
+        modal: MODAL_INSPECT_BLOCK,
+        block
+    };
+};
 const closeBackdropLibrary = function () {
     return closeModal(MODAL_BACKDROP_LIBRARY);
 };
@@ -162,9 +183,6 @@ const closeTipsLibrary = function () {
 const closeConnectionModal = function () {
     return closeModal(MODAL_CONNECTION);
 };
-const closeUsernameModal = function () {
-    return closeModal(MODAL_USERNAME);
-};
 const closeSettingsModal = function () {
     return closeModal(MODAL_SETTINGS);
 };
@@ -191,7 +209,13 @@ const closeCustomAccentModal = function () {
 };
 const closeGitModal = function () {
     return closeModal(MODAL_GIT);
-}
+};
+const closeEditorSettingsModal = function () {
+    return closeModal(MODAL_EDITOR_SETTINGS);
+};
+const closeInspectBlockModal = function () {
+    return closeModal(MODAL_INSPECT_BLOCK);
+};
 export {
     reducer as default,
     initialState as modalsInitialState,
@@ -205,7 +229,6 @@ export {
     openTelemetryModal,
     openTipsLibrary,
     openConnectionModal,
-    openUsernameModal,
     openSettingsModal,
     openCustomExtensionModal,
     openExtensionManagerModal,
@@ -215,6 +238,8 @@ export {
     openInvalidProjectModal,
     openCustomAccentModal,
     openGitModal,
+    openEditorSettingsModal,
+    openInspectBlockModal,
     closeBackdropLibrary,
     closeCostumeLibrary,
     closeExtensionLibrary,
@@ -225,7 +250,6 @@ export {
     closeTelemetryModal,
     closeTipsLibrary,
     closeConnectionModal,
-    closeUsernameModal,
     closeSettingsModal,
     closeCustomExtensionModal,
     closeExtensionManagerModal,
@@ -234,5 +258,7 @@ export {
     closeUnknownPlatformModal,
     closeInvalidProjectModal,
     closeCustomAccentModal,
-    closeGitModal
+    closeGitModal,
+    closeEditorSettingsModal,
+    closeInspectBlockModal
 };

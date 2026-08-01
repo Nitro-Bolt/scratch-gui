@@ -9,6 +9,7 @@ import TurboMode from '../turbo-mode/turbo-mode.jsx';
 import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.jsx';
 
 import styles from './controls.css';
+import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 const messages = defineMessages({
     goTitle: {
@@ -34,33 +35,52 @@ const Controls = function (props) {
         framerate,
         interpolation,
         isSmall,
+        isHidden,
+        preferences,
         ...componentProps
     } = props;
+
+    registerKeyboardShortcut(
+        preferences['keybind-start-project'] ?? defaultKeyboardShortcuts['start-project'],
+        onGreenFlagClick
+    );
+
+    registerKeyboardShortcut(
+        preferences['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project'],
+        onStopAllClick
+    );
+
     return (
-        <div
-            className={classNames(styles.controlsContainer, className)}
-            {...componentProps}
-        >
-            <GreenFlag
-                active={active}
-                title={intl.formatMessage(messages.goTitle)}
-                onClick={onGreenFlagClick}
-            />
-            <StopAll
-                active={active}
-                title={intl.formatMessage(messages.stopTitle)}
-                onClick={onStopAllClick}
-            />
-            {turbo ? (
-                <TurboMode isSmall={isSmall} />
-            ) : null}
-            {!isSmall && (
-                <FramerateIndicator
-                    framerate={framerate}
-                    interpolation={interpolation}
+        <>
+            <div
+                className={classNames(styles.controlsContainer, className)}
+                {...componentProps}
+                style={{
+                    display: isHidden ? 'none' : null
+                }}
+            >
+                <GreenFlag
+                    active={active}
+                    title={intl.formatMessage(messages.goTitle)}
+                    onClick={onGreenFlagClick}
                 />
-            )}
-        </div>
+                <StopAll
+                    active={active}
+                    title={intl.formatMessage(messages.stopTitle)}
+                    onClick={onStopAllClick}
+                />
+                {turbo ? (
+                    <TurboMode isSmall={isSmall} />
+                ) : null}
+                {!isSmall && (
+                    <FramerateIndicator
+                        framerate={framerate}
+                        interpolation={interpolation}
+                    />
+                )}
+            </div>
+            {isHidden && !preferences['stage-left'] && <div />}
+        </>
     );
 };
 
@@ -73,7 +93,9 @@ Controls.propTypes = {
     framerate: PropTypes.number,
     interpolation: PropTypes.bool,
     isSmall: PropTypes.bool,
-    turbo: PropTypes.bool
+    isHidden: PropTypes.bool,
+    turbo: PropTypes.bool,
+    preferences: PropTypes.object
 };
 
 Controls.defaultProps = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ContextMenu, MenuItem} from 'react-contextmenu';
+import {ContextMenu, MenuItem, SubMenu} from 'react-contextmenu';
 import classNames from 'classnames';
 
 import styles from './context-menu.css';
@@ -18,6 +18,13 @@ const StyledMenuItem = props => (
     />
 );
 
+const subMenuProps = {
+    attributes: {
+        className: styles.menuItem
+    },
+    className: classNames(styles.contextMenu, styles.subMenuContext)
+};
+
 const BorderedMenuItem = props => (
     <MenuItem
         {...props}
@@ -32,10 +39,20 @@ const DangerousMenuItem = props => (
     />
 );
 
+const UnborderedDangerousMenuItem = props => (
+    <MenuItem
+        {...props}
+        attributes={{className: classNames(styles.menuItem, styles.menuItemDanger)}}
+    />
+);
+
 
 export {
     BorderedMenuItem,
     DangerousMenuItem,
+    UnborderedDangerousMenuItem,
     StyledContextMenu as ContextMenu,
-    StyledMenuItem as MenuItem
+    StyledMenuItem as MenuItem,
+    SubMenu,
+    subMenuProps
 };

@@ -276,6 +276,34 @@ const alerts = [
         ),
         iconSpinner: true,
         level: AlertLevels.SUCCESS
+    },
+    {
+        alertId: 'nbEncodingAudio',
+        alertType: AlertTypes.STANDARD,
+        clearList: [],
+        content: (
+            <FormattedMessage
+                defaultMessage="Processing audio…"
+                description="Message indicating that sound is in process of encoding"
+                id="gui.alerts.encoding"
+            />
+        ),
+        iconSpinner: true,
+        level: AlertLevels.SUCCESS
+    },
+    {
+        alertId: 'nbEncodingAudioError',
+        alertType: AlertTypes.STANDARD,
+        clearList: [],
+        content: (
+            <FormattedMessage
+                defaultMessage="Sound failed to be processed"
+                description="Message indicating that sound failed to process"
+                id="gui.alerts.encodingError"
+            />
+        ),
+        closeButton: true,
+        level: AlertLevels.WARN
     }
 ];
 

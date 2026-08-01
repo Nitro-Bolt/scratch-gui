@@ -35,7 +35,11 @@ const SortableHOC = function (WrappedComponent) {
             } else if (!newProps.dragInfo.dragging && this.props.dragInfo.dragging) {
                 const newIndex = this.getMouseOverIndex();
                 if (newIndex !== null) {
-                    this.props.onDrop(Object.assign({}, this.props.dragInfo, {newIndex}));
+                    this.props.onDrop(Object.assign({}, this.props.dragInfo, {
+                        hoveredIndex: this.getHoveredIndex(),
+                        newIndex,
+                        rootDrop: this.isRootDrop()
+                    }));
                 }
             }
         }
@@ -88,6 +92,23 @@ const SortableHOC = function (WrappedComponent) {
             }
             return mouseOverIndex;
         }
+        getHoveredIndex () {
+            if (!this.props.dragInfo.currentOffset || !this.boxes) return null;
+            const {x, y} = this.props.dragInfo.currentOffset;
+            const index = this.boxes.findIndex(box => box &&
+                x >= box.left && x <= box.right && y >= box.top && y <= box.bottom);
+            return index < 0 ? null : index;
+        }
+        isRootDrop () {
+            if (!this.props.dragInfo.currentOffset || !this.boxes || this.boxes.length === 0) return false;
+            const {x, y} = this.props.dragInfo.currentOffset;
+            const boxes = this.boxes.filter(Boolean);
+            if (boxes.length === 0) return false;
+            return x < Math.min(...boxes.map(box => box.left)) ||
+                x > Math.max(...boxes.map(box => box.right)) ||
+                y < Math.min(...boxes.map(box => box.top)) ||
+                y > Math.max(...boxes.map(box => box.bottom));
+        }
         setRef (el) {
             this.ref = el;
         }
@@ -99,6 +120,7 @@ const SortableHOC = function (WrappedComponent) {
                 <WrappedComponent
                     containerRef={this.setRef}
                     draggingIndex={dragIndex}
+                    draggingPayload={this.props.dragInfo.payload}
                     draggingType={dragType}
                     mouseOverIndex={mouseOverIndex}
                     ordering={ordering}
@@ -118,7 +140,11 @@ const SortableHOC = function (WrappedComponent) {
             }),
             dragType: PropTypes.string,
             dragging: PropTypes.bool,
-            index: PropTypes.number
+            index: PropTypes.number,
+            payload: PropTypes.oneOfType([
+                PropTypes.object,
+                PropTypes.string
+            ])
         }),
         items: PropTypes.arrayOf(PropTypes.shape({
             url: PropTypes.string,

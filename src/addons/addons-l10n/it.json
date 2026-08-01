@@ -236,7 +236,6 @@
     "editor-extra-keys/enter-key": "invio",
     "move-to-top-bottom/bottom": "porta in fondo",
     "move-to-top-bottom/top": "porta in cima",
-    "move-to-top-layer/move-to-front-layer": "porta in primo piano",
     "rename-broadcasts/RENAME_BROADCAST": "Rinomina messaggio",
     "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Rinomina Messaggio",
     "rename-broadcasts/RENAME_BROADCAST_TITLE": "Rinomina tutti i messaggi \"{name}\" come:",

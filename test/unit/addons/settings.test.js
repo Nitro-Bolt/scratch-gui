@@ -29,21 +29,21 @@ test('enabled, event', () => {
     const store = new SettingStore();
     const fn = jest.fn();
     store.addEventListener('setting-changed', fn);
-    expect(store.getAddonEnabled('editor-devtools')).toBe(true);
-    expect('enabled' in store.store['editor-devtools']).toBe(false);
-    store.setAddonEnabled('editor-devtools', false);
-    expect(store.getAddonEnabled('editor-devtools')).toBe(false);
-    expect('enabled' in store.store['editor-devtools']).toBe(true);
-    store.setAddonEnabled('editor-devtools', true);
+    expect(store.getAddonEnabled('find-bar')).toBe(true);
+    expect('enabled' in store.store['find-bar']).toBe(false);
+    store.setAddonEnabled('find-bar', false);
+    expect(store.getAddonEnabled('find-bar')).toBe(false);
+    expect('enabled' in store.store['find-bar']).toBe(true);
+    store.setAddonEnabled('find-bar', true);
     store.setAddonEnabled('cat-blocks', true);
     expect('enabled' in store.store['cat-blocks']).toBe(true);
     store.setAddonEnabled('cat-blocks', null);
     expect('enabled' in store.store['cat-blocks']).toBe(false);
     expect(fn).toHaveBeenCalledTimes(4);
-    expect(fn.mock.calls[0][0].detail.addonId).toBe('editor-devtools');
+    expect(fn.mock.calls[0][0].detail.addonId).toBe('find-bar');
     expect(fn.mock.calls[0][0].detail.settingId).toBe('enabled');
     expect(fn.mock.calls[0][0].detail.value).toBe(false);
-    expect(fn.mock.calls[1][0].detail.addonId).toBe('editor-devtools');
+    expect(fn.mock.calls[1][0].detail.addonId).toBe('find-bar');
     expect(fn.mock.calls[1][0].detail.settingId).toBe('enabled');
     expect(fn.mock.calls[1][0].detail.value).toBe(true);
     expect(fn.mock.calls[2][0].detail.addonId).toBe('cat-blocks');
@@ -387,17 +387,17 @@ test('local storage is resistent to errors', () => {
 test('setStore diffing', () => {
     const settingsStore = new SettingStore();
     const pageStore = new SettingStore();
-    settingsStore.setAddonEnabled('editor-devtools', false);
-    pageStore.setAddonEnabled('editor-devtools', false);
+    settingsStore.setAddonEnabled('find-bar', false);
+    pageStore.setAddonEnabled('find-bar', false);
     const fn = jest.fn();
     pageStore.addEventListener('addon-changed', fn);
     pageStore.setStore(settingsStore.store);
     expect(fn).toHaveBeenCalledTimes(0);
-    settingsStore.setAddonEnabled('editor-devtools', true);
+    settingsStore.setAddonEnabled('find-bar', true);
     settingsStore.setAddonSetting('onion-skinning', 'next', 10);
     pageStore.setStore(settingsStore.store);
     expect(fn).toHaveBeenCalledTimes(2);
-    expect(fn.mock.calls[0][0].detail.addonId).toBe('editor-devtools');
+    expect(fn.mock.calls[0][0].detail.addonId).toBe('find-bar');
     expect(fn.mock.calls[1][0].detail.addonId).toBe('onion-skinning');
 });
 
@@ -480,15 +480,11 @@ test('Settings migration 1 -> 2', () => {
     global.localStorage.getItem = () => `{"_":1,"tw-project-info":{"enabled":false},"tw-interface-customization":{"enabled":false,"removeFeedback":true,"removeBackpack":true}}`;
     store.readLocalStorage();
     expect(store.getAddonEnabled('block-count')).toBe(false);
-    expect(store.getAddonEnabled('tw-remove-backpack')).toBe(false);
-    expect(store.getAddonEnabled('tw-remove-feedback')).toBe(false);
 
     // eslint-disable-next-line max-len
     global.localStorage.getItem = () => `{"_":1,"tw-project-info":{"enabled":true},"tw-interface-customization":{"enabled":true,"removeFeedback":true,"removeBackpack":true}}`;
     store.readLocalStorage();
     expect(store.getAddonEnabled('block-count')).toBe(true);
-    expect(store.getAddonEnabled('tw-remove-backpack')).toBe(true);
-    expect(store.getAddonEnabled('tw-remove-feedback')).toBe(true);
 });
 
 test('Settings migration 2 -> 3', () => {
@@ -504,32 +500,11 @@ test('Settings migration 2 -> 3', () => {
     expect(store.getAddonSetting('hide-flyout', 'toggle')).toBe('hover');
 });
 
-test('Settings migration 3 -> 4', () => {
-    const store = new SettingStore();
 
-    global.localStorage.getItem = () => JSON.stringify({
-        _: 3
-    });
-    store.readLocalStorage();
-    expect(store.getAddonEnabled('editor-devtools')).toBe(true);
-    expect(store.getAddonEnabled('find-bar')).toBe(true);
-    expect(store.getAddonEnabled('middle-click-popup')).toBe(true);
-
-    global.localStorage.getItem = () => JSON.stringify({
-        '_': 3,
-        'editor-devtools': {
-            enabled: false
-        }
-    });
-    store.readLocalStorage();
-    expect(store.getAddonEnabled('editor-devtools')).toBe(false);
-    expect(store.getAddonEnabled('find-bar')).toBe(false);
-    expect(store.getAddonEnabled('middle-click-popup')).toBe(false);
-});
 
 test('if', () => {
     const store = new SettingStore();
-    store.setAddonEnabled('editor-devtools', true);
+    store.setAddonEnabled('find-bar', true);
     store.setAddonEnabled('onion-skinning', false);
     store.setAddonSetting('editor-theme3', 'motion-color', '#000000');
     store.setAddonSetting('editor-theme3', 'looks-color', '#FFFFFF');
@@ -546,13 +521,13 @@ test('if', () => {
         addonEnabled: 'onion-skinning'
     })).toBe(false);
     expect(store.evaluateCondition('editor-theme3', {
-        addonEnabled: ['editor-devtools']
+        addonEnabled: ['find-bar']
     })).toBe(true);
     expect(store.evaluateCondition('editor-theme3', {
-        addonEnabled: 'editor-devtools'
+        addonEnabled: 'find-bar'
     })).toBe(true);
     expect(store.evaluateCondition('editor-theme3', {
-        addonEnabled: ['editor-devtools', 'onion-skinning']
+        addonEnabled: ['find-bar', 'onion-skinning']
     })).toBe(true);
 
     expect(store.evaluateCondition('editor-theme3', {
@@ -618,7 +593,7 @@ test('if', () => {
     })).toBe(false);
 
     expect(store.evaluateCondition('editor-theme3', {
-        addonEnabled: ['editor-devtools'],
+        addonEnabled: ['find-bar'],
         settings: {
             'motion-color': '#000000'
         }
@@ -630,7 +605,7 @@ test('if', () => {
         }
     })).toBe(false);
     expect(store.evaluateCondition('editor-theme3', {
-        addonEnabled: ['editor-devtools'],
+        addonEnabled: ['find-bar'],
         settings: {
             'motion-color': '#000001'
         }

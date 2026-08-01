@@ -13,6 +13,7 @@ import DragConstants from '../lib/drag-constants';
 import {emptyCostume} from '../lib/empty-assets';
 import sharedMessages from '../lib/shared-messages';
 import downloadBlob from '../lib/download-blob';
+import getAssetType from '../lib/nb-asset-type.js';
 
 import {
     openCostumeLibrary,
@@ -21,7 +22,8 @@ import {
 
 import {
     activateTab,
-    SOUNDS_TAB_INDEX
+    SOUNDS_TAB_INDEX,
+    ASSETS_TAB_INDEX
 } from '../reducers/editor-tab';
 
 import {setRestore} from '../reducers/restore-deletion';
@@ -79,12 +81,17 @@ class CostumeTab extends React.Component {
             'handleDeleteCostume',
             'handleDuplicateCostume',
             'handleExportCostume',
+            'handleExportBitmapCostume',
+            'handleMoveToTop',
+            'handleMoveToBottom',
             'handleNewCostume',
             'handleNewBlankCostume',
             'handleSurpriseCostume',
             'handleSurpriseBackdrop',
             'handleFileUploadClick',
             'handleCostumeUpload',
+            'handleFolderReorder',
+            'handleItemFolderChangeComplete',
             'handleDrop',
             'setFileInput'
         ]);
@@ -148,6 +155,39 @@ class CostumeTab extends React.Component {
             this.props.vm.getExportedCostume(item)
         ], {type: item.asset.assetType.contentType});
         downloadBlob(`${item.name}.${item.asset.dataFormat}`, blob);
+    }
+    handleExportBitmapCostume (costumeIndex, scale = 1) {
+        const item = this.props.vm.editingTarget.sprite.costumes[costumeIndex];
+        const data = this.props.vm.getExportedCostume(item);
+        const contentType = item.asset.assetType.contentType;
+
+        const blob = new Blob([data], {type: contentType});
+        const url = URL.createObjectURL(blob);
+
+        const img = new Image();
+        img.onload = () => {
+            URL.revokeObjectURL(url);
+            const canvas = document.createElement('canvas');
+            canvas.width = (img.naturalWidth || img.width) * scale;
+            canvas.height = (img.naturalHeight || img.height) * scale;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(pngBlob => {
+                downloadBlob(`${item.name}${scale > 1 ? `@${scale}x` : ''}.png`, pngBlob);
+            }, 'image/png');
+        };
+        img.src = url;
+    }
+    handleMoveToTop (costumeIndex) {
+        this.props.vm.editingTarget.reorderCostume(costumeIndex, 0);
+        this.props.vm.editingTarget.setCostume(0);
+        this.setState({selectedCostumeIndex: 0});
+    }
+    handleMoveToBottom (costumeIndex) {
+        const lastCostumeIndex = this.props.vm.editingTarget.sprite.costumes.length - 1;
+        this.props.vm.editingTarget.reorderCostume(costumeIndex, lastCostumeIndex);
+        this.props.vm.editingTarget.setCostume(lastCostumeIndex);
+        this.setState({selectedCostumeIndex: lastCostumeIndex});
     }
     handleNewCostume (costume, fromCostumeLibrary, targetId) {
         const costumes = Array.isArray(costume) ? costume : [costume];
@@ -214,12 +254,59 @@ class CostumeTab extends React.Component {
     handleFileUploadClick () {
         this.fileInput.click();
     }
+    handleFolderReorder (folderId, newIndex) {
+        const costumes = this.props.vm.editingTarget.sprite.costumes;
+        const activeCostume = costumes[this.state.selectedCostumeIndex];
+        this.props.vm.moveFolderToIndex(folderId, newIndex);
+        this.setState({
+            selectedCostumeIndex: this.props.vm.editingTarget.sprite.costumes.indexOf(activeCostume)
+        });
+    }
+    handleItemFolderChangeComplete (activeCostume, targetId) {
+        const target = this.props.vm.editingTarget;
+        if (!target || target.id !== targetId) return;
+        const selectedCostumeIndex = target.sprite.costumes.indexOf(activeCostume);
+        if (selectedCostumeIndex >= 0) this.setState({selectedCostumeIndex});
+    }
     handleDrop (dropInfo) {
+        if (dropInfo.dragType === DragConstants.FOLDER_COSTUME &&
+            dropInfo.payload && dropInfo.payload.nativeFolderId) {
+            const sourceId = dropInfo.payload.nativeFolderId;
+            const hoveredFolderId = dropInfo.payload.folderAtDisplayIndex &&
+                dropInfo.payload.folderAtDisplayIndex[dropInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const structuralIndex = typeof dropInfo.hoveredIndex === 'number' ?
+                dropInfo.hoveredIndex : dropInfo.newIndex;
+            const destinationParentId = hoveredFolder && hoveredFolder._isOpen !== false &&
+                hoveredFolder.id !== sourceId ?
+                hoveredFolder.id : dropInfo.rootDrop ? null : dropInfo.payload.parentFolderAtDisplayIndex &&
+                    dropInfo.payload.parentFolderAtDisplayIndex[structuralIndex];
+            if (destinationParentId !== sourceId) {
+                try {
+                    this.props.vm.setFolderParent(sourceId, destinationParentId || null);
+                } catch (error) {
+                    return;
+                }
+            }
+            const mappedIndex = dropInfo.payload.dropIndexMap && dropInfo.payload.dropIndexMap[dropInfo.newIndex];
+            this.handleFolderReorder(sourceId,
+                typeof mappedIndex === 'number' ? mappedIndex : dropInfo.newIndex);
+            return;
+        }
         if (dropInfo.dragType === DragConstants.COSTUME) {
             const sprite = this.props.vm.editingTarget.sprite;
             const activeCostume = sprite.costumes[this.state.selectedCostumeIndex];
-            this.props.vm.reorderCostume(this.props.vm.editingTarget.id,
-                dropInfo.index, dropInfo.newIndex);
+            const mappedIndex = dropInfo.dropIndexMap && dropInfo.dropIndexMap[dropInfo.newIndex];
+            const newIndex = typeof mappedIndex === 'number' ? mappedIndex : dropInfo.newIndex;
+            const destination = sprite.costumes[newIndex];
+            const hoveredFolderId = dropInfo.folderAtDisplayIndex &&
+                dropInfo.folderAtDisplayIndex[dropInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const destinationFolder = hoveredFolder || (destination && destination.folderId &&
+                this.props.vm.runtime.projectFolders.find(folder => folder.id === destination.folderId));
+            this.props.vm.setItemFolder('costume', this.props.vm.editingTarget.id,
+                dropInfo.index, !dropInfo.rootDrop && destinationFolder && destinationFolder._isOpen !== false ?
+                    destinationFolder.id : null, newIndex);
             this.setState({selectedCostumeIndex: sprite.costumes.indexOf(activeCostume)});
         } else if (dropInfo.dragType === DragConstants.BACKPACK_COSTUME) {
             this.props.vm.addCostume(dropInfo.payload.body, {
@@ -231,6 +318,27 @@ class CostumeTab extends React.Component {
                 md5: dropInfo.payload.body,
                 name: dropInfo.payload.name
             });
+        } else if (dropInfo.dragType === DragConstants.BACKPACK_ASSET) {
+            // Detect if the asset can be added as a costume
+            // If it is not a costume, add it to assets
+            const type = getAssetType(dropInfo.payload).type;
+            const payload = dropInfo.payload;
+            const vm = this.props.vm;
+            if (type === 'image') {
+                costumeUpload(payload.bodyData, payload.mime, vm, vmCostume => {
+                    vmCostume[0].name = payload.name;
+                    this.handleNewCostume(vmCostume, false, vm.editingTarget.id);
+                });
+            } else {
+                this.props.onActivateAssetsTab();
+                this.props.vm.addAsset({
+                    md5: dropInfo.payload.body,
+                    lastModified: dropInfo.payload.lastModified,
+                    contentType: dropInfo.payload.mime,
+                    dataFormat: dropInfo.payload.dataFormat,
+                    name: dropInfo.payload.name
+                });
+            }
         }
     }
     setFileInput (input) {
@@ -269,7 +377,9 @@ class CostumeTab extends React.Component {
 
         const costumeData = target.costumes ? target.costumes.map(costume => ({
             name: costume.name,
+            folderId: costume.folderId || null,
             asset: costume.asset,
+            isBitmap: costume.asset && costume.asset.dataFormat !== 'svg',
             details: costume.size ? this.formatCostumeDetails(costume.size, costume.bitmapResolution) : null,
             dragPayload: costume
         })) : [];
@@ -309,13 +419,19 @@ class CostumeTab extends React.Component {
                 dragType={DragConstants.COSTUME}
                 isRtl={isRtl}
                 items={costumeData}
+                vm={vm}
+                onFolderReorder={this.handleFolderReorder}
+                onItemFolderChangeComplete={this.handleItemFolderChangeComplete}
                 selectedItemIndex={this.state.selectedCostumeIndex}
                 onDeleteClick={target && target.costumes && target.costumes.length > 1 ?
                     this.handleDeleteCostume : null}
                 onDrop={this.handleDrop}
                 onDuplicateClick={this.handleDuplicateCostume}
                 onExportClick={this.handleExportCostume}
+                onExportBitmapClick={this.handleExportBitmapCostume}
                 onItemClick={this.handleSelectCostume}
+                onMoveToTopClick={this.handleMoveToTop}
+                onMoveToBottomClick={this.handleMoveToBottom}
             >
                 {target.costumes ?
                     <PaintEditorWrapper
@@ -334,6 +450,7 @@ CostumeTab.propTypes = {
     intl: intlShape,
     isRtl: PropTypes.bool,
     onActivateSoundsTab: PropTypes.func.isRequired,
+    onActivateAssetsTab: PropTypes.func.isRequired,
     onCloseImporting: PropTypes.func.isRequired,
     onNewLibraryBackdropClick: PropTypes.func.isRequired,
     onNewLibraryCostumeClick: PropTypes.func.isRequired,
@@ -365,6 +482,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
+    onActivateAssetsTab: () => dispatch(activateTab(ASSETS_TAB_INDEX)),
     onNewLibraryBackdropClick: e => {
         e.preventDefault();
         dispatch(openBackdropLibrary());

@@ -228,7 +228,6 @@
     "blocks2image/export_selected_to_SVG": "Blok exporteren als SVG",
     "move-to-top-bottom/bottom": "naar beneden",
     "move-to-top-bottom/top": "naar boven",
-    "move-to-top-layer/move-to-front-layer": "verplaatsen naar voorgrond",
     "rename-broadcasts/RENAME_BROADCAST": "Signaal hernoemen",
     "rename-broadcasts/RENAME_BROADCAST_MODAL_TITLE": "Signaal Hernoemen",
     "rename-broadcasts/RENAME_BROADCAST_TITLE": "Alle \"{name}\"-signalen hernoemen naar:",

@@ -1,0 +1,51 @@
+@import "../../css/colors.css";
+@import "../../css/units.css";
+
+.wrapper {
+    overflow-y: hidden;
+    flex: 1 1 0;
+    min-height: calc(1rem + 2 * $space);
+    transition: flex-grow 0.25s ease-out, flex-basis 0.25s ease-out;
+
+    &:not(:first-of-type) {
+        border-top: 1px solid $ui-black-transparent;
+    }
+
+    &.collapsed {
+        flex: 0 0 calc(1rem + 2 * $space);
+
+        & .body {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.15s ease-out, visibility 0s linear 0.25s;
+        }
+    }
+}
+
+.header {
+    user-select: none;
+    cursor: pointer;
+    padding: $space;
+    font-size: $menu-bar-standard-font-size;
+
+    & span {
+        margin: 0.25rem;
+        font-weight: bold;
+        letter-spacing: 0.4px;
+        line-height: 1rem;
+    }
+}
+
+.body {
+    height: calc(100% - 1rem - 2 * $space);
+    overflow-y: auto;
+    gap: 0.5rem;
+    border-top: 1px solid $ui-black-transparent;
+    opacity: 1;
+    transition: opacity 0.2s ease-in 0.05s, visibility 0s linear;
+}
+
+.caret {
+    transition: transform 0.25s ease-out;
+}

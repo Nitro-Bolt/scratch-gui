@@ -29,7 +29,8 @@ import {
     closeExtensionLibrary,
     openSoundRecorder,
     openConnectionModal,
-    openCustomExtensionModal
+    openCustomExtensionModal,
+    openInspectBlockModal
 } from '../reducers/modals';
 import {activateCustomProcedures, deactivateCustomProcedures} from '../reducers/custom-procedures';
 import {setConnectionModalExtensionId} from '../reducers/connection-modal';
@@ -118,17 +119,19 @@ class Blocks extends React.Component {
             'handleExtensionReordered',
             'handleExtensionRemoved',
             'handleBlocksInfoUpdate',
+            'handleInspectBlock',
             'onTargetsUpdate',
             'onVisualReport',
             'onWorkspaceUpdate',
             'onWorkspaceMetricsChange',
             'setBlocks',
             'setLocale',
-            'onExtensionAPI',
+            'onExtensionAPI'
         ]);
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
+        this.ScratchBlocks.inspectBlockCallback = this.handleInspectBlock;
 
         this.state = {
             prompt: null
@@ -141,6 +144,7 @@ class Blocks extends React.Component {
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
+        this.ScratchBlocks.inspectBlockCallback = this.handleInspectBlock;
 
         this.ScratchBlocks.FieldColourSlider.activateEyedropper_ = this.props.onActivateColorPicker;
         this.ScratchBlocks.Procedures.externalProcedureDefCallback = this.props.onActivateCustomProcedures;
@@ -162,11 +166,14 @@ class Blocks extends React.Component {
                 colours: this.props.theme.getBlockColors(),
                 grid: {
                     colour: this.props.theme.getBlockColors().gridColor
-                }
+                },
+                disableInspectBlock: this.props.disableInspectBlock
             },
             Blocks.defaultOptions
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
+        this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
+        this.workspace.vm = this.props.vm;
         AddonHooks.blocklyWorkspace = this.workspace;
 
         // Register buttons under new callback keys for creating variables,
@@ -242,10 +249,16 @@ class Blocks extends React.Component {
             this.props.locale !== nextProps.locale ||
             this.props.anyModalVisible !== nextProps.anyModalVisible ||
             this.props.stageSize !== nextProps.stageSize ||
-            this.props.customStageSize !== nextProps.customStageSize
+            this.props.customStageSize !== nextProps.customStageSize ||
+            this.props.hiddenCategories !== nextProps.hiddenCategories ||
+            this.props.nbBlocks !== nextProps.nbBlocks ||
+            this.props.disableInspectBlock !== nextProps.disableInspectBlock
         );
     }
     componentDidUpdate (prevProps) {
+        if (this.workspace && this.props.disableInspectBlock !== prevProps.disableInspectBlock) {
+            this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
+        }
         // If any modals are open, call hideChaff to close z-indexed field editors
         if (this.props.anyModalVisible && !prevProps.anyModalVisible) {
             this.ScratchBlocks.hideChaff();
@@ -256,6 +269,14 @@ class Blocks extends React.Component {
         // Do not check against prevProps.toolboxXML because that may not have been rendered.
         if (this.props.isVisible && this.props.toolboxXML !== this._renderedToolboxXML) {
             this.requestToolboxUpdate();
+        }
+
+        if (this.props.hiddenCategories !== prevProps.hiddenCategories ||
+            this.props.nbBlocks !== prevProps.nbBlocks) {
+            const toolboxXML = this.getToolboxXML();
+            if (toolboxXML) {
+                this.props.updateToolboxState(toolboxXML);
+            }
         }
 
         if (this.props.isVisible === prevProps.isVisible) {
@@ -391,9 +412,9 @@ class Blocks extends React.Component {
         this.props.vm.removeListener('CREATE_UNSANDBOXED_EXTENSION_API', this.onExtensionAPI);
     }
 
-    onExtensionAPI(Scratch) {
-      // Assume's the Scratch.gui handle was ran.
-      Scratch.gui.makeToolboxXML = makeToolboxXML;
+    onExtensionAPI (Scratch) {
+        // Assume's the Scratch.gui handle was ran.
+        Scratch.gui.makeToolboxXML = makeToolboxXML;
     }
 
     updateToolboxBlockValue (id, value) {
@@ -445,7 +466,7 @@ class Blocks extends React.Component {
         this.workspace.glowBlock(data.id, false);
     }
     onVisualReport (data) {
-        this.workspace.reportValue(data.id, data.value);
+        this.workspace.reportValue(data.id, data.value, data.error, data.html);
     }
     getToolboxXML () {
         // Use try/catch because this requires digging pretty deep into the VM
@@ -459,6 +480,7 @@ class Blocks extends React.Component {
             const stageCostumes = stage.getCostumes();
             const targetCostumes = target.getCostumes();
             const targetSounds = target.getSounds();
+            const targetAssets = target.getAssets();
             const dynamicBlocksXML = injectExtensionCategoryTheme(
                 this.props.vm.runtime.getBlocksXML(target),
                 this.props.theme
@@ -468,7 +490,10 @@ class Blocks extends React.Component {
                 targetCostumes[targetCostumes.length - 1].name,
                 stageCostumes[stageCostumes.length - 1].name,
                 targetSounds.length > 0 ? targetSounds[targetSounds.length - 1].name : '',
-                this.props.theme.getBlockColors()
+                targetAssets.length > 0 ? targetAssets[targetAssets.length - 1].name : '',
+                this.props.theme.getBlockColors(),
+                this.props.hiddenCategories || [],
+                this.props.nbBlocks
             );
         } catch {
             return null;
@@ -636,6 +661,13 @@ class Blocks extends React.Component {
         this.props.onOpenSoundRecorder();
     }
 
+    handleInspectBlock (block) {
+        if (!block || block.isInFlyout) {
+            return;
+        }
+        this.props.onInspectBlock(block);
+    }
+
     /*
      * Pass along information about proposed name and variable options (scope and isCloud)
      * and additional potentially conflicting variable names from the VM
@@ -654,7 +686,9 @@ class Blocks extends React.Component {
     handleCustomProceduresClose (data) {
         this.props.onRequestCloseCustomProcedures(data);
         const ws = this.workspace;
-        ws.refreshToolboxSelection_();
+        if (data) {
+            ws.refreshToolboxSelection_();
+        }
         ws.toolbox_.scrollToCategoryById('myBlocks');
     }
     handleDrop (dragInfo) {
@@ -723,6 +757,7 @@ class Blocks extends React.Component {
                         defaultValue={this.state.prompt.defaultValue}
                         isStage={vm.runtime.getEditingTarget().isStage}
                         showListMessage={this.state.prompt.varType === this.ScratchBlocks.LIST_VARIABLE_TYPE}
+                        showTableMessage={this.state.prompt.varType === this.ScratchBlocks.TABLE_VARIABLE_TYPE}
                         label={this.state.prompt.message}
                         showCloudOption={this.state.prompt.showCloudOption}
                         showVariableOptions={this.state.prompt.showVariableOptions}
@@ -772,6 +807,7 @@ Blocks.propTypes = {
     onOpenConnectionModal: PropTypes.func,
     onOpenSoundRecorder: PropTypes.func,
     onOpenCustomExtensionModal: PropTypes.func,
+    onInspectBlock: PropTypes.func,
     reduxOnOpenCustomExtensionModal: PropTypes.func,
     onRequestCloseCustomProcedures: PropTypes.func,
     onRequestCloseExtensionLibrary: PropTypes.func,
@@ -785,16 +821,18 @@ Blocks.propTypes = {
         comments: PropTypes.bool,
         collapse: PropTypes.bool
     }),
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
+    stageSize: PropTypes.number.isRequired,
     theme: PropTypes.instanceOf(Theme),
     toolboxXML: PropTypes.string,
     updateMetrics: PropTypes.func,
     updateToolboxState: PropTypes.func,
     useCatBlocks: PropTypes.bool,
+    disableInspectBlock: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired,
     workspaceMetrics: PropTypes.shape({
         targets: PropTypes.objectOf(PropTypes.object)
-    })
+    }),
+    hiddenCategories: PropTypes.arrayOf(PropTypes.string)
 };
 
 Blocks.defaultOptions = {
@@ -809,7 +847,7 @@ Blocks.defaultOptions = {
         colour: '#ddd'
     },
     comments: true,
-    collapse: false,
+    collapse: true,
     sounds: false
 };
 
@@ -832,7 +870,10 @@ const mapStateToProps = state => ({
     toolboxXML: state.scratchGui.toolbox.toolboxXML,
     customProceduresVisible: state.scratchGui.customProcedures.active,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
-    useCatBlocks: isTimeTravel2020(state)
+    useCatBlocks: isTimeTravel2020(state),
+    hiddenCategories: state.scratchGui.preferences['hidden-categories'],
+    nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true),
+    disableInspectBlock: state.scratchGui.preferences['disable-inspect-block'] === true
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -847,6 +888,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch(openSoundRecorder());
     },
     reduxOnOpenCustomExtensionModal: () => dispatch(openCustomExtensionModal()),
+    onInspectBlock: block => dispatch(openInspectBlockModal(block)),
     onRequestCloseExtensionLibrary: () => {
         dispatch(closeExtensionLibrary());
     },

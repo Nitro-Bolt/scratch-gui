@@ -507,7 +507,7 @@ class TokenTypeStringEnum extends TokenType {
  * The token type for a literal string, like 'Hello World' in the query `say Hello World`
  */
 class TokenTypeStringLiteral extends TokenType {
-  static TERMINATORS = [undefined, " ", "+", "-", "*", "/", "=", "<", ">", ")"];
+  static TERMINATORS = [undefined, " ", "+", "-", "*", "/", "^", "<=", ">=", "=", "<", ">", ")"];
 
   static isTerminator(char) {
     return this.TERMINATORS.includes(char);
@@ -1152,15 +1152,19 @@ export default class WorkspaceQuerier {
     "operator_join",
     "operator_round",
     "operator_mathop",
+    "operator_power",
     "operator_mod",
     "operator_divide",
     "operator_multiply",
     "operator_subtract",
     "operator_add",
     "operator_equals",
+    "operator_lte",
     "operator_lt",
+    "operator_gte",
     "operator_gt",
     "operator_or",
+    "operator_xor",
     "operator_and",
     "operator_not",
   ];

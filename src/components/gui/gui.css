@@ -145,11 +145,25 @@
     filter: grayscale(100%);
 }
 
-[dir="ltr"] .tab img {
+[dir="ltr"] .left-hidden-offset {
+    width: calc(100% - $space * 18) !important;
+    margin-left: calc($space * 18) !important;
+}
+
+[dir="rtl"] .left-hidden-offset {
+    width: calc(100% - $space * 18) !important;
+    margin-right: calc($space * 18) !important;
+}
+
+.compact .tab span {
+    display: none;
+}
+
+[dir="ltr"] :not(.compact) > .tab img {
     margin-right: 0.125rem;
 }
 
-[dir="rtl"] .tab img {
+[dir="rtl"] :not(.compact) >  .tab img {
     margin-left: 0.125rem;
 }
 
@@ -199,9 +213,51 @@
     display: flex;
 }
 
+.stage-left {
+    flex-direction: row-reverse;
+}
+
+.stage-left :global(:is(.injectionDiv, [class^="asset-panel_wrapper"], [class^="variables-tab_wrapper"])) {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.stage-left.stage-hidden :global(:is(.injectionDiv, [class^="asset-panel_wrapper"], [class^="variables-tab_wrapper"], [class^="selector_wrapper"])) {
+    border-top-left-radius: 0.5rem;
+}
+
+.stage-left :global(:is([class^="gui_extension-button"], [class^="selector_wrapper"], [class^="variables-tab_clones-selector_items-wrapper"])) {
+    border-bottom-left-radius: 0.5rem;
+}
+
 .blocks-wrapper {
     flex-grow: 1;
     position: relative;
+}
+
+.stage-resize {
+    width: $space;
+    position: relative;
+    cursor: e-resize;
+    flex-shrink: 0;
+}
+
+.stage-resize::before {
+    position: absolute;
+    content: "";
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: calc($space / 2);
+    border-radius: calc($space / 4);
+    height: 10rem;
+    background-color: $ui-black-transparent;
+    opacity: 0;
+}
+
+.stage-resize:is(:hover, :active)::before {
+    opacity: 1;
 }
 
 .stage-and-target-wrapper {
@@ -215,12 +271,11 @@
     */
     display: flex;
     flex-direction: column;
-    /* pad entire wrapper to the left and right; allow children to fill width */
-    padding-left: $space;
-    padding-right: $space;
+}
 
-    /* this will only ever be as wide as the stage */
-    flex-basis: 0;
+.flex-wrapper:not(.stage-hidden)::after {
+    width: $space;
+    content: "";
 }
 
 .target-wrapper {

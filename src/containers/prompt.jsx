@@ -67,6 +67,7 @@ class Prompt extends React.Component {
                 globalSelected={this.state.globalSelected}
                 isStage={this.props.isStage}
                 showListMessage={this.props.showListMessage}
+                showTableMessage={this.props.showTableMessage}
                 label={this.props.label}
                 showCloudOption={this.props.showCloudOption}
                 showVariableOptions={this.props.showVariableOptions}
@@ -87,6 +88,7 @@ Prompt.propTypes = {
     defaultValue: PropTypes.string,
     isStage: PropTypes.bool.isRequired,
     showListMessage: PropTypes.bool.isRequired,
+    showTableMessage: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired,
     onCancel: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,

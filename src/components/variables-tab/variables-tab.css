@@ -30,26 +30,6 @@
     flex-direction: column;
 }
 
-.container:has(.variable-dropdown:not(.variable-dropdown-collapsed) + .variable-dropdown:not(.variable-dropdown-collapsed)) .variable-dropdown {
-    height: 50%;
-}
-
-.variable-dropdown {
-    overflow-y: hidden;
-    flex-grow: 1;
-    flex-shrink: 0;
-    transition: height 0.25s ease-out;
-}
-
-.variable-dropdown:not(:first-of-type) {
-    border-top: 1px solid $ui-black-transparent;
-}
-
-.variable-dropdown-collapsed {
-    flex-grow: 0;
-    min-height: auto;
-}
-
 .box {
     background: var(--ui-white);
     border-radius: inherit;
@@ -67,7 +47,7 @@
     grid-template-columns: auto 1fr;
     font-weight: bold;
     font-size: calc($menu-bar-standard-font-size / 1.2);
-    margin-bottom: $space;
+    margin: $space;
 
     & textarea {
         resize: vertical;
@@ -77,12 +57,14 @@
 .variable-item * {
     word-break: break-word;
     width: 100%;
+    min-width: 145px;
     padding: $space;
     text-overflow: ellipsis;
     transition: 0.25s ease-out;
     border: none;
     background: var(--input-background);
     outline: 1px solid var(--ui-black-transparent);
+    border-radius: 0.25rem;
 
     &:focus {
         box-shadow: 0px 0px 0px 4px var(--looks-transparent);
@@ -91,6 +73,24 @@
 
     &:hover {
         outline: 1px solid var(--looks-secondary);
+    }
+}
+
+.variable-item button {
+    background: var(--ui-white);
+    transition: none;
+
+    &:focus {
+        box-shadow: none;
+        outline: 1px solid var(--ui-black-transparent);
+    }
+
+    &:hover {
+        outline: 1px solid var(--ui-black-transparent);
+    }
+
+    &:active {
+        background: var(--looks-light-transparent);
     }
 }
 
@@ -106,31 +106,16 @@
     background: var(--ui-white);
     outline: none;
     box-shadow: none;
+    cursor: not-allowed;
 }
 
-.variable-dropdown-header {
-    user-select: none;
-    cursor: pointer;
-    padding: $space;
-    font-size: $menu-bar-standard-font-size;
-
-    & span {
-        margin: 0.25rem;
-        font-weight: bold;
-        letter-spacing: 0.4px;
-        line-height: 1rem;
-    }
-}
-
-.variable-dropdown-body {
-    height: calc(100% - 1rem - 2 * $space);
-    overflow-y: auto;
-    gap: 0.5rem;
-    border-top: 1px solid $ui-black-transparent;
-}
-
-.variable-dropdown-body:not(:has(.local-variables-selector)) {
-    padding: $space;
+.list-item {
+    border: 1px solid var(--ui-black-transparent);
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-left-width: 2px;
+    grid-template-rows: auto auto;
+    grid-template-columns: auto;
 }
 
 .local-variables-selector {

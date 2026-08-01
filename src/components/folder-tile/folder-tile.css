@@ -1,0 +1,15 @@
+.folder-tile {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.color-picker {
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}

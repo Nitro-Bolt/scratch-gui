@@ -32,6 +32,11 @@ const categories = [
     colorId: "sounds",
   },
   {
+    categoryId: "assets",
+    settingId: "assets-color",
+    colorId: "assets"
+  },
+  {
     categoryId: "events",
     settingId: "events-color",
     colorId: "event",
@@ -60,6 +65,16 @@ const categories = [
     categoryId: "lists",
     settingId: "data-lists-color",
     colorId: "data_lists",
+  },
+  {
+    categoryId: "tables",
+    settingId: "data-tables-color",
+    colorId: "data_tables",
+  },
+  {
+    categoryId: "json",
+    settingId: "json-color",
+    colorId: "json",
   },
   {
     categoryId: "myBlocks",

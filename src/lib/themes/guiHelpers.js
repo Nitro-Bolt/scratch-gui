@@ -7,6 +7,7 @@ const BLOCK_COLOR_NAMES = [
     'motion',
     'looks',
     'sounds',
+    'assets',
     'control',
     'event',
     'sensing',
@@ -14,9 +15,9 @@ const BLOCK_COLOR_NAMES = [
     'operators',
     'data',
     'data_lists',
+    'data_tables',
     'json',
     'more',
-    'comments',
     'addons'
 ];
 

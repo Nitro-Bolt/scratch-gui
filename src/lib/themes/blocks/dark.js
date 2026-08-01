@@ -19,6 +19,12 @@ const blockColors = {
         tertiary: '#CF63CF',
         quaternary: '#CF63CF'
     },
+    assets: {
+        primary: '#493300',
+        secondary: '#4C4C4C',
+        tertiary: '#FCB103',
+        quaternary: '#FCB103'
+    },
     control: {
         primary: '#332205',
         secondary: '#4C4C4C',
@@ -61,9 +67,15 @@ const blockColors = {
         tertiary: '#FF661A',
         quaternary: '#FF661A'
     },
+    data_tables: {
+        primary: '#1B3318',
+        secondary: '#4C4C4C',
+        tertiary: '#66BD5C',
+        quaternary: '#66BD5C'
+    },
     json: {
         primary: '#141433',
-        secondary: '#5755D4',
+        secondary: '#4C4C4C',
         tertiary: '#5755D4',
         quaternary: '#5755D4'
     },
@@ -72,12 +84,6 @@ const blockColors = {
         secondary: '#4C4C4C',
         tertiary: '#FF6680',
         quaternary: '#FF6680'
-    },
-    comments: {
-        primary: '#33301F',
-        secondary: '#302D1D',
-        tertiary: '#E4DB8C',
-        quaternary: '#E4DB8C'
     },
     addons: {
         primary: '#0b3331',
