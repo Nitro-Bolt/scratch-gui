@@ -191,7 +191,7 @@ const SpriteSelectorItem = props => (
                         hoverDelay={150}
                         title={(
                             <FormattedMessage
-                                defaultMessage="Add to folder..."
+                                defaultMessage="add to folder..."
                                 description="Submenu for moving an item into a folder"
                                 id="gui.folders.addItem"
                             />
