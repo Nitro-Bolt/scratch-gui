@@ -328,15 +328,12 @@ class Backpack extends React.Component {
         if (this.props.host !== LOCAL_API) return;
         const item = this.findItemById(id);
         if (!item) return;
-        this.setState({loading: true}, () => {
-            updateBackpackObject({host: this.props.host, id, color})
-                .then(newItem => this.setState({
-                    loading: false,
-                    contents: this.state.contents.map(candidate =>
-                        (idsEqual(candidate.id, id) ? newItem : candidate))
-                }))
-                .catch(error => this.handleError(error));
-        });
+        this.setState(state => ({
+            contents: state.contents.map(candidate =>
+                (idsEqual(candidate.id, id) ? {...candidate, color} : candidate))
+        }));
+        updateBackpackObject({host: this.props.host, id, color})
+            .catch(error => this.handleError(error));
     }
     handleFolderDropTargetChange (folderId, destinationId, insertAfter) {
         this.folderDropTarget = destinationId === null ? null : {
