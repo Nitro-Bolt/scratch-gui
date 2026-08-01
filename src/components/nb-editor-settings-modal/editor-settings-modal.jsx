@@ -404,6 +404,19 @@ const EditorSettingsModal = props => {
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={e => props.onSetPreference('disable-compiler', e.target.checked)}
                 />
+                <BooleanSetting
+                    value={!!props.preferences['disable-inspect-block']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.disableInspectBlock"
+                        defaultMessage="Disable block inspector"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.disableInspectBlockHelp"
+                        defaultMessage="Removes the Inspect Block item from the right-click context menu on blocks."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => props.onSetPreference('disable-inspect-block', e.target.checked)}
+                />
             </Box>
         },
         {

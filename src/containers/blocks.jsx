@@ -166,11 +166,13 @@ class Blocks extends React.Component {
                 colours: this.props.theme.getBlockColors(),
                 grid: {
                     colour: this.props.theme.getBlockColors().gridColor
-                }
+                },
+                disableInspectBlock: this.props.disableInspectBlock
             },
             Blocks.defaultOptions
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
+        this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
         this.workspace.vm = this.props.vm;
         AddonHooks.blocklyWorkspace = this.workspace;
 
@@ -249,10 +251,14 @@ class Blocks extends React.Component {
             this.props.stageSize !== nextProps.stageSize ||
             this.props.customStageSize !== nextProps.customStageSize ||
             this.props.hiddenCategories !== nextProps.hiddenCategories ||
-            this.props.nbBlocks !== nextProps.nbBlocks
+            this.props.nbBlocks !== nextProps.nbBlocks ||
+            this.props.disableInspectBlock !== nextProps.disableInspectBlock
         );
     }
     componentDidUpdate (prevProps) {
+        if (this.workspace && this.props.disableInspectBlock !== prevProps.disableInspectBlock) {
+            this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
+        }
         // If any modals are open, call hideChaff to close z-indexed field editors
         if (this.props.anyModalVisible && !prevProps.anyModalVisible) {
             this.ScratchBlocks.hideChaff();
@@ -821,6 +827,7 @@ Blocks.propTypes = {
     updateMetrics: PropTypes.func,
     updateToolboxState: PropTypes.func,
     useCatBlocks: PropTypes.bool,
+    disableInspectBlock: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired,
     workspaceMetrics: PropTypes.shape({
         targets: PropTypes.objectOf(PropTypes.object)
@@ -865,7 +872,8 @@ const mapStateToProps = state => ({
     workspaceMetrics: state.scratchGui.workspaceMetrics,
     useCatBlocks: isTimeTravel2020(state),
     hiddenCategories: state.scratchGui.preferences['hidden-categories'],
-    nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true)
+    nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true),
+    disableInspectBlock: state.scratchGui.preferences['disable-inspect-block'] === true
 });
 
 const mapDispatchToProps = dispatch => ({
