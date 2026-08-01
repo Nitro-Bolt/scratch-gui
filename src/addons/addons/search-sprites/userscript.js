@@ -24,11 +24,10 @@ export default async function ({ addon, console, msg }) {
     const containsQuery = (str) => str.toLowerCase().includes(query);
 
     for (const sprite of spritesContainer.children) {
-      const visible =
-        !query ||
-        containsQuery(sprite.children[0].children[1].innerText) ||
-        (containsQuery(sprite.children[0].children[2].children[0].innerText) &&
-          sprite.children[0].classList.contains("sa-folders-folder"));
+      // Search the rendered tile text instead of depending on the old folders
+      // addon's private DOM shape. Folder tiles and sprite tiles can
+      // then be filtered without either one causing an out-of-bounds lookup.
+      const visible = !query || containsQuery(sprite.textContent || "");
       sprite.style.display = visible ? "" : "none";
     }
   };

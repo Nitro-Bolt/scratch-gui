@@ -40,8 +40,6 @@
 .sprite {
     height: 100%;
 }
-
-
 .scroll-wrapper {
     /*
        Sets the sprite-selector items as a scrollable pane
@@ -74,6 +72,10 @@
     align-content: flex-start;
 
     overflow: hidden;
+}
+
+.folder-child {
+    border-radius: 0.5rem;
 }
 
 .add-button {

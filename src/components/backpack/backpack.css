@@ -70,6 +70,7 @@
     opacity: 0.75;
     background-color: $drop-highlight;
     transition: all 0.25s ease;
+    pointer-events: none;
 }
 
 .status-message {
@@ -97,6 +98,11 @@
     /* Need to set the background to get blend-mode below to work */
     background: $ui-primary;
 }
+
+.folder-child > div {
+    background: var(--folder-background);
+}
+
 
 .more {
     background: $looks-secondary;

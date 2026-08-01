@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
+import VM from 'scratch-vm';
 
 import Box from '../box/box.jsx';
 import SpriteInfo from '../../containers/sprite-info.jsx';
 import SpriteList from './sprite-list.jsx';
 import ActionMenu from '../action-menu/action-menu.jsx';
-import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants';
 import {isRtl} from '@turbowarp/scratch-l10n';
 import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
@@ -69,6 +69,7 @@ const SpriteSelectorComponent = function (props) {
         spriteFileInput,
         sprites,
         stageSize,
+        vm,
         ...componentProps
     } = props;
     let selectedSprite = sprites[selectedId];
@@ -119,6 +120,7 @@ const SpriteSelectorComponent = function (props) {
                 items={Object.keys(sprites).map(id => sprites[id])}
                 raised={raised}
                 selectedId={selectedId}
+                vm={vm}
                 onDeleteSprite={onDeleteSprite}
                 onDrop={onDrop}
                 onDuplicateSprite={onDuplicateSprite}
@@ -200,7 +202,8 @@ SpriteSelectorComponent.propTypes = {
             order: PropTypes.number.isRequired
         })
     }),
-    stageSize: PropTypes.number.isRequired
+    stageSize: PropTypes.number.isRequired,
+    vm: PropTypes.instanceOf(VM).isRequired
 };
 
 export default injectIntl(SpriteSelectorComponent);

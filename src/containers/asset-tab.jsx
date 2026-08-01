@@ -35,10 +35,14 @@ class AssetTab extends React.Component {
             'handleDeleteAsset',
             'handleDuplicateAsset',
             'handleExportAsset',
+            'handleMoveToTop',
+            'handleMoveToBottom',
             'handleNewAsset',
             'handleCreateBlankTextAsset',
             'handleFileUploadClick',
             'handleAssetUpload',
+            'handleFolderReorder',
+            'handleItemFolderChangeComplete',
             'handleDrop',
             'setFileInput'
         ]);
@@ -126,11 +130,40 @@ class AssetTab extends React.Component {
         }, this.props.onCloseImporting);
     }
 
+    handleFolderReorder (folderId, newIndex) {
+        const assets = this.props.vm.editingTarget.sprite.assets;
+        const activeAsset = assets[this.state.selectedAssetIndex];
+        this.props.vm.moveFolderToIndex(folderId, newIndex);
+        this.setState({selectedAssetIndex: this.props.vm.editingTarget.sprite.assets.indexOf(activeAsset)});
+    }
+    handleItemFolderChangeComplete (activeAsset, targetId) {
+        const target = this.props.vm.editingTarget;
+        if (!target || target.id !== targetId) return;
+        const selectedAssetIndex = target.sprite.assets.indexOf(activeAsset);
+        if (selectedAssetIndex >= 0) this.setState({selectedAssetIndex});
+    }
     handleDrop (dropInfo) {
+        if (dropInfo.dragType === DragConstants.FOLDER_ASSET &&
+            dropInfo.payload && dropInfo.payload.nativeFolderId) {
+            const mappedIndex = dropInfo.payload.dropIndexMap && dropInfo.payload.dropIndexMap[dropInfo.newIndex];
+            this.handleFolderReorder(dropInfo.payload.nativeFolderId,
+                typeof mappedIndex === 'number' ? mappedIndex : dropInfo.newIndex);
+            return;
+        }
         if (dropInfo.dragType === DragConstants.ASSET) {
-            this.props.vm.reorderAsset(this.props.vm.editingTarget.id,
-                dropInfo.index, dropInfo.newIndex);
-            this.setState({selectedAssetIndex: dropInfo.newIndex});
+            const assets = this.props.vm.editingTarget.sprite.assets;
+            const activeAsset = assets[this.state.selectedAssetIndex];
+            const mappedIndex = dropInfo.dropIndexMap && dropInfo.dropIndexMap[dropInfo.newIndex];
+            const newIndex = typeof mappedIndex === 'number' ? mappedIndex : dropInfo.newIndex;
+            const destination = assets[newIndex];
+            const destinationFolder = destination && destination.folderId &&
+                this.props.vm.runtime.projectFolders.find(folder => folder.id === destination.folderId);
+            this.props.vm.setItemFolder('asset', this.props.vm.editingTarget.id,
+                dropInfo.index, !dropInfo.rootDrop && destinationFolder && destinationFolder._isOpen !== false ?
+                    destinationFolder.id : null, newIndex);
+            this.setState({
+                selectedAssetIndex: this.props.vm.editingTarget.sprite.assets.indexOf(activeAsset)
+            });
         } else if (dropInfo.dragType === DragConstants.BACKPACK_COSTUME) {
             this.props.vm.addAsset({
                 md5: dropInfo.payload.body,
@@ -164,6 +197,17 @@ class AssetTab extends React.Component {
         });
     }
 
+    handleMoveToTop (assetIndex) {
+        this.props.vm.editingTarget.reorderAsset(assetIndex, 0);
+        this.setState({selectedAssetIndex: 0});
+    }
+
+    handleMoveToBottom (assetIndex) {
+        const lastAssetIndex = this.props.vm.editingTarget.sprite.assets.length - 1;
+        this.props.vm.editingTarget.reorderAsset(assetIndex, lastAssetIndex);
+        this.setState({selectedAssetIndex: lastAssetIndex});
+    }
+
     handleExportAsset (assetIndex) {
         const item = this.props.vm.editingTarget.sprite.assets[assetIndex];
         const blob = new Blob([item.asset.data], {type: item.asset.assetType.contentType});
@@ -195,6 +239,7 @@ class AssetTab extends React.Component {
             {
                 name: asset.dataFormat ?
                     `${asset.name}.${asset.dataFormat}` : asset.name,
+                folderId: asset.folderId || null,
                 dragPayload: asset,
                 details: formatSize(asset.asset.data.byteLength),
                 ...this.getAssetIcon(asset)
@@ -217,12 +262,17 @@ class AssetTab extends React.Component {
                 dragType={DragConstants.ASSET}
                 isRtl={isRtl}
                 items={assets}
+                vm={vm}
+                onFolderReorder={this.handleFolderReorder}
+                onItemFolderChangeComplete={this.handleItemFolderChangeComplete}
                 selectedItemIndex={this.state.selectedAssetIndex}
                 onDeleteClick={this.handleDeleteAsset}
                 onDrop={this.handleDrop}
                 onDuplicateClick={this.handleDuplicateAsset}
                 onExportClick={this.handleExportAsset}
                 onItemClick={this.handleSelectAsset}
+                onMoveToTopClick={this.handleMoveToTop}
+                onMoveToBottomClick={this.handleMoveToBottom}
             >
                 <input
                     multiple

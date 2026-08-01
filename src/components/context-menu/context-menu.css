@@ -29,6 +29,16 @@
     color: white;
 }
 
+.sub-menu-context {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sub-menu-context:global(.react-contextmenu--visible) {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 .menu-item-bordered {
     border-top: 1px solid $ui-black-transparent;
 }

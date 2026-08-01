@@ -5,11 +5,31 @@ import React from 'react';
 import DeleteButton from '../delete-button/delete-button.jsx';
 import styles from './sprite-selector-item.css';
 import {ContextMenuTrigger} from 'react-contextmenu';
-import {DangerousMenuItem, ContextMenu, MenuItem} from '../context-menu/context-menu.jsx';
+import {DangerousMenuItem, ContextMenu, MenuItem, SubMenu, subMenuProps} from '../context-menu/context-menu.jsx';
 import {FormattedMessage} from 'react-intl';
 
-// react-contextmenu requires unique id to match trigger and context menu
-let contextMenuId = 0;
+class FolderMenuItem extends React.PureComponent {
+    constructor (props) {
+        super(props);
+        this.handleClick = this.handleClick.bind(this);
+    }
+    handleClick (e) {
+        this.props.onSelect(this.props.folderId, e);
+    }
+    render () {
+        return <MenuItem onClick={this.handleClick}>{this.props.children}</MenuItem>;
+    }
+}
+
+FolderMenuItem.propTypes = {
+    children: PropTypes.node,
+    folderId: PropTypes.string,
+    onSelect: PropTypes.func.isRequired
+};
+
+const hasContextMenu = props => Boolean(props.onDuplicateButtonClick || props.onDeleteButtonClick ||
+    props.onExportButtonClick || props.onExportBitmapButtonClick || props.onMoveToTopButtonClick ||
+    props.onMoveToBottomButtonClick || props.onCreateFolder || props.onColorButtonClick);
 
 const SpriteSelectorItem = props => (
     <ContextMenuTrigger
@@ -17,14 +37,18 @@ const SpriteSelectorItem = props => (
             className: classNames(props.className, styles.spriteSelectorItem, {
                 [styles.isSelected]: props.selected
             }),
+            style: props.style,
             onClick: props.onClick,
+            onDragOver: props.onNativeDragOver,
+            onDrop: props.onNativeDrop,
             onMouseEnter: props.onMouseEnter,
             onMouseLeave: props.onMouseLeave,
+            onMouseMove: props.onMouseMove,
             onMouseDown: props.onMouseDown,
             onTouchStart: props.onMouseDown
         }}
         disable={props.preventContextMenu}
-        id={`${props.name}-${contextMenuId}`}
+        id={props.contextMenuId}
         ref={props.componentRef}
     >
         {typeof props.number === 'undefined' ? null : (
@@ -54,8 +78,8 @@ const SpriteSelectorItem = props => (
                 onClick={props.onDeleteButtonClick}
             />
         ) : null }
-        {props.onDuplicateButtonClick || props.onDeleteButtonClick|| props.onExportButtonClick || props.onExportBitmapButtonClick || props.onMoveToTopButtonClick || props.onMoveToBottomButtonClick ? (
-            <ContextMenu id={`${props.name}-${contextMenuId++}`}>
+        {hasContextMenu(props) ? (
+            <ContextMenu id={props.contextMenuId}>
                 {props.onDuplicateButtonClick ? (
                     <MenuItem onClick={props.onDuplicateButtonClick}>
                         <FormattedMessage
@@ -92,6 +116,15 @@ const SpriteSelectorItem = props => (
                         />
                     </MenuItem>
                 ) : null}
+                {props.onColorButtonClick ? (
+                    <MenuItem onClick={props.onColorButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="change color"
+                            description="Menu item to change a folder color"
+                            id="gui.folders.changeColor"
+                        />
+                    </MenuItem>
+                ) : null}
                 {props.onMoveToTopButtonClick ? (
                     <MenuItem onClick={props.onMoveToTopButtonClick}>
                         <FormattedMessage
@@ -110,6 +143,50 @@ const SpriteSelectorItem = props => (
                         />
                     </MenuItem>
                 ) : null}
+                {props.onCreateFolder ? (
+                    <MenuItem onClick={props.onCreateFolder}>
+                        <FormattedMessage
+                            defaultMessage="create folder"
+                            description="Menu item to create a folder"
+                            id="gui.folders.create"
+                        />
+                    </MenuItem>
+                ) : null}
+                {props.folderId ? (
+                    <FolderMenuItem
+                        folderId={null}
+                        onSelect={props.onFolderChange}
+                    >
+                        <FormattedMessage
+                            defaultMessage="remove from folder"
+                            description="Menu item to remove an item from its folder"
+                            id="gui.folders.removeItem"
+                        />
+                    </FolderMenuItem>
+                ) : null}
+                {props.folderOptions.some(folder => folder.id !== props.folderId) ? (
+                    <SubMenu
+                        {...subMenuProps}
+                        hoverDelay={150}
+                        title={(
+                            <FormattedMessage
+                                defaultMessage="Add to folder..."
+                                description="Submenu for moving an item into a folder"
+                                id="gui.folders.addItem"
+                            />
+                        )}
+                    >
+                        {props.folderOptions.filter(folder => folder.id !== props.folderId).map(folder => (
+                            <FolderMenuItem
+                                folderId={folder.id}
+                                key={folder.id}
+                                onSelect={props.onFolderChange}
+                            >
+                                {folder.name}
+                            </FolderMenuItem>
+                        ))}
+                    </SubMenu>
+                ) : null}
                 {props.onDeleteButtonClick ? (
                     <DangerousMenuItem onClick={props.onDeleteButtonClick}>
                         <FormattedMessage
@@ -127,12 +204,19 @@ const SpriteSelectorItem = props => (
 SpriteSelectorItem.propTypes = {
     className: PropTypes.string,
     componentRef: PropTypes.func,
+    contextMenuId: PropTypes.string.isRequired,
     costumeURL: PropTypes.string,
     details: PropTypes.string,
+    folderId: PropTypes.string,
+    folderOptions: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired
+    })),
     // eslint-disable-next-line react/forbid-prop-types
     name: PropTypes.any,
     number: PropTypes.number,
     onClick: PropTypes.func,
+    onColorButtonClick: PropTypes.func,
     onDeleteButtonClick: PropTypes.func,
     onDuplicateButtonClick: PropTypes.func,
     onExportButtonClick: PropTypes.func,
@@ -141,11 +225,22 @@ SpriteSelectorItem.propTypes = {
     onRenameButtonClick: PropTypes.func,
     onMoveToTopButtonClick: PropTypes.func,
     onMoveToBottomButtonClick: PropTypes.func,
+    onNativeDragOver: PropTypes.func,
+    onNativeDrop: PropTypes.func,
+    onCreateFolder: PropTypes.func,
+    onFolderChange: PropTypes.func,
     onMouseDown: PropTypes.func,
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
+    onMouseMove: PropTypes.func,
     preventContextMenu: PropTypes.bool,
-    selected: PropTypes.bool.isRequired
+    selected: PropTypes.bool.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    style: PropTypes.object
+};
+
+SpriteSelectorItem.defaultProps = {
+    folderOptions: []
 };
 
 export default SpriteSelectorItem;
