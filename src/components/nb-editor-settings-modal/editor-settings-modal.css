@@ -315,11 +315,11 @@
     border-radius: 4px;
 }
 .setting.active {
-    background: $badge-background;
+    background: $looks-light-transparent;
 }
 .setting:hover,
 .setting:focus-within {
-    background: $badge-border;
+    background: $looks-light-transparent;
 }
 
 .label {
