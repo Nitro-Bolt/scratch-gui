@@ -12,17 +12,17 @@ import log from './log.js';
  * there was no '.' in the string (e.g. 'my_image')
  */
 const extractFileNameAndExtension = function (nameExt) {
-  const lastDotIndex = nameExt.lastIndexOf('.');
+    const lastDotIndex = nameExt.lastIndexOf('.');
 
-  // No extension found, return the name as-is with an empty extension
-  if (lastDotIndex === -1) {
-    return { fileName: nameExt, fileExtension: '' };
-  }
+    // No extension found, return the name as-is with an empty extension
+    if (lastDotIndex === -1) {
+        return {fileName: nameExt, fileExtension: ''};
+    }
 
-  return {
-    fileName: nameExt.slice(0, lastDotIndex),
-    fileExtension: nameExt.slice(lastDotIndex + 1),
-  };
+    return {
+        fileName: nameExt.slice(0, lastDotIndex),
+        fileExtension: nameExt.slice(lastDotIndex + 1)
+    };
 };
 
 /**
@@ -45,7 +45,7 @@ const handleFileUpload = function (fileInput, onload, onerror) {
         const reader = new FileReader();
         reader.onload = () => {
             const fileType = file.type;
-            const { fileName, fileExtension } = extractFileNameAndExtension(file.name);
+            const {fileName, fileExtension} = extractFileNameAndExtension(file.name);
             onload(reader.result, fileType, fileName, i, files.length, fileExtension, file.lastModified);
             readFile(i + 1, files);
         };

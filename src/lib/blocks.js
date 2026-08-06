@@ -78,7 +78,7 @@ export default function (vm) {
 
     const assetsMenu = function () {
         if (vm.editingTarget && vm.editingTarget.getAssets().length > 0) {
-            return vm.editingTarget.getAssets().map(asset => [asset.name + '.' + asset.dataFormat, asset.name]);
+            return vm.editingTarget.getAssets().map(asset => [`${asset.name}.${asset.dataFormat}`, asset.name]);
         }
         return [['', '']];
     };
@@ -123,12 +123,12 @@ export default function (vm) {
         return [['', '']];
     };
 
-    const spriteMenu = function () {
+    const spriteMenu = function (includeStage) {
         const sprites = [];
         for (const targetId in vm.runtime.targets) {
             if (!Object.prototype.hasOwnProperty.call(vm.runtime.targets, targetId)) continue;
             if (vm.runtime.targets[targetId].isOriginal) {
-                if (!vm.runtime.targets[targetId].isStage) {
+                if (includeStage || !vm.runtime.targets[targetId].isStage) {
                     if (vm.runtime.targets[targetId] === vm.editingTarget) {
                         continue;
                     }
@@ -138,6 +138,12 @@ export default function (vm) {
         }
         return sprites;
     };
+
+    const assetsSpriteMenu = function () {
+        const myself = ScratchBlocks.ScratchMsgs.translate('CONTROL_CREATECLONEOF_MYSELF', 'myself');
+        return [[myself, '_myself_']].concat(spriteMenu(true));
+    };
+
 
     const cloneMenu = function () {
         if (vm.editingTarget && vm.editingTarget.isStage) {
@@ -332,6 +338,11 @@ export default function (vm) {
 
     ScratchBlocks.Blocks.control_create_clone_of_menu.init = function () {
         const json = jsonForMenuBlock('CLONE_OPTION', cloneMenu, controlColors, []);
+        this.jsonInit(json);
+    };
+
+    ScratchBlocks.Blocks.assets_sprite_menu.init = function () {
+        const json = jsonForMenuBlock('SPRITE_OPTION', assetsSpriteMenu, controlColors, []);
         this.jsonInit(json);
     };
 

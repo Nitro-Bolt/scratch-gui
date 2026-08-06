@@ -18,10 +18,10 @@ const blockColors = {
         quaternary: '#BD42BD'
     },
     assets: {
-        primary: "#FCB103",
-        secondary: "#DB9A37",
-        tertiary: "#DB8937",
-        quaternary: "#DB8937"
+        primary: '#FCB103',
+        secondary: '#DB9A37',
+        tertiary: '#DB8937',
+        quaternary: '#DB8937'
     },
     control: {
         primary: '#FFAB19',
@@ -124,9 +124,9 @@ const blockColors = {
     valueReportBackground: '#FFFFFF',
     valueReportBorder: '#AAAAAA',
     valueReportForeground: '#000000',
-    errorReportBackground: "#FFEEEE",
-    errorReportBorder: "#FF4444",
-    errorReportForeground: "#441111",
+    errorReportBackground: '#FFEEEE',
+    errorReportBorder: '#FF4444',
+    errorReportForeground: '#441111',
     menuHover: 'rgba(0, 0, 0, 0.2)',
     contextMenuBackground: '#ffffff',
     contextMenuBorder: '#cccccc',

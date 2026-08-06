@@ -53,6 +53,16 @@ export default async function ({ addon, console, msg }) {
 
   const oldDropDownDivShow = Blockly.DropDownDiv.show;
   Blockly.DropDownDiv.show = function (...args) {
+    // This is an editor for constructing a dropdown, not a dropdown whose
+    // values should be searched. Its menu also contains an "Add Option" row
+    // which deliberately has no matching entry in getOptions().
+    if (
+      Blockly.FieldDropdownEditor &&
+      args[0] instanceof Blockly.FieldDropdownEditor
+    ) {
+      return oldDropDownDivShow.call(this, ...args);
+    }
+
     blocklyDropdownMenu = document.querySelector(".blocklyDropdownMenu");
     if (!blocklyDropdownMenu) {
       return oldDropDownDivShow.call(this, ...args);
@@ -180,6 +190,9 @@ export default async function ({ addon, console, msg }) {
       // Negative number will hide
       // Higher numbers will appear first
       const option = currentDropdownOptions[index];
+      if (!option) {
+        return 0;
+      }
       const optionId = option[1];
       if (SCRATCH_ITEMS_TO_HIDE.includes(optionId)) {
         return query ? -1 : 0;

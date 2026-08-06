@@ -14,8 +14,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { getCustomAddons, storeAddon, removeAddon } from '../lib/nb-custom-addons.js';
-import { TextDecoder } from '../lib/tw-text-encoder.js';
+import {getCustomAddons, storeAddon, removeAddon} from '../lib/nb-custom-addons.js';
+import {TextDecoder} from '../lib/tw-text-encoder.js';
 import IntlMessageFormat from 'intl-messageformat';
 import SettingsStore from './settings-store-singleton';
 import dataURLToBlob from '../lib/data-uri-to-blob';
@@ -47,7 +47,7 @@ const arrayBufferToDataURI = buffer => {
         reader.onerror = () => reject(reader.error);
         reader.readAsDataURL(blob);
     });
-}
+};
 
 let _scratchClassNames = null;
 const getScratchClassNames = () => {
@@ -181,7 +181,7 @@ const compareArrays = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 let _firstAddBlockRan = false;
 
 const contextMenuCallbacks = [];
-const CONTEXT_MENU_ORDER = ['editor-devtools', 'block-switching', 'blocks2image', 'swap-local-global'];
+const CONTEXT_MENU_ORDER = ['blocks2image', 'swap-local-global'];
 let createdAnyBlockContextMenus = false;
 
 const updateClasses = () => {
@@ -399,16 +399,16 @@ class Tab extends EventTargetShim {
                           const wrapper = Object.assign(document.createElement('div'), {
                               className: 'sa-paintEditorZoomControls-wrapper'
                           });
-          
+
                           wrapper.style.display = 'flex';
                           wrapper.style.flexDirection = 'row-reverse';
                           wrapper.style.height = 'calc(1.95rem + 2px)';
-          
+
                           const zoomControls = q("[class^='paint-editor_zoom-controls']");
-          
+
                           zoomControls.replaceWith(wrapper);
                           wrapper.appendChild(zoomControls);
-          
+
                           return wrapper;
                       })()
                 ),
@@ -576,19 +576,20 @@ class Tab extends EventTargetShim {
             const oldShow = ScratchBlocks.ContextMenu.show;
             ScratchBlocks.ContextMenu.show = function (event, items, rtl) {
                 const gesture = ScratchBlocks.mainWorkspace.currentGesture_;
-                const block = gesture.targetBlock_;
+                const block = gesture && gesture.targetBlock_;
+                const group = ScratchBlocks.ContextMenu.currentGroup;
 
                 // eslint-disable-next-line no-shadow
                 for (const {callback, workspace, blocks, flyout, comments} of contextMenuCallbacks) {
                     const injectMenu =
                         // Workspace
-                        (workspace && !block && !gesture.flyout_ && !gesture.startBubble_) ||
+                        (workspace && !group && !block && gesture && !gesture.flyout_ && !gesture.startBubble_) ||
                         // Block in workspace
                         (blocks && block && !gesture.flyout_) ||
                         // Block in flyout
-                        (flyout && gesture.flyout_) ||
+                        (flyout && gesture && gesture.flyout_) ||
                         // Comments
-                        (comments && gesture.startBubble_);
+                        (comments && gesture && gesture.startBubble_);
                     if (injectMenu) {
                         try {
                             items = callback(items, block);
@@ -599,16 +600,6 @@ class Tab extends EventTargetShim {
                 }
 
                 oldShow.call(this, event, items, rtl);
-
-                const blocklyContextMenu = ScratchBlocks.WidgetDiv.DIV.firstChild;
-                items.forEach((item, i) => {
-                    if (i !== 0 && item.separator) {
-                        const itemElt = blocklyContextMenu.children[i];
-                        itemElt.style.paddingTop = '2px';
-                        itemElt.classList.add('sa-blockly-menu-item-border');
-                        itemElt.style.borderTop = '1px solid var(--ui-black-transparent)';
-                    }
-                });
             };
         });
     }
@@ -909,7 +900,7 @@ class AddonRunner {
         this.publicAPI.addon.self.disabled = false;
         this.updateAllStyles();
         this.publicAPI.addon.self.dispatchEvent(new CustomEvent('reenabled'));
-    
+
     }
 
     dynamicDisable () {
@@ -1025,13 +1016,11 @@ SettingsStore.addEventListener('setting-changed', async e => {
         if (value) {
             if (runner) {
                 runner.dynamicEnable();
+            } else if (addons[addonId]) {
+                runAddon(addonId, addons[addonId], false);
             } else {
-                if (addons[addonId]) {
-                    runAddon(addonId, addons[addonId], false);
-                } else {
-                    const customAddons = await getCustomAddons();
-                    runAddon(addonId, customAddons.find(c => c.id === addonId), true);
-                }
+                const customAddons = await getCustomAddons();
+                runAddon(addonId, customAddons.find(c => c.id === addonId), true);
             }
         } else if (runner) {
             runner.dynamicDisable();

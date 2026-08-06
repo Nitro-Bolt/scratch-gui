@@ -8,6 +8,8 @@ import {
     saveBackpackObject,
     deleteBackpackObject,
     updateBackpackObject,
+    deleteBackpackObjectWithFolders,
+    moveBackpackObjectToFolder,
     soundPayload,
     assetPayload,
     costumePayload,
@@ -22,8 +24,24 @@ import {connect} from 'react-redux';
 import storage from '../lib/storage';
 import VM from 'scratch-vm';
 
-const dragTypes = [DragConstants.COSTUME, DragConstants.SOUND, DragConstants.ASSET, DragConstants.SPRITE];
+const workspaceDragTypes = [DragConstants.COSTUME, DragConstants.SOUND, DragConstants.ASSET, DragConstants.SPRITE];
+const backpackDragTypes = [
+    DragConstants.BACKPACK_COSTUME,
+    DragConstants.BACKPACK_SOUND,
+    DragConstants.BACKPACK_ASSET,
+    DragConstants.BACKPACK_SPRITE,
+    DragConstants.BACKPACK_CODE
+];
+const dragTypes = workspaceDragTypes.concat(backpackDragTypes);
 const DroppableBackpack = DropAreaHOC(dragTypes)(BackpackComponent);
+const idsEqual = (first, second) => `${first}` === `${second}`;
+const sortByBackpackOrder = (contents, orderedIds) => {
+    if (!orderedIds) return contents;
+    const positions = new Map(orderedIds.map((id, index) => [`${id}`, index]));
+    return contents.slice().sort((first, second) =>
+        (positions.get(`${first.id}`) ?? Number.MAX_SAFE_INTEGER) -
+        (positions.get(`${second.id}`) ?? Number.MAX_SAFE_INTEGER));
+};
 
 const messages = defineMessages({
     rename: {
@@ -40,7 +58,13 @@ class Backpack extends React.Component {
             'handleDrop',
             'handleToggle',
             'handleDelete',
+            'handleDeleteContents',
             'handleRename',
+            'handleCreateFolder',
+            'handleFolderColorChange',
+            'handleFolderDropTargetChange',
+            'handleFolderToggle',
+            'handleMoveToFolder',
             'getBackpackAssetURL',
             'getContents',
             'handleMouseEnter',
@@ -62,6 +86,7 @@ class Backpack extends React.Component {
             expanded: false,
             contents: []
         };
+        this.folderDropTarget = null;
 
         // If a host is given, add it as a web source to the storage module
         // TODO remove the hacky flag that prevents double adding
@@ -103,6 +128,24 @@ class Backpack extends React.Component {
         throw error;
     }
     handleDrop (dragInfo) {
+        const dropTarget = this.props.host === LOCAL_API ? this.folderDropTarget : null;
+        const destinationFolderId = dropTarget ? dropTarget.folderId : null;
+        this.folderDropTarget = null;
+        // Folders have their own drag payload and cannot be serialized by
+        // the costume/sound/asset payload builders.
+        if (dragInfo.payload && dragInfo.payload.nativeFolderId) return;
+        if (backpackDragTypes.includes(dragInfo.dragType)) {
+            if (this.props.host === LOCAL_API && dragInfo.payload && dragInfo.payload.id) {
+                this.handleMoveToFolder(
+                    dragInfo.payload.id,
+                    destinationFolderId,
+                    null,
+                    dropTarget && dropTarget.destinationId,
+                    dropTarget && dropTarget.insertAfter
+                );
+            }
+            return;
+        }
         let payloader = null;
         let presaveAsset = null;
         switch (dragInfo.dragType) {
@@ -129,11 +172,13 @@ class Backpack extends React.Component {
 
         // Creating the payload is async, so set loading before starting
         this.setState({loading: true}, () => {
-            payloader(dragInfo.payload, this.props.vm)
+            Promise.resolve()
+                .then(() => payloader(dragInfo.payload, this.props.vm))
                 .then(payload => {
+                    if (!payload) throw new Error('Could not serialize backpack item');
                     // Force the asset to save to the asset server before storing in backpack
                     // Ensures any asset present in the backpack is also on the asset server
-                    if (presaveAsset && !presaveAsset.clean && !this.props.host === LOCAL_API) {
+                    if (presaveAsset && !presaveAsset.clean && this.props.host !== LOCAL_API) {
                         return storage.store(
                             presaveAsset.assetType,
                             presaveAsset.dataFormat,
@@ -147,53 +192,130 @@ class Backpack extends React.Component {
                     host: this.props.host,
                     token: this.props.token,
                     username: this.props.username,
+                    ...(this.props.host === LOCAL_API ? {folderId: null} : {}),
                     ...payload
                 }))
                 .then(item => {
-                    this.setState({
+                    const contents = [item].concat(this.state.contents);
+                    if (this.props.host !== LOCAL_API || !destinationFolderId) {
+                        this.setState({loading: false, contents});
+                        return null;
+                    }
+                    return moveBackpackObjectToFolder({
+                        host: this.props.host,
+                        id: item.id,
+                        folderId: destinationFolderId,
+                        destinationId: dropTarget && dropTarget.destinationId,
+                        insertAfter: dropTarget && dropTarget.insertAfter
+                    }).then(({item: updatedItem, deletedFolderId, deletedFolderIds = [], orderedIds}) => this.setState({
                         loading: false,
-                        contents: [item].concat(this.state.contents)
-                    });
+                        contents: sortByBackpackOrder(contents
+                            .filter(candidate => !deletedFolderIds.some(folderId => idsEqual(candidate.id, folderId)) &&
+                                (!deletedFolderId || !idsEqual(candidate.id, deletedFolderId)))
+                            .map(candidate => (idsEqual(candidate.id, item.id) ? updatedItem : candidate)), orderedIds)
+                    }));
                 })
                 .catch(error => {
                     this.handleError(error);
                 });
         });
     }
-    handleDelete (id) {
-        this.setState({loading: true}, () => {
-            deleteBackpackObject({
+    async handleCreateFolder (itemId) {
+        if (this.props.host !== LOCAL_API) return;
+        // eslint-disable-next-line no-alert
+        const name = await prompt('Folder name:');
+        if (!name || !name.trim()) return;
+        const thumbnail = btoa('<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><path fill="#ffbf00" d="M3 13h23l6 7h29v39H3z"/></svg>');
+        this.setState({loading: true});
+        saveBackpackObject({
+            host: this.props.host,
+            token: this.props.token,
+            username: this.props.username,
+            type: 'folder',
+            mime: 'application/json',
+            name: name.trim(),
+            body: btoa('{}'),
+            thumbnail,
+            folderId: null,
+            color: '#d8b24a',
+            open: true
+        }).then(folder => {
+            const contents = [folder].concat(this.state.contents);
+            const item = itemId && this.findItemById(itemId);
+            if (!item) {
+                this.setState({loading: false, contents});
+                return null;
+            }
+            return moveBackpackObjectToFolder({
                 host: this.props.host,
-                token: this.props.token,
-                username: this.props.username,
-                id: id
+                id: item.id,
+                folderId: folder.id
             })
-                .then(() => {
-                    this.setState({
-                        loading: false,
-                        contents: this.state.contents.filter(o => o.id !== id)
-                    });
+                .then(({item: updatedItem, deletedFolderId, deletedFolderIds = [], orderedIds}) => this.setState({
+                    loading: false,
+                    contents: sortByBackpackOrder(contents
+                        .filter(candidate => !deletedFolderIds.some(deletedId => idsEqual(candidate.id, deletedId)) &&
+                            (!deletedFolderId || !idsEqual(candidate.id, deletedFolderId)))
+                        .map(candidate => (idsEqual(candidate.id, item.id) ? updatedItem : candidate)), orderedIds)
+                }))
+                .catch(error => deleteBackpackObject({
+                    host: this.props.host,
+                    id: folder.id
+                }).then(() => Promise.reject(error)));
+        })
+            .catch(error => this.handleError(error));
+    }
+    handleDelete (id, deleteContents = false) {
+        const item = this.findItemById(id);
+        this.setState({loading: true}, () => {
+            if (this.props.host !== LOCAL_API) {
+                deleteBackpackObject({
+                    host: this.props.host,
+                    token: this.props.token,
+                    username: this.props.username,
+                    id: id
                 })
-                .catch(error => {
-                    this.handleError(error);
-                });
+                    .then(() => this.setState({
+                        loading: false,
+                        contents: this.state.contents.filter(candidate => !idsEqual(candidate.id, id))
+                    }))
+                    .catch(error => this.handleError(error));
+                return;
+            }
+
+            deleteBackpackObjectWithFolders({host: this.props.host, id, deleteContents})
+                .then(({deletedFolderId, deletedFolderIds = [], deletedIds = []}) => this.setState({
+                    loading: false,
+                    contents: this.state.contents
+                        .filter(candidate => !idsEqual(candidate.id, id) &&
+                            !deletedIds.some(deletedId => idsEqual(candidate.id, deletedId)) &&
+                            !deletedFolderIds.some(folderId => idsEqual(candidate.id, folderId)) &&
+                            (!deletedFolderId || !idsEqual(candidate.id, deletedFolderId)))
+                        .map(candidate => (!deleteContents && item && item.type === 'folder' &&
+                            idsEqual(candidate.folderId, id) ?
+                            {...candidate, folderId: item.folderId || null} : candidate))
+                }))
+                .catch(error => this.handleError(error));
         });
+    }
+    handleDeleteContents (id) {
+        this.handleDelete(id, true);
     }
     findItemById (id) {
         return this.state.contents.find(i => i.id === id);
     }
-    async handleRename (id) {
+    async handleRename (id, suppliedName) {
         const item = this.findItemById(id);
         // prompt() returns Promise in desktop app
         // eslint-disable-next-line no-alert
-        const newName = await prompt(this.props.intl.formatMessage(messages.rename), item.name);
+        const newName = suppliedName || await prompt(this.props.intl.formatMessage(messages.rename), item.name);
         if (!newName) {
             return;
         }
         this.setState({loading: true}, () => {
             updateBackpackObject({
                 host: this.props.host,
-                ...item,
+                id: item.id,
                 name: newName
             })
                 .then(newItem => {
@@ -207,20 +329,78 @@ class Backpack extends React.Component {
                 });
         });
     }
+    handleFolderColorChange (id, color) {
+        if (this.props.host !== LOCAL_API) return;
+        const item = this.findItemById(id);
+        if (!item) return;
+        this.setState(state => ({
+            contents: state.contents.map(candidate =>
+                (idsEqual(candidate.id, id) ? {...candidate, color} : candidate))
+        }));
+        updateBackpackObject({host: this.props.host, id, color})
+            .catch(error => this.handleError(error));
+    }
+    handleFolderDropTargetChange (folderId, destinationId, insertAfter) {
+        this.folderDropTarget = destinationId === null ? null : {
+            folderId: folderId || null,
+            destinationId,
+            insertAfter: Boolean(insertAfter)
+        };
+    }
+    handleFolderToggle (id, open) {
+        if (this.props.host !== LOCAL_API) return;
+        this.setState({
+            contents: this.state.contents.map(candidate =>
+                (idsEqual(candidate.id, id) ? {...candidate, open} : candidate))
+        });
+        updateBackpackObject({host: this.props.host, id, open})
+            .then(newItem => this.setState({
+                contents: this.state.contents.map(candidate =>
+                    (idsEqual(candidate.id, id) ? newItem : candidate))
+            }))
+            .catch(error => this.handleError(error));
+    }
+    handleMoveToFolder (id, folderId, event, destinationId, insertAfter) {
+        if (event) event.stopPropagation();
+        if (this.props.host !== LOCAL_API) return;
+        const item = this.findItemById(id);
+        if (!item) return;
+        this.setState({loading: true}, () => {
+            moveBackpackObjectToFolder({
+                host: this.props.host,
+                id,
+                folderId,
+                destinationId,
+                insertAfter
+            })
+                .then(({item: newItem, deletedFolderId, deletedFolderIds = [], orderedIds}) => this.setState({
+                    loading: false,
+                    contents: sortByBackpackOrder(this.state.contents
+                        .filter(candidate => !deletedFolderIds.some(deletedId => idsEqual(candidate.id, deletedId)) &&
+                            (!deletedFolderId || !idsEqual(candidate.id, deletedFolderId)))
+                        .map(candidate => (idsEqual(candidate.id, id) ? newItem : candidate)), orderedIds)
+                }))
+                .catch(error => this.handleError(error));
+        });
+    }
     getContents () {
         if ((this.props.token && this.props.username) || this.props.host === LOCAL_API) {
+            const localFoldersEnabled = this.props.host === LOCAL_API;
             this.setState({loading: true, error: false}, () => {
                 getBackpackContents({
                     host: this.props.host,
                     token: this.props.token,
                     username: this.props.username,
-                    offset: this.state.contents.length,
-                    limit: this.state.itemsPerPage
+                    // Local folders must be loaded as complete groups so
+                    // their children and every context-menu destination are
+                    // available together. Remote backpacks keep pagination.
+                    offset: localFoldersEnabled ? 0 : this.state.contents.length,
+                    limit: localFoldersEnabled ? null : this.state.itemsPerPage
                 })
                     .then(contents => {
                         this.setState({
-                            contents: this.state.contents.concat(contents),
-                            moreToLoad: contents.length === this.state.itemsPerPage,
+                            contents: localFoldersEnabled ? contents : this.state.contents.concat(contents),
+                            moreToLoad: !localFoldersEnabled && contents.length === this.state.itemsPerPage,
                             loading: false
                         });
                     })
@@ -275,12 +455,19 @@ class Backpack extends React.Component {
                 loading={this.state.loading}
                 showMore={this.state.moreToLoad}
                 onDelete={this.handleDelete}
+                onDeleteContents={this.handleDeleteContents}
                 onRename={this.handleRename}
                 onDrop={this.handleDrop}
                 onMore={this.handleMore}
+                onCreateFolder={this.handleCreateFolder}
+                onFolderColorChange={this.handleFolderColorChange}
+                onFolderDropTargetChange={this.handleFolderDropTargetChange}
+                onFolderToggle={this.handleFolderToggle}
+                onMoveToFolder={this.handleMoveToFolder}
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
                 onToggle={this.props.host ? this.handleToggle : null}
+                foldersEnabled={this.props.host === LOCAL_API}
                 preferences={this.props.preferences}
             />
         );

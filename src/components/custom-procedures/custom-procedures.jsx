@@ -9,6 +9,8 @@ import booleanInputIcon from './icon--boolean-input.svg';
 import objectInputIcon from './icon--object-input.svg';
 import arrayInputIcon from './icon--array-input.svg';
 import textInputIcon from './icon--text-input.svg';
+import dropdownInputIcon from './icon--dropdown.svg';
+import branchIcon from './icon--branch.svg';
 import labelIcon from './icon--label.svg';
 
 import styles from './custom-procedures.css';
@@ -81,6 +83,44 @@ const CustomProcedures = props => {
                             <option value="object">object</option>
                             <option value="array">array</option>
                         </select>
+                    </div>
+                    <div
+                        className={styles.optionCard}
+                        role="button"
+                        tabIndex="0"
+                        onClick={props.onAddDropdown}
+                    >
+                        <img
+                            className={styles.optionIcon}
+                            src={dropdownInputIcon}
+                            draggable={false}
+                        />
+                        <div className={styles.optionTitle}>
+                            <FormattedMessage
+                                defaultMessage="Add a dropdown"
+                                description="Label for button to add a dropdown"
+                                id="gui.customProcedures.addADropdown"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        className={styles.optionCard}
+                        role="button"
+                        tabIndex="0"
+                        onClick={props.onAddBranch}
+                    >
+                        <img
+                            className={styles.optionIcon}
+                            src={branchIcon}
+                            draggable={false}
+                        />
+                        <div className={styles.optionTitle}>
+                            <FormattedMessage
+                                defaultMessage="Add a branch"
+                                description="Label for button to add a branch"
+                                id="gui.customProcedures.addABranch"
+                            />
+                        </div>
                     </div>
                     <div
                         className={styles.optionCard}
@@ -228,6 +268,19 @@ const CustomProcedures = props => {
                         />
                     </label>
                 </div>
+                <div className={styles.checkboxRow}>
+                    <label>
+                        <FancyCheckbox
+                            checked={props.global}
+                            onChange={props.onToggleGlobal}
+                        />
+                        <FormattedMessage
+                            defaultMessage="For all sprites"
+                            description="Label for checkbox to toggle availability for all sprites"
+                            id="gui.customProcedures.forAllSprites"
+                        />
+                    </label>
+                </div>
                 <Box className={styles.buttonRow}>
                     <button
                         className={styles.cancelButton}
@@ -259,13 +312,17 @@ CustomProcedures.propTypes = {
     componentRef: PropTypes.func.isRequired,
     intl: intlShape,
     onAddInput: PropTypes.func.isRequired,
+    onAddDropdown: PropTypes.func.isRequired,
+    onAddBranch: PropTypes.func.isRequired,
     onAddLabel: PropTypes.func.isRequired,
     handlePropagation: PropTypes.func.isRequired,
     handleInputMenuChange: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     onToggleWarp: PropTypes.func.isRequired,
-    warp: PropTypes.bool.isRequired
+    warp: PropTypes.bool.isRequired,
+    onToggleGlobal: PropTypes.func.isRequired,
+    global: PropTypes.bool.isRequired
 };
 
 export default injectIntl(CustomProcedures);

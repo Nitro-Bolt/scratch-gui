@@ -29,7 +29,8 @@ import {
     closeExtensionLibrary,
     openSoundRecorder,
     openConnectionModal,
-    openCustomExtensionModal
+    openCustomExtensionModal,
+    openInspectBlockModal
 } from '../reducers/modals';
 import {activateCustomProcedures, deactivateCustomProcedures} from '../reducers/custom-procedures';
 import {setConnectionModalExtensionId} from '../reducers/connection-modal';
@@ -118,6 +119,7 @@ class Blocks extends React.Component {
             'handleExtensionReordered',
             'handleExtensionRemoved',
             'handleBlocksInfoUpdate',
+            'handleInspectBlock',
             'onTargetsUpdate',
             'onVisualReport',
             'onWorkspaceUpdate',
@@ -129,6 +131,7 @@ class Blocks extends React.Component {
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
+        this.ScratchBlocks.inspectBlockCallback = this.handleInspectBlock;
 
         this.state = {
             prompt: null
@@ -141,6 +144,7 @@ class Blocks extends React.Component {
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
+        this.ScratchBlocks.inspectBlockCallback = this.handleInspectBlock;
 
         this.ScratchBlocks.FieldColourSlider.activateEyedropper_ = this.props.onActivateColorPicker;
         this.ScratchBlocks.Procedures.externalProcedureDefCallback = this.props.onActivateCustomProcedures;
@@ -162,11 +166,14 @@ class Blocks extends React.Component {
                 colours: this.props.theme.getBlockColors(),
                 grid: {
                     colour: this.props.theme.getBlockColors().gridColor
-                }
+                },
+                disableInspectBlock: this.props.disableInspectBlock
             },
             Blocks.defaultOptions
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
+        this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
+        this.workspace.vm = this.props.vm;
         AddonHooks.blocklyWorkspace = this.workspace;
 
         // Register buttons under new callback keys for creating variables,
@@ -243,10 +250,15 @@ class Blocks extends React.Component {
             this.props.anyModalVisible !== nextProps.anyModalVisible ||
             this.props.stageSize !== nextProps.stageSize ||
             this.props.customStageSize !== nextProps.customStageSize ||
-            this.props.hiddenCategories !== nextProps.hiddenCategories
+            this.props.hiddenCategories !== nextProps.hiddenCategories ||
+            this.props.nbBlocks !== nextProps.nbBlocks ||
+            this.props.disableInspectBlock !== nextProps.disableInspectBlock
         );
     }
     componentDidUpdate (prevProps) {
+        if (this.workspace && this.props.disableInspectBlock !== prevProps.disableInspectBlock) {
+            this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
+        }
         // If any modals are open, call hideChaff to close z-indexed field editors
         if (this.props.anyModalVisible && !prevProps.anyModalVisible) {
             this.ScratchBlocks.hideChaff();
@@ -259,7 +271,8 @@ class Blocks extends React.Component {
             this.requestToolboxUpdate();
         }
 
-        if (this.props.hiddenCategories !== prevProps.hiddenCategories) {
+        if (this.props.hiddenCategories !== prevProps.hiddenCategories ||
+            this.props.nbBlocks !== prevProps.nbBlocks) {
             const toolboxXML = this.getToolboxXML();
             if (toolboxXML) {
                 this.props.updateToolboxState(toolboxXML);
@@ -453,7 +466,7 @@ class Blocks extends React.Component {
         this.workspace.glowBlock(data.id, false);
     }
     onVisualReport (data) {
-        this.workspace.reportValue(data.id, data.value, data.error);
+        this.workspace.reportValue(data.id, data.value, data.error, data.html);
     }
     getToolboxXML () {
         // Use try/catch because this requires digging pretty deep into the VM
@@ -479,7 +492,8 @@ class Blocks extends React.Component {
                 targetSounds.length > 0 ? targetSounds[targetSounds.length - 1].name : '',
                 targetAssets.length > 0 ? targetAssets[targetAssets.length - 1].name : '',
                 this.props.theme.getBlockColors(),
-                this.props.hiddenCategories || []
+                this.props.hiddenCategories || [],
+                this.props.nbBlocks
             );
         } catch {
             return null;
@@ -647,6 +661,13 @@ class Blocks extends React.Component {
         this.props.onOpenSoundRecorder();
     }
 
+    handleInspectBlock (block) {
+        if (!block || block.isInFlyout) {
+            return;
+        }
+        this.props.onInspectBlock(block);
+    }
+
     /*
      * Pass along information about proposed name and variable options (scope and isCloud)
      * and additional potentially conflicting variable names from the VM
@@ -665,7 +686,9 @@ class Blocks extends React.Component {
     handleCustomProceduresClose (data) {
         this.props.onRequestCloseCustomProcedures(data);
         const ws = this.workspace;
-        ws.refreshToolboxSelection_();
+        if (data) {
+            ws.refreshToolboxSelection_();
+        }
         ws.toolbox_.scrollToCategoryById('myBlocks');
     }
     handleDrop (dragInfo) {
@@ -784,6 +807,7 @@ Blocks.propTypes = {
     onOpenConnectionModal: PropTypes.func,
     onOpenSoundRecorder: PropTypes.func,
     onOpenCustomExtensionModal: PropTypes.func,
+    onInspectBlock: PropTypes.func,
     reduxOnOpenCustomExtensionModal: PropTypes.func,
     onRequestCloseCustomProcedures: PropTypes.func,
     onRequestCloseExtensionLibrary: PropTypes.func,
@@ -797,12 +821,13 @@ Blocks.propTypes = {
         comments: PropTypes.bool,
         collapse: PropTypes.bool
     }),
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
+    stageSize: PropTypes.number.isRequired,
     theme: PropTypes.instanceOf(Theme),
     toolboxXML: PropTypes.string,
     updateMetrics: PropTypes.func,
     updateToolboxState: PropTypes.func,
     useCatBlocks: PropTypes.bool,
+    disableInspectBlock: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired,
     workspaceMetrics: PropTypes.shape({
         targets: PropTypes.objectOf(PropTypes.object)
@@ -846,7 +871,9 @@ const mapStateToProps = state => ({
     customProceduresVisible: state.scratchGui.customProcedures.active,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
     useCatBlocks: isTimeTravel2020(state),
-    hiddenCategories: state.scratchGui.preferences['hidden-categories']
+    hiddenCategories: state.scratchGui.preferences['hidden-categories'],
+    nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true),
+    disableInspectBlock: state.scratchGui.preferences['disable-inspect-block'] === true
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -861,6 +888,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch(openSoundRecorder());
     },
     reduxOnOpenCustomExtensionModal: () => dispatch(openCustomExtensionModal()),
+    onInspectBlock: block => dispatch(openInspectBlockModal(block)),
     onRequestCloseExtensionLibrary: () => {
         dispatch(closeExtensionLibrary());
     },

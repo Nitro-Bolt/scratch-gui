@@ -24,11 +24,8 @@ export default async function ({ addon, console, msg }) {
     const containsQuery = (str) => str.toLowerCase().includes(query);
 
     for (const sprite of spritesContainer.children) {
-      const visible =
-        !query ||
-        containsQuery(sprite.children[0].children[1].innerText) ||
-        (containsQuery(sprite.children[0].children[2].children[0].innerText) &&
-          sprite.children[0].classList.contains("sa-folders-folder"));
+      const tile = sprite.querySelector("[data-searchable-name]");
+      const visible = !query || (tile && containsQuery(tile.dataset.searchableName || ""));
       sprite.style.display = visible ? "" : "none";
     }
   };

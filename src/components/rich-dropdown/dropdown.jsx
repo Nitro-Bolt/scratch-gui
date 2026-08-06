@@ -6,6 +6,9 @@ import PropTypes from 'prop-types';
 
 const RichDropdown = function ({label, children}) {
     const [isCollapsed, setIsCollapsed] = React.useState(false);
+    const toggleCollapsed = React.useCallback(() => {
+        setIsCollapsed(collapsed => !collapsed);
+    }, []);
 
     return (
         <div
@@ -15,9 +18,10 @@ const RichDropdown = function ({label, children}) {
         >
             <div
                 className={styles.header}
-                onClick={() => setIsCollapsed(!isCollapsed)}
+                onClick={toggleCollapsed}
             >
                 <img
+                    className={styles.caret}
                     src={dropdownCaret}
                     draggable={false}
                     width={8}
@@ -30,11 +34,7 @@ const RichDropdown = function ({label, children}) {
                 />
                 <span>{label}</span>
             </div>
-            {isCollapsed ? (
-                ''
-            ) : (
-                <div className={styles.body}>{children}</div>
-            )}
+            <div className={styles.body}>{children}</div>
         </div>
     );
 };

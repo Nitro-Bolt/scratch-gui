@@ -15,7 +15,7 @@ const assetPayload = assetObject => {
         body: assetDataUrl.replace(`data:${assetObject.contentType};base64,`, ''),
 
         // Thumbnail will be filled in below
-        thumbnail: '',
+        thumbnail: ''
     };
 
     if (assetType.type === 'image') {
@@ -26,10 +26,10 @@ const assetPayload = assetObject => {
             payload.thumbnail = thumbnail;
             return payload;
         });
-    } else {
-        payload.thumbnail = assetType.icon.replace('data:image/png;base64,', '');
-        return new Promise(resolve => resolve(payload));
     }
+    payload.thumbnail = assetType.icon.replace('data:image/png;base64,', '');
+    return new Promise(resolve => resolve(payload));
+    
 };
 
 export default assetPayload;

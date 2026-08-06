@@ -35,10 +35,14 @@ class AssetTab extends React.Component {
             'handleDeleteAsset',
             'handleDuplicateAsset',
             'handleExportAsset',
+            'handleMoveToTop',
+            'handleMoveToBottom',
             'handleNewAsset',
             'handleCreateBlankTextAsset',
             'handleFileUploadClick',
             'handleAssetUpload',
+            'handleFolderReorder',
+            'handleItemFolderChangeComplete',
             'handleDrop',
             'setFileInput'
         ]);
@@ -49,9 +53,9 @@ class AssetTab extends React.Component {
         const assetType = getAssetType(assetObject);
         if (assetType.type === 'image') {
             return {asset: assetObject.asset};
-        } else {
-            return {url: assetType.icon};
         }
+        return {url: assetType.icon};
+        
     }
 
     handleSelectAsset (assetIndex) {
@@ -126,13 +130,62 @@ class AssetTab extends React.Component {
         }, this.props.onCloseImporting);
     }
 
+    handleFolderReorder (folderId, newIndex) {
+        const assets = this.props.vm.editingTarget.sprite.assets;
+        const activeAsset = assets[this.state.selectedAssetIndex];
+        this.props.vm.moveFolderToIndex(folderId, newIndex);
+        this.setState({selectedAssetIndex: this.props.vm.editingTarget.sprite.assets.indexOf(activeAsset)});
+    }
+    handleItemFolderChangeComplete (activeAsset, targetId) {
+        const target = this.props.vm.editingTarget;
+        if (!target || target.id !== targetId) return;
+        const selectedAssetIndex = target.sprite.assets.indexOf(activeAsset);
+        if (selectedAssetIndex >= 0) this.setState({selectedAssetIndex});
+    }
     handleDrop (dropInfo) {
+        if (dropInfo.dragType === DragConstants.FOLDER_ASSET &&
+            dropInfo.payload && dropInfo.payload.nativeFolderId) {
+            const sourceId = dropInfo.payload.nativeFolderId;
+            const hoveredFolderId = dropInfo.payload.folderAtDisplayIndex &&
+                dropInfo.payload.folderAtDisplayIndex[dropInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const structuralIndex = typeof dropInfo.hoveredIndex === 'number' ?
+                dropInfo.hoveredIndex : dropInfo.newIndex;
+            const destinationParentId = hoveredFolder && hoveredFolder._isOpen !== false &&
+                hoveredFolder.id !== sourceId ?
+                hoveredFolder.id : dropInfo.rootDrop ? null : dropInfo.payload.parentFolderAtDisplayIndex &&
+                    dropInfo.payload.parentFolderAtDisplayIndex[structuralIndex];
+            if (destinationParentId !== sourceId) {
+                try {
+                    this.props.vm.setFolderParent(sourceId, destinationParentId || null);
+                } catch (error) {
+                    return;
+                }
+            }
+            const mappedIndex = dropInfo.payload.dropIndexMap && dropInfo.payload.dropIndexMap[dropInfo.newIndex];
+            this.handleFolderReorder(sourceId,
+                typeof mappedIndex === 'number' ? mappedIndex : dropInfo.newIndex);
+            return;
+        }
         if (dropInfo.dragType === DragConstants.ASSET) {
-            this.props.vm.reorderAsset(this.props.vm.editingTarget.id,
-                dropInfo.index, dropInfo.newIndex);
-            this.setState({selectedAssetIndex: dropInfo.newIndex});
+            const assets = this.props.vm.editingTarget.sprite.assets;
+            const activeAsset = assets[this.state.selectedAssetIndex];
+            const mappedIndex = dropInfo.dropIndexMap && dropInfo.dropIndexMap[dropInfo.newIndex];
+            const newIndex = typeof mappedIndex === 'number' ? mappedIndex : dropInfo.newIndex;
+            const destination = assets[newIndex];
+            const hoveredFolderId = dropInfo.folderAtDisplayIndex &&
+                dropInfo.folderAtDisplayIndex[dropInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const destinationFolder = hoveredFolder || (destination && destination.folderId &&
+                this.props.vm.runtime.projectFolders.find(folder => folder.id === destination.folderId));
+            this.props.vm.setItemFolder('asset', this.props.vm.editingTarget.id,
+                dropInfo.index, !dropInfo.rootDrop && destinationFolder && destinationFolder._isOpen !== false ?
+                    destinationFolder.id : null, newIndex);
+            this.setState({
+                selectedAssetIndex: this.props.vm.editingTarget.sprite.assets.indexOf(activeAsset)
+            });
         } else if (dropInfo.dragType === DragConstants.BACKPACK_COSTUME) {
-           this.props.vm.addAsset({
+            this.props.vm.addAsset({
                 md5: dropInfo.payload.body,
                 lastModified: Date.now(),
                 contentType: dropInfo.payload.mime,
@@ -140,7 +193,7 @@ class AssetTab extends React.Component {
                 name: dropInfo.payload.name
             }).then(this.handleNewAsset);
         } else if (dropInfo.dragType === DragConstants.BACKPACK_SOUND) {
-           this.props.vm.addAsset({
+            this.props.vm.addAsset({
                 md5: dropInfo.payload.body,
                 lastModified: Date.now(),
                 contentType: dropInfo.payload.mime,
@@ -162,6 +215,17 @@ class AssetTab extends React.Component {
         this.props.vm.duplicateAsset(assetIndex).then(() => {
             this.setState({selectedAssetIndex: assetIndex + 1});
         });
+    }
+
+    handleMoveToTop (assetIndex) {
+        this.props.vm.editingTarget.reorderAsset(assetIndex, 0);
+        this.setState({selectedAssetIndex: 0});
+    }
+
+    handleMoveToBottom (assetIndex) {
+        const lastAssetIndex = this.props.vm.editingTarget.sprite.assets.length - 1;
+        this.props.vm.editingTarget.reorderAsset(assetIndex, lastAssetIndex);
+        this.setState({selectedAssetIndex: lastAssetIndex});
     }
 
     handleExportAsset (assetIndex) {
@@ -194,7 +258,8 @@ class AssetTab extends React.Component {
         const assets = sprite.assets ? sprite.assets.map(asset => (
             {
                 name: asset.dataFormat ?
-                    asset.name + '.' + asset.dataFormat : asset.name,
+                    `${asset.name}.${asset.dataFormat}` : asset.name,
+                folderId: asset.folderId || null,
                 dragPayload: asset,
                 details: formatSize(asset.asset.data.byteLength),
                 ...this.getAssetIcon(asset)
@@ -217,17 +282,22 @@ class AssetTab extends React.Component {
                 dragType={DragConstants.ASSET}
                 isRtl={isRtl}
                 items={assets}
+                vm={vm}
+                onFolderReorder={this.handleFolderReorder}
+                onItemFolderChangeComplete={this.handleItemFolderChangeComplete}
                 selectedItemIndex={this.state.selectedAssetIndex}
                 onDeleteClick={this.handleDeleteAsset}
                 onDrop={this.handleDrop}
                 onDuplicateClick={this.handleDuplicateAsset}
                 onExportClick={this.handleExportAsset}
                 onItemClick={this.handleSelectAsset}
+                onMoveToTopClick={this.handleMoveToTop}
+                onMoveToBottomClick={this.handleMoveToBottom}
             >
                 <input
                     multiple
                     ref={this.setFileInput}
-                    style={{ display: 'none' }}
+                    style={{display: 'none'}}
                     type="file"
                     onChange={this.handleAssetUpload}
                 />
@@ -286,7 +356,7 @@ const mapStateToProps = state => ({
     editingTarget: state.scratchGui.targets.editingTarget,
     isRtl: state.locales.isRtl,
     sprites: state.scratchGui.targets.sprites,
-    stage: state.scratchGui.targets.stage,
+    stage: state.scratchGui.targets.stage
 });
 
 const mapDispatchToProps = dispatch => ({

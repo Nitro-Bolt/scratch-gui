@@ -86,7 +86,10 @@ const AssetViewerComponent = props => (
                         </div>
                     </div>
                 </div>
-                <div className={styles.editorSurface} style={{maxWidth: "95%", maxHeight: "67%"}}>
+                <div
+                    className={styles.editorSurface}
+                    style={{maxWidth: '95%', maxHeight: '67%'}}
+                >
                     <Editor
                         language={props.textLanguage || 'plaintext'}
                         theme={props.monacoTheme || 'vs'}
@@ -108,12 +111,18 @@ const AssetViewerComponent = props => (
                 <div className={styles.infoRow}>
                     <div className={styles.attribute}>
                         <Label text={props.intl.formatMessage(messages.lastModifiedDate)}>
-                            <Label secondary text={props.lastModified} />
+                            <Label
+                                secondary
+                                text={props.lastModified}
+                            />
                         </Label>
                     </div>
                     <div className={styles.attribute}>
                         <Label text={props.intl.formatMessage(messages.size)}>
-                            <Label secondary text={props.size} />
+                            <Label
+                                secondary
+                                text={props.size}
+                            />
                         </Label>
                     </div>
                 </div>
@@ -122,11 +131,23 @@ const AssetViewerComponent = props => (
             <React.Fragment>
                 {props.blobURL && props.mediaType ? (
                     props.mediaType === 'video' ? (
-                        <video className={styles.mediaPreview} src={props.blobURL} controls />
+                        <video
+                            className={styles.mediaPreview}
+                            src={props.blobURL}
+                            controls
+                        />
                     ) : props.mediaType === 'sound' ? (
-                        <audio className={styles.mediaPreview} src={props.blobURL} controls />
+                        <audio
+                            className={styles.mediaPreview}
+                            src={props.blobURL}
+                            controls
+                        />
                     ) : props.mediaType === 'image' ? (
-                        <img className={styles.mediaPreview} src={props.blobURL} draggable={false} />
+                        <img
+                            className={styles.mediaPreview}
+                            src={props.blobURL}
+                            draggable={false}
+                        />
                     ) : null
                 ) : (
                     <img
@@ -147,12 +168,18 @@ const AssetViewerComponent = props => (
                 </div>
                 <div className={styles.attribute}>
                     <Label text={props.intl.formatMessage(messages.lastModifiedDate)}>
-                        <Label secondary text={props.lastModified} />
+                        <Label
+                            secondary
+                            text={props.lastModified}
+                        />
                     </Label>
                 </div>
                 <div className={styles.attribute}>
                     <Label text={props.intl.formatMessage(messages.size)}>
-                        <Label secondary text={props.size} />
+                        <Label
+                            secondary
+                            text={props.size}
+                        />
                     </Label>
                 </div>
             </React.Fragment>

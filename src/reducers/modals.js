@@ -20,6 +20,7 @@ const MODAL_UNKNOWN_PLATFORM = 'unknownPlatformModal';
 const MODAL_INVALID_PROJECT = 'invalidProjectModal';
 const MODAL_CUSTOM_ACCENT = 'customAccentModal';
 const MODAL_EDITOR_SETTINGS = 'editorSettingsModal';
+const MODAL_INSPECT_BLOCK = 'inspectBlockModal';
 
 const initialState = {
     [MODAL_BACKDROP_LIBRARY]: false,
@@ -41,7 +42,9 @@ const initialState = {
     [MODAL_INVALID_PROJECT]: false,
     [MODAL_CUSTOM_ACCENT]: false,
     [MODAL_EDITOR_SETTINGS]: false,
-    editorSettingsModalTab: 0
+    [MODAL_INSPECT_BLOCK]: false,
+    editorSettingsModalTab: 0,
+    inspectBlockModalBlock: null
 };
 
 const reducer = function (state, action) {
@@ -52,6 +55,9 @@ const reducer = function (state, action) {
             [action.modal]: true,
             ...(action.modal === MODAL_EDITOR_SETTINGS && {
                 editorSettingsModalTab: action.tab ?? 0
+            }),
+            ...(action.modal === MODAL_INSPECT_BLOCK && {
+                inspectBlockModalBlock: action.block
             })
         });
     case CLOSE_MODAL:
@@ -135,6 +141,13 @@ const openEditorSettingsModal = function (tab = 0) {
         tab
     };
 };
+const openInspectBlockModal = function (block) {
+    return {
+        type: OPEN_MODAL,
+        modal: MODAL_INSPECT_BLOCK,
+        block
+    };
+};
 const closeBackdropLibrary = function () {
     return closeModal(MODAL_BACKDROP_LIBRARY);
 };
@@ -192,6 +205,9 @@ const closeCustomAccentModal = function () {
 const closeEditorSettingsModal = function () {
     return closeModal(MODAL_EDITOR_SETTINGS);
 };
+const closeInspectBlockModal = function () {
+    return closeModal(MODAL_INSPECT_BLOCK);
+};
 export {
     reducer as default,
     initialState as modalsInitialState,
@@ -214,6 +230,7 @@ export {
     openInvalidProjectModal,
     openCustomAccentModal,
     openEditorSettingsModal,
+    openInspectBlockModal,
     closeBackdropLibrary,
     closeCostumeLibrary,
     closeExtensionLibrary,
@@ -232,5 +249,6 @@ export {
     closeUnknownPlatformModal,
     closeInvalidProjectModal,
     closeCustomAccentModal,
-    closeEditorSettingsModal
+    closeEditorSettingsModal,
+    closeInspectBlockModal
 };

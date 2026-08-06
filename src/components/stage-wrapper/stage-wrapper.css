@@ -15,6 +15,14 @@
     user-select: none;
 }
 
+.stage-canvas-wrapper.hidden {
+    visibility: hidden;
+    position: absolute;
+    z-index: -9999;
+    right: 0;
+    bottom: 100%;
+}
+
 .offset-controls .stage-canvas-wrapper {
     padding-top: 44px;
 }

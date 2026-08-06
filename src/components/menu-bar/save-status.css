@@ -3,9 +3,10 @@
 .save-now {
     cursor: pointer;
     padding: 0 0.5rem;
-    height: 100%;
+    height: 2rem;
     display: flex;
     align-items: center;
+    margin: 0 0.5rem;
 }
 
 .save-now:hover {

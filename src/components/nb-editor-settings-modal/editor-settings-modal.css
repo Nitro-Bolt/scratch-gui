@@ -297,7 +297,7 @@
 }
 
 .content:not(.escaped) {
-    padding: 1.5rem 2.25rem;
+    padding: 1rem 1.5rem;
 }
 
 .content iframe {
@@ -315,11 +315,11 @@
     border-radius: 4px;
 }
 .setting.active {
-    background: $badge-background;
+    background: $looks-light-transparent;
 }
 .setting:hover,
 .setting:focus-within {
-    background: $badge-border;
+    background: $looks-light-transparent;
 }
 
 .label {

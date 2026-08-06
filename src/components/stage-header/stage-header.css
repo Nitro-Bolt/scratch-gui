@@ -37,6 +37,10 @@
     padding-bottom: $space;
 }
 
+.stage-hidden {
+    padding: $space;
+}
+
 .stage-size-row {
     display: flex;
 }
@@ -83,6 +87,10 @@
     width: 100%;
     height: 100%;
     filter: $filter-icon-gray;
+}
+
+.stage-button-icon.stage-left {
+    scale: -1 1;
 }
 
 [dir="rtl"] .stage-button-icon {

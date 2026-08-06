@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import VM from 'scratch-vm';
 
 import Box from '../box/box.jsx';
-import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants.js';
 import StageHeader from '../../containers/stage-header.jsx';
 import Stage from '../../containers/stage.jsx';
 import Loader from '../loader/loader.jsx';
@@ -14,12 +13,14 @@ import styles from './stage-wrapper.css';
 const StageWrapperComponent = function (props) {
     const {
         isEmbedded,
+        isPlayerOnly,
         isFullScreen,
         isRtl,
         isRendererSupported,
         loading,
         stageSize,
-        prefs,
+        setStageSize,
+        preferences,
         vm
     } = props;
 
@@ -36,17 +37,29 @@ const StageWrapperComponent = function (props) {
             )}
             dir={isRtl ? 'rtl' : 'ltr'}
         >
-            <Box className={styles.stageMenuWrapper}>
+            <Box className={classNames(styles.stageMenuWrapper, stageSize === 0 ? styles.stageHidden : null)}>
                 <StageHeader
+                    isPlayerOnly={isPlayerOnly}
+                    isRtl={isRtl}
                     stageSize={stageSize}
+                    setStageSize={setStageSize}
                     vm={vm}
                 />
             </Box>
-            <Box className={styles.stageCanvasWrapper}>
+            <Box
+                className={classNames(
+                    styles.stageCanvasWrapper,
+                    {
+                        [styles.hidden]: stageSize === 0 && !(isEmbedded || isFullScreen) ? 'hidden' : null
+                    }
+                )}
+            >
                 {
                     isRendererSupported ?
                         <Stage
+                            isPlayerOnly={isPlayerOnly}
                             stageSize={stageSize}
+                            preferences={preferences}
                             vm={vm}
                         /> :
                         null
@@ -61,11 +74,14 @@ const StageWrapperComponent = function (props) {
 
 StageWrapperComponent.propTypes = {
     isEmbedded: PropTypes.bool,
+    isPlayerOnly: PropTypes.bool,
     isFullScreen: PropTypes.bool,
     isRendererSupported: PropTypes.bool.isRequired,
     isRtl: PropTypes.bool.isRequired,
     loading: PropTypes.bool,
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
+    stageSize: PropTypes.number.isRequired,
+    setStageSize: PropTypes.func.isRequired,
+    preferences: PropTypes.object.isRequired,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 

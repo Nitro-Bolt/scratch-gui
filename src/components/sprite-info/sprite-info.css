@@ -21,6 +21,10 @@
     margin-bottom: 0.5rem;
 }
 
+.row-small {
+    gap: $space;
+}
+
 .label { opacity: 0.8; }
 
 .group {
@@ -72,6 +76,11 @@
     width: 4rem;
 }
 
+label:has(.sprite-input) {
+    flex-grow: 1;
+}
+
 .sprite-input {
-    width: 8rem;
+    flex-grow: 1;
+    width: 0;
 }

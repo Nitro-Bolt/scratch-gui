@@ -1,18 +1,45 @@
 @import "../../css/colors.css";
 
-.container {
+.button-container {
+    justify-content: center;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
     font-size: 0.75rem;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: $looks-secondary;
     border-radius: 0.5rem;
+    position: relative;
 }
 
-.container + .container {
+.button-container:active:not(:has(.dropdown:active)) {
+    background-color: hsla(300, 53%, 60%, 0.15);
+}
+
+.button-container:not(:has(.disabled)) {
+    cursor: pointer;
+}
+
+.button-container + .button-container {
     margin-top: 1.25rem;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    border-radius: 0.5rem;
+}
+
+.dropdown-container {
+    padding: 0.25rem;
+    flex-shrink: 0;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-container img {
+    margin-bottom: 2px;
 }
 
 .title {
@@ -25,6 +52,16 @@
     pointer-events: none;
 }
 
-.container:active {
-    background-color: $looks-light-transparent;
+.dropdown {
+    background-color: $page-background;
+    padding: 0.75rem;
+    border: 1px solid $ui-black-transparent;
+    transform: translateX(-50%);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    cursor: auto;
+    border-radius: 0.5rem;
+    margin-top: 0.25rem;
+    z-index: 1;
 }

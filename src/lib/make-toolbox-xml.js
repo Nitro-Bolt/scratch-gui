@@ -5,6 +5,15 @@ const categorySeparator = '<sep gap="36"/>';
 
 const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
 
+const numberShadow = (value) => {
+    value = value ?? '';
+    return `<shadow type="math_number"><field name="NUM">${value}</field></shadow>`;
+};
+const textShadow = (value) => {
+    value = value ?? '';
+    return `<shadow type="text"><field name="TEXT">${value}</field></shadow>`;
+};
+
 const translate = (id, english) => {
     if (LazyScratchBlocks.isLoaded()) {
         return LazyScratchBlocks.get().ScratchMsgs.translate(id, english);
@@ -13,7 +22,7 @@ const translate = (id, english) => {
 };
 
 /* eslint-disable no-unused-vars */
-const motion = function (isInitialSetup, isStage, targetId, colors) {
+const motion = function (isInitialSetup, isStage, targetId, colors, nbBlocks = true) {
     const stageSelected = translate(
         'MOTION_STAGE_SELECTED',
         'Stage selected: no motion blocks'
@@ -26,9 +35,7 @@ const motion = function (isInitialSetup, isStage, targetId, colors) {
         ` : `
         <block type="motion_movesteps">
             <value name="STEPS">
-                <shadow type="math_number">
-                    <field name="NUM">10</field>
-                </shadow>
+                ${numberShadow(10)}
             </value>
         </block>
         <block type="motion_turnright">
@@ -66,9 +73,7 @@ const motion = function (isInitialSetup, isStage, targetId, colors) {
         </block>
         <block type="motion_glideto" id="motion_glideto">
             <value name="SECS">
-                <shadow type="math_number">
-                    <field name="NUM">1</field>
-                </shadow>
+                ${numberShadow(1)}
             </value>
             <value name="TO">
                 <shadow type="motion_glideto_menu">
@@ -77,9 +82,7 @@ const motion = function (isInitialSetup, isStage, targetId, colors) {
         </block>
         <block type="motion_glidesecstoxy">
             <value name="SECS">
-                <shadow type="math_number">
-                    <field name="NUM">1</field>
-                </shadow>
+                ${numberShadow(1)}
             </value>
             <value name="X">
                 <shadow id="glidex" type="math_number">
@@ -109,9 +112,7 @@ const motion = function (isInitialSetup, isStage, targetId, colors) {
         ${blockSeparator}
         <block type="motion_changexby">
             <value name="DX">
-                <shadow type="math_number">
-                    <field name="NUM">10</field>
-                </shadow>
+                ${numberShadow(10)}
             </value>
         </block>
         <block type="motion_setx">
@@ -123,9 +124,7 @@ const motion = function (isInitialSetup, isStage, targetId, colors) {
         </block>
         <block type="motion_changeyby">
             <value name="DY">
-                <shadow type="math_number">
-                    <field name="NUM">10</field>
-                </shadow>
+                ${numberShadow(10)}
             </value>
         </block>
         <block type="motion_sety">
@@ -160,7 +159,7 @@ const xmlEscape = function (unsafe) {
     });
 };
 
-const looks = function (isInitialSetup, isStage, targetId, costumeName, backdropName, colors) {
+const looks = function (isInitialSetup, isStage, targetId, costumeName, backdropName, colors, nbBlocks = true) {
     const hello = translate('LOOKS_HELLO', 'Hello!');
     const hmm = translate('LOOKS_HMM', 'Hmm...');
     // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
@@ -174,9 +173,7 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                 </shadow>
             </value>
             <value name="SECS">
-                <shadow type="math_number">
-                    <field name="NUM">2</field>
-                </shadow>
+                ${numberShadow(2)}
             </value>
         </block>
         <block type="looks_say">
@@ -193,9 +190,7 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
                 </shadow>
             </value>
             <value name="SECS">
-                <shadow type="math_number">
-                    <field name="NUM">2</field>
-                </shadow>
+                ${numberShadow(2)}
             </value>
         </block>
         <block type="looks_think">
@@ -243,32 +238,24 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
             ${blockSeparator}
             <block type="looks_changesizeby">
                 <value name="CHANGE">
-                    <shadow type="math_number">
-                        <field name="NUM">10</field>
-                    </shadow>
+                    ${numberShadow(10)}
                 </value>
             </block>
             <block type="looks_setsizeto">
                 <value name="SIZE">
-                    <shadow type="math_number">
-                        <field name="NUM">100</field>
-                    </shadow>
+                    ${numberShadow(100)}
                 </value>
             </block>
         `}
         ${blockSeparator}
         <block type="looks_changeeffectby">
             <value name="CHANGE">
-                <shadow type="math_number">
-                    <field name="NUM">25</field>
-                </shadow>
+                ${numberShadow(25)}
             </value>
         </block>
         <block type="looks_seteffectto">
             <value name="VALUE">
-                <shadow type="math_number">
-                    <field name="NUM">0</field>
-                </shadow>
+                ${numberShadow(0)}
             </value>
         </block>
         <block type="looks_cleargraphiceffects"/>
@@ -298,8 +285,7 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
     `;
 };
 
-const sound = function (isInitialSetup, isStage, targetId, soundName, colors) {
-    // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
+const sound = function (isInitialSetup, isStage, targetId, soundName, colors, nbBlocks = true) {
     return `
     <category name="%{BKY_CATEGORY_SOUND}" id="sound" colour="${colors.primary}" secondaryColour="${colors.tertiary}">
         <block id="${targetId}_sound_playuntildone" type="sound_playuntildone">
@@ -320,32 +306,24 @@ const sound = function (isInitialSetup, isStage, targetId, soundName, colors) {
         ${blockSeparator}
         <block type="sound_changeeffectby">
             <value name="VALUE">
-                <shadow type="math_number">
-                    <field name="NUM">10</field>
-                </shadow>
+                ${numberShadow(10)}
             </value>
         </block>
         <block type="sound_seteffectto">
             <value name="VALUE">
-                <shadow type="math_number">
-                    <field name="NUM">100</field>
-                </shadow>
+                ${numberShadow(100)}
             </value>
         </block>
         <block type="sound_cleareffects"/>
         ${blockSeparator}
         <block type="sound_changevolumeby">
             <value name="VOLUME">
-                <shadow type="math_number">
-                    <field name="NUM">-10</field>
-                </shadow>
+                ${numberShadow(-10)}
             </value>
         </block>
         <block type="sound_setvolumeto">
             <value name="VOLUME">
-                <shadow type="math_number">
-                    <field name="NUM">100</field>
-                </shadow>
+                ${numberShadow(100)}
             </value>
         </block>
         <block id="${targetId}_volume" type="sound_volume"/>
@@ -354,8 +332,7 @@ const sound = function (isInitialSetup, isStage, targetId, soundName, colors) {
     `;
 };
 
-const assets = function (isInitialSetup, isStage, targetId, assetName, colors) {
-    // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
+const assets = function (isInitialSetup, isStage, targetId, assetName, colors, nbBlocks = true) {
     return `
     <category name="%{BKY_CATEGORY_ASSETS}" id="assets" colour="${colors.primary}" secondaryColour="${colors.tertiary}">
         <block id="${targetId}_assets_file_as_type" type="assets_file_as_type">
@@ -366,6 +343,11 @@ const assets = function (isInitialSetup, isStage, targetId, assetName, colors) {
             </value>
         </block>
         ${blockSeparator}
+        <block type="assets_all">
+            <value name="SPRITE">
+                <shadow type="assets_sprite_menu"></shadow>
+            </value>
+        </block>
         <block id="${targetId}_assets_metadata" type="assets_metadata">
             <value name="ASSET_MENU">
                 <shadow type="assets_menu">
@@ -402,8 +384,7 @@ const assets = function (isInitialSetup, isStage, targetId, assetName, colors) {
     `;
 };
 
-const events = function (isInitialSetup, isStage, targetId, colors) {
-    // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
+const events = function (isInitialSetup, isStage, targetId, colors, nbBlocks = true) {
     return `
     <category name="%{BKY_CATEGORY_EVENTS}" id="events" colour="${colors.primary}" secondaryColour="${colors.tertiary}">
         <block type="event_whenflagclicked"/>
@@ -419,9 +400,7 @@ const events = function (isInitialSetup, isStage, targetId, colors) {
         ${blockSeparator}
         <block type="event_whengreaterthan">
             <value name="VALUE">
-                <shadow type="math_number">
-                    <field name="NUM">10</field>
-                </shadow>
+                ${numberShadow(10)}
             </value>
         </block>
         ${blockSeparator}
@@ -442,8 +421,7 @@ const events = function (isInitialSetup, isStage, targetId, colors) {
     `;
 };
 
-const control = function (isInitialSetup, isStage, targetId, colors) {
-    // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
+const control = function (isInitialSetup, isStage, targetId, colors, nbBlocks = true) {
     return `
     <category
         name="%{BKY_CATEGORY_CONTROL}"
@@ -465,26 +443,42 @@ const control = function (isInitialSetup, isStage, targetId, colors) {
                 </shadow>
             </value>
         </block>
+        ${nbBlocks ? `
         <block type="control_foreach_in_range">
-          <value name="ITEM">
-            <shadow type="control_foreach_in_range_item">
+            <value name="ITEM">
+                <shadow type="control_foreach_in_range_item"></shadow>
+            </value>
+            <value name="FROM">
+                ${numberShadow(1)}
+            </value>
+            <value name="TO">
+                ${numberShadow(10)}
+            </value>
+        </block>
+        ` : ''}
+        <block id="forever" type="control_forever"/>
+        ${blockSeparator}
+        ${nbBlocks ? `
+        <block type="control_if_extendable"/>
+        <block type="control_if_else_extendable"/>
+        <block type="control_switch"/>
+        <block type="control_inline_if_else">
+          <value name="THEN">
+            <shadow type="text">
+              <field name="TEXT">apple</field>
             </shadow>
           </value>
-          <value name="FROM">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-          <value name="TO">
-            <shadow type="math_number">
-              <field name="NUM">10</field>
+          <value name="ELSE">
+            <shadow type="text">
+              <field name="TEXT">banana</field>
             </shadow>
           </value>
         </block>
-        <block id="forever" type="control_forever"/>
-        ${blockSeparator}
+        ` : `
         <block type="control_if"/>
         <block type="control_if_else"/>
+        `}
+        ${blockSeparator}
         <block id="wait_until" type="control_wait_until"/>
         <block id="repeat_until" type="control_repeat_until"/>
         <block id="while" type="control_while"/>
@@ -511,7 +505,7 @@ const control = function (isInitialSetup, isStage, targetId, colors) {
     `;
 };
 
-const sensing = function (isInitialSetup, isStage, targetId, colors) {
+const sensing = function (isInitialSetup, isStage, targetId, colors, nbBlocks = true) {
     const name = translate('SENSING_ASK_TEXT', 'What\'s your name?');
     // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
     return `
@@ -592,7 +586,7 @@ const sensing = function (isInitialSetup, isStage, targetId, colors) {
     `;
 };
 
-const operators = function (isInitialSetup, isStage, targetId, colors) {
+const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks = true) {
     const apple = translate('OPERATORS_JOIN_APPLE', 'apple');
     const banana = translate('OPERATORS_JOIN_BANANA', 'banana');
     const letter = translate('OPERATORS_LETTEROF_APPLE', 'a');
@@ -603,110 +597,105 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
         id="operators"
         colour="${colors.primary}"
         secondaryColour="${colors.tertiary}">
-        <block type="operator_add">
+        ${nbBlocks ? `<block type="operator_add_extendable" />
+        <block type="operator_subtract_extendable" />
+        <block type="operator_multiply_extendable" />
+        <block type="operator_divide_extendable" />
+        <block type="operator_power" />` : `<block type="operator_add">
             <value name="NUM1">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
             <value name="NUM2">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
         </block>
         <block type="operator_subtract">
             <value name="NUM1">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
             <value name="NUM2">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
         </block>
         <block type="operator_multiply">
             <value name="NUM1">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
             <value name="NUM2">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
         </block>
         <block type="operator_divide">
             <value name="NUM1">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
             <value name="NUM2">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
-        </block>
+        </block>`}
         ${blockSeparator}
         <block type="operator_random">
             <value name="FROM">
-                <shadow type="math_number">
-                    <field name="NUM">1</field>
-                </shadow>
+                ${numberShadow(1)}
             </value>
             <value name="TO">
-                <shadow type="math_number">
-                    <field name="NUM">10</field>
-                </shadow>
+                ${numberShadow(10)}
             </value>
         </block>
         ${blockSeparator}
-        <block type="operator_gt">
-            <value name="OPERAND1">
-                <shadow type="text">
-                    <field name="TEXT"/>
-                </shadow>
-            </value>
-            <value name="OPERAND2">
-                <shadow type="text">
-                    <field name="TEXT">50</field>
-                </shadow>
-            </value>
-        </block>
+        ${nbBlocks ? `
+        <block type="operator_lt_extendable"/>
+        <block type="operator_lte"/>
+        <block type="operator_equals_extendable"/>
+        <block type="operator_gt_extendable"/>
+        <block type="operator_gte"/>
+        ${blockSeparator}
+        <block type="operator_and_extendable"/>
+        <block type="operator_or_extendable"/>
+        ` : `
         <block type="operator_lt">
             <value name="OPERAND1">
-                <shadow type="text">
-                    <field name="TEXT"/>
-                </shadow>
+                ${numberShadow()}
             </value>
             <value name="OPERAND2">
-                <shadow type="text">
-                    <field name="TEXT">50</field>
-                </shadow>
+                ${numberShadow(50)}
             </value>
         </block>
         <block type="operator_equals">
             <value name="OPERAND1">
-                <shadow type="text">
-                    <field name="TEXT"/>
-                </shadow>
+                ${numberShadow()}
             </value>
             <value name="OPERAND2">
-                <shadow type="text">
-                    <field name="TEXT">50</field>
-                </shadow>
+                ${numberShadow(50)}
+            </value>
+        </block>
+        <block type="operator_gt">
+            <value name="OPERAND1">
+                ${numberShadow()}
+            </value>
+            <value name="OPERAND2">
+                ${numberShadow(50)}
             </value>
         </block>
         ${blockSeparator}
         <block type="operator_and"/>
         <block type="operator_or"/>
+        `}
+        ${nbBlocks ? `<block type="operator_xor_extendable"/>` : ''}
         <block type="operator_not"/>
         ${blockSeparator}
         ${isInitialSetup ? '' : `
+            ${nbBlocks ? `
+            <block type="operator_join_extendable">
+                <field name="STRINGS">2</field>
+                <value name="STRINGS_0_STRING">
+                    ${textShadow(apple + " ")}
+                </value>
+                <value name="STRINGS_1_STRING">
+                    ${textShadow(banana)}
+                </value>
+            </block>
+            ` : `
             <block type="operator_join">
                 <value name="STRING1">
                     <shadow type="text">
@@ -719,6 +708,7 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
                     </shadow>
                 </value>
             </block>
+            `}
             <block type="operator_letter_of">
                 <value name="LETTER">
                     <shadow type="math_whole_number">
@@ -731,6 +721,23 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
                     </shadow>
                 </value>
             </block>
+            ${nbBlocks ? `<block type="operator_letters_in">
+                <value name="START">
+                    <shadow type="math_whole_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+                <value name="END">
+                    <shadow type="math_whole_number">
+                        <field name="NUM">2</field>
+                    </shadow>
+                </value>
+                <value name="STRING">
+                    <shadow type="text">
+                        <field name="TEXT">${apple}</field>
+                    </shadow>
+                </value>
+            </block>` : ""}
             <block type="operator_length">
                 <value name="STRING">
                     <shadow type="text">
@@ -754,30 +761,24 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
         ${blockSeparator}
         <block type="operator_mod">
             <value name="NUM1">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
             <value name="NUM2">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
         </block>
         <block type="operator_round">
             <value name="NUM">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
         </block>
         <block type="operator_mathop">
             <value name="NUM">
-                <shadow type="math_number">
-                    <field name="NUM"/>
-                </shadow>
+                ${numberShadow()}
             </value>
         </block>
+        ${nbBlocks ? `
+        <block type="operator_constant"/>
         ${blockSeparator}
         <block type="operator_cast">
             <value name="VALUE">
@@ -793,13 +794,13 @@ const operators = function (isInitialSetup, isStage, targetId, colors) {
                 </shadow>
             </value>
         </block>
+        ` : ''}
         ${categorySeparator}
     </category>
     `;
 };
 
-const variables = function (isInitialSetup, isStage, targetId, colors) {
-    // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
+const variables = function (isInitialSetup, isStage, targetId, colors, nbBlocks = true) {
     return `
     <category
         name="%{BKY_CATEGORY_VARIABLES}"
@@ -811,7 +812,7 @@ const variables = function (isInitialSetup, isStage, targetId, colors) {
     `;
 };
 
-const json = function (colors) {
+const json = function (colors, nbBlocks = true) {
     const object = translate('JSON_OBJECT', '{"key":"value"}');
     const array = translate('JSON_ARRAY', '["foo","bar"]');
     const key = translate('JSON_KEY', 'key');
@@ -824,7 +825,7 @@ const json = function (colors) {
         id="json"
         colour="${colors.primary}"
         secondaryColour="${colors.tertiary}">
-        <block type="json_new_object">
+        <block type="json_object">
         </block>
         ${blockSeparator}
         <block type="json_get_properties">
@@ -865,7 +866,7 @@ const json = function (colors) {
             </value>
         </block>
         ${blockSeparator}
-        <block type="json_new_array">
+        <block type="json_array">
         </block>
         ${blockSeparator}
         <block type="json_value_of_index">
@@ -884,13 +885,7 @@ const json = function (colors) {
         </block>
         <block type="json_array_length" id="json_array_length">
         </block>
-        <block type="json_add_item">
-            <value name="ITEM">
-                <shadow type="text">
-                    <field name="TEXT">${bar}</field>
-                </shadow>
-            </value>
-        </block>
+        <block type="json_add_item"/>
         <block type="json_replace_index">
             <value name="INDEX">
                 <shadow type="json_indexmenu">
@@ -997,11 +992,12 @@ const xmlClose = '</xml>';
  * @param {?string} assetName - The name of the default selected asset dropdown.
  * @param {?object} colors - The colors for the theme.
  * @param {?Array.<object>} hiddenCategories - optional array of category IDs to hide.
+ * @param {?boolean} nbBlocks - Whether to keep NitroBolt only blocks in categories.
  * @returns {string} - a ScratchBlocks-style XML document for the contents of the toolbox.
  */
 const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, categoriesXML = [],
     costumeName = '', backdropName = '', soundName = '', assetName = '', colors = defaultBlockColors,
-    hiddenCategories = []) {
+    hiddenCategories = [], nbBlocks = true) {
     isStage = isInitialSetup || isStage;
     const gap = [categorySeparator];
 
@@ -1020,21 +1016,19 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
         }
         // return `undefined`
     };
-    const motionXML = moveCategory('motion') || motion(isInitialSetup, isStage, targetId, colors.motion);
+    const motionXML = moveCategory('motion') || motion(isInitialSetup, isStage, targetId, colors.motion, nbBlocks);
     const looksXML = moveCategory('looks') ||
-        looks(isInitialSetup, isStage, targetId, costumeName, backdropName, colors.looks);
-    const soundXML = moveCategory('sound') || sound(isInitialSetup, isStage, targetId, soundName, colors.sounds);
-    const assetsXML = moveCategory('assets') || assets(isInitialSetup, isStage, targetId, assetName, colors.assets);
-    const eventsXML = moveCategory('event') || events(isInitialSetup, isStage, targetId, colors.event);
-    const controlXML = moveCategory('control') || control(isInitialSetup, isStage, targetId, colors.control);
-    const sensingXML = moveCategory('sensing') || sensing(isInitialSetup, isStage, targetId, colors.sensing);
-    const operatorsXML = moveCategory('operators') || operators(isInitialSetup, isStage, targetId, colors.operators);
-    const variablesXML = moveCategory('data') || variables(isInitialSetup, isStage, targetId, colors.data);
-    const jsonXML = moveCategory('json') || json(colors.json);
-    const myBlocksXML = moveCategory('procedures') || myBlocks(isInitialSetup, isStage, targetId, colors.more);
+        looks(isInitialSetup, isStage, targetId, costumeName, backdropName, colors.looks, nbBlocks);
+    const soundXML = moveCategory('sound') || sound(isInitialSetup, isStage, targetId, soundName, colors.sounds, nbBlocks);
+    const assetsXML = moveCategory('assets') || assets(isInitialSetup, isStage, targetId, assetName, colors.assets, nbBlocks);
+    const eventsXML = moveCategory('event') || events(isInitialSetup, isStage, targetId, colors.event, nbBlocks);
+    const controlXML = moveCategory('control') || control(isInitialSetup, isStage, targetId, colors.control, nbBlocks);
+    const sensingXML = moveCategory('sensing') || sensing(isInitialSetup, isStage, targetId, colors.sensing, nbBlocks);
+    const operatorsXML = moveCategory('operators') || operators(isInitialSetup, isStage, targetId, colors.operators, nbBlocks);
+    const variablesXML = moveCategory('data') || variables(isInitialSetup, isStage, targetId, colors.data, nbBlocks);
+    const jsonXML = moveCategory('json') || json(colors.json, nbBlocks);
+    const myBlocksXML = moveCategory('procedures') || myBlocks(isInitialSetup, isStage, targetId, colors.more, nbBlocks);
 
-    // Always display NitroBolt blocks as the first extension, if it exists,
-    // and also add an "is compiled?" block to the top.
     let nitroboltXML = moveCategory('tw'); // legacy id
     if (nitroboltXML && !nitroboltXML.includes(extraNitroBoltBlocks)) {
         nitroboltXML = nitroboltXML.replace('<block', `${extraNitroBoltBlocks}<block`);
@@ -1052,7 +1046,7 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
         ['data', variablesXML],
         ['json', jsonXML],
         ['procedures', myBlocksXML]
-    ].filter(([id]) => !hiddenCategories.includes(id));
+    ].filter(([id]) => !hiddenCategories.includes(id) && (id !== 'json' || nbBlocks) && (id !== 'assets' || nbBlocks));
 
     const visibleXMLs = categoryEntries.map(([, xml]) => xml);
 

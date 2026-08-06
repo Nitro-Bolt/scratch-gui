@@ -6,7 +6,6 @@
     flex-grow: 1;
     position: relative;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    margin-right: calc($space / 2);
     background-color: $ui-secondary;
     border-top-right-radius: $space;
     border-top-left-radius: $space;
@@ -32,6 +31,7 @@
     box-sizing: border-box;
     width: calc((100% / $sprites-per-row ) - $space);
     max-width: 6rem;
+    max-height: 4rem;
     min-width: 4rem;
     min-height: 4rem; /* @todo: calc height same as width */
     margin: calc($space / 2);
@@ -40,8 +40,6 @@
 .sprite {
     height: 100%;
 }
-
-
 .scroll-wrapper {
     /*
        Sets the sprite-selector items as a scrollable pane
@@ -69,7 +67,15 @@
     padding-right: calc($space / 2);
     padding-bottom: $space;
 
+    min-width: 100%;
+    max-width: 1rem;
+    align-content: flex-start;
+
     overflow: hidden;
+}
+
+.folder-child {
+    border-radius: 0.5rem;
 }
 
 .add-button {

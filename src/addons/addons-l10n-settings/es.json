@@ -18,8 +18,6 @@
     "jump-to-def/@description": "Le permite saltar a la definición de un bloque personalizado usando el botón del medio del ratón o presionando Shift+Click en el bloque.",
     "jump-to-def/@info-developer-tools": "Este addon era parte de \"herramientas de desarrollador\", pero se ha mudado aquí.",
     "jump-to-def/@name": "Saltar a definición de bloque personalizado",
-    "reorder-custom-inputs/@description": "Permite reordenar los parámetros de bloques personalizados en la pantalla \"Crear un bloque\".",
-    "reorder-custom-inputs/@name": "Entradas de bloques personalizados reorganizables",
     "editor-searchable-dropdowns/@description": "Le permite buscar entre las opciones en menús desplegables de bloques.",
     "editor-searchable-dropdowns/@name": "Búsqueda de menú desplegable",
     "data-category-tweaks-v2/@description": "Proporciona retoques para la categoría de bloques \"datos\" (variables).",

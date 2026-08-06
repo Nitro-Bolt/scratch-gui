@@ -49,6 +49,7 @@ const Controls = function (props) {
         framerate,
         interpolation,
         isSmall,
+        isHidden,
         paused,
         preferences,
         ...componentProps
@@ -65,41 +66,47 @@ const Controls = function (props) {
     );
 
     return (
-        <div
-            className={classNames(styles.controlsContainer, className)}
-            {...componentProps}
-        >
-            <GreenFlag
-                active={active}
-                title={intl.formatMessage(messages.goTitle)}
-                onClick={onGreenFlagClick}
-            />
-            <Pause
-                paused={paused}
-                title={intl.formatMessage(messages.pauseTitle)}
-                onClick={onPauseClick}
-            />
-            {paused && !props.compilerEnabled &&
-                <Step
-                    title={intl.formatMessage(messages.stepTitle)}
-                    onClick={onStepClick}
+        <>
+            <div
+                className={classNames(styles.controlsContainer, className)}
+                {...componentProps}
+                style={{
+                    display: isHidden ? 'none' : null
+                }}
+            >
+                <GreenFlag
+                    active={active}
+                    title={intl.formatMessage(messages.goTitle)}
+                    onClick={onGreenFlagClick}
                 />
-            }
-            <StopAll
-                active={active}
-                title={intl.formatMessage(messages.stopTitle)}
-                onClick={onStopAllClick}
-            />
-            {turbo ? (
-                <TurboMode isSmall={isSmall} />
-            ) : null}
-            {!isSmall && (
-                <FramerateIndicator
-                    framerate={framerate}
-                    interpolation={interpolation}
+                <Pause
+                    paused={paused}
+                    title={intl.formatMessage(messages.pauseTitle)}
+                    onClick={onPauseClick}
                 />
-            )}
-        </div>
+                {paused && !props.compilerEnabled &&
+                    <Step
+                        title={intl.formatMessage(messages.stepTitle)}
+                        onClick={onStepClick}
+                    />
+                }
+                <StopAll
+                    active={active}
+                    title={intl.formatMessage(messages.stopTitle)}
+                    onClick={onStopAllClick}
+                />
+                {turbo ? (
+                    <TurboMode isSmall={isSmall} />
+                ) : null}
+                {!isSmall && (
+                    <FramerateIndicator
+                        framerate={framerate}
+                        interpolation={interpolation}
+                    />
+                )}
+            </div>
+            {isHidden && !preferences['stage-left'] && <div />}
+        </>
     );
 };
 
@@ -113,6 +120,7 @@ Controls.propTypes = {
     framerate: PropTypes.number,
     interpolation: PropTypes.bool,
     isSmall: PropTypes.bool,
+    isHidden: PropTypes.bool,
     turbo: PropTypes.bool,
     preferences: PropTypes.object
 };

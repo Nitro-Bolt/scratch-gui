@@ -57,6 +57,8 @@ class SoundTab extends React.Component {
             'handleSurpriseSound',
             'handleFileUploadClick',
             'handleSoundUpload',
+            'handleFolderReorder',
+            'handleItemFolderChangeComplete',
             'handleDrop',
             'setFileInput'
         ]);
@@ -163,13 +165,57 @@ class SoundTab extends React.Component {
         }, this.props.onCloseImporting);
     }
 
+    handleFolderReorder (folderId, newIndex) {
+        const sounds = this.props.vm.editingTarget.sprite.sounds;
+        const activeSound = sounds[this.state.selectedSoundIndex];
+        this.props.vm.moveFolderToIndex(folderId, newIndex);
+        this.setState({selectedSoundIndex: this.props.vm.editingTarget.sprite.sounds.indexOf(activeSound)});
+    }
+    handleItemFolderChangeComplete (activeSound, targetId) {
+        const target = this.props.vm.editingTarget;
+        if (!target || target.id !== targetId) return;
+        const selectedSoundIndex = target.sprite.sounds.indexOf(activeSound);
+        if (selectedSoundIndex >= 0) this.setState({selectedSoundIndex});
+    }
     handleDrop (dropInfo) {
+        if (dropInfo.dragType === DragConstants.FOLDER_SOUND &&
+            dropInfo.payload && dropInfo.payload.nativeFolderId) {
+            const sourceId = dropInfo.payload.nativeFolderId;
+            const hoveredFolderId = dropInfo.payload.folderAtDisplayIndex &&
+                dropInfo.payload.folderAtDisplayIndex[dropInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const structuralIndex = typeof dropInfo.hoveredIndex === 'number' ?
+                dropInfo.hoveredIndex : dropInfo.newIndex;
+            const destinationParentId = hoveredFolder && hoveredFolder._isOpen !== false &&
+                hoveredFolder.id !== sourceId ?
+                hoveredFolder.id : dropInfo.rootDrop ? null : dropInfo.payload.parentFolderAtDisplayIndex &&
+                    dropInfo.payload.parentFolderAtDisplayIndex[structuralIndex];
+            if (destinationParentId !== sourceId) {
+                try {
+                    this.props.vm.setFolderParent(sourceId, destinationParentId || null);
+                } catch (error) {
+                    return;
+                }
+            }
+            const mappedIndex = dropInfo.payload.dropIndexMap && dropInfo.payload.dropIndexMap[dropInfo.newIndex];
+            this.handleFolderReorder(sourceId,
+                typeof mappedIndex === 'number' ? mappedIndex : dropInfo.newIndex);
+            return;
+        }
         if (dropInfo.dragType === DragConstants.SOUND) {
             const sprite = this.props.vm.editingTarget.sprite;
             const activeSound = sprite.sounds[this.state.selectedSoundIndex];
-
-            this.props.vm.reorderSound(this.props.vm.editingTarget.id,
-                dropInfo.index, dropInfo.newIndex);
+            const mappedIndex = dropInfo.dropIndexMap && dropInfo.dropIndexMap[dropInfo.newIndex];
+            const newIndex = typeof mappedIndex === 'number' ? mappedIndex : dropInfo.newIndex;
+            const destination = sprite.sounds[newIndex];
+            const hoveredFolderId = dropInfo.folderAtDisplayIndex &&
+                dropInfo.folderAtDisplayIndex[dropInfo.hoveredIndex];
+            const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
+            const destinationFolder = hoveredFolder || (destination && destination.folderId &&
+                this.props.vm.runtime.projectFolders.find(folder => folder.id === destination.folderId));
+            this.props.vm.setItemFolder('sound', this.props.vm.editingTarget.id,
+                dropInfo.index, !dropInfo.rootDrop && destinationFolder && destinationFolder._isOpen !== false ?
+                    destinationFolder.id : null, newIndex);
 
             this.setState({selectedSoundIndex: sprite.sounds.indexOf(activeSound)});
         } else if (dropInfo.dragType === DragConstants.BACKPACK_COSTUME) {
@@ -234,6 +280,7 @@ class SoundTab extends React.Component {
             {
                 url: isRtl ? soundIconRtl : soundIcon,
                 name: sound.name,
+                folderId: sound.folderId || null,
                 details: (sound.sampleCount / sound.rate).toFixed(2),
                 dragPayload: sound
             }
@@ -292,6 +339,9 @@ class SoundTab extends React.Component {
                 dragType={DragConstants.SOUND}
                 isRtl={isRtl}
                 items={sounds}
+                vm={vm}
+                onFolderReorder={this.handleFolderReorder}
+                onItemFolderChangeComplete={this.handleItemFolderChangeComplete}
                 selectedItemIndex={this.state.selectedSoundIndex}
                 onDeleteClick={this.handleDeleteSound}
                 onDrop={this.handleDrop}
@@ -303,7 +353,10 @@ class SoundTab extends React.Component {
             >
                 {sprite.sounds && sprite.sounds[this.state.selectedSoundIndex] ? (
                     isSupported ? (
-                        <SoundEditor soundIndex={this.state.selectedSoundIndex} />
+                        <SoundEditor
+                            soundIndex={this.state.selectedSoundIndex}
+                            preferences={this.props.preferences}
+                        />
                     ) : (
                         <SoundEditorNotSupported />
                     )
@@ -311,6 +364,7 @@ class SoundTab extends React.Component {
                 {this.props.soundRecorderVisible ? (
                     <RecordModal
                         onNewSound={this.handleNewSound}
+                        preferences={this.props.preferences}
                     />
                 ) : null}
                 {this.props.soundLibraryVisible ? (
@@ -351,6 +405,7 @@ SoundTab.propTypes = {
             name: PropTypes.string.isRequired
         }))
     }),
+    preferences: PropTypes.object,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 
