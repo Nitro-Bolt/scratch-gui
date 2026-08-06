@@ -72,8 +72,7 @@ const addons = [
     'tw-remove-feedback',
     'tw-disable-vibration',
     'tw-disable-cloud-variables',
-    'tw-disable-compiler',
-    'editor-stepping'
+    'tw-disable-compiler'
 ];
 
 const newAddons = [
