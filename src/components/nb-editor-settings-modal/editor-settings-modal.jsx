@@ -76,6 +76,14 @@ const messages = defineMessages({
         id: 'nb.editorSettings.versionControlSection',
         defaultMessage: 'Version Control'
     },
+    canvasSizeMultiplier: {
+        id: 'nb.editorSettings.canvasSizeMultiplier',
+        defaultMessage: 'Canvas size multiplier:'
+    },
+    canvasSizeMultiplierHelp: {
+        id: 'nb.editorSettings.canvasSizeMultiplierHelp',
+        defaultMessage: 'How large the canvas is in the paint editor relative to the stage.'
+    },
     keymap: {
         id: 'nb.editorSettings.keymapSection',
         defaultMessage: 'Keymap'
@@ -822,6 +830,36 @@ const EditorSettingsModal = props => {
                         <FormattedMessage
                             id="nb.editorSettings.nudgeMultiplierHelp"
                             defaultMessage="How far selected objects move when pressing Shift+Arrow keys in the paint editor."
+                        />
+                    }
+                />
+                <Setting
+                    primary={(
+                        <div className={classNames(styles.label, styles.customStageSize)}>
+                            <FormattedMessage
+                                defaultMessage="Canvas size multiplier:"
+                                id="nb.editorSettings.canvasSizeMultiplier"
+                            />
+                            <BufferedInput
+                                value={String(props.preferences['paint-canvas-size-multiplier'] ?? 2)}
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onSubmit={value => {
+                                    const num = Number(value);
+                                    if (Number.isFinite(num) && num > 0 && num <= 10) {
+                                        props.onSetPreference('paint-canvas-size-multiplier', num);
+                                    }
+                                }}
+                                type="number"
+                                min="1"
+                                max="10"
+                                spellCheck="false"
+                            />
+                        </div>
+                    )}
+                    help={
+                        <FormattedMessage
+                            id="nb.editorSettings.canvasSizeMultiplierHelp"
+                            defaultMessage="How large the artboard canvas is in the paint editor relative to the costume size."
                         />
                     }
                 />

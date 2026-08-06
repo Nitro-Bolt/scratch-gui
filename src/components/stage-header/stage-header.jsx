@@ -237,7 +237,7 @@ const StageHeaderComponent = function (props) {
                         {props.preferences['enable-debugger'] === true &&
                             <div>
                                 <Button
-                                    className={classNames(styles.debuggerButton, styles.stageButton)}
+                                    className={classNames(styles.stageButton, styles.debuggerButton)}
                                     onClick={onOpenDebugger}
                                 >
                                     <img
