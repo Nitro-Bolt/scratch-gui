@@ -11,7 +11,6 @@ const addons = [
     'hide-flyout',
     'mediarecorder',
     'drag-drop',
-    'debugger',
     'pause',
     'mute-project',
     'vol-slider',
