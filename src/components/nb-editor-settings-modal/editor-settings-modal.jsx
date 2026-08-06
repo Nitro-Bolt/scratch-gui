@@ -859,7 +859,7 @@ const EditorSettingsModal = props => {
                     help={
                         <FormattedMessage
                             id="nb.editorSettings.canvasSizeMultiplierHelp"
-                            defaultMessage="How large the artboard canvas is in the paint editor relative to the costume size."
+                            defaultMessage="How large the canvas is in the paint editor relative to the stage."
                         />
                     }
                 />
