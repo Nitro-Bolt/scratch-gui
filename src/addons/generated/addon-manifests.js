@@ -68,7 +68,6 @@ import _fullscreen from "../addons/fullscreen/_manifest_entry.js";
 import _tw_straighten_comments from "../addons/tw-straighten-comments/_manifest_entry.js";
 import _tw_disable_vibration from "../addons/tw-disable-vibration/_manifest_entry.js";
 import _tw_disable_cloud_variables from "../addons/tw-disable-cloud-variables/_manifest_entry.js";
-import _editor_stepping from "../addons/editor-stepping/_manifest_entry.js";
 export default {
   "cat-blocks": _cat_blocks,
   "find-bar": _find_bar,
@@ -138,6 +137,5 @@ export default {
   "fullscreen": _fullscreen,
   "tw-straighten-comments": _tw_straighten_comments,
   "tw-disable-vibration": _tw_disable_vibration,
-  "tw-disable-cloud-variables": _tw_disable_cloud_variables,
-  "editor-stepping": _editor_stepping,
+  "tw-disable-cloud-variables": _tw_disable_cloud_variables
 };
