@@ -194,7 +194,8 @@ class SpriteSelectorItem extends React.PureComponent {
         const folder = this.props.vm.createFolder(
             name,
             kind,
-            scopeId
+            scopeId,
+            this.props.folderId
         );
         this.props.vm.setItemFolder(
             kind,
