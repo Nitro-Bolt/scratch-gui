@@ -1,0 +1,45 @@
+@import "../../css/colors.css";
+@import "../../css/filters.css";
+
+.container {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.table th,
+.table td {
+    padding: 0.4rem 0.5rem;
+    border: 1px solid $ui-black-transparent;
+}
+
+.table th {
+    background-color: $menu-bar-background;
+    color: $menu-bar-foreground;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.timer-name {
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.no-timers {
+    margin: auto;
+    font-style: italic;
+    opacity: 0.5;
+}

@@ -35,6 +35,7 @@ import TWSettingsModal from '../../containers/tw-settings-modal.jsx';
 import TWSecurityManager from '../../containers/tw-security-manager.jsx';
 import TWCustomExtensionModal from '../../containers/tw-custom-extension-modal.jsx';
 import NBCustomAccentModal from '../../containers/nb-custom-accent-modal.jsx';
+import NBDebugger from '../../containers/nb-debugger.jsx';
 import NBEditorSettingsModal from '../../containers/nb-editor-settings-modal.jsx';
 import NBExtensionManagerModal from '../../containers/nb-extension-manager-modal.jsx';
 import NBInspectBlockModal from '../../containers/nb-inspect-block-modal.jsx';
@@ -110,6 +111,7 @@ const GUIComponent = props => {
         costumeLibraryVisible,
         costumesTabVisible,
         customStageSize,
+        debuggerVisible,
         enableCommunity,
         intl,
         isCreating,
@@ -354,6 +356,9 @@ const GUIComponent = props => {
                         vm={vm}
                         onRequestClose={onRequestCloseBackdropLibrary}
                     />
+                ) : null}
+                {debuggerVisible ? (
+                    <NBDebugger />
                 ) : null}
                 <MenuBar
                     accountNavOpen={accountNavOpen}

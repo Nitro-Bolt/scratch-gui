@@ -1,0 +1,99 @@
+@import "../../css/colors.css";
+@import "../../css/filters.css";
+
+.container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 8px 12px;
+    overflow: none;
+}
+
+.buttons {
+    display: flex;
+    width: max-content;
+    border-radius: 5px;
+    background-color: $menu-bar-background;
+    overflow: hidden;
+}
+
+.buttons:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.buttons:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px
+}
+
+.chart-button {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: transparent
+}
+
+.chart-button:hover {
+    background-color: $ui-black-transparent;
+}
+
+.chart-button > span {
+    color: $menu-bar-foreground;
+    font-size: 0.8rem;
+    font-weight: bold
+}
+
+.chart-button.selected {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.chart-quantities {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    opacity: 0.5;
+    width: 3rem;
+    flex-shrink: 0;
+}
+
+.chart-quantities > p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+[dir="ltr"] .chart-quantities {
+    text-align: right;
+}
+
+[dir="rtl"] .chart-quantities {
+    text-align: left;
+}
+
+.chart {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    margin-top: auto;
+    margin-bottom: 12px;
+}
+
+.chart > svg > g > circle {
+    fill-opacity: 0.20 !important
+}
+
+.hit-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.hit-slice {
+    position: absolute;
+    height: 12px;
+    transform: translateY(-50%);
+}

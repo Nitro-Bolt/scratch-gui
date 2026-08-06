@@ -83,7 +83,7 @@ const guiColors = {
 
     'filter-icon-black': 'none',
     'filter-icon-gray': 'grayscale(100%)',
-    'filter-icon-white': 'none',
+    'filter-icon-white': 'invert(100%)',
 
     'paint-ui-pane-border': 'var(--ui-black-transparent)',
     'paint-text-primary': 'var(--text-primary)',

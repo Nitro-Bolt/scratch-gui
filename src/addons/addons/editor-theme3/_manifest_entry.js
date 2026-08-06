@@ -203,19 +203,6 @@ const manifest = {
     },
     {
       "dynamic": true,
-      "name": "Addon blocks",
-      "id": "sa-color",
-      "type": "color",
-      "default": "#29BEB8",
-      "allowTransparency": true,
-      "if": {
-        "addonEnabled": [
-          "debugger"
-        ]
-      }
-    },
-    {
-      "dynamic": true,
       "name": "Block inputs",
       "id": "input-color",
       "type": "color",

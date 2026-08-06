@@ -10,9 +10,25 @@ class Controls extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
+            'handleCompilerOptionsUpdate',
             'handleGreenFlagClick',
+            'handlePauseClick',
+            'handleStepClick',
             'handleStopAllClick'
         ]);
+
+        this.state = {compilerEnabled: this.props.vm.runtime.compilerOptions.enabled};
+    }
+    componentDidMount () {
+        this.props.vm.on('COMPILER_OPTIONS_CHANGED', this.handleCompilerOptionsUpdate);
+    }
+    componentWillUnmount () {
+        this.props.vm.off('COMPILER_OPTIONS_CHANGED', this.handleCompilerOptionsUpdate);
+    }
+    handleCompilerOptionsUpdate () {
+        this.setState({
+            compilerEnabled: this.props.vm.runtime.compilerOptions.enabled
+        });
     }
     handleGreenFlagClick (e) {
         e.preventDefault();
@@ -29,11 +45,26 @@ class Controls extends React.Component {
                 }
             }
         } else {
+            if (this.props.vm.runtime.paused) {
+                this.props.vm.runtime.resume();
+            }
             if (!this.props.isStarted) {
                 this.props.vm.start();
             }
             this.props.vm.greenFlag();
         }
+    }
+    handlePauseClick (e) {
+        e.preventDefault();
+        if (this.props.vm.runtime.paused) {
+            this.props.vm.runtime.resume();
+        } else {
+            this.props.vm.runtime.pause();
+        }
+    }
+    handleStepClick (e) {
+        e.preventDefault();
+        this.props.vm.runtime._step(true /* stepPausedThreads */);
     }
     handleStopAllClick (e) {
         e.preventDefault();
@@ -45,16 +76,21 @@ class Controls extends React.Component {
             isStarted, // eslint-disable-line no-unused-vars
             preferences,
             projectRunning,
+            projectPaused,
             turbo,
             ...props
         } = this.props;
         return (
             <ControlsComponent
                 {...props}
-                active={projectRunning && isStarted}
+                active={!projectPaused && projectRunning && isStarted}
+                compilerEnabled={this.state.compilerEnabled}
                 turbo={turbo}
+                paused={projectPaused}
                 preferences={preferences}
                 onGreenFlagClick={this.handleGreenFlagClick}
+                onPauseClick={this.handlePauseClick}
+                onStepClick={this.handleStepClick}
                 onStopAllClick={this.handleStopAllClick}
             />
         );
@@ -65,6 +101,7 @@ Controls.propTypes = {
     isStarted: PropTypes.bool.isRequired,
     preferences: PropTypes.object.isRequired,
     projectRunning: PropTypes.bool.isRequired,
+    projectPaused: PropTypes.bool.isRequired,
     turbo: PropTypes.bool.isRequired,
     framerate: PropTypes.number.isRequired,
     interpolation: PropTypes.bool.isRequired,
@@ -76,6 +113,7 @@ const mapStateToProps = state => ({
     isStarted: state.scratchGui.vmStatus.started,
     preferences: state.scratchGui.preferences,
     projectRunning: state.scratchGui.vmStatus.running,
+    projectPaused: state.scratchGui.vmStatus.paused,
     framerate: state.scratchGui.tw.framerate,
     interpolation: state.scratchGui.tw.interpolation,
     turbo: state.scratchGui.vmStatus.turbo
