@@ -10,12 +10,15 @@ const SET_PERFORMANCE_CHART = 'scratch-gui/debugger/SET_PERFORMANCE_CHART';
 const PUSH_LOG = 'scratch-gui/debugger/PUSH_LOG';
 const CLEAR_LOGS = 'scratch-gui/debugger/CLEAR_LOGS';
 
+const SET_TIMERS = 'scratch-gui/debugger/SET_TIMERS';
+
 const MAX_LOGS = 1000;
 
 const initialState = {
     visible: false,
     dragging: false,
     logs: [],
+    timers: {},
     performanceChart: 0,
     tab: 0,
     x: 0,
@@ -72,6 +75,10 @@ const reducer = function (state, action) {
         return Object.assign({}, state, {
             logs: []
         });
+    case SET_TIMERS:
+        return Object.assign({}, state, {
+            timers: action.timers
+        });
     default:
         return state;
     }
@@ -113,6 +120,10 @@ const clearLogs = function () {
     return {type: CLEAR_LOGS};
 }
 
+const setTimers = function (timers) {
+    return {type: SET_TIMERS, timers};
+}
+
 export {
     reducer as default,
     initialState as debuggerInitialState,
@@ -124,5 +135,6 @@ export {
     setTab,
     setPerformanceChart,
     pushLog,
-    clearLogs
+    clearLogs,
+    setTimers
 };

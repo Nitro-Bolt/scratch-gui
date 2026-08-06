@@ -135,6 +135,7 @@ class NBDebugger extends React.Component {
                 fpsData={this.state.fpsData}
                 memoryData={this.state.memoryData}
                 cloneData={this.state.cloneData}
+                timers={this.props.timers}
                 {...this.props}
             />
         );
@@ -155,6 +156,7 @@ NBDebugger.propTypes = {
     onTabClick: PropTypes.func.isRequired,
     onClearLogs: PropTypes.func.isRequired,
     onActivateCodeTab: PropTypes.func.isRequired,
+    timers: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -166,6 +168,7 @@ const mapStateToProps = state => ({
     tab: state.scratchGui.debugger.tab,
     dragging: state.scratchGui.debugger.dragging,
     logs: state.scratchGui.debugger.logs,
+    timers: state.scratchGui.debugger.timers,
     performanceChart: state.scratchGui.debugger.performanceChart
 });
 

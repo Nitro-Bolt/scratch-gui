@@ -26,7 +26,7 @@ import {setCustomStageSize} from '../reducers/custom-stage-size';
 import {openUnknownPlatformModal} from '../reducers/modals';
 import implementGuiAPI from './tw-extension-gui-api';
 import {BLOCKS_TAB_INDEX} from '../reducers/editor-tab';
-import {openDebugger, setTab, pushLog, clearLogs} from '../reducers/debugger';
+import {openDebugger, setTab, pushLog, clearLogs, setTimers} from '../reducers/debugger';
 
 let compileErrorCounter = 0;
 
@@ -84,6 +84,7 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.runtime.on('DEBUGGER_BREAKPOINT', this.props.onDebuggerBreakpoint);
             this.props.vm.runtime.on('DEBUGGER_CLEAR', this.props.onDebuggerClear);
             this.props.vm.runtime.on('DEBUGGER_LOG', this.props.onDebuggerLog);
+            this.props.vm.runtime.on('DEBUGGER_TIMER_UPDATE', this.props.onDebuggerTimerUpdate);
         }
         componentDidMount () {
             if (this.props.attachKeyboardEvents) {
@@ -136,6 +137,7 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.runtime.off('DEBUGGER_BREAKPOINT', this.props.onDebuggerBreakpoint);
             this.props.vm.runtime.off('DEBUGGER_CLEAR', this.props.onDebuggerClear);
             this.props.vm.runtime.off('DEBUGGER_LOG', this.props.onDebuggerLog);
+            this.props.vm.runtime.off('DEBUGGER_TIMER_UPDATE', this.props.onDebuggerTimerUpdate);
         }
         handleCloudDataUpdate (hasCloudVariables) {
             if (this.props.hasCloudVariables !== hasCloudVariables) {
@@ -259,6 +261,7 @@ const vmListenerHOC = function (WrappedComponent) {
                 onCompileError,
                 onClearCompileErrors,
                 onShowExtensionAlert,
+                onDebuggerTimerUpdate,
                 /* eslint-enable no-unused-vars */
                 ...props
             } = this.props;
@@ -295,6 +298,7 @@ const vmListenerHOC = function (WrappedComponent) {
         onStageSizeChanged: PropTypes.func,
         onCompileError: PropTypes.func,
         onClearCompileErrors: PropTypes.func,
+        onDebuggerTimerUpdate: PropTypes.func.isRequired,
         projectChanged: PropTypes.bool,
         shouldUpdateTargets: PropTypes.bool,
         shouldUpdateProjectChanged: PropTypes.bool,
@@ -370,7 +374,8 @@ const vmListenerHOC = function (WrappedComponent) {
             dispatch(openDebugger());
         },
         onDebuggerClear: () => dispatch(clearLogs()),
-        onDebuggerLog: (type, message, target) => dispatch(pushLog(type, message, target))
+        onDebuggerLog: (type, message, target) => dispatch(pushLog(type, message, target)),
+        onDebuggerTimerUpdate: data => dispatch(setTimers(data))
     });
     return connect(
         mapStateToProps,

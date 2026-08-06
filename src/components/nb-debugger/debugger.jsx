@@ -6,11 +6,13 @@ import TabButton from './tab-button.jsx';
 import LogsTab from './logs.jsx';
 import ThreadsTab from './threads.jsx';
 import PerformanceTab from './performance.jsx';
+import TimersTab from './timers.jsx';
 
 import closeIcon from './icons/icon--close.svg';
 import threadsIcon from './icons/icon--threads.svg';
 import logsIcon from './icons/icon--logs.svg';
 import performanceIcon from './icons/icon--performance.svg';
+import timersIcon from './icons/icon--timers.svg';
 
 import styles from './debugger.css';
 
@@ -73,6 +75,12 @@ const DebuggerComponent = React.memo(props => {
                         selected={props.tab === 2}
                         onClick={() => props.onTabClick(2)}
                     />
+                    <TabButton
+                        label='Timers'
+                        icon={timersIcon}
+                        selected={props.tab === 3}
+                        onClick={() => props.onTabClick(3)}
+                    />
                     <img
                         className={styles.closeButton}
                         src={closeIcon}
@@ -115,6 +123,8 @@ const DebuggerComponent = React.memo(props => {
                         memoryData={props.memoryData}
                         vm={props.vm}
                     />
+                ) : props.tab === 3 ? (
+                    <TimersTab timers={props.timers} />
                 ) : null}
             </div>
         </Draggable>
