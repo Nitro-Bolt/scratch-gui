@@ -30,8 +30,6 @@ const reducer = function (state, action) {
     switch (action.type) {
     case OPEN_DEBUGGER:
         return Object.assign({}, state, {
-            x: 0,
-            y: 0,
             visible: true,
         });
     case CLOSE_DEBUGGER:
