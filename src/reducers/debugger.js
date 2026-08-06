@@ -63,7 +63,8 @@ const reducer = function (state, action) {
         const newLogs = [...state.logs, {
             type: action.logType,
             message: action.message,
-            target: action.target
+            target: action.target,
+            color: action.color
         }];
         if (newLogs.length > MAX_LOGS) {
             newLogs.shift();
@@ -112,8 +113,8 @@ const setPerformanceChart = function (chartIndex) {
     return {type: SET_PERFORMANCE_CHART, chartIndex};
 };
 
-const pushLog = function (logType, message, target) {
-    return {type: PUSH_LOG, logType, message, target};
+const pushLog = function (logType, message, target, color) {
+    return {type: PUSH_LOG, logType, message, target, color};
 };
 
 const clearLogs = function () {

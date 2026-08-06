@@ -9,16 +9,9 @@ import downloadIcon from './icons/icon--download.svg';
 import warningIcon from './icons/icon--warning.svg';
 import errorIcon from './icons/icon--error.svg';
 
-const parseLogMessage = message => {
-    try {
-        const parsed = JSON.parse(message);
-        if (parsed && typeof parsed === 'object' && '__COLOR' in parsed) {
-            const { __COLOR, message } = parsed;
-            const color = `rgba(${__COLOR.r},${__COLOR.g},${__COLOR.b},1)`;
-            return { display: message, color };
-        }
-    } catch {}
-    return { display: message, color: null };
+const parseLogColor = color => {
+    if (!color) return null;
+    return `rgba(${color.r},${color.g},${color.b},1)`;
 };
 
 const handleExportLogs = logs => {
@@ -38,7 +31,7 @@ const handleExportLogs = logs => {
 
 const Log = React.memo(props => {
     const icon = props.type === 'warn' ? warningIcon : errorIcon;
-    const { display, color } = parseLogMessage(props.message);
+    const color = parseLogColor(props.color);
     const colorStyle = color ? {
         color,
         backgroundColor:   color.replace(',1)',',0.15)'),
@@ -49,7 +42,7 @@ const Log = React.memo(props => {
             {props.type && props.type !== 'log' &&
                 <img src={icon} />
             }
-            <span style={color ? { color } : undefined}>{display}</span>
+            <span style={color ? { color } : undefined}>{props.message}</span>
             {props.target &&
                 <a className={styles.spriteName} onClick={props.onSelectTarget}>
                     {props.target.sprite.name}
@@ -115,6 +108,7 @@ const LogsTab = React.memo(props => {
                     type={log.type}
                     message={log.message}
                     target={log.target}
+                    color={log.color}
                     onSelectTarget={() => props.onSelectTarget(log.target)}
                 />
             )) : (

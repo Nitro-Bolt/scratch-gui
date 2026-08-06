@@ -481,36 +481,6 @@ const EditorSettingsModal = props => {
                     }}
                 />
                 <BooleanSetting
-                    value={props.preferences['waveform-render-type'] === 'sharp'}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.waveformRenderType"
-                        defaultMessage="Sharp waveforms"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.waveformRenderTypeHelp"
-                        defaultMessage="Choose between sharp edges on sound waveforms or soft edges like in Scratch. Sharp edges can offer more detail on large sounds."
-                    />}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => {
-                        props.onSetPreference('waveform-render-type', e.target.checked ? 'sharp' : 'soft');
-                    }}
-                />
-                <BooleanSetting
-                    value={props.preferences['waveform-color'] === 'volume'}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.waveformColor"
-                        defaultMessage="Waveform volume gradient"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.waveformColorHelp"
-                        defaultMessage="If checked, waveforms will display a volume gradient where green is quieter and red is louder."
-                    />}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => {
-                        props.onSetPreference('waveform-color', e.target.checked ? 'volume' : null);
-                    }}
-                />
-                <BooleanSetting
                     value={!!props.preferences['enable-debugger']}
                     label={<FormattedMessage
                         id="nb.editorSettings.enableDebugger"
@@ -522,6 +492,13 @@ const EditorSettingsModal = props => {
                     />}
                     onChange={e => {
                         props.onSetPreference('enable-debugger', e.target.checked);
+                        // Load debugger extension if it's enabled and not already loaded
+                        if (
+                            e.target.checked &&
+                            !props.vm.extensionManager.isExtensionLoaded('debugger')
+                        ) {
+                            props.vm.extensionManager.loadExtensionIdSync('debugger');
+                        }
                     }}
                 />
                 <div className={styles.header}>
@@ -907,6 +884,36 @@ const EditorSettingsModal = props => {
                         defaultMessage="Defines the bit rate for sounds encoded in NitroBolt."
                     />}
                 />
+                <BooleanSetting
+                    value={props.preferences['waveform-render-type'] === 'sharp'}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.waveformRenderType"
+                        defaultMessage="Sharp waveforms"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.waveformRenderTypeHelp"
+                        defaultMessage="Choose between sharp edges on sound waveforms or soft edges like in Scratch. Sharp edges can offer more detail on large sounds."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('waveform-render-type', e.target.checked ? 'sharp' : 'soft');
+                    }}
+                />
+                <BooleanSetting
+                    value={props.preferences['waveform-color'] === 'volume'}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.waveformColor"
+                        defaultMessage="Waveform volume gradient"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.waveformColorHelp"
+                        defaultMessage="If checked, waveforms will display a volume gradient where green is quieter and red is louder."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('waveform-color', e.target.checked ? 'volume' : null);
+                    }}
+                />
             </Box>
         },
         {
@@ -1095,6 +1102,7 @@ EditorSettingsModal.propTypes = {
     onSetUsername: PropTypes.func,
     preferences: PropTypes.object.isRequired,
     onSetPreference: PropTypes.func.isRequired,
+    vm: PropTypes.object,
     theme: PropTypes.instanceOf(Theme),
     username: PropTypes.string,
     usernameInvalid: PropTypes.bool,
@@ -1110,7 +1118,8 @@ const mapStateToProps = state => ({
     username: state.scratchGui.tw.username,
     usernameInvalid: state.scratchGui.tw.usernameInvalid,
     activeTab: state.scratchGui.modals.editorSettingsModalTab,
-    preferences: state.scratchGui.preferences
+    preferences: state.scratchGui.preferences,
+    vm: state.scratchGui.vm
 });
 
 const mapDispatchToProps = dispatch => ({
