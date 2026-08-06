@@ -70,7 +70,7 @@ const LogsTab = React.memo(props => {
         return props.logs.filter(log => {
             const spriteMatch = spriteFilter === 'all' ||
                 (log.target && log.target.sprite.name === spriteFilter) ||
-                (spriteFilter === '__stage__' && !log.target);
+                (spriteFilter === '__stage__' && log.target && log.target.isStage);
             const typeMatch = typeFilter === 'all' || (log.type || 'log') === typeFilter;
             return spriteMatch && typeMatch;
         });
