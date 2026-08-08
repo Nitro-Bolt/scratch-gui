@@ -8,6 +8,7 @@ import {defineMessages, injectIntl, intlShape, FormattedMessage} from 'react-int
 import booleanInputIcon from './icon--boolean-input.svg';
 import objectInputIcon from './icon--object-input.svg';
 import arrayInputIcon from './icon--array-input.svg';
+import colorInputIcon from './icon--color-input.svg';
 import textInputIcon from './icon--text-input.svg';
 import dropdownInputIcon from './icon--dropdown.svg';
 import branchIcon from './icon--branch.svg';
@@ -38,6 +39,9 @@ const CustomProcedures = props => {
             break;
         case 'array':
             setInputIcon(arrayInputIcon);
+            break;
+        case 'color':
+            setInputIcon(colorInputIcon);
             break;
         }
     }, [props.menuOption]);
@@ -82,6 +86,7 @@ const CustomProcedures = props => {
                             <option value="boolean">boolean</option>
                             <option value="object">object</option>
                             <option value="array">array</option>
+                            <option value="color">color</option>
                         </select>
                     </div>
                     <div
