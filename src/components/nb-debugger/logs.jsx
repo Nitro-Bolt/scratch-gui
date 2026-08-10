@@ -34,7 +34,6 @@ const Log = React.memo(props => {
     const icon = props.type === 'warn' ? warningIcon : errorIcon;
     const color = parseLogColor(props.color);
     const colorStyle = color ? {
-        color,
         backgroundColor: color.replace(',1)', ',0.15)'),
         borderBottomColor: color.replace(',1)', ',0.30)')
     } : null;
@@ -46,7 +45,7 @@ const Log = React.memo(props => {
             {props.type && props.type !== 'log' &&
                 <img src={icon} />
             }
-            <span style={color ? {color} : null}>{props.message}</span>
+            <span>{props.message}</span>
             {props.target &&
                 <a
                     className={styles.spriteName}
