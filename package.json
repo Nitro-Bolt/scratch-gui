@@ -1,6 +1,7 @@
 {
   "name": "scratch-gui",
   "version": "3.2.37",
+  "packageManager": "pnpm@10.33.0",
   "description": "Graphical User Interface for creating and running Scratch 3.0 projects",
   "author": "Massachusetts Institute of Technology",
   "license": "GPL-3.0",
@@ -166,5 +167,12 @@
     "webpack@4.47.0": {
       "terser-webpack-plugin": "^4.2.3"
     }
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "chromedriver",
+      "core-js",
+      "es5-ext"
+    ]
   }
 }
