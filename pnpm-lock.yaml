@@ -196,7 +196,7 @@ importers:
         version: https://codeload.github.com/TurboWarp/scratch-audio/tar.gz/aba00cd02e36d95407effafa03f3678e4c669b30
       scratch-blocks:
         specifier: github:Nitro-Bolt/scratch-blocks#develop-builds
-        version: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/251d7c45d3b3251b8337e4eed10eed2afe5d90aa
+        version: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/b5fa1e42a291009a247e0f0ad8cd2c4a104c6c7a
       scratch-paint:
         specifier: github:Nitro-Bolt/scratch-paint#develop
         version: https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/7107c2180a3a1d62d3ffb4b7bf630835d6a0965b(react-dom@16.14.0(react@16.14.0))(react-intl-redux@0.7.0(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-redux@5.0.7(react@16.14.0)(redux@3.7.2)))(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-popover@0.5.10)(react-redux@5.0.7(react@16.14.0)(redux@3.7.2))(react-responsive@5.0.0(react@16.14.0))(react-style-proptype@3.2.2)(react-tooltip@3.8.0(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react@16.14.0)(redux@3.7.2)
@@ -5445,8 +5445,8 @@ packages:
     resolution: {tarball: https://codeload.github.com/TurboWarp/scratch-audio/tar.gz/aba00cd02e36d95407effafa03f3678e4c669b30}
     version: 0.1.0
 
-  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/251d7c45d3b3251b8337e4eed10eed2afe5d90aa:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/251d7c45d3b3251b8337e4eed10eed2afe5d90aa}
+  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/b5fa1e42a291009a247e0f0ad8cd2c4a104c6c7a:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/b5fa1e42a291009a247e0f0ad8cd2c4a104c6c7a}
     version: 0.1.0
 
   scratch-paint@https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/7107c2180a3a1d62d3ffb4b7bf630835d6a0965b:
@@ -12896,7 +12896,7 @@ snapshots:
       '@turbowarp/nanolog': 0.2.0
       '@turbowarp/startaudiocontext': 1.0.0
 
-  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/251d7c45d3b3251b8337e4eed10eed2afe5d90aa:
+  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/b5fa1e42a291009a247e0f0ad8cd2c4a104c6c7a:
     dependencies:
       exports-loader: 0.7.0
       imports-loader: 0.8.0
