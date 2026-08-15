@@ -203,19 +203,6 @@ const manifest = {
     },
     {
       "dynamic": true,
-      "name": "Addon blocks",
-      "id": "sa-color",
-      "type": "color",
-      "default": "#29BEB8",
-      "allowTransparency": true,
-      "if": {
-        "addonEnabled": [
-          "debugger"
-        ]
-      }
-    },
-    {
-      "dynamic": true,
       "name": "Block inputs",
       "id": "input-color",
       "type": "color",
@@ -279,7 +266,6 @@ const manifest = {
         "json-color": "#9A99FF",
         "custom-color": "#FF99AA",
         "Pen-color": "#13ECAF",
-        "sa-color": "#34E4D0",
         "comment-color": "#FEF49C",
         "input-color": "#FFFFFF",
         "text": "black"
@@ -304,7 +290,6 @@ const manifest = {
         "json-color": "#141433",
         "custom-color": "#973545",
         "Pen-color": "#2A7468",
-        "sa-color": "#2A797C",
         "comment-color": "#423F24",
         "input-color": "#FFFFFF",
         "text": "white"
@@ -329,7 +314,6 @@ const manifest = {
         "json-color": "#141433",
         "custom-color": "#99004d",
         "Pen-color": "#064734",
-        "sa-color": "#166966",
         "comment-color": "#423f24",
         "input-color": "#202020",
         "text": "white"
@@ -354,7 +338,6 @@ const manifest = {
         "json-color": "#5755D4",
         "custom-color": "#5f49d8",
         "Pen-color": "#0FBD8C",
-        "sa-color": "#29BEB8",
         "comment-color": "#FEF49C",
         "input-color": "#FFFFFF",
         "text": "white"
@@ -379,7 +362,6 @@ const manifest = {
         "json-color": "#5755D4",
         "custom-color": "#632d99",
         "Pen-color": "#0e9a6c",
-        "sa-color": "#29beb8",
         "comment-color": "#FFFFD2",
         "input-color": "#ffffff",
         "text": "white"
@@ -404,7 +386,6 @@ const manifest = {
         "json-color": "#9A99FF",
         "custom-color": "#FF99AA",
         "Pen-color": "#13ECAF",
-        "sa-color": "#34E4D0",
         "comment-color": "#FEF49C",
         "input-color": "#202020",
         "text": "colorOnBlack"

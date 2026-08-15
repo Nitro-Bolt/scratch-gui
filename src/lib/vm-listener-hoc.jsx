@@ -9,7 +9,7 @@ import {updateTargets} from '../reducers/targets';
 import {updateBlockDrag} from '../reducers/block-drag';
 import {updateMonitors} from '../reducers/monitors';
 import {setProjectChanged, setProjectUnchanged} from '../reducers/project-changed';
-import {setRunningState, setTurboState, setStartedState} from '../reducers/vm-status';
+import {setRunningState, setTurboState, setStartedState, setPausedState} from '../reducers/vm-status';
 import {showExtensionAlert} from '../reducers/alerts';
 import {updateMicIndicator} from '../reducers/mic-indicator';
 import {
@@ -26,6 +26,7 @@ import {setCustomStageSize} from '../reducers/custom-stage-size';
 import {openUnknownPlatformModal} from '../reducers/modals';
 import implementGuiAPI from './tw-extension-gui-api';
 import {BLOCKS_TAB_INDEX} from '../reducers/editor-tab';
+import {openDebugger, setTab, pushLog, clearLogs, setTimers} from '../reducers/debugger';
 
 let compileErrorCounter = 0;
 
@@ -58,6 +59,8 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.on('TURBO_MODE_ON', this.props.onTurboModeOn);
             this.props.vm.on('TURBO_MODE_OFF', this.props.onTurboModeOff);
             this.props.vm.on('PROJECT_RUN_START', this.props.onProjectRunStart);
+            this.props.vm.on('PROJECT_RUN_PAUSE', this.props.onProjectRunPause);
+            this.props.vm.on('PROJECT_RUN_RESUME', this.props.onProjectRunResume);
             this.props.vm.on('PROJECT_RUN_STOP', this.props.onProjectRunStop);
             this.props.vm.on('PROJECT_CHANGED', this.handleProjectChanged);
             this.props.vm.on('RUNTIME_STARTED', this.props.onRuntimeStarted);
@@ -77,6 +80,11 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.on('STAGE_SIZE_CHANGED', this.props.onStageSizeChanged);
             this.props.vm.on('CREATE_UNSANDBOXED_EXTENSION_API', implementGuiAPI);
             this.props.vm.runtime.on('PLATFORM_MISMATCH', this.props.onPlatformMismatch);
+            // nb: add handlers for our events
+            this.props.vm.runtime.on('DEBUGGER_BREAKPOINT', this.props.onDebuggerBreakpoint);
+            this.props.vm.runtime.on('DEBUGGER_CLEAR', this.props.onDebuggerClear);
+            this.props.vm.runtime.on('DEBUGGER_LOG', this.props.onDebuggerLog);
+            this.props.vm.runtime.on('DEBUGGER_TIMER_UPDATE', this.props.onDebuggerTimerUpdate);
         }
         componentDidMount () {
             if (this.props.attachKeyboardEvents) {
@@ -126,6 +134,10 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.off('STAGE_SIZE_CHANGED', this.props.onStageSizeChanged);
             this.props.vm.off('CREATE_UNSANDBOXED_EXTENSION_API', implementGuiAPI);
             this.props.vm.runtime.off('PLATFORM_MISMATCH', this.props.onPlatformMismatch);
+            this.props.vm.runtime.off('DEBUGGER_BREAKPOINT', this.props.onDebuggerBreakpoint);
+            this.props.vm.runtime.off('DEBUGGER_CLEAR', this.props.onDebuggerClear);
+            this.props.vm.runtime.off('DEBUGGER_LOG', this.props.onDebuggerLog);
+            this.props.vm.runtime.off('DEBUGGER_TIMER_UPDATE', this.props.onDebuggerTimerUpdate);
         }
         handleCloudDataUpdate (hasCloudVariables) {
             if (this.props.hasCloudVariables !== hasCloudVariables) {
@@ -249,6 +261,7 @@ const vmListenerHOC = function (WrappedComponent) {
                 onCompileError,
                 onClearCompileErrors,
                 onShowExtensionAlert,
+                onDebuggerTimerUpdate,
                 /* eslint-enable no-unused-vars */
                 ...props
             } = this.props;
@@ -285,6 +298,7 @@ const vmListenerHOC = function (WrappedComponent) {
         onStageSizeChanged: PropTypes.func,
         onCompileError: PropTypes.func,
         onClearCompileErrors: PropTypes.func,
+        onDebuggerTimerUpdate: PropTypes.func.isRequired,
         projectChanged: PropTypes.bool,
         shouldUpdateTargets: PropTypes.bool,
         shouldUpdateProjectChanged: PropTypes.bool,
@@ -329,6 +343,8 @@ const vmListenerHOC = function (WrappedComponent) {
         },
         onProjectRunStart: () => dispatch(setRunningState(true)),
         onProjectRunStop: () => dispatch(setRunningState(false)),
+        onProjectRunPause: () => dispatch(setPausedState(true)),
+        onProjectRunResume: () => dispatch(setPausedState(false)),
         onProjectChanged: () => dispatch(setProjectChanged()),
         onProjectSaved: () => dispatch(setProjectUnchanged()),
         onRuntimeStarted: () => dispatch(setStartedState(true)),
@@ -352,7 +368,14 @@ const vmListenerHOC = function (WrappedComponent) {
         },
         onMicListeningUpdate: listening => {
             dispatch(updateMicIndicator(listening));
-        }
+        },
+        onDebuggerBreakpoint: () => {
+            dispatch(setTab(0 /* Console tab of debugger */));
+            dispatch(openDebugger());
+        },
+        onDebuggerClear: () => dispatch(clearLogs()),
+        onDebuggerLog: (type, message, target, color) => dispatch(pushLog(type, message, target, color)),
+        onDebuggerTimerUpdate: data => dispatch(setTimers(data))
     });
     return connect(
         mapStateToProps,

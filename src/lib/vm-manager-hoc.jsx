@@ -74,6 +74,15 @@ const vmManagerHOC = function (WrappedComponent) {
             return this.props.vm.loadProject(this.props.projectData)
                 .then(() => {
                     this.props.onLoadedProject(this.props.loadingState, this.props.canSave);
+
+                    // Load debugger extension if it's enabled and not already loaded
+                    if (
+                        !this.props.vm.extensionManager.isExtensionLoaded('debugger') &&
+                        this.props.preferences['enable-debugger'] === true
+                    ) {
+                        this.props.vm.extensionManager.loadExtensionIdSync('debugger');
+                    }
+
                     // Wrap in a setTimeout because skin loading in
                     // the renderer can be async.
                     setTimeout(() => this.props.onSetProjectUnchanged());
@@ -150,7 +159,8 @@ const vmManagerHOC = function (WrappedComponent) {
             projectId: state.scratchGui.projectState.projectId,
             loadingState: loadingState,
             isPlayerOnly: state.scratchGui.mode.isPlayerOnly,
-            isStarted: state.scratchGui.vmStatus.started
+            isStarted: state.scratchGui.vmStatus.started,
+            preferences: state.scratchGui.preferences
         };
     };
 

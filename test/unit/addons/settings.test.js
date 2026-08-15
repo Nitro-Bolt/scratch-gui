@@ -422,15 +422,15 @@ test('setStore dynamic enable/disable', () => {
 
 test('setStore weird values', () => {
     const settingsStore = new SettingStore();
-    expect(settingsStore.getAddonEnabled('pause')).toBe(true);
-    settingsStore.setAddonEnabled('pause', false);
+    expect(settingsStore.getAddonEnabled('onion-skinning')).toBe(true);
+    settingsStore.setAddonEnabled('onion-skinning', false);
     settingsStore.setAddonEnabled('clones', true);
     settingsStore.setStore({
         invalid0: {},
         invalid1: null,
-        pause: null
+        'onion-skinning': null
     });
-    expect(settingsStore.getAddonEnabled('pause')).toBe(false);
+    expect(settingsStore.getAddonEnabled('onion-skinning')).toBe(false);
 });
 
 test('resetting an addon through setStore', () => {
@@ -462,12 +462,12 @@ test('setStoreWithVersionCheck', () => {
 
 test('parseUrlParameter', () => {
     const store = new SettingStore();
-    expect(store.getAddonEnabled('pause')).toBe(true);
+    expect(store.getAddonEnabled('onion-skinning')).toBe(true);
     expect(store.getAddonEnabled('mute-project')).toBe(true);
     expect(store.getAddonEnabled('remove-curved-stage-border')).toBe(false);
     expect(store.remote).toBe(false);
-    store.parseUrlParameter('pause,remove-curved-stage-border,,invalid addon??43t987(*&$');
-    expect(store.getAddonEnabled('pause')).toBe(true);
+    store.parseUrlParameter('onion-skinning,remove-curved-stage-border,,invalid addon??43t987(*&$');
+    expect(store.getAddonEnabled('onion-skinning')).toBe(true);
     expect(store.getAddonEnabled('mute-project')).toBe(false);
     expect(store.getAddonEnabled('remove-curved-stage-border')).toBe(true);
     expect(store.remote).toBe(true);

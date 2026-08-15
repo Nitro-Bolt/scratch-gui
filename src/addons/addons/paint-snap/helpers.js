@@ -50,10 +50,11 @@ export function loadModules(paper, vm) {
   let CENTER;
   let ART_BOARD_BOUNDS;
   let MAX_WORKSPACE_BOUNDS;
+  let CANVAS_SIZE_MULTIPLIER = window.canvasSizeMultiplier;
 
   const updateStageSize = () => {
-    SVG_ART_BOARD_WIDTH = vm.runtime.stageWidth;
-    SVG_ART_BOARD_HEIGHT = vm.runtime.stageHeight;
+    SVG_ART_BOARD_WIDTH = vm.runtime.stageWidth * CANVAS_SIZE_MULTIPLIER;
+    SVG_ART_BOARD_HEIGHT = vm.runtime.stageHeight * CANVAS_SIZE_MULTIPLIER;
     ART_BOARD_WIDTH = SVG_ART_BOARD_WIDTH * 2;
     ART_BOARD_HEIGHT = SVG_ART_BOARD_HEIGHT * 2;
     CENTER = new paper.Point(ART_BOARD_WIDTH / 2, ART_BOARD_HEIGHT / 2);

@@ -14,18 +14,21 @@ jobs:
           ref: develop
           token: ${{ secrets.CASCADE_PAT }}
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '21'
 
       - name: Update dependencies
-        run: npm update scratch-vm scratch-blocks scratch-render scratch-paint
+        run: pnpm update scratch-vm scratch-blocks scratch-render scratch-paint
 
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet package-lock.json; then
+          if git diff --quiet pnpm-lock.yaml package.json; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -36,7 +39,7 @@ jobs:
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add package-lock.json
+          git add pnpm-lock.yaml package.json
           git commit -m "chore: update ${{ github.event.client_payload.source }}"
           git pull --rebase origin develop
           git push origin develop

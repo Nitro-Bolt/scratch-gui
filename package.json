@@ -1,6 +1,7 @@
 {
   "name": "scratch-gui",
   "version": "3.2.37",
+  "packageManager": "pnpm@10.33.0",
   "description": "Graphical User Interface for creating and running Scratch 3.0 projects",
   "author": "Massachusetts Institute of Technology",
   "license": "GPL-3.0",
@@ -11,7 +12,7 @@
   },
   "main": "./dist/scratch-gui.js",
   "scripts": {
-    "build": "npm run clean && webpack --colors --bail",
+    "build": "pnpm run prepublish && pnpm run clean && webpack --colors --bail",
     "clean": "rimraf ./build && mkdirp build && rimraf ./dist && mkdirp dist",
     "deploy": "touch build/.nojekyll && gh-pages -t -d build -m \"[skip ci] Build for $(git log --pretty=format:%H -n1)\"",
     "prepublish": "node scripts/prepublish.mjs",
@@ -19,7 +20,7 @@
     "i18n:push": "tx-push-src scratch-editor interface translations/en.json",
     "i18n:src": "rimraf ./translations/messages/src && babel src > tmp.js && rimraf tmp.js && build-i18n-src ./translations/messages/src ./translations/",
     "start": "webpack-dev-server",
-    "test": "npm run test:lint && npm run test:unit && npm run build && npm run test:integration",
+    "test": "pnpm run test:lint && pnpm run test:unit && pnpm run build && pnpm run test:integration",
     "test:integration": "jest --maxWorkers=4 test[\\\\/]integration",
     "test:lint": "eslint . --ext .js,.jsx",
     "test:unit": "jest test[\\\\/]unit[\\\\/]addons",
@@ -86,6 +87,7 @@
     "react-popover": "0.5.10",
     "react-redux": "5.0.7",
     "react-responsive": "5.0.0",
+    "react-sparklines": "1.7.0",
     "react-string-replace": "^0.4.4",
     "react-style-proptype": "3.2.2",
     "react-tabs": "2.3.0",
@@ -166,5 +168,12 @@
     "webpack@4.47.0": {
       "terser-webpack-plugin": "^4.2.3"
     }
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "chromedriver",
+      "core-js",
+      "es5-ext"
+    ]
   }
 }

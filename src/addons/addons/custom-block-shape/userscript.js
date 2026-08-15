@@ -122,6 +122,60 @@ export default async function ({ addon, console }) {
         -4 * GRID_UNIT * multiplier +
         " z";
       BlockSvg.INPUT_SHAPE_HEXAGONAL_WIDTH = 12 * GRID_UNIT * multiplier;
+      BlockSvg.INPUT_SHAPE_OBJECT =
+        "M " +
+        4 * GRID_UNIT * multiplier +
+        " 0 " +
+        " c " +
+        -3 * GRID_UNIT * multiplier +
+        " 0 " +
+        -1.75 * GRID_UNIT * multiplier +
+        " " +
+        3.5 * GRID_UNIT * multiplier +
+        " " +
+        -4 * GRID_UNIT * multiplier +
+        " " +
+        4 * GRID_UNIT * multiplier +
+        " c " +
+        2.25 * GRID_UNIT * multiplier +
+        " " +
+        0.5 * GRID_UNIT * multiplier +
+        " " +
+        GRID_UNIT * multiplier +
+        " " +
+        4 * GRID_UNIT * multiplier +
+        " " +
+        4 * GRID_UNIT * multiplier +
+        " " +
+        4 * GRID_UNIT * multiplier +
+        " h " +
+        4 * GRID_UNIT * multiplier +
+        " c " +
+        3 * GRID_UNIT * multiplier +
+        " 0 " +
+        1.75 * GRID_UNIT * multiplier +
+        " " +
+        -3.5 * GRID_UNIT * multiplier +
+        " " +
+        4 * GRID_UNIT * multiplier +
+        " " +
+        -4 * GRID_UNIT * multiplier +
+        " c " +
+        -2.25 * GRID_UNIT * multiplier +
+        " " +
+        -0.5 * GRID_UNIT * multiplier +
+        " " +
+        -GRID_UNIT * multiplier +
+        " " +
+        -4 * GRID_UNIT * multiplier +
+        " " +
+        -4 * GRID_UNIT * multiplier +
+        " " +
+        -4 * GRID_UNIT * multiplier +
+        " h " +
+        -4 * GRID_UNIT * multiplier +
+        " z";
+      BlockSvg.INPUT_SHAPE_OBJECT_WIDTH = 12 * GRID_UNIT * multiplier;
       BlockSvg.INPUT_SHAPE_ROUND =
         "M " +
         4 * GRID_UNIT * multiplier +
@@ -157,6 +211,17 @@ export default async function ({ addon, console }) {
       BlockSvg.SHAPE_IN_SHAPE_PADDING[1][0] = 5 * GRID_UNIT * multiplier;
       BlockSvg.SHAPE_IN_SHAPE_PADDING[1][2] = 5 * GRID_UNIT * multiplier;
       BlockSvg.SHAPE_IN_SHAPE_PADDING[1][3] = 5 * GRID_UNIT * multiplier;
+      BlockSvg.SHAPE_IN_SHAPE_PADDING[1][4] = 3 * GRID_UNIT * multiplier;
+      BlockSvg.SHAPE_IN_SHAPE_PADDING[2][3] = 4 * GRID_UNIT * multiplier;
+      BlockSvg.SHAPE_IN_SHAPE_PADDING[2][4] = 2 * GRID_UNIT * multiplier;
+      for (const shape of [0, 1, 2, 3, 4]) {
+        BlockSvg.SHAPE_IN_SHAPE_PADDING[3][shape] = 2 * GRID_UNIT * multiplier;
+      }
+      BlockSvg.SHAPE_IN_SHAPE_PADDING[4][0] = 5 * GRID_UNIT * multiplier;
+      BlockSvg.SHAPE_IN_SHAPE_PADDING[4][1] = 4 * GRID_UNIT * multiplier;
+      BlockSvg.SHAPE_IN_SHAPE_PADDING[4][2] = 5 * GRID_UNIT * multiplier;
+      BlockSvg.SHAPE_IN_SHAPE_PADDING[4][3] = 5 * GRID_UNIT * multiplier;
+      BlockSvg.SHAPE_IN_SHAPE_PADDING[4][4] = 3 * GRID_UNIT * multiplier;
 
       BlocklyInstance.FieldDropdown.prototype.positionArrow = function (x) {
         const arrowHeight = 12;
@@ -201,6 +266,21 @@ export default async function ({ addon, console }) {
         BlockSvg.CORNER_RADIUS +
         ",-" +
         BlockSvg.CORNER_RADIUS;
+
+      BlockSvg.INPUT_SHAPE_SQUARE =
+        BlockSvg.TOP_LEFT_CORNER_START +
+        BlockSvg.TOP_LEFT_CORNER +
+        " h " +
+        (12 * GRID_UNIT * multiplier - 2 * BlockSvg.CORNER_RADIUS) +
+        BlockSvg.TOP_RIGHT_CORNER +
+        " v " +
+        (8 * GRID_UNIT * multiplier - 2 * BlockSvg.CORNER_RADIUS) +
+        BlockSvg.BOTTOM_RIGHT_CORNER +
+        " h " +
+        (-12 * GRID_UNIT * multiplier + 2 * BlockSvg.CORNER_RADIUS) +
+        BlockSvg.BOTTOM_LEFT_CORNER +
+        " z";
+      BlockSvg.INPUT_SHAPE_SQUARE_WIDTH = 12 * GRID_UNIT * multiplier;
 
       BlockSvg.INNER_TOP_LEFT_CORNER =
         " a " +

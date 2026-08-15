@@ -76,6 +76,14 @@ const messages = defineMessages({
         id: 'nb.editorSettings.versionControlSection',
         defaultMessage: 'Version Control'
     },
+    canvasSizeMultiplier: {
+        id: 'nb.editorSettings.canvasSizeMultiplier',
+        defaultMessage: 'Canvas size multiplier:'
+    },
+    canvasSizeMultiplierHelp: {
+        id: 'nb.editorSettings.canvasSizeMultiplierHelp',
+        defaultMessage: 'How large the canvas is in the paint editor relative to the stage.'
+    },
     keymap: {
         id: 'nb.editorSettings.keymapSection',
         defaultMessage: 'Keymap'
@@ -481,33 +489,24 @@ const EditorSettingsModal = props => {
                     }}
                 />
                 <BooleanSetting
-                    value={props.preferences['waveform-render-type'] === 'sharp'}
+                    value={!!props.preferences['enable-debugger']}
                     label={<FormattedMessage
-                        id="nb.editorSettings.waveformRenderType"
-                        defaultMessage="Sharp waveforms"
+                        id="nb.editorSettings.enableDebugger"
+                        defaultMessage="Enable debugger"
                     />}
                     help={<FormattedMessage
-                        id="nb.editorSettings.waveformRenderTypeHelp"
-                        defaultMessage="Choose between sharp edges on sound waveforms or soft edges like in Scratch. Sharp edges can offer more detail on large sounds."
+                        id="nb.editorSettings.enableDebuggerHelp"
+                        defaultMessage="Enables a debugger panel and extension that allows you to inspect logs and performance."
                     />}
-                    // eslint-disable-next-line react/jsx-no-bind
                     onChange={e => {
-                        props.onSetPreference('waveform-render-type', e.target.checked ? 'sharp' : 'soft');
-                    }}
-                />
-                <BooleanSetting
-                    value={props.preferences['waveform-color'] === 'volume'}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.waveformColor"
-                        defaultMessage="Waveform volume gradient"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.waveformColorHelp"
-                        defaultMessage="If checked, waveforms will display a volume gradient where green is quieter and red is louder."
-                    />}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => {
-                        props.onSetPreference('waveform-color', e.target.checked ? 'volume' : null);
+                        props.onSetPreference('enable-debugger', e.target.checked);
+                        // Load debugger extension if it's enabled and not already loaded
+                        if (
+                            e.target.checked &&
+                            !props.vm.extensionManager.isExtensionLoaded('debugger')
+                        ) {
+                            props.vm.extensionManager.loadExtensionIdSync('debugger');
+                        }
                     }}
                 />
                 <div className={styles.header}>
@@ -834,6 +833,36 @@ const EditorSettingsModal = props => {
                         />
                     }
                 />
+                <Setting
+                    primary={(
+                        <div className={classNames(styles.label, styles.customStageSize)}>
+                            <FormattedMessage
+                                defaultMessage="Canvas size multiplier:"
+                                id="nb.editorSettings.canvasSizeMultiplier"
+                            />
+                            <BufferedInput
+                                value={String(props.preferences['paint-canvas-size-multiplier'] ?? 2)}
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onSubmit={value => {
+                                    const num = Number(value);
+                                    if (Number.isFinite(num) && num > 0 && num <= 10) {
+                                        props.onSetPreference('paint-canvas-size-multiplier', num);
+                                    }
+                                }}
+                                type="number"
+                                min="1"
+                                max="10"
+                                spellCheck="false"
+                            />
+                        </div>
+                    )}
+                    help={
+                        <FormattedMessage
+                            id="nb.editorSettings.canvasSizeMultiplierHelp"
+                            defaultMessage="How large the canvas is in the paint editor relative to the stage."
+                        />
+                    }
+                />
                 <BooleanSetting
                     value={!!props.preferences['paint-no-swap-button']}
                     label={<FormattedMessage
@@ -892,6 +921,36 @@ const EditorSettingsModal = props => {
                         id="nb.editorSettings.encodingBitRateHelp"
                         defaultMessage="Defines the bit rate for sounds encoded in NitroBolt."
                     />}
+                />
+                <BooleanSetting
+                    value={props.preferences['waveform-render-type'] === 'sharp'}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.waveformRenderType"
+                        defaultMessage="Sharp waveforms"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.waveformRenderTypeHelp"
+                        defaultMessage="Choose between sharp edges on sound waveforms or soft edges like in Scratch. Sharp edges can offer more detail on large sounds."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('waveform-render-type', e.target.checked ? 'sharp' : 'soft');
+                    }}
+                />
+                <BooleanSetting
+                    value={props.preferences['waveform-color'] === 'volume'}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.waveformColor"
+                        defaultMessage="Waveform volume gradient"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.waveformColorHelp"
+                        defaultMessage="If checked, waveforms will display a volume gradient where green is quieter and red is louder."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('waveform-color', e.target.checked ? 'volume' : null);
+                    }}
                 />
             </Box>
         },
@@ -1105,6 +1164,7 @@ EditorSettingsModal.propTypes = {
     onSetUsername: PropTypes.func,
     preferences: PropTypes.object.isRequired,
     onSetPreference: PropTypes.func.isRequired,
+    vm: PropTypes.object,
     theme: PropTypes.instanceOf(Theme),
     username: PropTypes.string,
     usernameInvalid: PropTypes.bool,
@@ -1120,7 +1180,8 @@ const mapStateToProps = state => ({
     username: state.scratchGui.tw.username,
     usernameInvalid: state.scratchGui.tw.usernameInvalid,
     activeTab: state.scratchGui.modals.editorSettingsModalTab,
-    preferences: state.scratchGui.preferences
+    preferences: state.scratchGui.preferences,
+    vm: state.scratchGui.vm
 });
 
 const mapDispatchToProps = dispatch => ({

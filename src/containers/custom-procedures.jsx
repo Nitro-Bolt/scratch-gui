@@ -159,6 +159,9 @@ class CustomProcedures extends React.Component {
             case 'array':
                 this.mutationRoot.addArrayExternal();
                 break;
+            case 'color':
+                this.mutationRoot.addColorExternal();
+                break;
             }
         }
     }
