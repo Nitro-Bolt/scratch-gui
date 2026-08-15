@@ -81,6 +81,15 @@ const guiColors = {
 
     'link-color': '#2255dd',
 
+    'git-diff-added-background': '#e8f7ee',
+    'git-diff-removed-background': '#fff0f0',
+    'git-status-untracked-background': '#dff6e8',
+    'git-status-untracked-foreground': '#18713a',
+    'git-status-modified-background': '#fff0c2',
+    'git-status-modified-foreground': '#805600',
+    'git-status-deleted-background': '#ffe1e1',
+    'git-status-deleted-foreground': '#a12622',
+
     'filter-icon-black': 'none',
     'filter-icon-gray': 'grayscale(100%)',
     'filter-icon-white': 'none',

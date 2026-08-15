@@ -33,7 +33,13 @@ import CloudVariablesToggler from '../../containers/tw-cloud-toggler.jsx';
 import TWSaveStatus from './tw-save-status.jsx';
 import TWNews from './tw-news.jsx';
 
-import {openTipsLibrary, openExtensionManagerModal, openSettingsModal, openRestorePointModal, openGitModal} from '../../reducers/modals';
+import {
+    openTipsLibrary,
+    openExtensionManagerModal,
+    openSettingsModal,
+    openRestorePointModal,
+    openGitModal
+} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import {
     isTimeTravel220022BC,
@@ -78,7 +84,7 @@ import {
     openErrorsMenu,
     closeErrorsMenu
 } from '../../reducers/menus';
-import {setFileHandle} from '../../reducers/tw.js';
+import {setFileHandle, setGitProjectPath} from '../../reducers/tw.js';
 
 import collectMetadata from '../../lib/collect-metadata';
 
@@ -94,7 +100,6 @@ import fileIcon from './icon--file.svg';
 import editIcon from './icon--edit.svg';
 import addonsIcon from './addons.svg';
 import errorIcon from './tw-error.svg';
-import advancedIcon from './tw-advanced.svg';
 import gitIcon from './nb-git.svg';
 
 import ninetiesLogo from './nineties_logo.svg';
@@ -630,6 +635,15 @@ class MenuBar extends React.Component {
                                         >
                                             {this.props.intl.formatMessage(sharedMessages.loadFromComputerTitle)}
                                         </MenuItem>
+                                        {this.props.onStartSelectingGitProject && (
+                                            <MenuItem onClick={this.props.onStartSelectingGitProject}>
+                                                <FormattedMessage
+                                                    defaultMessage="Load Git project folder"
+                                                    description="Loads a NitroBolt Git project folder"
+                                                    id="nb.git.loadProjectFolder"
+                                                />
+                                            </MenuItem>
+                                        )}
                                         <SB3Downloader
                                             showSaveFilePicker={this.props.showSaveFilePicker}
                                         >
@@ -1136,6 +1150,7 @@ MenuBar.propTypes = {
     onSetTimeTravelMode: PropTypes.func,
     onShare: PropTypes.func,
     onStartSelectingFileUpload: PropTypes.func,
+    onStartSelectingGitProject: PropTypes.func,
     onToggleLoginOpen: PropTypes.func,
     projectId: PropTypes.string,
     projectTitle: PropTypes.string,
@@ -1226,6 +1241,7 @@ const mapDispatchToProps = dispatch => ({
     onClickNew: needSave => {
         dispatch(requestNewProject(needSave));
         dispatch(setFileHandle(null));
+        dispatch(setGitProjectPath(null));
     },
     onClickRemix: () => dispatch(remixProject()),
     onClickSave: () => dispatch(manualUpdateProject()),

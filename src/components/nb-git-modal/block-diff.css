@@ -1,0 +1,108 @@
+@import "../../css/colors.css";
+
+.diff {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    overflow: visible;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    background: $ui-white;
+}
+
+.heading {
+    padding: 0.5rem 0.65rem;
+    border-bottom: 1px solid $ui-black-transparent;
+    background: $ui-modal-background;
+    color: $text-primary-transparent;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.heading:nth-child(2),
+.cell:nth-child(even) {
+    border-left: 1px solid $ui-black-transparent;
+}
+
+.cell {
+    min-height: 2.5rem;
+    min-width: 0;
+    overflow: hidden;
+    padding: 0.55rem;
+    border-bottom: 1px solid $ui-black-transparent;
+}
+
+.removed {
+    background: var(--git-diff-removed-background, #fff0f0);
+}
+
+.added {
+    background: var(--git-diff-added-background, #e8f7ee);
+}
+
+.script {
+    min-width: 0;
+    width: 100%;
+}
+
+.script-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.45rem;
+    color: $text-primary-transparent;
+    font-family: monospace;
+    font-size: 0.65rem;
+}
+
+.script-header button {
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    padding: 0.2rem 0.4rem;
+    background: $ui-white;
+    color: $text-primary;
+    font: inherit;
+    cursor: pointer;
+}
+
+.blocks {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 8rem;
+    height: 14rem;
+    overflow: hidden;
+    resize: vertical;
+    color: $text-primary-transparent;
+    font-family: monospace;
+    font-size: 0.7rem;
+}
+
+.blocks > :global(.injectionDiv),
+.blocks :global(.blocklySvg) {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.blocks :global(.blocklyZoom),
+.blocks :global(.blocklyScrollbarHorizontal),
+.blocks :global(.blocklyScrollbarVertical),
+.blocks :global(.blocklyScrollbarHandle) {
+    pointer-events: auto;
+}
+
+.missing {
+    min-height: 2rem;
+    color: $text-primary-transparent;
+    font-size: 0.72rem;
+    font-style: italic;
+}
+
+.empty {
+    grid-column: 1 / -1;
+    padding: 1rem;
+    color: $text-primary-transparent;
+    text-align: center;
+}

@@ -38,6 +38,7 @@ import NBCustomAccentModal from '../../containers/nb-custom-accent-modal.jsx';
 import NBEditorSettingsModal from '../../containers/nb-editor-settings-modal.jsx';
 import NBExtensionManagerModal from '../../containers/nb-extension-manager-modal.jsx';
 import NBGitModal from '../../containers/nb-git-modal.jsx';
+import NBGitProjectManager from '../../containers/nb-git-project-manager.jsx';
 import NBInspectBlockModal from '../../containers/nb-inspect-block-modal.jsx';
 import TWRestorePointManager from '../../containers/tw-restore-point-manager.jsx';
 import TWFontsModal from '../../containers/tw-fonts-modal.jsx';
@@ -151,6 +152,7 @@ const GUIComponent = props => {
         onShare,
         onShowPrivacyPolicy,
         onStartSelectingFileUpload,
+        onStartSelectingGitProject,
         onTelemetryModalCancel,
         onTelemetryModalOptIn,
         onTelemetryModalOptOut,
@@ -237,6 +239,7 @@ const GUIComponent = props => {
             <React.Fragment>
                 <TWSecurityManager securityManager={securityManager} />
                 <TWRestorePointManager />
+                <NBGitProjectManager />
                 {settingsModalVisible && <TWSettingsModal />}
                 {customExtensionModalVisible && <TWCustomExtensionModal />}
                 {customAccentModalVisible && <NBCustomAccentModal />}
@@ -395,6 +398,7 @@ const GUIComponent = props => {
                     onSeeCommunity={onSeeCommunity}
                     onShare={onShare}
                     onStartSelectingFileUpload={onStartSelectingFileUpload}
+                    onStartSelectingGitProject={onStartSelectingGitProject}
                     onToggleLoginOpen={onToggleLoginOpen}
                 />
                 <Box className={styles.bodyWrapper}>
@@ -677,6 +681,7 @@ GUIComponent.propTypes = {
     onShare: PropTypes.func,
     onShowPrivacyPolicy: PropTypes.func,
     onStartSelectingFileUpload: PropTypes.func,
+    onStartSelectingGitProject: PropTypes.func,
     onTabSelect: PropTypes.func,
     onTelemetryModalCancel: PropTypes.func,
     onTelemetryModalOptIn: PropTypes.func,

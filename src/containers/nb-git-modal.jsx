@@ -1,45 +1,50 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {intlShape} from 'react-intl';
-import bindAll from 'lodash.bindall';
 import {closeGitModal} from '../reducers/modals';
+import {activateTab, BLOCKS_TAB_INDEX} from '../reducers/editor-tab';
+import {setFileHandle, setGitProjectPath} from '../reducers/tw';
 import GitModalComponent from '../components/nb-git-modal/git-modal.jsx';
 
-class NBGitModal extends React.Component {
-    constructor (props) {
-        super(props);
-        bindAll(this, [
-            'handleClose'
-        ]);
-    }
-
-    handleClose () {
-        this.props.onClose();
-    }
-
-    render () {
-        return (
-            <GitModalComponent
-                onClose={this.handleClose}
-                projectPath={this.props.projectPath}
-            />
-        );
-    }
-}
+const NBGitModal = props => (
+    <GitModalComponent
+        dark={props.dark}
+        onClearFileHandle={props.onClearFileHandle}
+        onClose={props.onClose}
+        onShowBlocks={props.onShowBlocks}
+        onSetProjectPath={props.onSetProjectPath}
+        projectPath={props.projectPath}
+        vm={props.vm}
+    />
+);
 
 NBGitModal.propTypes = {
-    intl: intlShape,
+    dark: PropTypes.bool,
+    onClearFileHandle: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
-    projectPath: PropTypes.string
+    onShowBlocks: PropTypes.func.isRequired,
+    onSetProjectPath: PropTypes.func.isRequired,
+    projectPath: PropTypes.string,
+    vm: PropTypes.shape({
+        loadProject: PropTypes.func.isRequired,
+        quit: PropTypes.func.isRequired,
+        renderer: PropTypes.shape({
+            draw: PropTypes.func.isRequired
+        })
+    }).isRequired
 };
 
 const mapStateToProps = state => ({
-    projectPath: state.scratchGui.projectPath
+    dark: state.scratchGui.theme.theme.gui === 'dark',
+    projectPath: state.scratchGui.tw.gitProjectPath,
+    vm: state.scratchGui.vm
 });
 
 const mapDispatchToProps = dispatch => ({
-    onClose: () => dispatch(closeGitModal())
+    onClearFileHandle: () => dispatch(setFileHandle(null)),
+    onClose: () => dispatch(closeGitModal()),
+    onShowBlocks: () => dispatch(activateTab(BLOCKS_TAB_INDEX)),
+    onSetProjectPath: projectPath => dispatch(setGitProjectPath(projectPath))
 });
 
 export default connect(

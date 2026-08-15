@@ -17,6 +17,7 @@ const SET_HAS_CLOUD_VARIABLES = 'tw/SET_HAS_CLOUD_VARIABLES';
 const SET_CLOUD_HOST = 'tw/SET_CLOUD_HOST';
 const SET_PLATFORM_MISMATCH_DETAILS = 'tw/SET_PLATFORM_MISMATCH_DETAILS';
 const SET_PROJECT_ERROR = 'tw/SET_PROJECT_ERROR';
+const SET_GIT_PROJECT_PATH = 'tw/SET_GIT_PROJECT_PATH';
 
 export const initialState = {
     framerate: 30,
@@ -52,7 +53,8 @@ export const initialState = {
         platform: null,
         callback: null
     },
-    projectError: null
+    projectError: null,
+    gitProjectPath: null
 };
 
 const reducer = function (state, action) {
@@ -115,7 +117,8 @@ const reducer = function (state, action) {
         });
     case SET_FILE_HANDLE:
         return Object.assign({}, state, {
-            fileHandle: action.fileHandle
+            fileHandle: action.fileHandle,
+            gitProjectPath: action.fileHandle ? null : state.gitProjectPath
         });
     case SET_USERNAME_INVALID:
         return Object.assign({}, state, {
@@ -139,6 +142,11 @@ const reducer = function (state, action) {
     case SET_PROJECT_ERROR:
         return Object.assign({}, state, {
             projectError: action.projectError
+        });
+    case SET_GIT_PROJECT_PATH:
+        return Object.assign({}, state, {
+            fileHandle: action.gitProjectPath ? null : state.fileHandle,
+            gitProjectPath: action.gitProjectPath
         });
     default:
         return state;
@@ -278,6 +286,13 @@ const setProjectError = function (projectError) {
     };
 };
 
+const setGitProjectPath = function (gitProjectPath) {
+    return {
+        type: SET_GIT_PROJECT_PATH,
+        gitProjectPath
+    };
+};
+
 export {
     reducer as default,
     initialState as twInitialState,
@@ -299,5 +314,6 @@ export {
     setHasCloudVariables,
     setCloudHost,
     setPlatformMismatchDetails,
-    setProjectError
+    setProjectError,
+    setGitProjectPath
 };
