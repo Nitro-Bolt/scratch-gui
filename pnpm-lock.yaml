@@ -214,7 +214,7 @@ importers:
         version: https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/a76f2257a5f7c0b3b2f55b1df4368133695c80f8
       scratch-vm:
         specifier: github:Nitro-Bolt/scratch-vm#develop
-        version: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/00abac64a176fa809fda304e7c0d7a8f4be21b29(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961))
+        version: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/19840f4b0c2a3b5efa5be04301e40308c04ad92a(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961))
       style-loader:
         specifier: ^4.0.0
         version: 4.0.0
@@ -4654,8 +4654,8 @@ packages:
   scratch-translate-extension-languages@1.0.7:
     resolution: {integrity: sha512-6+bQU9iVYv23T8J0SjpV6MTugm0y8myh/4DPgu1BGfccysdkaWzu3MkNGQyQRUlbqAiW9wM7ctfv3USPEkzTgg==}
 
-  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/00abac64a176fa809fda304e7c0d7a8f4be21b29:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/00abac64a176fa809fda304e7c0d7a8f4be21b29}
+  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/19840f4b0c2a3b5efa5be04301e40308c04ad92a:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/19840f4b0c2a3b5efa5be04301e40308c04ad92a}
     version: 2.1.46
     peerDependencies:
       '@turbowarp/scratch-svg-renderer': ^1.1.0
@@ -10626,7 +10626,7 @@ snapshots:
 
   scratch-translate-extension-languages@1.0.7: {}
 
-  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/00abac64a176fa809fda304e7c0d7a8f4be21b29(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961)):
+  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/19840f4b0c2a3b5efa5be04301e40308c04ad92a(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961)):
     dependencies:
       '@turbowarp/json': 0.1.2
       '@turbowarp/jszip': 3.12.0
