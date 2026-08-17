@@ -2,6 +2,14 @@ const defaultsDeep = require('lodash.defaultsdeep');
 const path = require('path');
 const webpack = require('webpack');
 
+// worker-loader@1.x calls compiler.apply(plugin)
+const Compiler = require('webpack/lib/Compiler');
+if (!Compiler.prototype.apply) {
+    Compiler.prototype.apply = function (plugin) {
+        plugin.apply(this);
+    };
+}
+
 // Plugins
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -33,9 +41,11 @@ const base = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     devtool: process.env.SOURCEMAP || (process.env.NODE_ENV === 'production' ? false : 'cheap-module-source-map'),
     devServer: {
-        contentBase: path.resolve(__dirname, 'build'),
+        static: {
+            directory: path.resolve(__dirname, 'build')
+        },
         host: '0.0.0.0',
-        disableHostCheck: true,
+        allowedHosts: 'all',
         compress: true,
         port: process.env.PORT || 8601,
         // allows ROUTING_STYLE=wildcard to work properly
@@ -50,7 +60,6 @@ const base = {
         }
     },
     output: {
-        library: 'GUI',
         filename: (
             process.env.NODE_ENV === 'production' ? `js/${CACHE_EPOCH}/[name].[contenthash].js` : 'js/[name].js'
         ),
@@ -63,7 +72,13 @@ const base = {
         symlinks: false,
         alias: {
             'text-encoding$': path.resolve(__dirname, 'src/lib/tw-text-encoder'),
-            'scratch-render-fonts$': path.resolve(__dirname, 'src/lib/tw-scratch-render-fonts')
+            'scratch-render-fonts$': path.resolve(__dirname, 'src/lib/tw-scratch-render-fonts'),
+            'istextorbinary$': path.resolve(__dirname, 'node_modules/istextorbinary/edition-browsers/index.js')
+        },
+        fallback: {
+            buffer: require.resolve('buffer/'),
+            events: require.resolve('events/'),
+            path: require.resolve('path-browserify')
         }
     },
     module: {
@@ -103,21 +118,21 @@ const base = {
             }, {
                 loader: 'css-loader',
                 options: {
-                    modules: true,
-                    importLoaders: 1,
-                    localIdentName: '[name]_[local]_[hash:base64:5]',
-                    camelCase: true
+                    modules: {
+                        localIdentName: '[name]_[local]_[contenthash:base64:5]',
+                        exportLocalsConvention: 'camelCase'
+                    },
+                    importLoaders: 1
                 }
             }, {
                 loader: 'postcss-loader',
                 options: {
-                    ident: 'postcss',
-                    plugins: function () {
-                        return [
+                    postcssOptions: {
+                        plugins: [
                             postcssImport,
                             postcssVars,
                             autoprefixer
-                        ];
+                        ]
                     }
                 }
             }]
@@ -186,7 +201,7 @@ module.exports = [
         },
         plugins: base.plugins.concat([
             new webpack.DefinePlugin({
-                'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
+                'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
                 'process.env.DEBUG': Boolean(process.env.DEBUG),
                 'process.env.ENABLE_SERVICE_WORKER': JSON.stringify(process.env.ENABLE_SERVICE_WORKER || ''),
                 'process.env.ROOT': JSON.stringify(root),
@@ -264,7 +279,10 @@ module.exports = [
                 'scratch-gui': './src/index.js'
             },
             output: {
-                libraryTarget: 'umd',
+                library: {
+                    name: 'GUI',
+                    type: 'umd'
+                },
                 filename: 'js/[name].js',
                 chunkFilename: 'js/[name].js',
                 path: path.resolve('dist'),

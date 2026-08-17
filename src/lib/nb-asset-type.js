@@ -1,5 +1,5 @@
 import {Buffer} from 'buffer';
-import {isText} from 'istextorbinary/edition-es5';
+import {isText} from 'istextorbinary';
 
 import assetIcon from '../components/asset-panel/icon--asset.svg';
 import soundIcon from '../components/asset-panel/icon--sound.svg';
