@@ -15,7 +15,16 @@ const load = () => {
     }
     return import(/* webpackChunkName: "sb" */ 'scratch-blocks')
         .then(m => {
-            _ScratchBlocks = m.default;
+            const candidates = [
+                m && m.default,
+                m && m.default && m.default.default,
+                m && m.default && m.default.Blockly,
+                m && m.Blockly,
+                m
+            ];
+            _ScratchBlocks = candidates.find(candidate => (
+                candidate && candidate.Colours && candidate.Blocks
+            )) || candidates[0];
             return _ScratchBlocks;
         });
 };
