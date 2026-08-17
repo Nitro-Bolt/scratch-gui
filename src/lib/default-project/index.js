@@ -1,9 +1,9 @@
 import projectData from './project-data';
 
 /* eslint-disable import/no-unresolved */
-import overrideDefaultProject from '!arraybuffer-loader!./override-default-project.sb3';
-import backdrop from '!raw-loader!./cd21514d0531fdffb22204e0ec5ed84a.svg';
-import costume1 from '!raw-loader!./nitro-canister.svg';
+import overrideDefaultProject from './override-default-project.sb3?arraybuffer';
+import backdrop from './cd21514d0531fdffb22204e0ec5ed84a.svg?raw';
+import costume1 from './nitro-canister.svg?raw';
 /* eslint-enable import/no-unresolved */
 import {TextEncoder} from '../tw-text-encoder';
 

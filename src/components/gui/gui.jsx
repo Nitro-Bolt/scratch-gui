@@ -51,11 +51,11 @@ import {isRendererSupported, isBrowserSupported} from '../../lib/tw-environment-
 
 import styles from './gui.css';
 import addExtensionIcon from './icon--extensions.svg';
-import codeIcon from '!../../lib/tw-recolor/build!./icon--code.svg';
-import costumesIcon from '!../../lib/tw-recolor/build!./icon--costumes.svg';
-import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
-import assetsIcon from '!../../lib/tw-recolor/build!./icon--assets.svg';
-import variablesIcon from '!../../lib/tw-recolor/build!./icon--variables.svg';
+import codeIcon from './icon--code.svg?recolor';
+import costumesIcon from './icon--costumes.svg?recolor';
+import soundsIcon from './icon--sounds.svg?recolor';
+import assetsIcon from './icon--assets.svg?recolor';
+import variablesIcon from './icon--variables.svg?recolor';
 
 import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 

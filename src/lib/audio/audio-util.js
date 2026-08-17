@@ -1,4 +1,6 @@
-import EncoderWorker from 'worker-loader!../nb-encode-mp3-worker.js';
+const createEncoderWorker = () => new Worker(new URL('../nb-encode-mp3-worker.js', import.meta.url), {
+    name: 'encode-mp3-worker'
+});
 
 const _computeRMS = function (samples, start, end, scaling = 0.55) {
     const length = end - start;
@@ -33,7 +35,7 @@ const computeChunkedRMS = function (channels, chunkSize = 1024) {
 
 const encodeAndAddSoundToVM = function (vm, preferences, channel1Samples, channel2Samples, sampleRate, name, callback) {
     return new Promise((resolve, reject) => {
-        const encoderWorker = new EncoderWorker();
+        const encoderWorker = createEncoderWorker();
         encoderWorker.onerror = event => {
             reject(event);
         };

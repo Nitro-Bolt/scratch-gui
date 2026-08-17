@@ -8,8 +8,8 @@ import Label from '../forms/label.jsx';
 import Input from '../forms/input.jsx';
 import TWRenderRecoloredImage from '../../lib/tw-recolor/render.jsx';
 
-import redoIcon from '!../../lib/tw-recolor/build!../sound-editor/icon--redo.svg';
-import undoIcon from '!../../lib/tw-recolor/build!../sound-editor/icon--undo.svg';
+import redoIcon from '../sound-editor/icon--redo.svg?recolor';
+import undoIcon from '../sound-editor/icon--undo.svg?recolor';
 
 import styles from './asset-viewer.css';
 

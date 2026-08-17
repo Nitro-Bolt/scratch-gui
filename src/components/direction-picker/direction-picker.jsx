@@ -11,9 +11,9 @@ import Dial from './dial.jsx';
 
 import styles from './direction-picker.css';
 
-import allAroundIcon from '!../../lib/tw-recolor/build!./icon--all-around.svg';
-import leftRightIcon from '!../../lib/tw-recolor/build!./icon--left-right.svg';
-import dontRotateIcon from '!../../lib/tw-recolor/build!./icon--dont-rotate.svg';
+import allAroundIcon from './icon--all-around.svg?recolor';
+import leftRightIcon from './icon--left-right.svg?recolor';
+import dontRotateIcon from './icon--dont-rotate.svg?recolor';
 
 const BufferedInput = BufferedInputHOC(Input);
 

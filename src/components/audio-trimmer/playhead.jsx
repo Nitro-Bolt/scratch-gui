@@ -3,7 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import styles from './audio-trimmer.css';
 import TWRenderRecoloredImage from '../../lib/tw-recolor/render.jsx';
-import playheadCaret from '!../../lib/tw-recolor/build!./icon--playhead-caret.svg';
+import playheadCaret from './icon--playhead-caret.svg?recolor';
 
 const Playhead = props => (
     <>

@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '21'
+          node-version: '22'
 
       - name: Update dependencies
         run: pnpm update scratch-vm scratch-blocks scratch-render scratch-paint

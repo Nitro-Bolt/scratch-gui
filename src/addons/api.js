@@ -946,7 +946,12 @@ class AddonRunner {
                     SettingsStore.evaluateCondition(this.id, userstyle.if)
                 );
 
-                for (const [moduleId, cssText] of this.resources[userstyle.url]) {
+                const resource = this.resources[userstyle.url];
+                const styles = typeof resource === 'string' ?
+                    [[`${this.id}/${userstyle.url}`, resource]] :
+                    resource;
+
+                for (const [moduleId, cssText] of styles) {
                     const sheet = conditionalStyles.create(moduleId, cssText);
                     sheet.addDependent(this.id, userstylePrecedence, userstyleCondition);
                 }

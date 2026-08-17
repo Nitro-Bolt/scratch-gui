@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import Box from '../box/box.jsx';
 import styles from './audio-trimmer.css';
 import TWRenderRecoloredImage from '../../lib/tw-recolor/render.jsx';
-import handleIcon from '!../../lib/tw-recolor/build!./icon--handle.svg';
+import handleIcon from './icon--handle.svg?recolor';
 
 const SelectionHandle = props => (
     <Box

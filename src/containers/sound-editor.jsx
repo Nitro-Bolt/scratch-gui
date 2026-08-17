@@ -17,7 +17,6 @@ import AudioBufferPlayer from '../lib/audio/audio-buffer-player.js';
 import DragRecognizer from '../lib/drag-recognizer';
 import {getEventXY} from '../lib/touch-utils';
 import log from '../lib/log.js';
-import EncoderWorker from 'worker-loader!../lib/nb-encode-mp3-worker.js';
 import {closeAlertWithId, showStandardAlert} from '../reducers/alerts.js';
 
 const UNDO_STACK_SIZE = 99;
@@ -199,7 +198,9 @@ class SoundEditor extends React.Component {
                     this.undoStack.push(this.getUndoItem());
                 }
 
-                const encoderWorker = new EncoderWorker();
+        const encoderWorker = new Worker(new URL('../lib/nb-encode-mp3-worker.js', import.meta.url), {
+            name: 'encode-mp3-worker'
+        });
                 encoderWorker.onerror = event => {
                     reject(event);
                 };

@@ -40,7 +40,7 @@ module.exports = {
         },
         'import/resolver': {
             webpack: {
-                config: path.resolve(__dirname, '../webpack.config.js')
+                config: path.resolve(__dirname, '../rspack.config.js')
             }
         }
     }

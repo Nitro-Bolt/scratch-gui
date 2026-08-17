@@ -1,5 +1,5 @@
 import log from '../lib/log';
-import serviceWorker from '!!file-loader?name=sw.js!./service-worker.js';
+import serviceWorker from './service-worker.js';
 
 let loaded = false;
 const actuallyLoadServiceWorker = () => {

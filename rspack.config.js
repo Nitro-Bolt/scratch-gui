@@ -1,9 +1,8 @@
 const defaultsDeep = require('lodash.defaultsdeep');
 const path = require('path');
-const webpack = require('webpack');
+const rspack = require('@rspack/core');
 
 // Plugins
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
@@ -33,9 +32,11 @@ const base = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     devtool: process.env.SOURCEMAP || (process.env.NODE_ENV === 'production' ? false : 'cheap-module-source-map'),
     devServer: {
-        contentBase: path.resolve(__dirname, 'build'),
+        static: {
+            directory: path.resolve(__dirname, 'build')
+        },
         host: '0.0.0.0',
-        disableHostCheck: true,
+        allowedHosts: 'all',
         compress: true,
         port: process.env.PORT || 8601,
         // allows ROUTING_STYLE=wildcard to work properly
@@ -60,10 +61,19 @@ const base = {
         publicPath: root
     },
     resolve: {
-        symlinks: false,
+        // Resolve linked packages to their real paths so their own pnpm
+        // dependency links remain visible to the resolver.
+        symlinks: true,
         alias: {
             'text-encoding$': path.resolve(__dirname, 'src/lib/tw-text-encoder'),
-            'scratch-render-fonts$': path.resolve(__dirname, 'src/lib/tw-scratch-render-fonts')
+            'scratch-render-fonts$': path.resolve(__dirname, 'src/lib/tw-scratch-render-fonts'),
+            'istextorbinary$': path.resolve(__dirname, 'node_modules/istextorbinary/edition-browsers/index.js')
+        },
+        fallback: {
+            buffer: require.resolve('buffer/'),
+            events: require.resolve('events/'),
+            path: require.resolve('path-browserify'),
+            url: require.resolve('url/')
         }
     },
     module: {
@@ -80,6 +90,10 @@ const base = {
             loader: 'babel-loader',
             include: [
                 path.resolve(__dirname, 'src'),
+                path.resolve(__dirname, '../scratch-blocks/src'),
+                path.resolve(__dirname, '../scratch-paint/src'),
+                path.resolve(__dirname, '../scratch-render/src'),
+                path.resolve(__dirname, '../scratch-vm/src'),
                 /node_modules[\\/]scratch-[^\\/]+[\\/]src/,
                 /node_modules[\\/]pify/,
                 /node_modules[\\/]@vernier[\\/]godirect/
@@ -96,35 +110,83 @@ const base = {
             }
         },
         {
+            test: /\.svg$/,
+            resourceQuery: /recolor/,
+            use: [path.resolve(__dirname, 'src/lib/tw-recolor/build.js')]
+        }, {
+            test: /\.png$/,
+            resourceQuery: /base64/,
+            use: ['base64-loader']
+        }, {
+            test: /\.sb3$/,
+            resourceQuery: /arraybuffer/,
+            use: ['arraybuffer-loader']
+        }, {
             test: /\.css$/,
             exclude: /node_modules[\\/]monaco-editor/,
+            resourceQuery: {not: /raw/},
             use: [{
                 loader: 'style-loader'
             }, {
                 loader: 'css-loader',
                 options: {
-                    modules: true,
+                    esModule: false,
+                    modules: {
+                        exportLocalsConvention: 'camel-case',
+                        localIdentName: '[name]_[local]_[hash:base64:5]'
+                    },
                     importLoaders: 1,
-                    localIdentName: '[name]_[local]_[hash:base64:5]',
-                    camelCase: true
                 }
             }, {
                 loader: 'postcss-loader',
                 options: {
-                    ident: 'postcss',
-                    plugins: function () {
-                        return [
-                            postcssImport,
-                            postcssVars,
-                            autoprefixer
-                        ];
+                    postcssOptions: {
+                        plugins: [
+                            postcssImport(),
+                            postcssVars(),
+                            autoprefixer()
+                        ]
                     }
                 }
             }]
+        }, {
+            test: /\.css$/,
+            resourceQuery: /raw/,
+            use: [{
+                loader: 'css-loader',
+                options: {
+                    esModule: false,
+                    exportType: 'string',
+                    modules: false,
+                    importLoaders: 1
+                }
+            }, {
+                loader: 'postcss-loader',
+                options: {
+                    postcssOptions: {
+                        plugins: [
+                            postcssImport(),
+                            postcssVars(),
+                            autoprefixer()
+                        ]
+                    }
+                }
+            }]
+        }, {
+            resourceQuery: /raw/,
+            exclude: /\.css$/,
+            type: 'asset/source'
+        }, {
+            test: /\.js$/,
+            include: path.resolve(__dirname, 'src/playground/service-worker.js'),
+            type: 'asset/resource',
+            generator: {
+                filename: 'sw.js'
+            }
         }]
     },
     plugins: [
-        new CopyWebpackPlugin({
+        new rspack.CopyRspackPlugin({
             patterns: [
                 {
                     from: 'node_modules/scratch-blocks/media',
@@ -145,10 +207,6 @@ const base = {
     ]
 };
 
-if (!process.env.CI) {
-    base.plugins.push(new webpack.ProgressPlugin());
-}
-
 module.exports = [
     // to run editor examples
     defaultsDeep({}, base, {
@@ -167,11 +225,15 @@ module.exports = [
             rules: base.module.rules.concat([
                 {
                     test: /\.(svg|png|wav|mp3|gif|jpg|woff|woff2|ttf|eot|hex)$/,
-                    loader: 'url-loader',
-                    options: {
-                        limit: 2048,
-                        outputPath: 'static/assets/',
-                        esModule: false
+                    resourceQuery: {not: /raw|recolor|base64|arraybuffer/},
+                    type: 'asset',
+                    parser: {
+                        dataUrlCondition: {
+                            maxSize: 2048
+                        }
+                    },
+                    generator: {
+                        filename: 'static/assets/[name].[contenthash][ext]'
                     }
                 }
             ])
@@ -185,9 +247,9 @@ module.exports = [
             }
         },
         plugins: base.plugins.concat([
-            new webpack.DefinePlugin({
+            new rspack.DefinePlugin({
                 'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
-                'process.env.DEBUG': Boolean(process.env.DEBUG),
+                'process.env.DEBUG': JSON.stringify(Boolean(process.env.DEBUG)),
                 'process.env.ENABLE_SERVICE_WORKER': JSON.stringify(process.env.ENABLE_SERVICE_WORKER || ''),
                 'process.env.ROOT': JSON.stringify(root),
                 'process.env.ROUTING_STYLE': JSON.stringify(process.env.ROUTING_STYLE || 'filehash'),
@@ -236,7 +298,7 @@ module.exports = [
                 title: `${APP_NAME} Credits`,
                 ...htmlWebpackPluginCommon
             }),
-            new CopyWebpackPlugin({
+            new rspack.CopyRspackPlugin({
                 patterns: [
                     {
                         from: 'static',
@@ -244,7 +306,7 @@ module.exports = [
                     }
                 ]
             }),
-            new CopyWebpackPlugin({
+            new rspack.CopyRspackPlugin({
                 patterns: [
                     {
                         from: 'extensions/**',
@@ -278,18 +340,22 @@ module.exports = [
                 rules: base.module.rules.concat([
                     {
                         test: /\.(svg|png|wav|mp3|gif|jpg|woff|woff2|ttf|eot|hex)$/,
-                        loader: 'url-loader',
-                        options: {
-                            limit: 2048,
-                            outputPath: 'static/assets/',
-                            publicPath: `${STATIC_PATH}/assets/`,
-                            esModule: false
+                        resourceQuery: {not: /raw|recolor|base64|arraybuffer/},
+                        type: 'asset',
+                        parser: {
+                            dataUrlCondition: {
+                                maxSize: 2048
+                            }
+                        },
+                        generator: {
+                            filename: 'static/assets/[name].[contenthash][ext]',
+                            publicPath: `${STATIC_PATH}/assets/`
                         }
                     }
                 ])
             },
             plugins: base.plugins.concat([
-                new CopyWebpackPlugin({
+                new rspack.CopyRspackPlugin({
                     patterns: [
                         {
                             from: 'extension-worker.{js,js.map}',
@@ -299,7 +365,7 @@ module.exports = [
                     ]
                 }),
                 // Include library JSON files for scratch-desktop to use for downloading
-                new CopyWebpackPlugin({
+                new rspack.CopyRspackPlugin({
                     patterns: [
                         {
                             from: 'src/lib/libraries/*.json',

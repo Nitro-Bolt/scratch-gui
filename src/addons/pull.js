@@ -260,12 +260,12 @@ const generateRuntimeEntry = (id, manifest, assets) => {
 
     for (const userstyle of manifest.userstyles || []) {
         const src = userstyle.url;
-        const importName = importSection.add(`!css-loader!./${src}`, 'css');
+        const importName = importSection.add(`./${src}?raw`, 'css');
         exportSection += `  ${JSON.stringify(src)}: ${importName},\n`;
     }
 
     for (const assetName of assets) {
-        const importName = importSection.add(`!url-loader!./${assetName}`, 'asset');
+        const importName = importSection.add(`./${assetName}`, 'asset');
         exportSection += `  ${JSON.stringify(assetName)}: ${importName},\n`;
     }
 

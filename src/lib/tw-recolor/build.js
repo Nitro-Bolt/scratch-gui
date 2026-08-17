@@ -12,7 +12,7 @@ const loader = source => `
         return 'data:image/svg+xml;,' + encodeURIComponent(recolored);
     };
 
-    export default getSRC;
+    module.exports = getSRC;
 `;
 
 module.exports = loader;
