@@ -475,3 +475,39 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem 0.25rem;
 }
+
+.section {
+    margin: 0.5rem 0 0 0;
+}
+
+.section-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+}
+
+.section-dropdown-caret {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font: inherit;
+    font-weight: bold;
+    color: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.section-divider {
+    flex-grow: 1;
+    margin-left: 1rem;
+    border-top: 1px dashed $ui-tertiary;
+}
+
+.section-body {
+    margin-top: 0.25rem;
+}
