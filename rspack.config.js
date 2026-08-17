@@ -186,6 +186,12 @@ const base = {
         }]
     },
     plugins: [
+        // Webpack 4 provided Node's Buffer global automatically. Rspack does
+        // not, so provide the browser-compatible implementation explicitly
+        // for dependencies such as scratch-storage.
+        new rspack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer']
+        }),
         new rspack.CopyRspackPlugin({
             patterns: [
                 {
