@@ -153,7 +153,23 @@
 }
 
 .sub-navigation {
-    padding: .15rem 0 .35rem;
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows .2s ease, opacity .15s ease, visibility 0s linear .2s;
+    visibility: hidden;
+}
+
+.sub-navigation-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+    transition: grid-template-rows .2s ease, opacity .2s ease .05s, visibility 0s;
+}
+
+.sub-navigation-inner {
+    min-height: 0;
+    overflow: hidden;
 }
 
 .sub-navigation button {
@@ -235,6 +251,13 @@
     border-right: 1px solid $ui-black-transparent;
     background: $ui-modal-background;
     overscroll-behavior: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sub-navigation,
+    .sub-navigation-open {
+        transition: none;
+    }
 }
 
 .context-wide {

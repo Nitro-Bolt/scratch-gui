@@ -804,12 +804,16 @@ const GitModal = props => {
                             <span>{group.label}</span>
                             {group.id === 'changes' && changes.length > 0 && <em>{changes.length}</em>}
                         </button>
-                        {selectedGroup && group.views && <div className={styles.subNavigation}>
-                            {group.views.map(item => (<button
-                                className={view === item.id ? styles.subNavActive : ''}
-                                key={item.id}
-                                onClick={() => setView(item.id)}
-                            >{item.label}</button>))}
+                        {group.views && <div
+                            className={`${styles.subNavigation} ${selectedGroup ? styles.subNavigationOpen : ''}`}
+                        >
+                            <div className={styles.subNavigationInner}>
+                                {group.views.map(item => (<button
+                                    className={view === item.id ? styles.subNavActive : ''}
+                                    key={item.id}
+                                    onClick={() => setView(item.id)}
+                                >{item.label}</button>))}
+                            </div>
                         </div>}
                     </div>);
                 })}</nav>
