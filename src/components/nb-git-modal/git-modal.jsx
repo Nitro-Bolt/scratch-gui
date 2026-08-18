@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
+import dropdownCaret from '../rich-dropdown/dropdown-caret.svg';
 import ProjectDiff from './project-diff.jsx';
 import log from '../../lib/log';
 import LazyScratchBlocks from '../../lib/tw-lazy-scratch-blocks';
@@ -36,6 +37,27 @@ const Badge = ({value}) => (
     <span className={`${styles.statusBadge} ${styles[badgeClass[value] || 'statusM']}`}>{value}</span>
 );
 Badge.propTypes = {value: PropTypes.string.isRequired};
+
+const DropdownSelect = ({children, onChange, value}) => (
+    <div className={styles.selectWrapper}>
+        <select
+            value={value}
+            onChange={onChange}
+        >{children}</select>
+        <img
+            className={styles.selectCaret}
+            draggable={false}
+            height={5}
+            src={dropdownCaret}
+            width={8}
+        />
+    </div>
+);
+DropdownSelect.propTypes = {
+    children: PropTypes.node.isRequired,
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.string.isRequired
+};
 
 const ReadmeEditor = ({dark, onChange, value}) => {
     const element = React.useRef(null);
@@ -147,7 +169,7 @@ const GitModal = props => {
         setReadmeRevision(null);
         setLoading(false);
     };
-    const refresh = async (path = repoPath) => {
+    const refresh = async (path = repoPath, fetchRemotes = false) => {
         const request = ++refreshRequest.current;
         if (!path || !window.Git) {
             setLoading(false);
@@ -163,6 +185,11 @@ const GitModal = props => {
                 return;
             }
             setStatus(result.data);
+            if (fetchRemotes) {
+                const fetchResult = await window.Git.fetch(path);
+                if (request !== refreshRequest.current) return;
+                failed(fetchResult);
+            }
             const results = await Promise.all([window.Git.listBranches(path), window.Git.remotes(path),
                 window.Git.log(path, 50)]);
             if (request !== refreshRequest.current) return;
@@ -208,7 +235,7 @@ const GitModal = props => {
         window.Git.isAvailable()
             .then(value => {
                 setAvailable(value);
-                if (value && repoPath) refresh(repoPath);
+                if (value && repoPath) refresh(repoPath, true);
                 else setLoading(false);
             })
             .catch(error => {
@@ -289,7 +316,7 @@ const GitModal = props => {
             } else {
                 props.onSetProjectPath(null);
             }
-            await refresh(selectedRepoPath);
+            await refresh(selectedRepoPath, true);
         } finally {
             setLoading(false);
         }
@@ -424,7 +451,7 @@ const GitModal = props => {
         const result = await window.Git.addRemote(repoPath, remoteName.trim(), remoteUrl.trim());
         if (!failed(result)) {
             setRemoteUrl('');
-            await refresh();
+            await refresh(repoPath, true);
         }
     });
     const removeRemote = name => run(async () => {
@@ -454,6 +481,8 @@ const GitModal = props => {
             if (method === 'pull') {
                 await pauseGitProjectSync();
                 paused = true;
+                const fetchResult = await window.Git.fetch(repoPath, remote);
+                if (failed(fetchResult)) return;
             }
             const result = await window.Git[method](repoPath, remote, safeStatus.branch);
             if (!failed(result)) {
@@ -687,7 +716,7 @@ const GitModal = props => {
                 >Revert to this commit</button>}</div></div>))}</div></>);
     } else if (view === 'controls') {
         context = (<>{header('Merging & Controls')}<div className={styles.formCard}>
-            <label>Merge branch</label><select
+            <label>Merge branch</label><DropdownSelect
                 value={mergeBranch}
                 onChange={event => setMergeBranch(event.target.value)}
             >
@@ -695,8 +724,8 @@ const GitModal = props => {
                     (<option
                         value={item.ref}
                         key={item.ref}
-                    >{item.name}</option>))}</select>
-            <label>Into branch</label><select
+                    >{item.name}</option>))}</DropdownSelect>
+            <label>Into branch</label><DropdownSelect
                 value={mergeTarget}
                 onChange={event => setMergeTarget(event.target.value)}
             >
@@ -707,19 +736,19 @@ const GitModal = props => {
                         key={item.ref}
                     >{item.name}</option>
                 ))}
-            </select>
+            </DropdownSelect>
             <button
                 className={styles.primaryButton}
                 disabled={!mergeBranch || !mergeTarget || mergeBranch === mergeTarget}
                 onClick={merge}
             >Merge</button></div><div className={styles.formCard}>
-                <label>Remote sync</label><select
+                <label>Remote sync</label><DropdownSelect
                     value={remote}
                     onChange={event => setRemote(event.target.value)}
                 >
                     {!remotes.length && <option value="">No remotes</option>}
                     {remotes.map(item => <option key={item.name}>{item.name}</option>)}
-                </select>
+                </DropdownSelect>
                 <div className={styles.inputRow}>
                     <button
                         disabled={busy || !selectedRemoteExists}
@@ -792,7 +821,7 @@ const GitModal = props => {
                     <button
                         className={styles.refreshButton}
                         disabled={busy}
-                        onClick={() => refresh()}
+                        onClick={() => refresh(repoPath, true)}
                     >Refresh</button>
                 </div>
             </aside>
