@@ -733,6 +733,7 @@ class Blocks extends React.Component {
             onOpenConnectionModal,
             onOpenSoundRecorder,
             onOpenCustomExtensionModal,
+            onInspectBlock,
             reduxOnOpenCustomExtensionModal,
             updateToolboxState,
             onActivateCustomProcedures,
@@ -741,6 +742,7 @@ class Blocks extends React.Component {
             toolboxXML,
             updateMetrics: updateMetricsProp,
             useCatBlocks,
+            disableInspectBlock,
             workspaceMetrics,
             ...props
         } = this.props;

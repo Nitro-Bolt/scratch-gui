@@ -190,6 +190,7 @@ const mapStateToProps = state => {
         unknownPlatformModalVisible: state.scratchGui.modals.unknownPlatformModal,
         invalidProjectModalVisible: state.scratchGui.modals.invalidProjectModal,
         variablesTabVisible: activeTabIndex === VARIABLES_TAB_INDEX,
+        gitModalVisible: state.scratchGui.modals.gitModal,
         vm: state.scratchGui.vm
     };
 };

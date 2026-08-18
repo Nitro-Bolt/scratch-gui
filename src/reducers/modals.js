@@ -19,6 +19,7 @@ const MODAL_FONTS = 'fontsModal';
 const MODAL_UNKNOWN_PLATFORM = 'unknownPlatformModal';
 const MODAL_INVALID_PROJECT = 'invalidProjectModal';
 const MODAL_CUSTOM_ACCENT = 'customAccentModal';
+const MODAL_GIT = 'gitModal';
 const MODAL_EDITOR_SETTINGS = 'editorSettingsModal';
 const MODAL_INSPECT_BLOCK = 'inspectBlockModal';
 
@@ -41,6 +42,7 @@ const initialState = {
     [MODAL_UNKNOWN_PLATFORM]: false,
     [MODAL_INVALID_PROJECT]: false,
     [MODAL_CUSTOM_ACCENT]: false,
+    [MODAL_GIT]: false,
     [MODAL_EDITOR_SETTINGS]: false,
     [MODAL_INSPECT_BLOCK]: false,
     editorSettingsModalTab: 0,
@@ -134,6 +136,9 @@ const openInvalidProjectModal = function () {
 const openCustomAccentModal = function () {
     return openModal(MODAL_CUSTOM_ACCENT);
 };
+const openGitModal = function () {
+    return openModal(MODAL_GIT);
+};
 const openEditorSettingsModal = function (tab = 0) {
     return {
         type: OPEN_MODAL,
@@ -202,6 +207,9 @@ const closeInvalidProjectModal = function () {
 const closeCustomAccentModal = function () {
     return closeModal(MODAL_CUSTOM_ACCENT);
 };
+const closeGitModal = function () {
+    return closeModal(MODAL_GIT);
+};
 const closeEditorSettingsModal = function () {
     return closeModal(MODAL_EDITOR_SETTINGS);
 };
@@ -229,6 +237,7 @@ export {
     openUnknownPlatformModal,
     openInvalidProjectModal,
     openCustomAccentModal,
+    openGitModal,
     openEditorSettingsModal,
     openInspectBlockModal,
     closeBackdropLibrary,
@@ -249,6 +258,7 @@ export {
     closeUnknownPlatformModal,
     closeInvalidProjectModal,
     closeCustomAccentModal,
+    closeGitModal,
     closeEditorSettingsModal,
     closeInspectBlockModal
 };

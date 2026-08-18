@@ -1,0 +1,45 @@
+@import "../../css/colors.css";
+
+.viewer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.path {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    font-family: monospace;
+    font-size: 0.75rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.close {
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    padding: 0.45rem 0.65rem;
+    background: $ui-white;
+    color: $text-primary;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.asset-diff {
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    background: $ui-modal-background;
+    color: $text-primary-transparent;
+    font-size: 0.78rem;
+    text-align: center;
+}

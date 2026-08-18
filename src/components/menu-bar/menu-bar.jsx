@@ -33,7 +33,13 @@ import CloudVariablesToggler from '../../containers/tw-cloud-toggler.jsx';
 import TWSaveStatus from './tw-save-status.jsx';
 import TWNews from './tw-news.jsx';
 
-import {openTipsLibrary, openExtensionManagerModal, openSettingsModal, openRestorePointModal} from '../../reducers/modals';
+import {
+    openTipsLibrary,
+    openExtensionManagerModal,
+    openSettingsModal,
+    openRestorePointModal,
+    openGitModal
+} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import {
     isTimeTravel220022BC,
@@ -78,7 +84,7 @@ import {
     openErrorsMenu,
     closeErrorsMenu
 } from '../../reducers/menus';
-import {setFileHandle} from '../../reducers/tw.js';
+import {setFileHandle, setGitProjectPath} from '../../reducers/tw.js';
 
 import collectMetadata from '../../lib/collect-metadata';
 
@@ -94,6 +100,7 @@ import fileIcon from './icon--file.svg';
 import editIcon from './icon--edit.svg';
 import addonsIcon from './addons.svg';
 import errorIcon from './tw-error.svg';
+import gitIcon from './nb-git.svg';
 
 import ninetiesLogo from './nineties_logo.svg';
 import catLogo from './cat_logo.svg';
@@ -103,7 +110,7 @@ import oldtimeyLogo from './oldtimey-logo.svg';
 import sharedMessages from '../../lib/shared-messages';
 
 import SeeInsideButton from './tw-see-inside.jsx';
-import {notScratchDesktop} from '../../lib/isScratchDesktop.js';
+import {isScratchDesktop, notScratchDesktop} from '../../lib/isScratchDesktop.js';
 import {APP_NAME} from '../../lib/brand.js';
 
 const ariaMessages = defineMessages({
@@ -628,6 +635,15 @@ class MenuBar extends React.Component {
                                         >
                                             {this.props.intl.formatMessage(sharedMessages.loadFromComputerTitle)}
                                         </MenuItem>
+                                        {this.props.onStartSelectingGitProject && (
+                                            <MenuItem onClick={this.props.onStartSelectingGitProject}>
+                                                <FormattedMessage
+                                                    defaultMessage="Load Git project folder"
+                                                    description="Loads a NitroBolt Git project folder"
+                                                    id="nb.git.loadProjectFolder"
+                                                />
+                                            </MenuItem>
+                                        )}
                                         <SB3Downloader
                                             showSaveFilePicker={this.props.showSaveFilePicker}
                                         >
@@ -709,6 +725,26 @@ class MenuBar extends React.Component {
                                     </MenuSection>
                                 </MenuBarMenu>
                             </MenuLabel>
+                        )}
+                        {isScratchDesktop() && this.props.onClickGitModal && (
+                            <div
+                                className={classNames(styles.menuBarItem, styles.hoverable)}
+                                onClick={this.props.onClickGitModal}
+                            >
+                                <img
+                                    src={gitIcon}
+                                    draggable={false}
+                                    width={20}
+                                    height={20}
+                                />
+                                <span className={styles.collapsibleLabel}>
+                                    <FormattedMessage
+                                        defaultMessage="Git"
+                                        description="Button to open git menu"
+                                        id="nb.menuBar.git"
+                                    />
+                                </span>
+                            </div>
                         )}
                         <MenuLabel
                             open={this.props.editMenuOpen}
@@ -1097,6 +1133,7 @@ MenuBar.propTypes = {
     onClickSettings: PropTypes.func,
     onClickExtensionManagerModal: PropTypes.func,
     onClickSettingsModal: PropTypes.func,
+    onClickGitModal: PropTypes.func,
     onLogOut: PropTypes.func,
     onOpenRegistration: PropTypes.func,
     onOpenTipLibrary: PropTypes.func,
@@ -1113,6 +1150,7 @@ MenuBar.propTypes = {
     onSetTimeTravelMode: PropTypes.func,
     onShare: PropTypes.func,
     onStartSelectingFileUpload: PropTypes.func,
+    onStartSelectingGitProject: PropTypes.func,
     onToggleLoginOpen: PropTypes.func,
     projectId: PropTypes.string,
     projectTitle: PropTypes.string,
@@ -1187,6 +1225,10 @@ const mapDispatchToProps = dispatch => ({
     onRequestCloseAbout: () => dispatch(closeAboutMenu()),
     onClickRestorePoints: () => dispatch(openRestorePointModal()),
     onClickSettings: () => dispatch(openSettingsMenu()),
+    onClickGitModal: () => {
+        dispatch(closeEditMenu());
+        dispatch(openGitModal());
+    },
     onClickExtensionManagerModal: () => {
         dispatch(closeEditMenu());
         dispatch(openExtensionManagerModal());
@@ -1199,6 +1241,7 @@ const mapDispatchToProps = dispatch => ({
     onClickNew: needSave => {
         dispatch(requestNewProject(needSave));
         dispatch(setFileHandle(null));
+        dispatch(setGitProjectPath(null));
     },
     onClickRemix: () => dispatch(remixProject()),
     onClickSave: () => dispatch(manualUpdateProject()),

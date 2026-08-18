@@ -6,7 +6,7 @@ import bindAll from 'lodash.bindall';
 import {showAlertWithTimeout, showStandardAlert} from '../reducers/alerts';
 import {closeLoadingProject, closeRestorePointModal, openLoadingProject} from '../reducers/modals';
 import {LoadingStates, getIsShowingProject, onLoadedProject, requestProjectUpload} from '../reducers/project-state';
-import {setFileHandle} from '../reducers/tw';
+import {setFileHandle, setGitProjectPath} from '../reducers/tw';
 import TWRestorePointModal from '../components/tw-restore-point-modal/restore-point-modal.jsx';
 import RestorePointAPI from '../lib/tw-restore-point-api';
 import log from '../lib/log';
@@ -369,6 +369,9 @@ const mapDispatchToProps = dispatch => ({
     onFinishCreatingRestorePoint: () => showAlertWithTimeout(dispatch, 'twRestorePointSuccess'),
     onErrorCreatingRestorePoint: () => showAlertWithTimeout(dispatch, 'twRestorePointError'),
     onStartLoadingRestorePoint: loadingState => {
+        // Detach before the VM begins loading so PROJECT_CHANGED events from the
+        // restore cannot be written into the previously associated Git folder.
+        dispatch(setGitProjectPath(null));
         dispatch(openLoadingProject());
         dispatch(requestProjectUpload(loadingState));
     },

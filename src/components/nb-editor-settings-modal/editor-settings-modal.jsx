@@ -991,7 +991,31 @@ const EditorSettingsModal = props => {
         },
         {
             title: messages.versionControl,
-            content: <p>{'Coming Soon'}</p>
+            content: <Box>
+                <Setting
+                    primary={(
+                        <div className={classNames(styles.label, styles.customStageSize)}>
+                            <FormattedMessage
+                                defaultMessage="Default branch name:"
+                                id="nb.editorSettings.versionControl.defaultBranch"
+                            />
+                            <BufferedInput
+                                value={props.preferences['git-default-branch'] || 'master'}
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onSubmit={value => {
+                                    props.onSetPreference('git-default-branch', value.trim() || 'master');
+                                }}
+                                type="text"
+                                spellCheck="false"
+                            />
+                        </div>
+                    )}
+                    help={<FormattedMessage
+                        defaultMessage="The initial branch name used when creating a new Git repository. Existing repositories are not affected."
+                        id="nb.editorSettings.versionControl.defaultBranchHelp"
+                    />}
+                />
+            </Box>
         },
         {
             title: messages.keymap,

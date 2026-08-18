@@ -5,7 +5,7 @@ import {intlShape, injectIntl} from 'react-intl';
 import {connect} from 'react-redux';
 import log from '../lib/log';
 import sharedMessages from './shared-messages';
-import {setFileHandle, setProjectError} from '../reducers/tw';
+import {setFileHandle, setGitProjectPath, setProjectError} from '../reducers/tw';
 
 import {
     LoadingStates,
@@ -155,6 +155,7 @@ const SBFileUploaderHOC = function (WrappedComponent) {
                             this.props.onSetFileHandle(null);
                         }
                     }
+                    this.props.onSetGitProjectPath(null);
 
                     // cues step 4
                     this.props.requestProjectUpload(loadingState);
@@ -243,6 +244,7 @@ const SBFileUploaderHOC = function (WrappedComponent) {
                 onLoadingFinished,
                 onLoadingStarted,
                 onSetFileHandle,
+                onSetGitProjectPath,
                 onSetProjectTitle,
                 projectChanged,
                 requestProjectUpload: requestProjectUploadProp,
@@ -285,7 +287,8 @@ const SBFileUploaderHOC = function (WrappedComponent) {
                 draw: PropTypes.func
             })
         }),
-        onSetFileHandle: PropTypes.func
+        onSetFileHandle: PropTypes.func,
+        onSetGitProjectPath: PropTypes.func.isRequired
     };
     SBFileUploaderComponent.defaultProps = {
         showOpenFilePicker: typeof showOpenFilePicker === 'function' && !navigator.userAgent.includes('Android') ?
@@ -327,7 +330,8 @@ const SBFileUploaderHOC = function (WrappedComponent) {
         // project data. When this is done, the project state transition will be
         // noticed by componentDidUpdate()
         requestProjectUpload: loadingState => dispatch(requestProjectUpload(loadingState)),
-        onSetFileHandle: fileHandle => dispatch(setFileHandle(fileHandle))
+        onSetFileHandle: fileHandle => dispatch(setFileHandle(fileHandle)),
+        onSetGitProjectPath: projectPath => dispatch(setGitProjectPath(projectPath))
     });
     // Allow incoming props to override redux-provided props. Used to mock in tests.
     const mergeProps = (stateProps, dispatchProps, ownProps) => Object.assign(

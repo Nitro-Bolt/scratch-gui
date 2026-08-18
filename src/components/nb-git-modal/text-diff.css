@@ -1,0 +1,17 @@
+@import "../../css/colors.css";
+
+.diff {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    background: $ui-modal-background;
+}
+
+.empty {
+    padding: 1rem;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    color: $text-primary-transparent;
+    text-align: center;
+}
