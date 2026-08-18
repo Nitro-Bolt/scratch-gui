@@ -5,10 +5,10 @@ const inputBlockIds = input => {
 
 const scriptBlockIds = (blocks, rootId) => {
     const ids = [];
-    const visited = new Set();
+    const visited = [];
     const visit = id => {
-        if (!id || visited.has(id) || !blocks[id]) return;
-        visited.add(id);
+        if (!id || visited.includes(id) || !blocks[id]) return;
+        visited.push(id);
         ids.push(id);
         const block = blocks[id];
         if (Array.isArray(block)) return;
@@ -94,12 +94,12 @@ const mutationXml = mutation => {
 // Older Git revisions may have been written before the live XML snapshot was
 // available. Reconstructing XML from the structured block data keeps those
 // revisions renderable instead of showing a misleading missing-XML message.
-const blockXml = (blocks, comments, id, visited = new Set()) => {
-    if (!id || visited.has(id)) return '';
+const blockXml = (blocks, comments, id, visited = []) => {
+    if (!id || visited.includes(id)) return '';
     const block = blocks[id];
     if (!block) return '';
     if (Array.isArray(block)) return primitiveXml(block);
-    visited.add(id);
+    const nextVisited = [...visited, id];
     const tagName = block.shadow ? 'shadow' : 'block';
     const position = block.topLevel ? ` x="${escapeXml(block.x)}" y="${escapeXml(block.y)}"` : '';
     const collapsed = block.collapsed ? ' collapsed="true"' : '';
@@ -127,14 +127,14 @@ const blockXml = (blocks, comments, id, visited = new Set()) => {
         if (!blockId && !shadowId) return;
         result += `<value name="${escapeXml(name)}">`;
         result += typeof blockId === 'string' ?
-            blockXml(blocks, comments, blockId, new Set(visited)) : primitiveXml(blockId);
+            blockXml(blocks, comments, blockId, nextVisited) : primitiveXml(blockId);
         if (shadowId && shadowId !== blockId) {
             result += typeof shadowId === 'string' ?
-                blockXml(blocks, comments, shadowId, new Set(visited)) : primitiveXml(shadowId);
+                blockXml(blocks, comments, shadowId, nextVisited) : primitiveXml(shadowId);
         }
         result += '</value>';
     });
-    if (block.next) result += `<next>${blockXml(blocks, comments, block.next, new Set(visited))}</next>`;
+    if (block.next) result += `<next>${blockXml(blocks, comments, block.next, nextVisited)}</next>`;
     return `${result}</${tagName}>`;
 };
 
@@ -152,18 +152,17 @@ const getProjectScripts = project => {
     const blocks = target.blocks;
     const comments = target.comments;
     const serializedScripts = Array.isArray(target._nitroboltScripts) ? target._nitroboltScripts : [];
-    const xmlByRoot = new Map(serializedScripts.map(script => [script.id, script.xml]));
-    const claimedCommentIds = new Set();
+    const claimedCommentIds = [];
     serializedScripts.map(script => script.id)
         .forEach(rootId => {
             const root = blocks[rootId];
             const position = blockPosition(root);
             const blockIds = scriptBlockIds(blocks, rootId);
-            const blockIdSet = new Set(blockIds);
+            const serializedScript = serializedScripts.find(script => script.id === rootId) || {};
             const scriptComments = Object.entries(comments)
                 .filter(([id, comment]) => {
-                    if (!blockIdSet.has(comment.blockId)) return false;
-                    claimedCommentIds.add(id);
+                    if (!blockIds.includes(comment.blockId)) return false;
+                    claimedCommentIds.push(id);
                     return true;
                 })
                 .sort(([leftId], [rightId]) => leftId.localeCompare(rightId));
@@ -180,14 +179,14 @@ const getProjectScripts = project => {
                     }).sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)))
                 }),
                 blockSignatures: blockIds.map(id => [id, JSON.stringify(blockDiffValue(blocks[id], blocks))]),
-                source: xmlByRoot.get(rootId) || blockXml(blocks, comments, rootId) || null,
+                source: serializedScript.xml || blockXml(blocks, comments, rootId) || null,
                 teleportable: true,
                 x: position.x,
                 y: position.y
             });
         });
     Object.entries(comments)
-        .filter(([id]) => !claimedCommentIds.has(id))
+        .filter(([id]) => !claimedCommentIds.includes(id))
         .forEach(([id, comment]) => {
             scripts.push({
                 id: `comment:${id}`,

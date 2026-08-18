@@ -11,38 +11,44 @@ const scriptChanged = row => !row.before || !row.after || row.before.signature !
 const changedBlockIds = (before, after) => {
     if (!before) {
         const signatures = (after && after.blockSignatures) || [];
-        return {before: new Set(), after: new Set(signatures.map(([id]) => id))};
+        return {before: [], after: signatures.map(([id]) => id)};
     }
-    if (!after) return {before: new Set((before.blockSignatures || []).map(([id]) => id)), after: new Set()};
-    const beforeBlocks = new Map(before.blockSignatures || []);
-    const afterBlocks = new Map(after.blockSignatures || []);
-    const unchangedBefore = new Set();
-    const unchangedAfter = new Set();
-    beforeBlocks.forEach((signature, id) => {
-        if (afterBlocks.get(id) === signature) {
-            unchangedBefore.add(id);
-            unchangedAfter.add(id);
+    if (!after) return {before: (before.blockSignatures || []).map(([id]) => id), after: []};
+    const beforeBlocks = before.blockSignatures || [];
+    const afterBlocks = after.blockSignatures || [];
+    const unchangedBefore = [];
+    const unchangedAfter = [];
+    beforeBlocks.forEach(([id, signature]) => {
+        const unchanged = afterBlocks.some(([afterId, afterSignature]) => afterId === id &&
+            afterSignature === signature);
+        if (unchanged) {
+            unchangedBefore.push(id);
+            unchangedAfter.push(id);
         }
     });
-    const afterBySignature = new Map();
-    afterBlocks.forEach((signature, id) => {
-        if (unchangedAfter.has(id)) return;
-        const ids = afterBySignature.get(signature) || [];
-        ids.push(id);
-        afterBySignature.set(signature, ids);
+    const afterBySignature = [];
+    afterBlocks.forEach(([id, signature]) => {
+        if (unchangedAfter.includes(id)) return;
+        let entry = afterBySignature.find(item => item.signature === signature);
+        if (!entry) {
+            entry = {ids: [], signature};
+            afterBySignature.push(entry);
+        }
+        entry.ids.push(id);
     });
-    const matchedBefore = new Set();
-    const matchedAfter = new Set();
-    beforeBlocks.forEach((signature, id) => {
-        if (unchangedBefore.has(id)) return;
-        const ids = afterBySignature.get(signature);
-        if (!ids || !ids.length) return;
-        matchedBefore.add(id);
-        matchedAfter.add(ids.shift());
+    const matchedBefore = [];
+    const matchedAfter = [];
+    beforeBlocks.forEach(([id, signature]) => {
+        if (unchangedBefore.includes(id)) return;
+        const entry = afterBySignature.find(item => item.signature === signature);
+        if (!entry || !entry.ids.length) return;
+        matchedBefore.push(id);
+        matchedAfter.push(entry.ids.shift());
     });
     return {
-        after: new Set([...afterBlocks.keys()].filter(id => !unchangedAfter.has(id) && !matchedAfter.has(id))),
-        before: new Set([...beforeBlocks.keys()].filter(id => !unchangedBefore.has(id) && !matchedBefore.has(id)))
+        after: afterBlocks.map(([id]) => id).filter(id => !unchangedAfter.includes(id) && !matchedAfter.includes(id)),
+        before: beforeBlocks.map(([id]) => id)
+            .filter(id => !unchangedBefore.includes(id) && !matchedBefore.includes(id))
     };
 };
 
@@ -130,25 +136,18 @@ const BlockDiff = ({afterProject, beforeProject, onShowScript}) => {
     const rows = useMemo(() => {
         const before = getProjectScripts(beforeProject);
         const after = getProjectScripts(afterProject);
-        const afterById = new Map(after.map(script => [script.id, script]));
-        const afterByMatchKey = new Map();
-        after.forEach(script => {
-            const scripts = afterByMatchKey.get(script.matchKey) || [];
-            scripts.push(script);
-            afterByMatchKey.set(script.matchKey, scripts);
-        });
+        const remainingAfter = [...after];
         const result = before.map(script => {
-            const matching = afterById.get(script.id) ||
-                ((afterByMatchKey.get(script.matchKey) || []).find(candidate => afterById.has(candidate.id)) || null);
+            const matchingIndex = remainingAfter.findIndex(candidate => candidate.id === script.id);
+            const fallbackIndex = matchingIndex >= 0 ? matchingIndex :
+                remainingAfter.findIndex(candidate => candidate.matchKey === script.matchKey);
+            const matching = fallbackIndex >= 0 ? remainingAfter[fallbackIndex] : null;
             if (matching) {
-                afterById.delete(matching.id);
-                const matchingScripts = afterByMatchKey.get(matching.matchKey) || [];
-                const matchingIndex = matchingScripts.indexOf(matching);
-                if (matchingIndex >= 0) matchingScripts.splice(matchingIndex, 1);
+                remainingAfter.splice(fallbackIndex, 1);
             }
             return {before: script, after: matching};
         });
-        afterById.forEach(script => result.push({before: null, after: script}));
+        remainingAfter.forEach(script => result.push({before: null, after: script}));
         return result.filter(scriptChanged);
     }, [afterProject, beforeProject]);
     return (
