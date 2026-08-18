@@ -8,7 +8,45 @@ import styles from './block-diff.css';
 const scriptChanged = row => !row.before || !row.after || row.before.signature !== row.after.signature ||
     row.before.x !== row.after.x || row.before.y !== row.after.y;
 
-const RenderedScript = ({onShowScript, script}) => {
+const changedBlockIds = (before, after) => {
+    if (!before) {
+        const signatures = (after && after.blockSignatures) || [];
+        return {before: new Set(), after: new Set(signatures.map(([id]) => id))};
+    }
+    if (!after) return {before: new Set((before.blockSignatures || []).map(([id]) => id)), after: new Set()};
+    const beforeBlocks = new Map(before.blockSignatures || []);
+    const afterBlocks = new Map(after.blockSignatures || []);
+    const unchangedBefore = new Set();
+    const unchangedAfter = new Set();
+    beforeBlocks.forEach((signature, id) => {
+        if (afterBlocks.get(id) === signature) {
+            unchangedBefore.add(id);
+            unchangedAfter.add(id);
+        }
+    });
+    const afterBySignature = new Map();
+    afterBlocks.forEach((signature, id) => {
+        if (unchangedAfter.has(id)) return;
+        const ids = afterBySignature.get(signature) || [];
+        ids.push(id);
+        afterBySignature.set(signature, ids);
+    });
+    const matchedBefore = new Set();
+    const matchedAfter = new Set();
+    beforeBlocks.forEach((signature, id) => {
+        if (unchangedBefore.has(id)) return;
+        const ids = afterBySignature.get(signature);
+        if (!ids || !ids.length) return;
+        matchedBefore.add(id);
+        matchedAfter.add(ids.shift());
+    });
+    return {
+        after: new Set([...afterBlocks.keys()].filter(id => !unchangedAfter.has(id) && !matchedAfter.has(id))),
+        before: new Set([...beforeBlocks.keys()].filter(id => !unchangedBefore.has(id) && !matchedBefore.has(id)))
+    };
+};
+
+const RenderedScript = ({highlightedBlockIds, highlightType, onShowScript, script}) => {
     const element = useRef(null);
     const handleShowScript = () => onShowScript(script);
     useEffect(() => {
@@ -37,6 +75,14 @@ const RenderedScript = ({onShowScript, script}) => {
             });
             const xml = ScratchBlocks.Xml.textToDom(`<xml xmlns="http://www.w3.org/1999/xhtml">${script.source}</xml>`);
             ScratchBlocks.Xml.domToWorkspace(xml, workspace);
+            highlightedBlockIds.forEach(id => {
+                const block = workspace.getBlockById(id);
+                if (block && block.getSvgRoot()) {
+                    block.getSvgRoot().classList.add(
+                        highlightType === 'removed' ? styles.blockRemoved : styles.blockAdded
+                    );
+                }
+            });
             ScratchBlocks.svgResize(workspace);
             workspace.zoomToFit();
             resizeObserver = new ResizeObserver(() => ScratchBlocks.svgResize(workspace));
@@ -69,6 +115,8 @@ const RenderedScript = ({onShowScript, script}) => {
 };
 
 RenderedScript.propTypes = {
+    highlightedBlockIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    highlightType: PropTypes.oneOf(['added', 'removed']).isRequired,
     onShowScript: PropTypes.func,
     script: PropTypes.shape({
         source: PropTypes.string,
@@ -83,9 +131,21 @@ const BlockDiff = ({afterProject, beforeProject, onShowScript}) => {
         const before = getProjectScripts(beforeProject);
         const after = getProjectScripts(afterProject);
         const afterById = new Map(after.map(script => [script.id, script]));
+        const afterByMatchKey = new Map();
+        after.forEach(script => {
+            const scripts = afterByMatchKey.get(script.matchKey) || [];
+            scripts.push(script);
+            afterByMatchKey.set(script.matchKey, scripts);
+        });
         const result = before.map(script => {
-            const matching = afterById.get(script.id) || null;
-            if (matching) afterById.delete(script.id);
+            const matching = afterById.get(script.id) ||
+                ((afterByMatchKey.get(script.matchKey) || []).find(candidate => afterById.has(candidate.id)) || null);
+            if (matching) {
+                afterById.delete(matching.id);
+                const matchingScripts = afterByMatchKey.get(matching.matchKey) || [];
+                const matchingIndex = matchingScripts.indexOf(matching);
+                if (matchingIndex >= 0) matchingScripts.splice(matchingIndex, 1);
+            }
             return {before: script, after: matching};
         });
         afterById.forEach(script => result.push({before: null, after: script}));
@@ -95,21 +155,28 @@ const BlockDiff = ({afterProject, beforeProject, onShowScript}) => {
         <div className={styles.diff}>
             <div className={styles.heading}>{'Before'}</div>
             <div className={styles.heading}>{'After'}</div>
-            {rows.map(row => (
-                <React.Fragment key={(row.before || row.after).id}>
-                    <div className={`${styles.cell} ${styles.removed}`}>
-                        <RenderedScript
-                            script={row.before}
-                        />
-                    </div>
-                    <div className={`${styles.cell} ${styles.added}`}>
-                        <RenderedScript
-                            script={row.after}
-                            onShowScript={onShowScript}
-                        />
-                    </div>
-                </React.Fragment>
-            ))}
+            {rows.map(row => {
+                const changed = changedBlockIds(row.before, row.after);
+                return (
+                    <React.Fragment key={(row.before || row.after).id}>
+                        <div className={`${styles.cell} ${styles.removed}`}>
+                            <RenderedScript
+                                highlightType="removed"
+                                highlightedBlockIds={[...changed.before]}
+                                script={row.before}
+                            />
+                        </div>
+                        <div className={`${styles.cell} ${styles.added}`}>
+                            <RenderedScript
+                                highlightType="added"
+                                highlightedBlockIds={[...changed.after]}
+                                script={row.after}
+                                onShowScript={onShowScript}
+                            />
+                        </div>
+                    </React.Fragment>
+                );
+            })}
             {rows.length === 0 && <div className={styles.empty}>{'No changed scripts.'}</div>}
         </div>
     );

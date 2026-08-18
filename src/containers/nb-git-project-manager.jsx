@@ -2,11 +2,29 @@ import bindAll from 'lodash.bindall';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
+import JSZip from '@turbowarp/jszip';
 
 import log from '../lib/log';
 import {setProjectUnchanged} from '../reducers/project-changed';
 
 const SYNC_DEBOUNCE_MS = 750;
+
+/*
+ * The regular SB3 exporter optimizes block IDs for archive size. That is
+ * useful for downloads, but it intentionally assigns new IDs based on the
+ * current reference counts. A Git save must preserve IDs so an unchanged
+ * script remains unchanged in blocks.json and its XML can still be matched
+ * to the serialized root.
+ */
+const saveGitProjectArchive = vm => {
+    const zip = new JSZip();
+    zip.file('project.json', vm.toJSON(null, {allowOptimization: false}));
+    vm.serializeAssets().forEach(file => zip.file(file.fileName, file.fileContent));
+    return zip.generateAsync({
+        mimeType: 'application/x.scratch.sb3',
+        type: 'arraybuffer'
+    });
+};
 
 let activeManager = null;
 
@@ -134,7 +152,7 @@ class NBGitProjectManager extends React.Component {
                 };
             }).filter(script => Boolean(script.xml))
         }));
-        const archive = await this.props.vm.saveProjectSb3('arraybuffer');
+        const archive = await saveGitProjectArchive(this.props.vm);
         const result = await window.Git.syncProject(projectPath, archive, workspaceXML);
         if (!result.success) throw new Error(result.error || 'Could not save the Git project');
     }
@@ -194,7 +212,8 @@ NBGitProjectManager.propTypes = {
         runtime: PropTypes.shape({
             targets: PropTypes.arrayOf(PropTypes.object).isRequired
         }).isRequired,
-        saveProjectSb3: PropTypes.func.isRequired
+        serializeAssets: PropTypes.func.isRequired,
+        toJSON: PropTypes.func.isRequired
     }).isRequired
 };
 

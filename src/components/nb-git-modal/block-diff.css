@@ -93,6 +93,21 @@
     pointer-events: auto;
 }
 
+.blocks .block-removed > :global(.blocklyBlockBackground),
+.blocks .block-added > :global(.blocklyBlockBackground) {
+    stroke-width: 3px !important;
+}
+
+.blocks .block-removed > :global(.blocklyBlockBackground) {
+    filter: drop-shadow(0 0 2px #ef4444);
+    stroke: #ef4444 !important;
+}
+
+.blocks .block-added > :global(.blocklyBlockBackground) {
+    filter: drop-shadow(0 0 2px #22c55e);
+    stroke: #22c55e !important;
+}
+
 .missing {
     min-height: 2rem;
     color: $text-primary-transparent;
