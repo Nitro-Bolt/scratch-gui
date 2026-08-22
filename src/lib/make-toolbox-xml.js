@@ -935,7 +935,17 @@ const json = function (colors, nbBlocks = true) {
                 </shadow>
             </value>
         </block>
-        <block type="json_foreach" id="json_foreach">
+        <block type="json_map">
+            <value name="VALUE">
+                <shadow type="json_map_value">
+                </shadow>
+            </value>
+            <value name="INDEX">
+                <shadow type="json_map_index">
+                </shadow>
+            </value>
+        </block>
+        <block type="json_foreach">
           <value name="VALUE">
             <shadow type="json_foreach_value">
             </shadow>
