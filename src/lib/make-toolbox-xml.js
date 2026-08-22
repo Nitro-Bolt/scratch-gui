@@ -323,7 +323,9 @@ const sound = function (isInitialSetup, isStage, targetId, soundName, colors, nb
         </block>
         <block type="sound_setvolumeto">
             <value name="VOLUME">
-                ${numberShadow(100)}
+                <shadow type="math_slider">
+                    <field name="NUM">100</field>
+                </shadow>
             </value>
         </block>
         <block id="${targetId}_volume" type="sound_volume"/>
