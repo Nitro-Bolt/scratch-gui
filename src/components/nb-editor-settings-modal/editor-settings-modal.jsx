@@ -422,6 +422,27 @@ const EditorSettingsModal = props => {
                             }}
                         />
                     </Box>
+                    <BooleanSetting
+                        value={!!props.preferences['enable-debugger']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.enableDebugger"
+                            defaultMessage="Enable debugger"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.enableDebuggerHelp"
+                            defaultMessage="Enables a debugger panel and extension that allows you to inspect logs and performance."
+                        />}
+                        onChange={e => {
+                            props.onSetPreference('enable-debugger', e.target.checked);
+                            // Load debugger extension if it's enabled and not already loaded
+                            if (
+                                e.target.checked &&
+                                !props.vm.extensionManager.isExtensionLoaded('debugger')
+                            ) {
+                                props.vm.extensionManager.loadExtensionIdSync('debugger');
+                            }
+                        }}
+                    />
                 </Section>
                 <Section
                     title={<FormattedMessage
@@ -520,27 +541,6 @@ const EditorSettingsModal = props => {
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={e => {
                         props.onSetPreference('stage-left', e.target.checked);
-                    }}
-                />
-                <BooleanSetting
-                    value={!!props.preferences['enable-debugger']}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.enableDebugger"
-                        defaultMessage="Enable debugger"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.enableDebuggerHelp"
-                        defaultMessage="Enables a debugger panel and extension that allows you to inspect logs and performance."
-                    />}
-                    onChange={e => {
-                        props.onSetPreference('enable-debugger', e.target.checked);
-                        // Load debugger extension if it's enabled and not already loaded
-                        if (
-                            e.target.checked &&
-                            !props.vm.extensionManager.isExtensionLoaded('debugger')
-                        ) {
-                            props.vm.extensionManager.loadExtensionIdSync('debugger');
-                        }
                     }}
                 />
                 <Section
