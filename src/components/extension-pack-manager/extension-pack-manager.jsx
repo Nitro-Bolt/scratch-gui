@@ -174,7 +174,7 @@ class ExtensionPackManager extends React.Component {
                     )}
 
                     <h2>Individual extensions</h2>
-                    <p>These extensions appear in the "individual" section of the extension picker.</p>
+                    <p>These extensions appear in the &quot;individual&quot; section of the extension picker.</p>
                     <label htmlFor="individual-extension-name">Display name</label>
                     <input
                         className={loaderStyles.urlInput}
