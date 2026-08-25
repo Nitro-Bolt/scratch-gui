@@ -576,111 +576,6 @@ const EditorSettingsModal = props => {
                 </Section>
                 <Section
                     title={<FormattedMessage
-                        id="nb.editorSettings.dangerZone"
-                        defaultMessage="Danger Zone"
-                    />}
-                >
-                    <BooleanSetting
-                        value={!!props.preferences['hide-backpack']}
-                        label={<FormattedMessage
-                            id="nb.editorSettings.hideBackpack"
-                            defaultMessage="Hide backpack"
-                        />}
-                        help={<FormattedMessage
-                            id="nb.editorSettings.hideBackpackHelp"
-                            defaultMessage="Removes the backpack from the bottom of the screen."
-                        />}
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onChange={e => {
-                            props.onSetPreference('hide-backpack', e.target.checked);
-                            // resizes block palette and stuff
-                            requestAnimationFrame(() => dispatchEvent(new Event('resize')));
-                        }}
-                    />
-                    <BooleanSetting
-                        value={!!props.preferences['hide-feedback']}
-                        label={<FormattedMessage
-                            id="nb.editorSettings.hideFeedback"
-                            defaultMessage="Hide feedback button"
-                        />}
-                        help={<FormattedMessage
-                            id="nb.editorSettings.hideFeedbackHelp"
-                            defaultMessage="Removes the feedback button from the top of the screen."
-                        />}
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onChange={e => props.onSetPreference('hide-feedback', e.target.checked)}
-                    />
-                    <Setting
-                        help={
-                            <FormattedMessage
-                                id="nb.editorSettings.visibleTabsHelp"
-                                defaultMessage="Choose which tabs to show in the editor. Hidden tabs can still be accessed via keyboard shortcuts."
-                            />
-                        }
-                        primary={
-                            <button
-                                className={classNames(styles.label, styles.collapseButton)}
-                                onClick={() => setTabsExpanded(e => !e)}
-                            >
-                                <FormattedMessage
-                                    id="nb.editorSettings.visibleTabs"
-                                    defaultMessage="Visible tabs"
-                                />
-                                <img
-                                    className={classNames(styles.collapseArrow, {
-                                        [styles.collapseArrowExpanded]: tabsExpanded
-                                    })}
-                                    src={dropdownCaret}
-                                />
-                            </button>
-                        }
-                        secondary={
-                            tabsExpanded && (<div><div className={styles.categoryGrid}>
-                                {editorTabs.map(tab => {
-                                    const isHidden = hiddenTabs.includes(tab.index);
-                                    const visibleCount = editorTabs.filter(t =>
-                                        !hiddenTabs.includes(t.index)
-                                    ).length;
-
-                                    return (
-                                        <label
-                                            key={tab.index}
-                                            className={styles.label}
-                                        >
-                                            <FancyCheckbox
-                                                className={styles.checkbox}
-                                                checked={!isHidden}
-                                                disabled={!isHidden && visibleCount < 3}
-                                                // eslint-disable-next-line react/jsx-no-bind
-                                                onChange={() => {
-                                                    const next = hiddenTabs.includes(tab.index) ?
-                                                        hiddenTabs.filter(i => i !== tab.index) :
-                                                        [...hiddenTabs, tab.index];
-                                                    props.onSetPreference('hidden-tabs', next);
-                                                }}
-                                            />
-                                            {tab.label}
-                                        </label>
-                                    );
-                                })}
-                            </div>
-                            {/* eslint-disable-next-line react/jsx-indent */}
-                            <button
-                                className={styles.button}
-                                onClick={handleResetTabsVisibility}
-                                style={{marginTop: '8px'}}
-                            >
-                                <FormattedMessage
-                                    id="nb.editorSettings.resetTabsVisibility"
-                                    defaultMessage="Reset to defaults"
-                                />
-                            </button>
-                            </div>)
-                        }
-                    />
-                </Section>
-                <Section
-                    title={<FormattedMessage
                         id="nb.editorSettings.toolbox"
                         defaultMessage="Toolbox"
                     />}
@@ -831,6 +726,111 @@ const EditorSettingsModal = props => {
                                     </button>
                                 </div>
                             )
+                        }
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.dangerZone"
+                        defaultMessage="Danger Zone"
+                    />}
+                >
+                    <BooleanSetting
+                        value={!!props.preferences['hide-backpack']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.hideBackpack"
+                            defaultMessage="Hide backpack"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.hideBackpackHelp"
+                            defaultMessage="Removes the backpack from the bottom of the screen."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => {
+                            props.onSetPreference('hide-backpack', e.target.checked);
+                            // resizes block palette and stuff
+                            requestAnimationFrame(() => dispatchEvent(new Event('resize')));
+                        }}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['hide-feedback']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.hideFeedback"
+                            defaultMessage="Hide feedback button"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.hideFeedbackHelp"
+                            defaultMessage="Removes the feedback button from the top of the screen."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('hide-feedback', e.target.checked)}
+                    />
+                    <Setting
+                        help={
+                            <FormattedMessage
+                                id="nb.editorSettings.visibleTabsHelp"
+                                defaultMessage="Choose which tabs to show in the editor. Hidden tabs can still be accessed via keyboard shortcuts."
+                            />
+                        }
+                        primary={
+                            <button
+                                className={classNames(styles.label, styles.collapseButton)}
+                                onClick={() => setTabsExpanded(e => !e)}
+                            >
+                                <FormattedMessage
+                                    id="nb.editorSettings.visibleTabs"
+                                    defaultMessage="Visible tabs"
+                                />
+                                <img
+                                    className={classNames(styles.collapseArrow, {
+                                        [styles.collapseArrowExpanded]: tabsExpanded
+                                    })}
+                                    src={dropdownCaret}
+                                />
+                            </button>
+                        }
+                        secondary={
+                            tabsExpanded && (<div><div className={styles.categoryGrid}>
+                                {editorTabs.map(tab => {
+                                    const isHidden = hiddenTabs.includes(tab.index);
+                                    const visibleCount = editorTabs.filter(t =>
+                                        !hiddenTabs.includes(t.index)
+                                    ).length;
+
+                                    return (
+                                        <label
+                                            key={tab.index}
+                                            className={styles.label}
+                                        >
+                                            <FancyCheckbox
+                                                className={styles.checkbox}
+                                                checked={!isHidden}
+                                                disabled={!isHidden && visibleCount < 3}
+                                                // eslint-disable-next-line react/jsx-no-bind
+                                                onChange={() => {
+                                                    const next = hiddenTabs.includes(tab.index) ?
+                                                        hiddenTabs.filter(i => i !== tab.index) :
+                                                        [...hiddenTabs, tab.index];
+                                                    props.onSetPreference('hidden-tabs', next);
+                                                }}
+                                            />
+                                            {tab.label}
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                            {/* eslint-disable-next-line react/jsx-indent */}
+                            <button
+                                className={styles.button}
+                                onClick={handleResetTabsVisibility}
+                                style={{marginTop: '8px'}}
+                            >
+                                <FormattedMessage
+                                    id="nb.editorSettings.resetTabsVisibility"
+                                    defaultMessage="Reset to defaults"
+                                />
+                            </button>
+                            </div>)
                         }
                     />
                 </Section>
