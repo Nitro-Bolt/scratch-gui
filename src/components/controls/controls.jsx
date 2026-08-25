@@ -4,8 +4,8 @@ import React from 'react';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
 import GreenFlag from '../green-flag/green-flag.jsx';
-import Pause from '../pause/pause.jsx';
-import Step from '../step/step.jsx';
+import Pause from '../nb-pause/pause.jsx';
+import Step from '../nb-step/step.jsx';
 import StopAll from '../stop-all/stop-all.jsx';
 import TurboMode from '../turbo-mode/turbo-mode.jsx';
 import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.jsx';

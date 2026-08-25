@@ -4,7 +4,7 @@ import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
 import {connect} from 'react-redux';
 import {intlShape} from 'react-intl';
 import VM from 'scratch-vm';
-import VariableTab from '../components/variables-tab/variables-tab.jsx';
+import VariableTab from '../components/nb-variables-tab/variables-tab.jsx';
 import PropTypes from 'prop-types';
 import {highlightTarget} from '../reducers/targets';
 

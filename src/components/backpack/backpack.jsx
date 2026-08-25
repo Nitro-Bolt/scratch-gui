@@ -6,7 +6,7 @@ import {FormattedMessage, defineMessages, injectIntl, intlShape} from 'react-int
 import DragConstants from '../../lib/drag-constants';
 import {ComingSoonTooltip} from '../coming-soon/coming-soon.jsx';
 import SpriteSelectorItem from '../../containers/sprite-selector-item.jsx';
-import FolderTile from '../folder-tile/folder-tile.jsx';
+import FolderTile from '../nb-folder-tile/folder-tile.jsx';
 import styles from './backpack.css';
 import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 

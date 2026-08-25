@@ -6,7 +6,7 @@ import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {safeStringify} from '../../lib/tw-safe-stringify.js';
-import RichDropdown from '../rich-dropdown/dropdown.jsx';
+import RichDropdown from '../nb-rich-dropdown/dropdown.jsx';
 
 const messages = defineMessages({
     forThisSprite: {

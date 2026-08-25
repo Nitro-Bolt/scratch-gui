@@ -25,7 +25,7 @@ import {
 } from '../lib/extension-packs';
 
 import LibraryComponent from '../components/library/library.jsx';
-import ExtensionPackManager from '../components/extension-pack-manager/extension-pack-manager.jsx';
+import ExtensionPackManager from '../components/nb-extension-pack-manager/extension-pack-manager.jsx';
 import extensionIcon from '../components/action-menu/icon--sprite.svg';
 import defaultExtensionBanner from '../lib/libraries/extensions/custom/custom.svg';
 

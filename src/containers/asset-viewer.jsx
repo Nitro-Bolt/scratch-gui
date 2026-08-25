@@ -10,7 +10,7 @@ import getAssetType from '../lib/nb-asset-type.js';
 
 import {connect} from 'react-redux';
 
-import AssetViewerComponent from '../components/asset-viewer/asset-viewer.jsx';
+import AssetViewerComponent from '../components/nb-asset-viewer/asset-viewer.jsx';
 
 class AssetViewer extends React.Component {
     constructor (props) {
