@@ -271,7 +271,7 @@
 .navigation {
     flex-grow: 1;
 }
-    
+
 .topic-item {
     display: flex;
     gap: 8px;
@@ -282,7 +282,7 @@
     line-height: 1.5rem;
     cursor: pointer;
 }
-    
+
 .topic-item.active {
     background-color: $looks-light-transparent;
     color: $looks-secondary;
@@ -470,10 +470,23 @@
     background: none;
 }
 
+.categoryColorLabel {
+    gap: 0.33rem;
+    width: 100%;
+}
+
+.deleteButton {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+.categoryColorLabel:hover .deleteButton {
+    opacity: 1;
+}
+
 .category-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem 0.25rem;
+    gap: 0.5rem;
 }
 
 .section {

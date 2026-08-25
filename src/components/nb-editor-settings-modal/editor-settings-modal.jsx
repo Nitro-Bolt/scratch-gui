@@ -36,6 +36,7 @@ import {
 import {setHiddenCategories} from '../../reducers/hidden-categories';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
 import ColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
+import DeleteButton from '../delete-button/delete-button.jsx';
 
 const messages = defineMessages({
     title: {
@@ -302,6 +303,15 @@ const EditorSettingsModal = props => {
     const handleBlockColorCommit = colorId => e => {
         const next = {...latestBlockColors.current, [colorId]: e.target.value};
         setBlockColors(next);
+        pendingBlockColors.current = null;
+        commitBlockColors(next);
+    };
+
+    const handleDeleteBlockColor = colorId => () => {
+        const next = {...latestBlockColors.current};
+        delete next[colorId];
+        setBlockColors(next);
+        applyBlockColors(next);
         pendingBlockColors.current = null;
         commitBlockColors(next);
     };
@@ -693,16 +703,13 @@ const EditorSettingsModal = props => {
                                         {BLOCK_COLOR_CATEGORIES.map(cat => {
                                             const value = blockColors[cat.colorId] || cat.default;
                                             return (
-                                                <label
+                                                <div
                                                     key={cat.colorId}
-                                                    className={styles.label}
-                                                    style={{gap: '0.33rem', width: 'fit-content'}}
+                                                    className={classNames(styles.label, styles.categoryColorLabel)}
                                                 >
                                                     <ColorPicker
                                                         value={value}
-                                                        // eslint-disable-next-line react/jsx-no-bind
                                                         onChange={v => handleBlockColorPreview(cat.colorId, v)}
-                                                        // eslint-disable-next-line react/jsx-no-bind
                                                         onCommit={handleBlockColorCommit(cat.colorId)}
                                                         className={styles.colorInput}
                                                         showIcon={false}
@@ -710,7 +717,11 @@ const EditorSettingsModal = props => {
                                                         size={'1.8rem'}
                                                     />
                                                     <span>{cat.label}</span>
-                                                </label>
+                                                    <DeleteButton
+                                                        onClick={handleDeleteBlockColor(cat.colorId)}
+                                                        className={styles.deleteButton}
+                                                    />
+                                                </div>
                                             );
                                         })}
                                     </div>
