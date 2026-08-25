@@ -753,6 +753,19 @@ const EditorSettingsModal = props => {
                         }}
                     />
                     <BooleanSetting
+                        value={!!props.preferences['hide-pause']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.hidePause"
+                            defaultMessage="Hide pause button"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.hidePauseHelp"
+                            defaultMessage="Removes the pause button from the project controls."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('hide-pause', e.target.checked)}
+                    />
+                    <BooleanSetting
                         value={!!props.preferences['hide-feedback']}
                         label={<FormattedMessage
                             id="nb.editorSettings.hideFeedback"

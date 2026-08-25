@@ -79,16 +79,20 @@ const Controls = function (props) {
                     title={intl.formatMessage(messages.goTitle)}
                     onClick={onGreenFlagClick}
                 />
-                <Pause
-                    paused={paused}
-                    title={intl.formatMessage(messages.pauseTitle)}
-                    onClick={onPauseClick}
-                />
-                {paused && !props.compilerEnabled &&
-                    <Step
-                        title={intl.formatMessage(messages.stepTitle)}
-                        onClick={onStepClick}
-                    />
+                {preferences['hide-pause'] !== true &&
+                    <>
+                        <Pause
+                            paused={paused}
+                            title={intl.formatMessage(messages.pauseTitle)}
+                            onClick={onPauseClick}
+                        />
+                        {paused && !props.compilerEnabled &&
+                            <Step
+                                title={intl.formatMessage(messages.stepTitle)}
+                                onClick={onStepClick}
+                            />
+                        }
+                    </>
                 }
                 <StopAll
                     active={active}
@@ -116,12 +120,15 @@ Controls.propTypes = {
     compilerEnabled: PropTypes.bool.isRequired,
     intl: intlShape.isRequired,
     onGreenFlagClick: PropTypes.func.isRequired,
+    onPauseClick: PropTypes.func.isRequired,
+    onStepClick: PropTypes.func.isRequired,
     onStopAllClick: PropTypes.func.isRequired,
     framerate: PropTypes.number,
     interpolation: PropTypes.bool,
     isSmall: PropTypes.bool,
     isHidden: PropTypes.bool,
     turbo: PropTypes.bool,
+    paused: PropTypes.bool,
     preferences: PropTypes.object
 };
 
