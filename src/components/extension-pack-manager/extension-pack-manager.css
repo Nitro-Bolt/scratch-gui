@@ -110,7 +110,7 @@
     margin: 1rem 0;
 }
 
-.body input,
+.body input:not(.checkbox-option),
 .body textarea,
 .body button {
     border: 1px solid $ui-black-transparent;
@@ -119,7 +119,7 @@
     font: inherit;
 }
 
-.body input,
+.body input:not(.checkbox-option),
 .body textarea {
     color: $text-primary;
     background: $input-background;
@@ -194,6 +194,8 @@
     flex-shrink: 0;
     width: 20px;
     height: 20px;
+    margin: 0;
+    padding: 0;
 }
 
 .multi-select-row {
