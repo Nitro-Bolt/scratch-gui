@@ -187,7 +187,8 @@ const fetchSavedPacks = async () => {
 
 let cachedPacks = [];
 const initialPackLoad = fetchSavedPacks().then(packs => {
-    cachedPacks = packs;
+    const savedPackURLs = new Set(getPackURLs());
+    cachedPacks = packs.filter(pack => savedPackURLs.has(pack.url));
     return packs;
 });
 
@@ -260,7 +261,18 @@ class ExtensionLibrary extends React.PureComponent {
     }
     componentDidMount () {
         initialPackLoad.then(packs => {
-            this.setState({packs});
+            this.setState(state => {
+                const savedPackURLs = getPackURLs();
+                const packsByURL = new Map([
+                    ...packs.map(pack => [pack.url, pack]),
+                    ...state.packs.map(pack => [pack.url, pack])
+                ]);
+                const currentPacks = savedPackURLs
+                    .map(url => packsByURL.get(url))
+                    .filter(Boolean);
+                cachedPacks = currentPacks;
+                return {packs: currentPacks};
+            });
         });
         if (!this.state.galleryBySource) {
             const timeout = setTimeout(() => {
