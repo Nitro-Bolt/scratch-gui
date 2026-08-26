@@ -22,9 +22,31 @@
 
 .detail-area {
     display: flex;
+    flex-direction: column;
     flex-grow: 1;
     flex-shrink: 1;
     overflow: visible;
+}
+
+.shared-control {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: calc(2 * $space);
+    color: $text-primary;
+    white-space: nowrap;
+}
+
+.editable-detail,
+.read-only-detail {
+    display: flex;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.read-only-detail {
+    pointer-events: none;
+    opacity: 0.72;
 }
 
 [dir="ltr"] .detail-area {

@@ -255,6 +255,7 @@ class AssetViewer extends React.Component {
 
         return (
             <AssetViewerComponent
+                sharedAssetControl={this.props.sharedAssetControl}
                 name={this.props.name}
                 lastModified={this.props.lastModified}
                 size={this.props.size}
@@ -278,6 +279,7 @@ class AssetViewer extends React.Component {
 }
 
 AssetViewer.propTypes = {
+    sharedAssetControl: PropTypes.node,
     icon: PropTypes.object.isRequired,
     name: PropTypes.string.isRequired,
     lastModified: PropTypes.string.isRequired,

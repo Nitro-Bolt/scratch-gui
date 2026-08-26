@@ -270,6 +270,9 @@ class AssetTab extends React.Component {
 
         return (
             <AssetPanel
+                isStage={vm.editingTarget.isStage}
+                selectedSharedItem={selectedAsset}
+                sharedAssetKind="asset"
                 buttons={[{
                     title: intl.formatMessage(messages.fileUploadAsset),
                     img: fileUploadIcon,

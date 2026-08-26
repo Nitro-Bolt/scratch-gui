@@ -49,10 +49,10 @@ const mapStateToProps = state => {
     let asset;
     if (currentTargetId) {
         if (targets.stage.id === currentTargetId) {
-            asset = targets.stage.costume.asset;
+            asset = targets.stage.costume && targets.stage.costume.asset;
         } else if (Object.prototype.hasOwnProperty.call(targets.sprites, currentTargetId)) {
             const currentSprite = targets.sprites[currentTargetId];
-            asset = currentSprite.costume.asset;
+            asset = currentSprite.costume && currentSprite.costume.asset;
         }
     }
 

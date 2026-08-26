@@ -619,6 +619,7 @@ class SoundEditor extends React.Component {
         const {effectTypes} = AudioEffects;
         return (
             <SoundEditorComponent
+                sharedAssetControl={this.props.sharedAssetControl}
                 isStereo={this.props.isStereo}
                 duration={this.props.duration}
                 size={this.props.size}
@@ -686,6 +687,7 @@ class SoundEditor extends React.Component {
 }
 
 SoundEditor.propTypes = {
+    sharedAssetControl: PropTypes.node,
     isStereo: PropTypes.bool,
     duration: PropTypes.number,
     size: PropTypes.number,

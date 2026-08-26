@@ -255,6 +255,7 @@ const SoundEditor = props => {
                             className={styles.nameInput}
                         />
                     </Label>
+                    {props.sharedAssetControl}
                     <div className={styles.buttonGroup}>
                         <button
                             className={styles.button}
@@ -617,6 +618,7 @@ const SoundEditor = props => {
 };
 
 SoundEditor.propTypes = {
+    sharedAssetControl: PropTypes.node,
     isStereo: PropTypes.bool.isRequired,
     duration: PropTypes.number.isRequired,
     size: PropTypes.number.isRequired,

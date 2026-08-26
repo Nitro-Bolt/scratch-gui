@@ -385,6 +385,9 @@ class CostumeTab extends React.Component {
         })) : [];
         return (
             <AssetPanel
+                isStage={isStage}
+                selectedSharedItem={target.costumes[this.state.selectedCostumeIndex]}
+                sharedAssetKind="costume"
                 buttons={[
                     {
                         title: intl.formatMessage(addLibraryMessage),

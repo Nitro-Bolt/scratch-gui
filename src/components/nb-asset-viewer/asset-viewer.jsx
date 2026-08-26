@@ -58,6 +58,7 @@ const AssetViewerComponent = props => (
                                 className={styles.nameInput}
                             />
                         </Label>
+                        {props.sharedAssetControl}
                         <div className={styles.buttonGroup}>
                             <button
                                 className={styles.button}
@@ -156,15 +157,18 @@ const AssetViewerComponent = props => (
                         src={props.imageURL}
                     />
                 )}
-                <div className={styles.attribute}>
-                    <Label text={props.intl.formatMessage(messages.asset)}>
-                        <BufferedInput
-                            tabIndex="1"
-                            type="text"
-                            value={props.name}
-                            onSubmit={props.onChangeName}
-                        />
-                    </Label>
+                <div className={styles.nameRow}>
+                    <div className={styles.attribute}>
+                        <Label text={props.intl.formatMessage(messages.asset)}>
+                            <BufferedInput
+                                tabIndex="1"
+                                type="text"
+                                value={props.name}
+                                onSubmit={props.onChangeName}
+                            />
+                        </Label>
+                    </div>
+                    {props.sharedAssetControl}
                 </div>
                 <div className={styles.attribute}>
                     <Label text={props.intl.formatMessage(messages.lastModifiedDate)}>
@@ -188,6 +192,7 @@ const AssetViewerComponent = props => (
 );
 
 AssetViewerComponent.propTypes = {
+    sharedAssetControl: PropTypes.node,
     name: PropTypes.string.isRequired,
     lastModified: PropTypes.string.isRequired,
     size: PropTypes.string.isRequired,

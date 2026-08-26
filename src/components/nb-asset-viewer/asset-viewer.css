@@ -20,6 +20,11 @@
     margin: $space;
 }
 
+.name-row {
+    display: flex;
+    align-items: center;
+}
+
 .attribute span {
     font-size: 0.75rem;
 }

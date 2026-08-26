@@ -311,6 +311,9 @@ class SoundTab extends React.Component {
 
         return (
             <AssetPanel
+                isStage={vm.editingTarget.isStage}
+                selectedSharedItem={sprite.sounds[this.state.selectedSoundIndex]}
+                sharedAssetKind="sound"
                 buttons={isSupported ? [{
                     title: intl.formatMessage(messages.addSound),
                     img: addSoundFromLibraryIcon,

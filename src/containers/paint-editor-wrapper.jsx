@@ -36,6 +36,7 @@ class PaintEditorWrapper extends React.Component {
             this.props.canvasSizeMultiplier !== nextProps.canvasSizeMultiplier ||
             this.props.noSwapButton !== nextProps.noSwapButton ||
             this.props.noCutButton !== nextProps.noCutButton ||
+            this.props.sharedAssetControl !== nextProps.sharedAssetControl ||
             this.state.fonts !== nextState.fonts;
     }
     componentWillUnmount () {
@@ -113,6 +114,7 @@ PaintEditorWrapper.propTypes = {
     rotationCenterX: PropTypes.number,
     rotationCenterY: PropTypes.number,
     rtl: PropTypes.bool,
+    sharedAssetControl: PropTypes.node,
     selectedCostumeIndex: PropTypes.number.isRequired,
     vm: PropTypes.instanceOf(VM)
 };
