@@ -236,6 +236,7 @@ Select.propTypes = {
 
 const Tags = ({manifest}) => (
     <span className={styles.tagContainer}>
+        {manifest.category ? manifest.category : ""}
         {manifest.tags.includes('recommended') && (
             <span className={classNames(styles.tag, styles.tagRecommended)}>
                 {settingsTranslations.tagRecommended}

@@ -72,12 +72,10 @@ const addons = [
     'tw-remove-feedback',
     'tw-disable-vibration',
     'tw-disable-cloud-variables',
-    'tw-disable-compiler'
-];
-
-const newAddons = [
+    'tw-disable-compiler',
     'expanded-backpack'
 ];
+// expanded-backpack is NOT new anymore LOL!
 
 // eslint-disable-next-line import/no-commonjs
 module.exports = {
