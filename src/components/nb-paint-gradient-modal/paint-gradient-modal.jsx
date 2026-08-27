@@ -43,13 +43,17 @@ const PaintGradientModal = props => {
                 <Box
                     className={styles.preview}
                     style={{backgroundImage: gradientToCSS(props.gradient)}}
-                />
+                >
+                    <img
+                        src={arrowIcon}
+                        style={{
+                            transform: `rotate(${props.gradient.angle - 90}deg)`,
+                            height: '70%'
+                        }}
+                    />
+                </Box>
                 {props.gradient.type === 'linear' && (
                     <label className={styles.setting}>
-                        <img
-                            src={arrowIcon}
-                            style={{transform: `rotate(${props.gradient.angle - 90}deg)`}}
-                        />
                         <input
                             max={360}
                             min={0}
