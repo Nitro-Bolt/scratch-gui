@@ -944,6 +944,9 @@ const json = function (colors, nbBlocks = true) {
                 <shadow type="json_map_index">
                 </shadow>
             </value>
+            <value name="METHOD">
+                ${textShadow(baz)}
+            </value>
         </block>
         <block type="json_foreach">
           <value name="VALUE">
