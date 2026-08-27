@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
-import dropdownCaret from '../rich-dropdown/dropdown-caret.svg';
+import dropdownCaret from '../nb-rich-dropdown/dropdown-caret.svg';
 import ProjectDiff from './project-diff.jsx';
 import log from '../../lib/log';
 import LazyScratchBlocks from '../../lib/tw-lazy-scratch-blocks';

@@ -1,0 +1,254 @@
+@import "../../css/colors.css";
+@import "../../css/units.css";
+@import "../../css/filters.css";
+
+.modal-content {
+    width: calc(100% - 2rem);
+    max-width: 640px;
+    margin: 40px auto;
+}
+
+.body {
+    padding: 1.5rem 2.25rem 2rem;
+    max-height: calc(100vh - 130px);
+    overflow-y: auto;
+    background: $ui-modal-background;
+}
+
+.body h2 {
+    margin: 1.25rem 0 0.25rem;
+}
+
+.body h2:first-child {
+    margin-top: 0;
+}
+
+.heading-with-help {
+    display: flex;
+    align-items: center;
+}
+
+.help-icon {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-left: 0.5rem;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    cursor: pointer;
+}
+
+.help-icon img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    filter: $filter-icon-black;
+}
+
+.pack-help {
+    margin: 0.5rem 0 0.75rem;
+    padding: 0.75rem;
+    border-radius: 4px;
+    background: $looks-light-transparent;
+}
+
+.body p {
+    margin: 0.25rem 0 0.75rem;
+}
+
+.add-row,
+.fields {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.add-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+.fields {
+    flex-wrap: wrap;
+}
+
+.fields input {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 0;
+}
+
+.fields textarea {
+    flex: 1 1 100%;
+    min-height: 8rem;
+    resize: vertical;
+}
+
+.file-picker {
+    width: 100% !important;
+    margin: 1rem 0 !important;
+    padding: 1rem !important;
+    border: 4px dashed $ui-tertiary !important;
+    border-radius: 5px !important;
+    color: $text-primary !important;
+    background: none !important;
+}
+
+.file-picker:focus-within {
+    border-color: $looks-secondary !important;
+}
+
+.individual-loader p {
+    display: block;
+    margin: 1rem 0;
+}
+
+.individual-loader input,
+.individual-loader textarea {
+    margin: 1rem 0;
+}
+
+.body input:not(.checkbox-option),
+.body textarea,
+.body button {
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    padding: 0.65rem;
+    font: inherit;
+}
+
+.body input:not(.checkbox-option),
+.body textarea {
+    color: $text-primary;
+    background: $input-background;
+}
+
+.body button {
+    flex-shrink: 0;
+    background: $looks-secondary;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid $ui-black-transparent;
+    border-radius: $space;
+    background: $ui-secondary;
+}
+
+.entry-list {
+    max-height: 12rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    overflow-y: auto;
+    border: 1px solid $ui-black-transparent;
+    border-radius: $space;
+    background: $ui-secondary;
+}
+
+.entry-list .item {
+    margin-top: 0.5rem;
+    background: $ui-modal-background;
+}
+
+.entry-list .item:first-child {
+    margin-top: 0;
+}
+
+.entry-list .item[draggable="true"] {
+    cursor: grab;
+}
+
+.entry-list .item[draggable="true"]:active {
+    cursor: grabbing;
+}
+
+.delete-option {
+    width: 20px;
+    height: 20px;
+    padding: 0 !important;
+    border: 1px solid $ui-black-transparent !important;
+    border-radius: 4px !important;
+    outline: none;
+    background-color: $looks-secondary !important;
+    background-image: url("../delete-button/icon--delete.svg") !important;
+    background-size: 100% !important;
+    transition: all 0.2s;
+}
+
+.delete-option:hover {
+    border-color: $looks-secondary !important;
+    box-shadow: 0 0 0 4px $looks-transparent;
+}
+
+.checkbox-option {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.multi-select-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.multi-select-normal,
+.multi-select-delete {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.85rem !important;
+}
+
+.multi-select-normal {
+    color: black !important;
+    background: white !important;
+}
+
+.multi-select-delete:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.item div {
+    min-width: 0;
+}
+
+.item small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.error {
+    color: $error-primary;
+    font-weight: bold;
+}
+
+@media (max-width: 500px) {
+    .modal-content {
+        margin: 20px auto;
+    }
+
+    .body {
+        padding: 1rem;
+        max-height: calc(100vh - 90px);
+    }
+
+    .add-row,
+    .fields {
+        flex-direction: column;
+    }
+}

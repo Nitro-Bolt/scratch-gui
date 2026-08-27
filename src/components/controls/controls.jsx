@@ -4,8 +4,8 @@ import React from 'react';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
 import GreenFlag from '../green-flag/green-flag.jsx';
-import Pause from '../pause/pause.jsx';
-import Step from '../step/step.jsx';
+import Pause from '../nb-pause/pause.jsx';
+import Step from '../nb-step/step.jsx';
 import StopAll from '../stop-all/stop-all.jsx';
 import TurboMode from '../turbo-mode/turbo-mode.jsx';
 import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.jsx';
@@ -79,16 +79,20 @@ const Controls = function (props) {
                     title={intl.formatMessage(messages.goTitle)}
                     onClick={onGreenFlagClick}
                 />
-                <Pause
-                    paused={paused}
-                    title={intl.formatMessage(messages.pauseTitle)}
-                    onClick={onPauseClick}
-                />
-                {paused && !props.compilerEnabled &&
-                    <Step
-                        title={intl.formatMessage(messages.stepTitle)}
-                        onClick={onStepClick}
-                    />
+                {preferences['hide-pause'] !== true &&
+                    <>
+                        <Pause
+                            paused={paused}
+                            title={intl.formatMessage(messages.pauseTitle)}
+                            onClick={onPauseClick}
+                        />
+                        {paused && !props.compilerEnabled &&
+                            <Step
+                                title={intl.formatMessage(messages.stepTitle)}
+                                onClick={onStepClick}
+                            />
+                        }
+                    </>
                 }
                 <StopAll
                     active={active}
@@ -116,12 +120,15 @@ Controls.propTypes = {
     compilerEnabled: PropTypes.bool.isRequired,
     intl: intlShape.isRequired,
     onGreenFlagClick: PropTypes.func.isRequired,
+    onPauseClick: PropTypes.func.isRequired,
+    onStepClick: PropTypes.func.isRequired,
     onStopAllClick: PropTypes.func.isRequired,
     framerate: PropTypes.number,
     interpolation: PropTypes.bool,
     isSmall: PropTypes.bool,
     isHidden: PropTypes.bool,
     turbo: PropTypes.bool,
+    paused: PropTypes.bool,
     preferences: PropTypes.object
 };
 

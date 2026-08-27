@@ -9,6 +9,7 @@ import {openFontsModal} from '../reducers/modals';
 
 import {connect} from 'react-redux';
 import {Theme} from '../lib/themes/index.js';
+import PaintGradientModal from '../components/nb-paint-gradient-modal/paint-gradient-modal.jsx';
 
 class PaintEditorWrapper extends React.Component {
     constructor (props) {
@@ -17,10 +18,17 @@ class PaintEditorWrapper extends React.Component {
             'handleUpdateImage',
             'handleUpdateName',
             'handleUpdateFonts',
+            'handleOpenCustomGradient',
+            'handleChangeCustomGradient',
+            'handleCancelCustomGradient',
+            'handleCloseCustomGradient',
             'fontInlineFn'
         ]);
         this.state = {
-            fonts: this.props.vm.runtime.fontManager.getFonts()
+            fonts: this.props.vm.runtime.fontManager.getFonts(),
+            customGradient: null,
+            originalCustomGradient: null,
+            customGradientCallback: null
         };
     }
     componentDidMount () {
@@ -36,7 +44,8 @@ class PaintEditorWrapper extends React.Component {
             this.props.canvasSizeMultiplier !== nextProps.canvasSizeMultiplier ||
             this.props.noSwapButton !== nextProps.noSwapButton ||
             this.props.noCutButton !== nextProps.noCutButton ||
-            this.state.fonts !== nextState.fonts;
+            this.state.fonts !== nextState.fonts ||
+            this.state.customGradient !== nextState.customGradient;
     }
     componentWillUnmount () {
         this.props.vm.runtime.fontManager.off('change', this.handleUpdateFonts);
@@ -65,6 +74,37 @@ class PaintEditorWrapper extends React.Component {
                 2 /* bitmapResolution */);
         }
     }
+    handleOpenCustomGradient (customGradient, onChange) {
+        this.setState({
+            customGradient: customGradient,
+            originalCustomGradient: customGradient,
+            customGradientCallback: onChange
+        });
+    }
+    handleChangeCustomGradient (customGradient) {
+        this.setState({customGradient});
+        if (this.state.customGradientCallback) this.state.customGradientCallback(customGradient);
+    }
+    handleCloseCustomGradient () {
+        if (this.state.customGradientCallback && this.state.customGradient) {
+            this.state.customGradientCallback(this.state.customGradient);
+        }
+        this.setState({
+            customGradient: null,
+            originalCustomGradient: null,
+            customGradientCallback: null
+        });
+    }
+    handleCancelCustomGradient () {
+        if (this.state.customGradientCallback && this.state.originalCustomGradient) {
+            this.state.customGradientCallback(this.state.originalCustomGradient);
+        }
+        this.setState({
+            customGradient: null,
+            originalCustomGradient: null,
+            customGradientCallback: null
+        });
+    }
     fontInlineFn (svgString) {
         return inlineSvgFonts(svgString, this.props.vm.renderer.customFonts);
     }
@@ -77,21 +117,32 @@ class PaintEditorWrapper extends React.Component {
         } = this.props;
         const costume = vm.getCostume(selectedCostumeIndex);
         return (
-            <PaintEditor
-                {...componentProps}
-                image={this.props.imageFormat === 'svg' ? sanitizeSvg.sanitizeSvgText(costume) : costume}
-                onUpdateImage={this.handleUpdateImage}
-                onUpdateName={this.handleUpdateName}
-                fontInlineFn={this.fontInlineFn}
-                theme={this.props.theme.isDark() ? 'dark' : 'light'}
-                customFonts={this.state.fonts}
-                width={this.props.customStageSize.width}
-                height={this.props.customStageSize.height}
-                nudgeMultiplier={this.props.nudgeMultiplier}
-                canvasSizeMultiplier={this.props.canvasSizeMultiplier}
-                noSwapButton={this.props.noSwapButton}
-                noCutButton={this.props.noCutButton}
-            />
+            <React.Fragment>
+                <PaintEditor
+                    {...componentProps}
+                    image={this.props.imageFormat === 'svg' ? sanitizeSvg.sanitizeSvgText(costume) : costume}
+                    onOpenCustomGradient={this.handleOpenCustomGradient}
+                    onUpdateImage={this.handleUpdateImage}
+                    onUpdateName={this.handleUpdateName}
+                    fontInlineFn={this.fontInlineFn}
+                    theme={this.props.theme.isDark() ? 'dark' : 'light'}
+                    customFonts={this.state.fonts}
+                    width={this.props.customStageSize.width}
+                    height={this.props.customStageSize.height}
+                    nudgeMultiplier={this.props.nudgeMultiplier}
+                    canvasSizeMultiplier={this.props.canvasSizeMultiplier}
+                    noSwapButton={this.props.noSwapButton}
+                    noCutButton={this.props.noCutButton}
+                />
+                {this.state.customGradient && (
+                    <PaintGradientModal
+                        gradient={this.state.customGradient}
+                        onChange={this.handleChangeCustomGradient}
+                        onCancel={this.handleCancelCustomGradient}
+                        onOk={this.handleCloseCustomGradient}
+                    />
+                )}
+            </React.Fragment>
         );
     }
 }

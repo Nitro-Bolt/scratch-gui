@@ -82,10 +82,11 @@ class LibraryComponent extends React.Component {
         }
     }
     handleSelect (id) {
-        if (!this._lastClickWasShift) {
+        const item = this.getFilteredData()[id];
+        if (!this._lastClickWasShift && !item.keepOpen) {
             this.handleClose();
         }
-        this.props.onItemSelected(this.getFilteredData()[id]);
+        this.props.onItemSelected(item);
     }
     readFavoritesFromStorage () {
         let data;
@@ -283,6 +284,15 @@ class LibraryComponent extends React.Component {
                         )}
                         {this.props.tags &&
                             <div className={styles.tagWrapper}>
+                                {this.props.onTagManager && (
+                                    <TagButton
+                                        active={false}
+                                        className={classNames(styles.filterBarItem, styles.tagButton)}
+                                        intlLabel="+"
+                                        tag="manage"
+                                        onClick={this.props.onTagManager}
+                                    />
+                                )}
                                 {tagListPrefix.concat(this.props.tags).map((tagProps, id) => (
                                     <TagButton
                                         active={this.state.selectedTag === tagProps.tag.toLowerCase()}
@@ -309,7 +319,7 @@ class LibraryComponent extends React.Component {
                         this._lastClickWasShift = e.shiftKey;
                     }}
                 >
-                    {filteredData && this.getFilteredData().map((dataItem, index) => (
+                    {filteredData && filteredData.map((dataItem, index) => (
                         dataItem === '---' ? (
                             <Separator key={index} />
                         ) : (
@@ -332,10 +342,11 @@ class LibraryComponent extends React.Component {
                                 insetIconURL={dataItem.insetIconURL}
                                 internetConnectionRequired={dataItem.internetConnectionRequired}
                                 isPlaying={this.state.playingItem === index}
-                                key={dataItem.key || (
-                                    typeof dataItem.name === 'string' ?
-                                        dataItem.name :
-                                        dataItem.rawURL
+                                key={dataItem.key ||
+                                    dataItem.extensionURL ||
+                                    dataItem.extensionId ||
+                                    dataItem.rawURL || (
+                                    typeof dataItem.name === 'string' ? dataItem.name : index
                                 )}
                                 name={dataItem.name}
                                 credits={dataItem.credits}
@@ -397,6 +408,7 @@ LibraryComponent.propTypes = {
     onItemMouseLeave: PropTypes.func,
     onItemSelected: PropTypes.func,
     onRequestClose: PropTypes.func,
+    onTagManager: PropTypes.func,
     setStopHandler: PropTypes.func,
     showPlayButton: PropTypes.bool,
     tags: PropTypes.arrayOf(PropTypes.shape(TagButton.propTypes)),

@@ -12,7 +12,7 @@ import SpriteSelectorItem from '../../containers/sprite-selector-item.jsx';
 import SortableHOC from '../../lib/sortable-hoc.jsx';
 import SortableAsset from '../asset-panel/sortable-asset.jsx';
 import ThrottledPropertyHOC from '../../lib/throttled-property-hoc.jsx';
-import FolderTile from '../folder-tile/folder-tile.jsx';
+import FolderTile from '../nb-folder-tile/folder-tile.jsx';
 
 import styles from './sprite-selector.css';
 

@@ -9,7 +9,7 @@ import SortableAsset from './sortable-asset.jsx';
 import SortableHOC from '../../lib/sortable-hoc.jsx';
 import DragConstants from '../../lib/drag-constants';
 import buildFolderLayout from '../../lib/folder-layout';
-import FolderTile from '../folder-tile/folder-tile.jsx';
+import FolderTile from '../nb-folder-tile/folder-tile.jsx';
 import VM from 'scratch-vm';
 
 import styles from './selector.css';

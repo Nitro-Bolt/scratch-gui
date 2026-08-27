@@ -99,6 +99,7 @@ const defineDynamicBlock = (ScratchBlocks, categoryInfo, staticBlockInfo, extend
             case ArgumentType.STRING:
             case ArgumentType.NUMBER:
             case ArgumentType.ANGLE:
+            case ArgumentType.SLIDER:
             case ArgumentType.MATRIX:
             case ArgumentType.NOTE:
             case ArgumentType.COLOR:
