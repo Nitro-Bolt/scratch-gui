@@ -827,7 +827,6 @@ const json = function (colors, nbBlocks = true) {
         secondaryColour="${colors.tertiary}">
         <block type="json_object">
         </block>
-        ${blockSeparator}
         <block type="json_get_properties">
         </block>
         <block type="json_value_of_key">
@@ -868,7 +867,6 @@ const json = function (colors, nbBlocks = true) {
         ${blockSeparator}
         <block type="json_array">
         </block>
-        ${blockSeparator}
         <block type="json_value_of_index">
             <value name="INDEX">
                 <shadow type="json_indexmenu">
@@ -924,16 +922,17 @@ const json = function (colors, nbBlocks = true) {
                 </shadow>
             </value>
         </block>
-        <block type="json_merge_array">
-        </block>
-        <block type="json_reverse_array">
-        </block>
         <block type="json_has_item">
             <value name="ITEM">
                 <shadow type="text">
                     <field name="TEXT">${bar}</field>
                 </shadow>
             </value>
+        </block>
+        ${blockSeparator}
+        <block type="json_merge_array">
+        </block>
+        <block type="json_reverse_array">
         </block>
         <block type="json_map">
             <value name="VALUE">
