@@ -949,6 +949,18 @@ const json = function (colors, nbBlocks = true) {
                 ${textShadow(baz)}
             </value>
         </block>
+        <block type="json_filter">
+            <value name="VALUE">
+                <shadow type="json_filter_value">
+                </shadow>
+            </value>
+            <value name="INDEX">
+                <shadow type="json_filter_index">
+                </shadow>
+            </value>
+            <value name="METHOD">
+            </value>
+        </block>
         <block type="json_foreach">
           <value name="VALUE">
             <shadow type="json_foreach_value">
