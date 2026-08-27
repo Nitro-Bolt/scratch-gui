@@ -5,6 +5,7 @@ import React from 'react';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
 import styles from './paint-gradient-modal.css';
+import arrowIcon from './icon--arrow.svg';
 
 const gradientToCSS = gradient => `${gradient.type}-gradient(${
     gradient.type === 'linear' ? `${gradient.angle}deg, ` : ''
@@ -45,6 +46,10 @@ const PaintGradientModal = props => {
                 />
                 {props.gradient.type === 'linear' && (
                     <label className={styles.setting}>
+                        <img
+                            src={arrowIcon}
+                            style={{transform: `rotate(${props.gradient.angle - 90}deg)`}}
+                        />
                         <input
                             max={360}
                             min={0}
