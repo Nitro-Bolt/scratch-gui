@@ -961,6 +961,19 @@ const json = function (colors, nbBlocks = true) {
             <value name="METHOD">
             </value>
         </block>
+        <block type="json_sort">
+            <value name="A">
+                <shadow type="json_sort_a">
+                </shadow>
+            </value>
+            <value name="B">
+                <shadow type="json_sort_b">
+                </shadow>
+            </value>
+            <value name="METHOD">
+              ${numberShadow(0)}
+            </value>
+        </block>
         <block type="json_foreach">
           <value name="VALUE">
             <shadow type="json_foreach_value">
