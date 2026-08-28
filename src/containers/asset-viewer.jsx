@@ -207,20 +207,9 @@ class AssetViewer extends React.Component {
             return;
         }
 
-        const model = this.editor.getModel();
-        if (!model) return;
-
         this.editor.trigger('asset-editor-toolbar', 'undo', null);
 
         setTimeout(() => {
-            if (!this.editor || !model) return;
-
-            const contentAfter = model.getValue();
-
-            if (contentAfter === this.initialContent) {
-                this.editor.trigger('asset-editor-toolbar', 'redo', null);
-            }
-
             this.updateUndoRedoState();
         }, 0);
     }
