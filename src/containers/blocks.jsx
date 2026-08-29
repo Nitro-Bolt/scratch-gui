@@ -15,7 +15,7 @@ import ExtensionLibrary from './extension-library.jsx';
 import extensionData from '../lib/libraries/extensions/index.jsx';
 import CustomProcedures from './custom-procedures.jsx';
 import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
-import {BLOCKS_DEFAULT_SCALE, STAGE_DISPLAY_SIZES} from '../lib/layout-constants';
+import {BLOCKS_DEFAULT_SCALE} from '../lib/layout-constants';
 import DropAreaHOC from '../lib/drop-area-hoc.jsx';
 import DragConstants from '../lib/drag-constants';
 import defineDynamicBlock from '../lib/define-dynamic-block';
@@ -724,6 +724,8 @@ class Blocks extends React.Component {
             customStageSize,
             customProceduresVisible,
             extensionLibraryVisible,
+            hiddenCategories,
+            nbBlocks,
             options,
             stageSize,
             vm,
@@ -804,6 +806,7 @@ Blocks.propTypes = {
     isVisible: PropTypes.bool,
     locale: PropTypes.string.isRequired,
     messages: PropTypes.objectOf(PropTypes.string),
+    nbBlocks: PropTypes.bool,
     onActivateColorPicker: PropTypes.func,
     onActivateCustomProcedures: PropTypes.func,
     onOpenConnectionModal: PropTypes.func,
