@@ -54,7 +54,7 @@ const getBlockShape = (preferences, key = 'block-shape') => ({
 });
 
 const applyBlockShape = (ScratchBlocks, shape) => {
-    const {
+    let {
         paddingSize = defaultBlockShape.paddingSize,
         cornerSize = defaultBlockShape.cornerSize,
         notchSize = defaultBlockShape.notchSize
