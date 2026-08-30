@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable max-len */
 import {defineMessages, FormattedMessage, intlShape, injectIntl} from 'react-intl';
@@ -312,15 +313,42 @@ Section.propTypes = {
     children: PropTypes.node
 };
 
+const CollapsibleSetting = ({label, help, children}) => {
+    const [expanded, setExpanded] = useState(false);
+    return (
+        <Setting
+            help={help}
+            primary={
+                <button
+                    className={classNames(styles.label, styles.collapseButton)}
+                    onClick={() => setExpanded(e => !e)}
+                >
+                    {label}
+                    <img
+                        className={classNames(styles.collapseArrow, {
+                            [styles.collapseArrowExpanded]: expanded
+                        })}
+                        src={dropdownCaret}
+                    />
+                </button>
+            }
+            secondary={
+                expanded && children
+            }
+        />
+    );
+};
+CollapsibleSetting.propTypes = {
+    label: PropTypes.node.isRequired,
+    help: PropTypes.node,
+    children: PropTypes.node
+};
+
 const EditorSettingsModal = props => {
     const [selectedSectionIndex, setSelectedSectionIndex] = useState(props.activeTab ?? 0);
     const [windchimeOptOut, setWindchimeOptOut] = useState(localStorage.getItem('tw:windchime_opt_out') === 'true');
     const [dirty, setDirty] = useState(false);
-    const [categoriesExpanded, setCategoriesExpanded] = useState(false);
     const [blockColors, setBlockColors] = useState(loadBlockColors);
-    const [blockColorsExpanded, setBlockColorsExpanded] = useState(false);
-    const [blockShapeExpanded, setBlockShapeExpanded] = useState(false);
-    const [tabsExpanded, setTabsExpanded] = useState(false);
 
     const latestBlockColors = useRef(blockColors);
     latestBlockColors.current = blockColors;
@@ -670,328 +698,276 @@ const EditorSettingsModal = props => {
                         // eslint-disable-next-line react/jsx-no-bind
                         onChange={e => props.onSetPreference('hide-nb-blocks', e.target.checked)}
                     />
-                    <Setting
-                        help={
-                            <FormattedMessage
-                                id="nb.editorSettings.hiddenCategoriesHelp"
-                                defaultMessage="Choose which default categories to show or hide in the block toolbox."
-                            />
-                        }
-                        primary={
-                            <button
-                                className={classNames(styles.label, styles.collapseButton)}
-                                onClick={() => setCategoriesExpanded(e => !e)}
-                            >
-                                <FormattedMessage
-                                    id="nb.editorSettings.hiddenCategories"
-                                    defaultMessage="Visible categories"
-                                />
-                                <img
-                                    className={classNames(styles.collapseArrow, {
-                                        [styles.collapseArrowExpanded]: categoriesExpanded
-                                    })}
-                                    src={dropdownCaret}
-                                />
-                            </button>
-                        }
-                        secondary={
-                            categoriesExpanded && (<div><div className={styles.categoryGrid}>
-                                {toolboxCategories.map(category => {
-                                    const isNB = category.id === 'json' || category.id === 'assets';
-                                    const hideNB = !!props.preferences['hide-nb-blocks'] && isNB;
-                                    const isVisible = !hideNB && !hiddenCategories.includes(category.id);
-                                    const visibleCount = toolboxCategories.filter(c =>
-                                        !(!!props.preferences['hide-nb-blocks'] && (c.id === 'json' || c.id === 'assets')) &&
-                                    !hiddenCategories.includes(c.id)
-                                    ).length;
+                    <CollapsibleSetting
+                        label={<FormattedMessage
+                            id="nb.editorSettings.hiddenCategories"
+                            defaultMessage="Visible categories"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.hiddenCategoriesHelp"
+                            defaultMessage="Choose which default categories to show or hide in the block toolbox."
+                        />}
+                    >
+                        <div><div className={styles.categoryGrid}>
+                            {toolboxCategories.map(category => {
+                                const isNB = category.id === 'json' || category.id === 'assets';
+                                const hideNB = !!props.preferences['hide-nb-blocks'] && isNB;
+                                const isVisible = !hideNB && !hiddenCategories.includes(category.id);
+                                const visibleCount = toolboxCategories.filter(c =>
+                                    !(!!props.preferences['hide-nb-blocks'] && (c.id === 'json' || c.id === 'assets')) &&
+                                !hiddenCategories.includes(c.id)
+                                ).length;
 
+                                return (
+                                    <label
+                                        key={category.id}
+                                        className={styles.label}
+                                    >
+                                        <FancyCheckbox
+                                            className={styles.checkbox}
+                                            checked={isVisible}
+                                            disabled={hideNB || (isVisible && visibleCount === 1)}
+                                            onChange={() => {
+                                                const next = hiddenCategories.includes(category.id) ?
+                                                    hiddenCategories.filter(id => id !== category.id) :
+                                                    [...hiddenCategories, category.id];
+                                                props.onSetPreference('hidden-categories', next);
+                                            }}
+                                        />
+                                        {category.label}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                        <button
+                            className={styles.button}
+                            onClick={handleResetCategoriesVisibility}
+                            style={{marginTop: '8px'}}
+                        >
+                            <FormattedMessage
+                                id="nb.editorSettings.resetCategoriesVisibility"
+                                defaultMessage="Reset to defaults"
+                            />
+                        </button>
+                        </div>
+                    </CollapsibleSetting>
+                    <CollapsibleSetting
+                        label={<FormattedMessage
+                            id="nb.editorSettings.blockColors"
+                            defaultMessage="Block colors"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.blockColorsHelp"
+                            defaultMessage="Customize the primary color of each block category."
+                        />}
+                    >
+                        <div>
+                            <div className={styles.categoryGrid}>
+                                {BLOCK_COLOR_CATEGORIES.map(cat => {
+                                    const value = blockColors[cat.colorId] || cat.default;
                                     return (
-                                        <label
-                                            key={category.id}
-                                            className={styles.label}
+                                        <div
+                                            key={cat.colorId}
+                                            className={classNames(styles.label, styles.categoryColorLabel)}
                                         >
-                                            <FancyCheckbox
-                                                className={styles.checkbox}
-                                                checked={isVisible}
-                                                disabled={hideNB || (isVisible && visibleCount === 1)}
-                                                onChange={() => {
-                                                    const next = hiddenCategories.includes(category.id) ?
-                                                        hiddenCategories.filter(id => id !== category.id) :
-                                                        [...hiddenCategories, category.id];
-                                                    props.onSetPreference('hidden-categories', next);
-                                                }}
+                                            <ColorPicker
+                                                value={value}
+                                                onChange={v => handleBlockColorPreview(cat.colorId, v)}
+                                                onCommit={handleBlockColorCommit(cat.colorId)}
+                                                className={styles.colorInput}
+                                                showIcon={false}
+                                                label={false}
+                                                size={'1.8rem'}
                                             />
-                                            {category.label}
-                                        </label>
+                                            <span>{cat.label}</span>
+                                            <DeleteButton
+                                                onClick={handleDeleteBlockColor(cat.colorId)}
+                                                className={styles.deleteButton}
+                                            />
+                                        </div>
                                     );
                                 })}
                             </div>
                             <button
                                 className={styles.button}
-                                onClick={handleResetCategoriesVisibility}
+                                onClick={handleResetBlockColors}
                                 style={{marginTop: '8px'}}
                             >
                                 <FormattedMessage
-                                    id="nb.editorSettings.resetCategoriesVisibility"
+                                    id="nb.editorSettings.resetBlockColors"
                                     defaultMessage="Reset to defaults"
                                 />
                             </button>
-                            </div>)
-                        }
-                    />
-                    <Setting
-                        help={
-                            <FormattedMessage
-                                id="nb.editorSettings.blockColorsHelp"
-                                defaultMessage="Customize the primary color of each block category."
-                            />
-                        }
-                        primary={
-                            <button
-                                className={classNames(styles.label, styles.collapseButton)}
-                                onClick={() => setBlockColorsExpanded(e => !e)}
-                            >
+                        </div>
+                    </CollapsibleSetting>
+                    <CollapsibleSetting
+                        label={<FormattedMessage
+                            id="nb.editorSettings.customBlockShape"
+                            defaultMessage="Customizable block shape"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.customBlockShapeHelp"
+                            defaultMessage="Adjust the padding, corner radius, notch height, and field height of blocks."
+                        />}
+                    >
+                        <div>
+                            <div>
+                                <Setting
+                                    help={<FormattedMessage
+                                        id="nb.editorSettings.paddingSizeHelp"
+                                        defaultMessage="Controls the overall size and spacing of blocks."
+                                    />}
+                                    primary={(
+                                        <div className={classNames(styles.label, styles.customStageSize)}>
+                                            <FormattedMessage
+                                                defaultMessage="Padding size (50-200%):"
+                                                id="nb.editorSettings.paddingSize"
+                                            />
+                                            <BufferedInput
+                                                value={String(blockShape.paddingSize)}
+                                                onSubmit={value => {
+                                                    const num = Number(value);
+                                                    if (Number.isFinite(num) && num >= 50 && num <= 200) {
+                                                        handleSetBlockShape('paddingSize', num);
+                                                    }
+                                                }}
+                                                type="number"
+                                                min="50"
+                                                max="200"
+                                                spellCheck="false"
+                                            />
+                                        </div>
+                                    )}
+                                />
+                                <Setting
+                                    help={<FormattedMessage
+                                        id="nb.editorSettings.cornerSizeHelp"
+                                        defaultMessage="Controls how rounded the corners of blocks are."
+                                    />}
+                                    primary={(
+                                        <div className={classNames(styles.label, styles.customStageSize)}>
+                                            <FormattedMessage
+                                                defaultMessage="Corner size (0-300%):"
+                                                id="nb.editorSettings.cornerSize"
+                                            />
+                                            <BufferedInput
+                                                value={String(blockShape.cornerSize)}
+                                                onSubmit={value => {
+                                                    const num = Number(value);
+                                                    if (Number.isFinite(num) && num >= 0 && num <= 300) {
+                                                        handleSetBlockShape('cornerSize', num);
+                                                    }
+                                                }}
+                                                type="number"
+                                                min="0"
+                                                max="300"
+                                                spellCheck="false"
+                                            />
+                                        </div>
+                                    )}
+                                />
+                                <Setting
+                                    help={<FormattedMessage
+                                        id="nb.editorSettings.maxCornerRadiusHelp"
+                                        defaultMessage="Sets an upper limit on the corner radius as a multiple of the base corner size, used by round output blocks."
+                                    />}
+                                    primary={(
+                                        <div className={classNames(styles.label, styles.customStageSize)}>
+                                            <FormattedMessage
+                                                defaultMessage="Max corner radius (1x-12x):"
+                                                id="nb.editorSettings.maxCornerRadius"
+                                            />
+                                            <BufferedInput
+                                                value={String(blockShape.maxCornerRadius)}
+                                                onSubmit={value => {
+                                                    const num = Number(value);
+                                                    if (Number.isFinite(num) && num >= 1 && num <= 12) {
+                                                        handleSetBlockShape('maxCornerRadius', num);
+                                                    }
+                                                }}
+                                                type="number"
+                                                min="1"
+                                                max="12"
+                                                spellCheck="false"
+                                            />
+                                        </div>
+                                    )}
+                                />
+                                <Setting
+                                    help={<FormattedMessage
+                                        id="nb.editorSettings.notchSizeHelp"
+                                        defaultMessage="Controls how tall the notches and bumps that let blocks snap together are."
+                                    />}
+                                    primary={(
+                                        <div className={classNames(styles.label, styles.customStageSize)}>
+                                            <FormattedMessage
+                                                defaultMessage="Notch height (0-150%):"
+                                                id="nb.editorSettings.notchSize"
+                                            />
+                                            <BufferedInput
+                                                value={String(blockShape.notchSize)}
+                                                onSubmit={value => {
+                                                    const num = Number(value);
+                                                    if (Number.isFinite(num) && num >= 0 && num <= 150) {
+                                                        handleSetBlockShape('notchSize', num);
+                                                    }
+                                                }}
+                                                type="number"
+                                                min="0"
+                                                max="150"
+                                                spellCheck="false"
+                                            />
+                                        </div>
+                                    )}
+                                />
+                                <Setting
+                                    help={<FormattedMessage
+                                        id="nb.editorSettings.fieldHeightHelp"
+                                        defaultMessage="Controls the height of text inputs and dropdowns inside blocks, independent of overall padding."
+                                    />}
+                                    primary={(
+                                        <div className={classNames(styles.label, styles.customStageSize)}>
+                                            <FormattedMessage
+                                                defaultMessage="Field height (75-150%):"
+                                                id="nb.editorSettings.fieldHeight"
+                                            />
+                                            <BufferedInput
+                                                value={String(blockShape.fieldHeight)}
+                                                onSubmit={value => {
+                                                    const num = Number(value);
+                                                    if (Number.isFinite(num) && num >= 75 && num <= 150) {
+                                                        handleSetBlockShape('fieldHeight', num);
+                                                    }
+                                                }}
+                                                type="number"
+                                                min="75"
+                                                max="150"
+                                                spellCheck="false"
+                                            />
+                                        </div>
+                                    )}
+                                />
+                            </div>
+                            <p className={styles.info}>
                                 <FormattedMessage
-                                    id="nb.editorSettings.blockColors"
-                                    defaultMessage="Block colors"
+                                    id="nb.editorSettings.presets"
+                                    defaultMessage="Presets"
                                 />
-                                <img
-                                    className={classNames(styles.collapseArrow, {
-                                        [styles.collapseArrowExpanded]: blockColorsExpanded
-                                    })}
-                                    src={dropdownCaret}
-                                />
-                            </button>
-                        }
-                        secondary={
-                            blockColorsExpanded && (
-                                <div>
-                                    <div className={styles.categoryGrid}>
-                                        {BLOCK_COLOR_CATEGORIES.map(cat => {
-                                            const value = blockColors[cat.colorId] || cat.default;
-                                            return (
-                                                <div
-                                                    key={cat.colorId}
-                                                    className={classNames(styles.label, styles.categoryColorLabel)}
-                                                >
-                                                    <ColorPicker
-                                                        value={value}
-                                                        onChange={v => handleBlockColorPreview(cat.colorId, v)}
-                                                        onCommit={handleBlockColorCommit(cat.colorId)}
-                                                        className={styles.colorInput}
-                                                        showIcon={false}
-                                                        label={false}
-                                                        size={'1.8rem'}
-                                                    />
-                                                    <span>{cat.label}</span>
-                                                    <DeleteButton
-                                                        onClick={handleDeleteBlockColor(cat.colorId)}
-                                                        className={styles.deleteButton}
-                                                    />
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
+                            </p>
+                            <div className={styles.presetRow}>
+                                {BLOCK_SHAPE_PRESETS.map(preset => (
                                     <button
+                                        key={preset.id}
                                         className={styles.button}
-                                        onClick={handleResetBlockColors}
-                                        style={{marginTop: '8px'}}
+                                        onClick={() => handleApplyBlockShapePreset(preset)}
+                                        title={preset.description}
                                     >
-                                        <FormattedMessage
-                                            id="nb.editorSettings.resetBlockColors"
-                                            defaultMessage="Reset to defaults"
-                                        />
+                                        {preset.name}
                                     </button>
-                                </div>
-                            )
-                        }
-                    />
-                    <Setting
-                        help={
-                            <FormattedMessage
-                                id="nb.editorSettings.customBlockShapeHelp"
-                                defaultMessage="Adjust the padding, corner radius, notch height, and field height of blocks."
-                            />
-                        }
-                        primary={
-                            <button
-                                className={classNames(styles.label, styles.collapseButton)}
-                                onClick={() => setBlockShapeExpanded(e => !e)}
-                            >
-                                <FormattedMessage
-                                    id="nb.editorSettings.customBlockShape"
-                                    defaultMessage="Customizable block shape"
-                                />
-                                <img
-                                    className={classNames(styles.collapseArrow, {
-                                        [styles.collapseArrowExpanded]: blockShapeExpanded
-                                    })}
-                                    src={dropdownCaret}
-                                />
-                            </button>
-                        }
-                        secondary={
-                            blockShapeExpanded && (
-                                <div>
-                                    <div>
-                                        <Setting
-                                            help={<FormattedMessage
-                                                id="nb.editorSettings.paddingSizeHelp"
-                                                defaultMessage="Controls the overall size and spacing of blocks."
-                                            />}
-                                            primary={(
-                                                <div className={classNames(styles.label, styles.customStageSize)}>
-                                                    <FormattedMessage
-                                                        defaultMessage="Padding size (50-200%):"
-                                                        id="nb.editorSettings.paddingSize"
-                                                    />
-                                                    <BufferedInput
-                                                        value={String(blockShape.paddingSize)}
-                                                        onSubmit={value => {
-                                                            const num = Number(value);
-                                                            if (Number.isFinite(num) && num >= 50 && num <= 200) {
-                                                                handleSetBlockShape('paddingSize', num);
-                                                            }
-                                                        }}
-                                                        type="number"
-                                                        min="50"
-                                                        max="200"
-                                                        spellCheck="false"
-                                                    />
-                                                </div>
-                                            )}
-                                        />
-                                        <Setting
-                                            help={<FormattedMessage
-                                                id="nb.editorSettings.cornerSizeHelp"
-                                                defaultMessage="Controls how rounded the corners of blocks are."
-                                            />}
-                                            primary={(
-                                                <div className={classNames(styles.label, styles.customStageSize)}>
-                                                    <FormattedMessage
-                                                        defaultMessage="Corner size (0-300%):"
-                                                        id="nb.editorSettings.cornerSize"
-                                                    />
-                                                    <BufferedInput
-                                                        value={String(blockShape.cornerSize)}
-                                                        onSubmit={value => {
-                                                            const num = Number(value);
-                                                            if (Number.isFinite(num) && num >= 0 && num <= 300) {
-                                                                handleSetBlockShape('cornerSize', num);
-                                                            }
-                                                        }}
-                                                        type="number"
-                                                        min="0"
-                                                        max="300"
-                                                        spellCheck="false"
-                                                    />
-                                                </div>
-                                            )}
-                                        />
-                                        <Setting
-                                            help={<FormattedMessage
-                                                id="nb.editorSettings.maxCornerRadiusHelp"
-                                                defaultMessage="Sets an upper limit on the corner radius as a multiple of the base corner size, used by round output blocks."
-                                            />}
-                                            primary={(
-                                                <div className={classNames(styles.label, styles.customStageSize)}>
-                                                    <FormattedMessage
-                                                        defaultMessage="Max corner radius (1x-12x):"
-                                                        id="nb.editorSettings.maxCornerRadius"
-                                                    />
-                                                    <BufferedInput
-                                                        value={String(blockShape.maxCornerRadius)}
-                                                        onSubmit={value => {
-                                                            const num = Number(value);
-                                                            if (Number.isFinite(num) && num >= 1 && num <= 12) {
-                                                                handleSetBlockShape('maxCornerRadius', num);
-                                                            }
-                                                        }}
-                                                        type="number"
-                                                        min="1"
-                                                        max="12"
-                                                        spellCheck="false"
-                                                    />
-                                                </div>
-                                            )}
-                                        />
-                                        <Setting
-                                            help={<FormattedMessage
-                                                id="nb.editorSettings.notchSizeHelp"
-                                                defaultMessage="Controls how tall the notches and bumps that let blocks snap together are."
-                                            />}
-                                            primary={(
-                                                <div className={classNames(styles.label, styles.customStageSize)}>
-                                                    <FormattedMessage
-                                                        defaultMessage="Notch height (0-150%):"
-                                                        id="nb.editorSettings.notchSize"
-                                                    />
-                                                    <BufferedInput
-                                                        value={String(blockShape.notchSize)}
-                                                        onSubmit={value => {
-                                                            const num = Number(value);
-                                                            if (Number.isFinite(num) && num >= 0 && num <= 150) {
-                                                                handleSetBlockShape('notchSize', num);
-                                                            }
-                                                        }}
-                                                        type="number"
-                                                        min="0"
-                                                        max="150"
-                                                        spellCheck="false"
-                                                    />
-                                                </div>
-                                            )}
-                                        />
-                                        <Setting
-                                            help={<FormattedMessage
-                                                id="nb.editorSettings.fieldHeightHelp"
-                                                defaultMessage="Controls the height of text inputs and dropdowns inside blocks, independent of overall padding."
-                                            />}
-                                            primary={(
-                                                <div className={classNames(styles.label, styles.customStageSize)}>
-                                                    <FormattedMessage
-                                                        defaultMessage="Field height (75-150%):"
-                                                        id="nb.editorSettings.fieldHeight"
-                                                    />
-                                                    <BufferedInput
-                                                        value={String(blockShape.fieldHeight)}
-                                                        onSubmit={value => {
-                                                            const num = Number(value);
-                                                            if (Number.isFinite(num) && num >= 75 && num <= 150) {
-                                                                handleSetBlockShape('fieldHeight', num);
-                                                            }
-                                                        }}
-                                                        type="number"
-                                                        min="75"
-                                                        max="150"
-                                                        spellCheck="false"
-                                                    />
-                                                </div>
-                                            )}
-                                        />
-                                    </div>
-                                    <p className={styles.info}>
-                                        <FormattedMessage
-                                            id="nb.editorSettings.presets"
-                                            defaultMessage="Presets"
-                                        />
-                                    </p>
-                                    <div className={styles.presetRow}>
-                                        {BLOCK_SHAPE_PRESETS.map(preset => (
-                                            <button
-                                                key={preset.id}
-                                                className={styles.button}
-                                                onClick={() => handleApplyBlockShapePreset(preset)}
-                                                title={preset.description}
-                                            >
-                                                {preset.name}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )
-                        }
-                    />
+                                ))}
+                            </div>
+                        </div>
+                    </CollapsibleSetting>
                 </Section>
                 <Section
                     title={<FormattedMessage
@@ -1042,74 +1018,57 @@ const EditorSettingsModal = props => {
                         // eslint-disable-next-line react/jsx-no-bind
                         onChange={e => props.onSetPreference('hide-feedback', e.target.checked)}
                     />
-                    <Setting
-                        help={
-                            <FormattedMessage
-                                id="nb.editorSettings.visibleTabsHelp"
-                                defaultMessage="Choose which tabs to show in the editor. Hidden tabs can still be accessed via keyboard shortcuts."
-                            />
-                        }
-                        primary={
-                            <button
-                                className={classNames(styles.label, styles.collapseButton)}
-                                onClick={() => setTabsExpanded(e => !e)}
-                            >
-                                <FormattedMessage
-                                    id="nb.editorSettings.visibleTabs"
-                                    defaultMessage="Visible tabs"
-                                />
-                                <img
-                                    className={classNames(styles.collapseArrow, {
-                                        [styles.collapseArrowExpanded]: tabsExpanded
-                                    })}
-                                    src={dropdownCaret}
-                                />
-                            </button>
-                        }
-                        secondary={
-                            tabsExpanded && (<div><div className={styles.categoryGrid}>
-                                {editorTabs.map(tab => {
-                                    const isHidden = hiddenTabs.includes(tab.index);
-                                    const visibleCount = editorTabs.filter(t =>
-                                        !hiddenTabs.includes(t.index)
-                                    ).length;
+                    <CollapsibleSetting
+                        label={<FormattedMessage
+                            id="nb.editorSettings.visibleTabs"
+                            defaultMessage="Visible tabs"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.visibleTabsHelp"
+                            defaultMessage="Choose which tabs to show in the editor. Hidden tabs can still be accessed via keyboard shortcuts."
+                        />}
+                    >
+                        <div><div className={styles.categoryGrid}>
+                            {editorTabs.map(tab => {
+                                const isHidden = hiddenTabs.includes(tab.index);
+                                const visibleCount = editorTabs.filter(t =>
+                                    !hiddenTabs.includes(t.index)
+                                ).length;
 
-                                    return (
-                                        <label
-                                            key={tab.index}
-                                            className={styles.label}
-                                        >
-                                            <FancyCheckbox
-                                                className={styles.checkbox}
-                                                checked={!isHidden}
-                                                disabled={!isHidden && visibleCount < 3}
-                                                // eslint-disable-next-line react/jsx-no-bind
-                                                onChange={() => {
-                                                    const next = hiddenTabs.includes(tab.index) ?
-                                                        hiddenTabs.filter(i => i !== tab.index) :
-                                                        [...hiddenTabs, tab.index];
-                                                    props.onSetPreference('hidden-tabs', next);
-                                                }}
-                                            />
-                                            {tab.label}
-                                        </label>
-                                    );
-                                })}
-                            </div>
-                            {/* eslint-disable-next-line react/jsx-indent */}
-                            <button
-                                className={styles.button}
-                                onClick={handleResetTabsVisibility}
-                                style={{marginTop: '8px'}}
-                            >
-                                <FormattedMessage
-                                    id="nb.editorSettings.resetTabsVisibility"
-                                    defaultMessage="Reset to defaults"
-                                />
-                            </button>
-                            </div>)
-                        }
-                    />
+                                return (
+                                    <label
+                                        key={tab.index}
+                                        className={styles.label}
+                                    >
+                                        <FancyCheckbox
+                                            className={styles.checkbox}
+                                            checked={!isHidden}
+                                            disabled={!isHidden && visibleCount < 3}
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onChange={() => {
+                                                const next = hiddenTabs.includes(tab.index) ?
+                                                    hiddenTabs.filter(i => i !== tab.index) :
+                                                    [...hiddenTabs, tab.index];
+                                                props.onSetPreference('hidden-tabs', next);
+                                            }}
+                                        />
+                                        {tab.label}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                        <button
+                            className={styles.button}
+                            onClick={handleResetTabsVisibility}
+                            style={{marginTop: '8px'}}
+                        >
+                            <FormattedMessage
+                                id="nb.editorSettings.resetTabsVisibility"
+                                defaultMessage="Reset to defaults"
+                            />
+                        </button>
+                        </div>
+                    </CollapsibleSetting>
                 </Section>
             </Box>
         },
