@@ -2,7 +2,9 @@
 const defaultBlockShape = {
     paddingSize: 100,
     cornerSize: 100,
-    notchSize: 100
+    maxCornerRadius: 8,
+    notchSize: 100,
+    fieldHeight: 100
 };
 
 const BLOCK_SHAPE_PRESETS = [
@@ -10,11 +12,7 @@ const BLOCK_SHAPE_PRESETS = [
         name: '3.0 Blocks',
         id: 'default3',
         description: 'The regular appearance of Scratch 3.0 blocks',
-        values: {
-            paddingSize: 100,
-            cornerSize: 100,
-            notchSize: 100
-        }
+        values: defaultBlockShape
     },
     {
         name: '2.0 Blocks',
@@ -23,7 +21,9 @@ const BLOCK_SHAPE_PRESETS = [
         values: {
             paddingSize: 70,
             cornerSize: 150,
-            notchSize: 75
+            maxCornerRadius: 8,
+            notchSize: 75,
+            fieldHeight: 100
         }
     },
     {
@@ -33,7 +33,9 @@ const BLOCK_SHAPE_PRESETS = [
         values: {
             paddingSize: 100,
             cornerSize: 0,
-            notchSize: 0
+            maxCornerRadius: 8,
+            notchSize: 0,
+            fieldHeight: 100
         }
     },
     {
@@ -43,7 +45,9 @@ const BLOCK_SHAPE_PRESETS = [
         values: {
             paddingSize: 70,
             cornerSize: 0,
-            notchSize: 0
+            maxCornerRadius: 8,
+            notchSize: 0,
+            fieldHeight: 100
         }
     }
 ];
@@ -57,7 +61,9 @@ const applyBlockShape = (ScratchBlocks, shape) => {
     let {
         paddingSize = defaultBlockShape.paddingSize,
         cornerSize = defaultBlockShape.cornerSize,
-        notchSize = defaultBlockShape.notchSize
+        maxCornerRadius = defaultBlockShape.maxCornerRadius,
+        notchSize = defaultBlockShape.notchSize,
+        fieldHeight = defaultBlockShape.fieldHeight
     } = shape;
 
     const BlockSvg = ScratchBlocks.BlockSvg;
@@ -249,7 +255,7 @@ const applyBlockShape = (ScratchBlocks, shape) => {
         ' z';
     BlockSvg.INPUT_SHAPE_ROUND_WIDTH = 12 * GRID_UNIT * multiplier;
     BlockSvg.INPUT_SHAPE_HEIGHT = 8 * GRID_UNIT * multiplier;
-    BlockSvg.FIELD_HEIGHT = 8 * GRID_UNIT * multiplier;
+    BlockSvg.FIELD_HEIGHT = 8 * GRID_UNIT * multiplier * (fieldHeight / 100);
     BlockSvg.FIELD_WIDTH = 6 * GRID_UNIT * Math.min(multiplier, 1) + 10 * GRID_UNIT * Math.max(multiplier - 1, 0);
     BlockSvg.FIELD_DEFAULT_CORNER_RADIUS = 4 * GRID_UNIT * multiplier;
     BlockSvg.EDITABLE_FIELD_PADDING = 1.5 * GRID_UNIT * multiplier;
@@ -280,6 +286,7 @@ const applyBlockShape = (ScratchBlocks, shape) => {
     };
 
     BlockSvg.CORNER_RADIUS = (1 * GRID_UNIT * cornerSize * 100) / 100;
+    BlockSvg.MAX_REPORTER_CORNER_RADIUS = maxCornerRadius * BlockSvg.CORNER_RADIUS;
 
     BlockSvg.TOP_LEFT_CORNER_START = 'm 0,' + BlockSvg.CORNER_RADIUS;
 

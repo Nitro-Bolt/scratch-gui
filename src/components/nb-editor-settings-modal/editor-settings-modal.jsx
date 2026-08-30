@@ -37,7 +37,7 @@ import {setHiddenCategories} from '../../reducers/hidden-categories';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
 import ColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 import DeleteButton from '../delete-button/delete-button.jsx';
-import {BLOCK_SHAPE_PRESETS, defaultBlockShape, getBlockShape} from '../../lib/nb-custom-block-shape';
+import {BLOCK_SHAPE_PRESETS, getBlockShape} from '../../lib/nb-custom-block-shape';
 
 const messages = defineMessages({
     title: {
@@ -108,27 +108,51 @@ const messages = defineMessages({
     },
     customBlockShapeHelp: {
         id: 'nb.editorSettings.customBlockShapeHelp',
-        defaultMessage: 'Adjust the padding, corner radius, and notch height of blocks.'
+        defaultMessage: 'Adjust the padding, corner radius, notch height, and field height of blocks.'
     },
     paddingSize: {
         id: 'nb.editorSettings.paddingSize',
         defaultMessage: 'Padding size (50-200%):'
     },
+    paddingSizeHelp: {
+        id: 'nb.editorSettings.paddingSizeHelp',
+        defaultMessage: 'Controls the overall size and spacing of blocks.'
+    },
     cornerSize: {
         id: 'nb.editorSettings.cornerSize',
         defaultMessage: 'Corner size (0-300%):'
+    },
+    cornerSizeHelp: {
+        id: 'nb.editorSettings.cornerSizeHelp',
+        defaultMessage: 'Controls how rounded the corners of blocks are.'
+    },
+    maxCornerRadius: {
+        id: 'nb.editorSettings.maxCornerRadius',
+        defaultMessage: 'Max corner radius (1x-12x):'
+    },
+    maxCornerRadiusHelp: {
+        id: 'nb.editorSettings.maxCornerRadiusHelp',
+        defaultMessage: 'Sets an upper limit on the corner radius as a multiple of the base corner size, used by round output blocks.'
     },
     notchSize: {
         id: 'nb.editorSettings.notchSize',
         defaultMessage: 'Notch height (0-150%):'
     },
+    notchSizeHelp: {
+        id: 'nb.editorSettings.notchSizeHelp',
+        defaultMessage: 'Controls how tall the notches and bumps that let blocks snap together are.'
+    },
+    fieldHeight: {
+        id: 'nb.editorSettings.fieldHeight',
+        defaultMessage: 'Field height (75-150%):'
+    },
+    fieldHeightHelp: {
+        id: 'nb.editorSettings.fieldHeightHelp',
+        defaultMessage: 'Controls the height of text inputs and dropdowns inside blocks, independent of overall padding.'
+    },
     presets: {
         id: 'nb.editorSettings.blockShapePresets',
         defaultMessage: 'Presets'
-    },
-    resetBlockShape: {
-        id: 'nb.editorSettings.resetBlockShape',
-        defaultMessage: 'Reset to defaults'
     }
 });
 
@@ -378,10 +402,6 @@ const EditorSettingsModal = props => {
 
     const handleApplyBlockShapePreset = preset => {
         props.onSetPreference('block-shape', preset.values);
-    };
-
-    const handleResetBlockShape = () => {
-        props.onSetPreference('block-shape', defaultBlockShape);
     };
 
     const sections = [
@@ -790,7 +810,7 @@ const EditorSettingsModal = props => {
                         help={
                             <FormattedMessage
                                 id="nb.editorSettings.customBlockShapeHelp"
-                                defaultMessage="Adjust the padding, corner radius, and notch height of blocks."
+                                defaultMessage="Adjust the padding, corner radius, notch height, and field height of blocks."
                             />
                         }
                         primary={
@@ -815,6 +835,10 @@ const EditorSettingsModal = props => {
                                 <div>
                                     <div>
                                         <Setting
+                                            help={<FormattedMessage
+                                                id="nb.editorSettings.paddingSizeHelp"
+                                                defaultMessage="Controls the overall size and spacing of blocks."
+                                            />}
                                             primary={(
                                                 <div className={classNames(styles.label, styles.customStageSize)}>
                                                     <FormattedMessage
@@ -838,6 +862,10 @@ const EditorSettingsModal = props => {
                                             )}
                                         />
                                         <Setting
+                                            help={<FormattedMessage
+                                                id="nb.editorSettings.cornerSizeHelp"
+                                                defaultMessage="Controls how rounded the corners of blocks are."
+                                            />}
                                             primary={(
                                                 <div className={classNames(styles.label, styles.customStageSize)}>
                                                     <FormattedMessage
@@ -861,6 +889,37 @@ const EditorSettingsModal = props => {
                                             )}
                                         />
                                         <Setting
+                                            help={<FormattedMessage
+                                                id="nb.editorSettings.maxCornerRadiusHelp"
+                                                defaultMessage="Sets an upper limit on the corner radius as a multiple of the base corner size, used by round output blocks."
+                                            />}
+                                            primary={(
+                                                <div className={classNames(styles.label, styles.customStageSize)}>
+                                                    <FormattedMessage
+                                                        defaultMessage="Max corner radius (1x-12x):"
+                                                        id="nb.editorSettings.maxCornerRadius"
+                                                    />
+                                                    <BufferedInput
+                                                        value={String(blockShape.maxCornerRadius)}
+                                                        onSubmit={value => {
+                                                            const num = Number(value);
+                                                            if (Number.isFinite(num) && num >= 1 && num <= 12) {
+                                                                handleSetBlockShape('maxCornerRadius', num);
+                                                            }
+                                                        }}
+                                                        type="number"
+                                                        min="1"
+                                                        max="12"
+                                                        spellCheck="false"
+                                                    />
+                                                </div>
+                                            )}
+                                        />
+                                        <Setting
+                                            help={<FormattedMessage
+                                                id="nb.editorSettings.notchSizeHelp"
+                                                defaultMessage="Controls how tall the notches and bumps that let blocks snap together are."
+                                            />}
                                             primary={(
                                                 <div className={classNames(styles.label, styles.customStageSize)}>
                                                     <FormattedMessage
@@ -877,6 +936,33 @@ const EditorSettingsModal = props => {
                                                         }}
                                                         type="number"
                                                         min="0"
+                                                        max="150"
+                                                        spellCheck="false"
+                                                    />
+                                                </div>
+                                            )}
+                                        />
+                                        <Setting
+                                            help={<FormattedMessage
+                                                id="nb.editorSettings.fieldHeightHelp"
+                                                defaultMessage="Controls the height of text inputs and dropdowns inside blocks, independent of overall padding."
+                                            />}
+                                            primary={(
+                                                <div className={classNames(styles.label, styles.customStageSize)}>
+                                                    <FormattedMessage
+                                                        defaultMessage="Field height (75-150%):"
+                                                        id="nb.editorSettings.fieldHeight"
+                                                    />
+                                                    <BufferedInput
+                                                        value={String(blockShape.fieldHeight)}
+                                                        onSubmit={value => {
+                                                            const num = Number(value);
+                                                            if (Number.isFinite(num) && num >= 75 && num <= 150) {
+                                                                handleSetBlockShape('fieldHeight', num);
+                                                            }
+                                                        }}
+                                                        type="number"
+                                                        min="75"
                                                         max="150"
                                                         spellCheck="false"
                                                     />
@@ -902,16 +988,6 @@ const EditorSettingsModal = props => {
                                             </button>
                                         ))}
                                     </div>
-                                    <button
-                                        className={styles.button}
-                                        onClick={handleResetBlockShape}
-                                        style={{marginTop: '8px'}}
-                                    >
-                                        <FormattedMessage
-                                            id="nb.editorSettings.resetBlockShape"
-                                            defaultMessage="Reset to defaults"
-                                        />
-                                    </button>
                                 </div>
                             )
                         }

@@ -862,7 +862,9 @@ Blocks.propTypes = {
     blockShape: PropTypes.shape({
         paddingSize: PropTypes.number,
         cornerSize: PropTypes.number,
-        notchSize: PropTypes.number
+        maxCornerRadius: PropTypes.number,
+        notchSize: PropTypes.number,
+        fieldHeight: PropTypes.number
     })
 };
 
