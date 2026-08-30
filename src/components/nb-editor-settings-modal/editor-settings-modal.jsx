@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable max-len */
-import {defineMessages, FormattedMessage, intlShape, injectIntl} from 'react-intl';
+import { defineMessages, FormattedMessage, intlShape, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Modal from '../../containers/modal.jsx';
 import styles from './editor-settings-modal.css';
 import Box from '../box/box.jsx';
@@ -13,27 +13,27 @@ import DocumentationLink from '../tw-documentation-link/documentation-link.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
 import Input from '../forms/input.jsx';
 import BufferedInputHOC from '../forms/buffered-input-hoc.jsx';
-import {onExportSettings} from '../../playground/addon-settings.jsx';
-import {closeEditorSettingsModal, openCustomAccentModal} from '../../reducers/modals.js';
-import {setPreference} from '../../reducers/preferences.js';
-import {connect} from 'react-redux';
+import { onExportSettings } from '../../playground/addon-settings.jsx';
+import { closeEditorSettingsModal, openCustomAccentModal } from '../../reducers/modals.js';
+import { setPreference } from '../../reducers/preferences.js';
+import { connect } from 'react-redux';
 import helpIcon from './help-icon.svg';
-import {APP_NAME} from '../../lib/brand.js';
-import {setUsername, setUsernameInvalid} from '../../reducers/tw.js';
+import { APP_NAME } from '../../lib/brand.js';
+import { setUsername, setUsernameInvalid } from '../../reducers/tw.js';
 import isScratchDesktop from '../../lib/isScratchDesktop.js';
-import {generateRandomUsername} from '../../lib/tw-username.js';
+import { generateRandomUsername } from '../../lib/tw-username.js';
 import KeyInput from './key-input.jsx';
-import {defaultKeyboardShortcuts} from '../../lib/nb-keyboard-shortcut.js';
-import {setTheme} from '../../reducers/theme.js';
-import {persistTheme, detectTheme} from '../../lib/themes/themePersistance.js';
-import {GUI_DARK, GUI_LIGHT, Theme, BLOCKS_CUSTOM} from '../../lib/themes/index.js';
+import { defaultKeyboardShortcuts } from '../../lib/nb-keyboard-shortcut.js';
+import { setTheme } from '../../reducers/theme.js';
+import { persistTheme, detectTheme } from '../../lib/themes/themePersistance.js';
+import { GUI_DARK, GUI_LIGHT, Theme, BLOCKS_CUSTOM } from '../../lib/themes/index.js';
 import {
     BLOCK_COLOR_CATEGORIES,
     applyBlockColors,
     loadBlockColors,
     saveBlockColors
 } from '../../lib/block-color-persistence.js';
-import {setHiddenCategories} from '../../reducers/hidden-categories';
+import { setHiddenCategories } from '../../reducers/hidden-categories';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
 import ColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 import DeleteButton from '../delete-button/delete-button.jsx';
@@ -104,25 +104,25 @@ const messages = defineMessages({
 });
 
 const editorTabs = [
-    {index: 0, id: 'code', label: 'Code'},
-    {index: 1, id: 'costumes', label: 'Costumes'},
-    {index: 2, id: 'sounds', label: 'Sounds'},
-    {index: 3, id: 'assets', label: 'Assets'},
-    {index: 4, id: 'variables', label: 'Variables'}
+    { index: 0, id: 'code', label: 'Code' },
+    { index: 1, id: 'costumes', label: 'Costumes' },
+    { index: 2, id: 'sounds', label: 'Sounds' },
+    { index: 3, id: 'assets', label: 'Assets' },
+    { index: 4, id: 'variables', label: 'Variables' }
 ];
 
 const toolboxCategories = [
-    {id: 'motion', label: 'Motion'},
-    {id: 'looks', label: 'Looks'},
-    {id: 'sound', label: 'Sound'},
-    {id: 'assets', label: 'Assets'},
-    {id: 'event', label: 'Events'},
-    {id: 'control', label: 'Control'},
-    {id: 'sensing', label: 'Sensing'},
-    {id: 'operators', label: 'Operators'},
-    {id: 'data', label: 'Variables'},
-    {id: 'json', label: 'JSON'},
-    {id: 'procedures', label: 'My Blocks'}
+    { id: 'motion', label: 'Motion' },
+    { id: 'looks', label: 'Looks' },
+    { id: 'sound', label: 'Sound' },
+    { id: 'assets', label: 'Assets' },
+    { id: 'event', label: 'Events' },
+    { id: 'control', label: 'Control' },
+    { id: 'sensing', label: 'Sensing' },
+    { id: 'operators', label: 'Operators' },
+    { id: 'data', label: 'Variables' },
+    { id: 'json', label: 'JSON' },
+    { id: 'procedures', label: 'My Blocks' }
 ];
 
 const BufferedInput = BufferedInputHOC(Input);
@@ -140,7 +140,7 @@ const LearnMore = props => (
 );
 
 class UnwrappedSetting extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         bindAll(this, [
             'handleClickHelp'
@@ -149,7 +149,7 @@ class UnwrappedSetting extends React.Component {
             helpVisible: false
         };
     }
-    componentDidUpdate (prevProps) {
+    componentDidUpdate(prevProps) {
         if (this.props.active && !prevProps.active) {
             // eslint-disable-next-line react/no-did-update-set-state
             this.setState({
@@ -157,12 +157,12 @@ class UnwrappedSetting extends React.Component {
             });
         }
     }
-    handleClickHelp () {
+    handleClickHelp() {
         this.setState(prevState => ({
             helpVisible: !prevState.helpVisible
         }));
     }
-    render () {
+    render() {
         return (
             <div
                 className={classNames(styles.setting, {
@@ -203,7 +203,7 @@ UnwrappedSetting.propTypes = {
 };
 const Setting = injectIntl(UnwrappedSetting);
 
-const BooleanSetting = ({value, onChange, label, ...props}) => (
+const BooleanSetting = ({ value, onChange, label, ...props }) => (
     <Setting
         {...props}
         active={value}
@@ -225,7 +225,7 @@ BooleanSetting.propTypes = {
     label: PropTypes.node.isRequired
 };
 
-const Section = ({title, children}) => {
+const Section = ({ title, children }) => {
     const [expanded, setExpanded] = useState(true);
     return (
         <div className={styles.section}>
@@ -294,21 +294,21 @@ const EditorSettingsModal = props => {
     }, []);
 
     const handleBlockColorPreview = (colorId, value) => {
-        const next = {...latestBlockColors.current, [colorId]: value};
+        const next = { ...latestBlockColors.current, [colorId]: value };
         setBlockColors(next);
         applyBlockColors(next);
         pendingBlockColors.current = next;
     };
 
     const handleBlockColorCommit = colorId => e => {
-        const next = {...latestBlockColors.current, [colorId]: e.target.value};
+        const next = { ...latestBlockColors.current, [colorId]: e.target.value };
         setBlockColors(next);
         pendingBlockColors.current = null;
         commitBlockColors(next);
     };
 
     const handleDeleteBlockColor = colorId => () => {
-        const next = {...latestBlockColors.current};
+        const next = { ...latestBlockColors.current };
         delete next[colorId];
         setBlockColors(next);
         applyBlockColors(next);
@@ -349,7 +349,7 @@ const EditorSettingsModal = props => {
                 >
                     {props.usernameInvalid && <p className={classNames(styles.helpText, styles.mustChange)}>
                         <FormattedMessage
-                        // eslint-disable-next-line max-len
+                            // eslint-disable-next-line max-len
                             defaultMessage="Sorry, the cloud variable server thinks your username may be unsafe. Please change it to something else or {resetIt}."
                             id="tw.usernameModal.mustChange"
                             values={{
@@ -444,6 +444,48 @@ const EditorSettingsModal = props => {
                         />}
                         onChange={e => {
                             props.onSetPreference('enable-debugger', e.target.checked);
+                            // Load debugger extension if it's enabled and not already loaded
+                            if (
+                                e.target.checked &&
+                                !props.vm.extensionManager.isExtensionLoaded('debugger')
+                            ) {
+                                props.vm.extensionManager.loadExtensionIdSync('debugger');
+                            }
+                        }}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['verbose-addon-names']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.verboseAddons"
+                            defaultMessage="Verbose Addon Names"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.verboseAddonsHelp"
+                            defaultMessage="Changes the inline description to be the internal name (e.g. features/utils/editor-comment-previews) for each addon instead of a brief form of its description."
+                        />}
+                        onChange={e => {
+                            props.onSetPreference('verbose-addon-names', e.target.checked);
+                            // Load debugger extension if it's enabled and not already loaded
+                            if (
+                                e.target.checked &&
+                                !props.vm.extensionManager.isExtensionLoaded('debugger')
+                            ) {
+                                props.vm.extensionManager.loadExtensionIdSync('debugger');
+                            }
+                        }}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['verbose-setting-names']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.verboseSettings"
+                            defaultMessage="Verbose Setting Names"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.verboseSettingsHelp"
+                            defaultMessage="Appends the internal name to each setting (like verbose-setting-names)"
+                        />}
+                        onChange={e => {
+                            props.onSetPreference('verbose-setting-names', e.target.checked);
                             // Load debugger extension if it's enabled and not already loaded
                             if (
                                 e.target.checked &&
@@ -635,7 +677,7 @@ const EditorSettingsModal = props => {
                                     const isVisible = !hideNB && !hiddenCategories.includes(category.id);
                                     const visibleCount = toolboxCategories.filter(c =>
                                         !(!!props.preferences['hide-nb-blocks'] && (c.id === 'json' || c.id === 'assets')) &&
-                                    !hiddenCategories.includes(c.id)
+                                        !hiddenCategories.includes(c.id)
                                     ).length;
 
                                     return (
@@ -659,16 +701,16 @@ const EditorSettingsModal = props => {
                                     );
                                 })}
                             </div>
-                            <button
-                                className={styles.button}
-                                onClick={handleResetCategoriesVisibility}
-                                style={{marginTop: '8px'}}
-                            >
-                                <FormattedMessage
-                                    id="nb.editorSettings.resetCategoriesVisibility"
-                                    defaultMessage="Reset to defaults"
-                                />
-                            </button>
+                                <button
+                                    className={styles.button}
+                                    onClick={handleResetCategoriesVisibility}
+                                    style={{ marginTop: '8px' }}
+                                >
+                                    <FormattedMessage
+                                        id="nb.editorSettings.resetCategoriesVisibility"
+                                        defaultMessage="Reset to defaults"
+                                    />
+                                </button>
                             </div>)
                         }
                     />
@@ -728,7 +770,7 @@ const EditorSettingsModal = props => {
                                     <button
                                         className={styles.button}
                                         onClick={handleResetBlockColors}
-                                        style={{marginTop: '8px'}}
+                                        style={{ marginTop: '8px' }}
                                     >
                                         <FormattedMessage
                                             id="nb.editorSettings.resetBlockColors"
@@ -843,17 +885,17 @@ const EditorSettingsModal = props => {
                                     );
                                 })}
                             </div>
-                            {/* eslint-disable-next-line react/jsx-indent */}
-                            <button
-                                className={styles.button}
-                                onClick={handleResetTabsVisibility}
-                                style={{marginTop: '8px'}}
-                            >
-                                <FormattedMessage
-                                    id="nb.editorSettings.resetTabsVisibility"
-                                    defaultMessage="Reset to defaults"
-                                />
-                            </button>
+                                {/* eslint-disable-next-line react/jsx-indent */}
+                                <button
+                                    className={styles.button}
+                                    onClick={handleResetTabsVisibility}
+                                    style={{ marginTop: '8px' }}
+                                >
+                                    <FormattedMessage
+                                        id="nb.editorSettings.resetTabsVisibility"
+                                        defaultMessage="Reset to defaults"
+                                    />
+                                </button>
                             </div>)
                         }
                     />

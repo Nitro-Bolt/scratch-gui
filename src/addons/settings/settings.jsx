@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 import classNames from 'classnames';
 
 import Search from './search';
@@ -24,7 +24,7 @@ import messagesByLocale from '../generated/l10n-settings-entries';
 import settingsTranslationsEnglish from './en.json';
 import settingsTranslationsOther from './translations.json';
 import upstreamMeta from '../generated/upstream-meta.json';
-import {detectLocale} from '../../lib/detect-locale';
+import { detectLocale } from '../../lib/detect-locale';
 import SettingsStore from '../settings-store-singleton';
 import Channels from '../channels';
 import extensionImage from './icons/extension.svg';
@@ -35,10 +35,10 @@ import infoImage from './icons/info.svg';
 import trashImage from './icons/trash.svg';
 import TWFancyCheckbox from '../../components/tw-fancy-checkbox/checkbox.jsx';
 import styles from './settings.css';
-import {getCustomAddons, storeAddon, removeAddon} from '../../lib/nb-custom-addons.js';
-import {detectTheme} from '../../lib/themes/themePersistance.js';
-import {applyGuiColors} from '../../lib/themes/guiHelpers.js';
-import {APP_NAME} from '../../lib/brand.js';
+import { getCustomAddons, storeAddon, removeAddon } from '../../lib/nb-custom-addons.js';
+import { detectTheme } from '../../lib/themes/themePersistance.js';
+import { applyGuiColors } from '../../lib/themes/guiHelpers.js';
+import { APP_NAME } from '../../lib/brand.js';
 import '../../lib/normalize.css';
 
 /* eslint-disable no-alert */
@@ -80,7 +80,7 @@ const postThrottledSettingsChange = store => {
         if (Channels.changeChannel) {
             Channels.changeChannel.postMessage(msg);
         }
-        window.dispatchEvent(new CustomEvent('addon-settings-changed', {detail: msg}));
+        window.dispatchEvent(new CustomEvent('addon-settings-changed', { detail: msg }));
     }, 100);
 };
 
@@ -99,44 +99,43 @@ const filterAddonsBySupport = () => {
         unsupported
     };
 };
-const {supported: supportedAddons, unsupported: unsupportedAddons} = filterAddonsBySupport();
+const { supported: supportedAddons, unsupported: unsupportedAddons } = filterAddonsBySupport();
 
 const groupAddons = () => {
-    const groups = {
-        new: {
+    var groups = {
+        unknown: {
             label: settingsTranslations.groupNew,
             open: true,
             addons: []
         },
-        others: {
-            label: settingsTranslations.groupOthers,
-            open: true,
-            addons: []
-        },
-        danger: {
-            label: settingsTranslations.groupDanger,
-            open: false,
-            addons: []
-        }
     };
     const manifests = Object.values(supportedAddons);
     for (let index = 0; index < manifests.length; index++) {
         const manifest = manifests[index];
-        if (manifest.tags.includes('new')) {
-            groups.new.addons.push(index);
-        } else if (manifest.tags.includes('danger') || manifest.noCompiler) {
-            groups.danger.addons.push(index);
+        if (groups.hasOwnProperty(manifest.category)) {
+            groups[manifest.category].addons.push(index);
+        } else if (manifest.category) {
+            groups[manifest.category] = {
+                label: (settingsTranslations["groupC" + manifest.category] ? settingsTranslations["groupC" + manifest.category] : manifest.category),
+                open: false,
+                addons: []
+            };
+            groups[manifest.category].addons.push(index);
         } else {
-            groups.others.addons.push(index);
+            groups.unknown.addons.push(index);
         }
     }
+    groups = Object.fromEntries(Object.entries(groups).sort())
+    // if (groups.dangerous && groups.index(0) == groups.dangerous) {
+        // const { danger, ...safe } = groups;
+        // groups = safe + danger
+    // }
     return groups;
 };
 const groupedAddons = groupAddons();
 
 const getInitialSearch = () => {
     const hash = location.hash.substring(1);
-    
     // If the query is an addon ID, it's a better user experience to show the name of the addon
     // in the search bar instead of a ID they won't understand.
     if (Object.prototype.hasOwnProperty.call(importedAddons, hash)) {
@@ -155,7 +154,7 @@ const clearHash = () => {
     }
 };
 
-const CreditList = ({credits}) => (
+const CreditList = ({ credits }) => (
     credits.map((author, index) => {
         const isLast = index === credits.length - 1;
         return (
@@ -188,7 +187,7 @@ CreditList.propTypes = {
     }))
 };
 
-const Switch = ({onChange, value, ...props}) => (
+const Switch = ({ onChange, value, ...props }) => (
     <button
         className={styles.switch}
         state={value ? 'on' : 'off'}
@@ -217,7 +216,7 @@ const Select = ({
                 <button
                     key={id}
                     onClick={() => onChange(id)}
-                    className={classNames(styles.selectOption, {[styles.selected]: selected})}
+                    className={classNames(styles.selectOption, { [styles.selected]: selected })}
                 >
                     {potentialValue.name}
                 </button>
@@ -234,9 +233,8 @@ Select.propTypes = {
     }))
 };
 
-const Tags = ({manifest}) => (
+const Tags = ({ manifest }) => (
     <span className={styles.tagContainer}>
-        {manifest.category ? manifest.category : ""}
         {manifest.tags.includes('recommended') && (
             <span className={classNames(styles.tag, styles.tagRecommended)}>
                 {settingsTranslations.tagRecommended}
@@ -271,7 +269,7 @@ Tags.propTypes = {
 };
 
 class TextInput extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleFocus = this.handleFocus.bind(this);
@@ -282,18 +280,18 @@ class TextInput extends React.Component {
             focused: false
         };
     }
-    handleKeyPress (e) {
+    handleKeyPress(e) {
         if (e.key === 'Enter') {
             this.handleFlush(e);
             e.target.blur();
         }
     }
-    handleFocus () {
+    handleFocus() {
         this.setState({
             focused: true
         });
     }
-    handleFlush (e) {
+    handleFlush(e) {
         this.setState({
             focused: false
         });
@@ -312,18 +310,18 @@ class TextInput extends React.Component {
         } else {
             this.props.onChange(this.state.value);
         }
-        this.setState({value: null});
+        this.setState({ value: null });
     }
-    handleChange (e) {
+    handleChange(e) {
         e.persist();
-        this.setState({value: e.target.value}, () => {
+        this.setState({ value: e.target.value }, () => {
             // A change event can be fired when not focused by using the browser's number spinners
             if (!this.state.focused) {
                 this.handleFlush(e);
             }
         });
     }
-    render () {
+    render() {
         return (
             <input
                 {...this.props}
@@ -467,7 +465,7 @@ const Setting = ({
                     {label}
                     <Select
                         value={value}
-                        values={setting.potentialValues.map(({id, name}) => ({
+                        values={setting.potentialValues.map(({ id, name }) => ({
                             id,
                             name: addonTranslations[`${addonId}/@settings-select-${settingId}-${id}`] || name
                         }))}
@@ -613,6 +611,7 @@ const Addon = ({
             }
             {!settings.enabled && (
                 <div className={styles.inlineDescription}>
+                    {manifest.category ? manifest.category+"/"+id : id}
                     {addonTranslations[`${id}/@description`] || manifest.description}
                 </div>
             )}
@@ -739,12 +738,12 @@ Dirty.propTypes = {
     onReloadNow: PropTypes.func
 };
 
-const UnsupportedAddons = ({addons: addonList}) => (
+const UnsupportedAddons = ({ addons: addonList }) => (
     <div className={styles.unsupportedContainer}>
         <span className={styles.unsupportedText}>
             {settingsTranslations.unsupported}
         </span>
-        {addonList.map(({id, manifest}, index) => (
+        {addonList.map(({ id, manifest }, index) => (
             <span
                 key={id}
                 className={styles.unsupportedAddon}
@@ -766,8 +765,8 @@ UnsupportedAddons.propTypes = {
     }))
 };
 
-const InternalAddonList = ({addons, extended}) => (
-    addons.map(({id, manifest, state, onRemove}) => (
+const InternalAddonList = ({ addons, extended }) => (
+    addons.map(({ id, manifest, state, onRemove }) => (
         <Addon
             key={id}
             id={id}
@@ -780,13 +779,13 @@ const InternalAddonList = ({addons, extended}) => (
 );
 
 class AddonGroup extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             open: props.open
         };
     }
-    render () {
+    render() {
         if (this.props.addons.length === 0) {
             return null;
         }
@@ -833,7 +832,7 @@ AddonGroup.propTypes = {
     extended: PropTypes.bool.isRequired
 };
 
-const addonToSearchItem = ({id, manifest}) => {
+const addonToSearchItem = ({ id, manifest }) => {
     const texts = new Set();
     const addText = (score, text) => {
         if (text) {
@@ -880,22 +879,22 @@ const addonToSearchItem = ({id, manifest}) => {
 };
 
 class AddonList extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.allAddons = [...props.addons, ...props.customAddons];
         this.search = new Search(this.allAddons.map(addonToSearchItem));
     }
-    componentDidUpdate (prevProps) {
+    componentDidUpdate(prevProps) {
         if (prevProps.customAddons !== this.props.customAddons) {
             this.allAddons = [...this.props.addons, ...this.props.customAddons];
             this.search = new Search(this.allAddons.map(addonToSearchItem));
         }
     }
-    render () {
+    render() {
         if (this.props.search) {
             const addons = this.search.search(this.props.search)
                 .slice(0, 20)
-                .map(({index}) => this.allAddons[index]);
+                .map(({ index }) => this.allAddons[index]);
             if (addons.length === 0) {
                 return (
                     <div className={styles.noResults}>
@@ -920,7 +919,7 @@ class AddonList extends React.Component {
                     addons={this.props.customAddons}
                     extended={this.props.extended}
                 />
-                {Object.entries(groupedAddons).map(([id, {label, addons, open}]) => (
+                {Object.entries(groupedAddons).map(([id, { label, addons, open }]) => (
                     <AddonGroup
                         key={id}
                         label={label}
@@ -944,7 +943,7 @@ AddonList.propTypes = {
 };
 
 class AddonSettingsComponent extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.handleSettingStoreChanged = this.handleSettingStoreChanged.bind(this);
         this.handleReloadNow = this.handleReloadNow.bind(this);
@@ -969,7 +968,7 @@ class AddonSettingsComponent extends React.Component {
             ...this.readFullAddonState()
         };
     }
-    componentDidMount () {
+    componentDidMount() {
         SettingsStore.addEventListener('setting-changed', this.handleSettingStoreChanged);
         document.body.addEventListener('keydown', this.handleKeyDown);
         if (Channels.changeChannel) {
@@ -982,12 +981,12 @@ class AddonSettingsComponent extends React.Component {
         this._isMounted = true;
         getCustomAddons().then(this.handleCustomAddonsLoaded);
     }
-    componentDidUpdate (prevProps, prevState) {
+    componentDidUpdate(prevProps, prevState) {
         if (this.state.search !== prevState.search) {
             clearHash();
         }
     }
-    componentWillUnmount () {
+    componentWillUnmount() {
         SettingsStore.removeEventListener('setting-changed', this.handleSettingStoreChanged);
         document.body.removeEventListener('keydown', this.handleKeyDown);
         if (Channels.changeChannel) {
@@ -996,7 +995,7 @@ class AddonSettingsComponent extends React.Component {
         window.removeEventListener('addon-settings-changed', this.handleExternalSettingsChanged);
         this._isMounted = false;
     }
-    handleCustomAddonsLoaded (customAddons) {
+    handleCustomAddonsLoaded(customAddons) {
         if (!this._isMounted) return;
         const addonEntries = customAddons.map(item => {
             const addonState = {
@@ -1011,13 +1010,13 @@ class AddonSettingsComponent extends React.Component {
             return [item.id, addonState];
         });
 
-        this.setState({customAddons, ...Object.fromEntries(addonEntries)});
+        this.setState({ customAddons, ...Object.fromEntries(addonEntries) });
     }
-    handleExternalSettingsChanged () {
+    handleExternalSettingsChanged() {
         SettingsStore.readLocalStorage();
         this.setState(this.readFullAddonState());
     }
-    readFullAddonState () {
+    readFullAddonState() {
         const result = {};
         for (const [id, manifest] of Object.entries(supportedAddons)) {
             const enabled = SettingsStore.getAddonEnabled(id);
@@ -1034,8 +1033,8 @@ class AddonSettingsComponent extends React.Component {
         }
         return result;
     }
-    handleSettingStoreChanged (e) {
-        const {addonId, settingId, value} = e.detail;
+    handleSettingStoreChanged(e) {
+        const { addonId, settingId, value } = e.detail;
         const reloadRequired = e.detail.reloadRequired;
         this.setState(state => {
             const newState = {
@@ -1055,7 +1054,7 @@ class AddonSettingsComponent extends React.Component {
             postThrottledSettingsChange(SettingsStore.store);
         }
     }
-    handleReloadNow () {
+    handleReloadNow() {
         // Value posted does not matter
         if (Channels.reloadChannel) {
             Channels.reloadChannel.postMessage(0);
@@ -1075,7 +1074,7 @@ class AddonSettingsComponent extends React.Component {
             }
         }
     }
-    handleResetAll () {
+    handleResetAll() {
         if (confirm(settingsTranslations.confirmResetAll)) {
             SettingsStore.resetAllAddons();
             this.setState({
@@ -1083,13 +1082,13 @@ class AddonSettingsComponent extends React.Component {
             });
         }
     }
-    handleExport () {
+    handleExport() {
         const exportedData = SettingsStore.export({
             theme
         });
         this.props.onExportSettings(exportedData);
     }
-    handleImport () {
+    handleImport() {
         const fileSelector = document.createElement('input');
         fileSelector.type = 'file';
         fileSelector.accept = '.json';
@@ -1114,7 +1113,7 @@ class AddonSettingsComponent extends React.Component {
             }
         });
     }
-    handleImportAddon () {
+    handleImportAddon() {
         const fileSelector = document.createElement('input');
         fileSelector.type = 'file';
         fileSelector.accept = '.zip';
@@ -1143,24 +1142,24 @@ class AddonSettingsComponent extends React.Component {
             }
         });
     }
-    handleSearch (e) {
+    handleSearch(e) {
         const value = e.target.value;
         this.setState({
             search: value
         });
     }
-    handleClickSearchButton () {
+    handleClickSearchButton() {
         this.setState({
             search: ''
         });
         this.searchBar.focus();
     }
-    handleClickVersion () {
+    handleClickVersion() {
         this.setState({
             extended: !this.state.extended
         });
     }
-    searchRef (searchBar) {
+    searchRef(searchBar) {
         this.searchBar = searchBar;
 
         // Only focus search bar if we have no initial search
@@ -1168,7 +1167,7 @@ class AddonSettingsComponent extends React.Component {
             searchBar.focus();
         }
     }
-    handleKeyDown (e) {
+    handleKeyDown(e) {
         const key = e.key;
         if (key.length === 1 && key !== ' ' && e.target === document.body && !(e.ctrlKey || e.metaKey || e.altKey)) {
             this.searchBar.focus();
@@ -1180,7 +1179,7 @@ class AddonSettingsComponent extends React.Component {
             e.preventDefault();
         }
     }
-    render () {
+    render() {
         const addonState = Object.entries(supportedAddons).map(([id, manifest]) => ({
             id,
             manifest,
@@ -1202,7 +1201,7 @@ class AddonSettingsComponent extends React.Component {
 
                 await removeAddon(addon.id);
                 this.setState(prevState => {
-                    const {[addon.id]: _, customAddons, ...rest} = prevState;
+                    const { [addon.id]: _, customAddons, ...rest } = prevState;
                     return {
                         ...rest,
                         customAddons: customAddons.filter(c => c.id !== addon.id)
