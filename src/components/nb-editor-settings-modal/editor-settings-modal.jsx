@@ -37,6 +37,7 @@ import {setHiddenCategories} from '../../reducers/hidden-categories';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
 import ColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 import DeleteButton from '../delete-button/delete-button.jsx';
+import {BLOCK_SHAPE_PRESETS, defaultBlockShape, getBlockShape} from '../../lib/nb-custom-block-shape';
 
 const messages = defineMessages({
     title: {
@@ -99,6 +100,34 @@ const messages = defineMessages({
     },
     resetTabsVisibility: {
         id: 'nb.editorSettings.resetTabsVisibility',
+        defaultMessage: 'Reset to defaults'
+    },
+    customBlockShape: {
+        id: 'nb.editorSettings.customBlockShape',
+        defaultMessage: 'Customizable block shape'
+    },
+    customBlockShapeHelp: {
+        id: 'nb.editorSettings.customBlockShapeHelp',
+        defaultMessage: 'Adjust the padding, corner radius, and notch height of blocks.'
+    },
+    paddingSize: {
+        id: 'nb.editorSettings.paddingSize',
+        defaultMessage: 'Padding size (50-200%):'
+    },
+    cornerSize: {
+        id: 'nb.editorSettings.cornerSize',
+        defaultMessage: 'Corner size (0-300%):'
+    },
+    notchSize: {
+        id: 'nb.editorSettings.notchSize',
+        defaultMessage: 'Notch height (0-150%):'
+    },
+    presets: {
+        id: 'nb.editorSettings.blockShapePresets',
+        defaultMessage: 'Presets'
+    },
+    resetBlockShape: {
+        id: 'nb.editorSettings.resetBlockShape',
         defaultMessage: 'Reset to defaults'
     }
 });
@@ -266,6 +295,7 @@ const EditorSettingsModal = props => {
     const [categoriesExpanded, setCategoriesExpanded] = useState(false);
     const [blockColors, setBlockColors] = useState(loadBlockColors);
     const [blockColorsExpanded, setBlockColorsExpanded] = useState(false);
+    const [blockShapeExpanded, setBlockShapeExpanded] = useState(false);
     const [tabsExpanded, setTabsExpanded] = useState(false);
 
     const latestBlockColors = useRef(blockColors);
@@ -335,6 +365,23 @@ const EditorSettingsModal = props => {
 
     const handleResetTabsVisibility = () => {
         props.onSetPreference('hidden-tabs', []);
+    };
+
+    const blockShape = getBlockShape(props.preferences);
+
+    const handleSetBlockShape = (key, value) => {
+        props.onSetPreference('block-shape', {
+            ...blockShape,
+            [key]: value
+        });
+    };
+
+    const handleApplyBlockShapePreset = preset => {
+        props.onSetPreference('block-shape', preset.values);
+    };
+
+    const handleResetBlockShape = () => {
+        props.onSetPreference('block-shape', defaultBlockShape);
     };
 
     const sections = [
@@ -732,6 +779,136 @@ const EditorSettingsModal = props => {
                                     >
                                         <FormattedMessage
                                             id="nb.editorSettings.resetBlockColors"
+                                            defaultMessage="Reset to defaults"
+                                        />
+                                    </button>
+                                </div>
+                            )
+                        }
+                    />
+                    <Setting
+                        help={
+                            <FormattedMessage
+                                id="nb.editorSettings.customBlockShapeHelp"
+                                defaultMessage="Adjust the padding, corner radius, and notch height of blocks."
+                            />
+                        }
+                        primary={
+                            <button
+                                className={classNames(styles.label, styles.collapseButton)}
+                                onClick={() => setBlockShapeExpanded(e => !e)}
+                            >
+                                <FormattedMessage
+                                    id="nb.editorSettings.customBlockShape"
+                                    defaultMessage="Customizable block shape"
+                                />
+                                <img
+                                    className={classNames(styles.collapseArrow, {
+                                        [styles.collapseArrowExpanded]: blockShapeExpanded
+                                    })}
+                                    src={dropdownCaret}
+                                />
+                            </button>
+                        }
+                        secondary={
+                            blockShapeExpanded && (
+                                <div>
+                                    <div>
+                                        <Setting
+                                            primary={(
+                                                <div className={classNames(styles.label, styles.customStageSize)}>
+                                                    <FormattedMessage
+                                                        defaultMessage="Padding size (50-200%):"
+                                                        id="nb.editorSettings.paddingSize"
+                                                    />
+                                                    <BufferedInput
+                                                        value={String(blockShape.paddingSize)}
+                                                        onSubmit={value => {
+                                                            const num = Number(value);
+                                                            if (Number.isFinite(num) && num >= 50 && num <= 200) {
+                                                                handleSetBlockShape('paddingSize', num);
+                                                            }
+                                                        }}
+                                                        type="number"
+                                                        min="50"
+                                                        max="200"
+                                                        spellCheck="false"
+                                                    />
+                                                </div>
+                                            )}
+                                        />
+                                        <Setting
+                                            primary={(
+                                                <div className={classNames(styles.label, styles.customStageSize)}>
+                                                    <FormattedMessage
+                                                        defaultMessage="Corner size (0-300%):"
+                                                        id="nb.editorSettings.cornerSize"
+                                                    />
+                                                    <BufferedInput
+                                                        value={String(blockShape.cornerSize)}
+                                                        onSubmit={value => {
+                                                            const num = Number(value);
+                                                            if (Number.isFinite(num) && num >= 0 && num <= 300) {
+                                                                handleSetBlockShape('cornerSize', num);
+                                                            }
+                                                        }}
+                                                        type="number"
+                                                        min="0"
+                                                        max="300"
+                                                        spellCheck="false"
+                                                    />
+                                                </div>
+                                            )}
+                                        />
+                                        <Setting
+                                            primary={(
+                                                <div className={classNames(styles.label, styles.customStageSize)}>
+                                                    <FormattedMessage
+                                                        defaultMessage="Notch height (0-150%):"
+                                                        id="nb.editorSettings.notchSize"
+                                                    />
+                                                    <BufferedInput
+                                                        value={String(blockShape.notchSize)}
+                                                        onSubmit={value => {
+                                                            const num = Number(value);
+                                                            if (Number.isFinite(num) && num >= 0 && num <= 150) {
+                                                                handleSetBlockShape('notchSize', num);
+                                                            }
+                                                        }}
+                                                        type="number"
+                                                        min="0"
+                                                        max="150"
+                                                        spellCheck="false"
+                                                    />
+                                                </div>
+                                            )}
+                                        />
+                                    </div>
+                                    <p className={styles.info}>
+                                        <FormattedMessage
+                                            id="nb.editorSettings.presets"
+                                            defaultMessage="Presets"
+                                        />
+                                    </p>
+                                    <div className={styles.presetRow}>
+                                        {BLOCK_SHAPE_PRESETS.map(preset => (
+                                            <button
+                                                key={preset.id}
+                                                className={styles.button}
+                                                onClick={() => handleApplyBlockShapePreset(preset)}
+                                                title={preset.description}
+                                            >
+                                                {preset.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <button
+                                        className={styles.button}
+                                        onClick={handleResetBlockShape}
+                                        style={{marginTop: '8px'}}
+                                    >
+                                        <FormattedMessage
+                                            id="nb.editorSettings.resetBlockShape"
                                             defaultMessage="Reset to defaults"
                                         />
                                     </button>

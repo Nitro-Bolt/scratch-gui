@@ -55,6 +55,12 @@
     height: 3rem;
 }
 
+.preset-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
 .button-row {
     display: flex;
     justify-content: flex-end;

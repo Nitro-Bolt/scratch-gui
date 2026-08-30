@@ -27,7 +27,6 @@ const addons = [
     // 'paint-skew',
     'better-img-uploads',
     'pick-colors-from-stage',
-    'custom-block-shape',
     'editor-square-inputs',
     'zebra-striping',
     'editor-compact',

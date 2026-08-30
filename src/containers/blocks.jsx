@@ -21,6 +21,7 @@ import DragConstants from '../lib/drag-constants';
 import defineDynamicBlock from '../lib/define-dynamic-block';
 import {Theme} from '../lib/themes';
 import {injectExtensionBlockTheme, injectExtensionCategoryTheme} from '../lib/themes/blockHelpers';
+import {applyBlockShapeAndUpdate, getBlockShape} from '../lib/nb-custom-block-shape';
 
 import {connect} from 'react-redux';
 import {updateToolbox} from '../reducers/toolbox';
@@ -126,7 +127,9 @@ class Blocks extends React.Component {
             'onWorkspaceMetricsChange',
             'setBlocks',
             'setLocale',
-            'onExtensionAPI'
+            'onExtensionAPI',
+            'applyBlockShapeToWorkspace',
+            'handleBlockShapeChange'
         ]);
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -237,6 +240,9 @@ class Blocks extends React.Component {
             this.handleExtensionAdded(category);
         }
 
+        // Apply the native custom block shape at startup
+        this.applyBlockShapeToWorkspace(this.props.blockShape);
+
         gentlyRequestPersistentStorage();
     }
     shouldComponentUpdate (nextProps, nextState) {
@@ -252,12 +258,16 @@ class Blocks extends React.Component {
             this.props.customStageSize !== nextProps.customStageSize ||
             this.props.hiddenCategories !== nextProps.hiddenCategories ||
             this.props.nbBlocks !== nextProps.nbBlocks ||
-            this.props.disableInspectBlock !== nextProps.disableInspectBlock
+            this.props.disableInspectBlock !== nextProps.disableInspectBlock ||
+            this.props.blockShape !== nextProps.blockShape
         );
     }
     componentDidUpdate (prevProps) {
         if (this.workspace && this.props.disableInspectBlock !== prevProps.disableInspectBlock) {
             this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
+        }
+        if (this.props.blockShape !== prevProps.blockShape) {
+            this.handleBlockShapeChange(this.props.blockShape);
         }
         // If any modals are open, call hideChaff to close z-indexed field editors
         if (this.props.anyModalVisible && !prevProps.anyModalVisible) {
@@ -317,6 +327,18 @@ class Blocks extends React.Component {
         this.props.vm.clearFlyoutBlocks();
 
         AddonHooks.blocklyWorkspace = null;
+    }
+    applyBlockShapeToWorkspace (blockShape) {
+        if (!this.workspace || !this.props.vm) {
+            return;
+        }
+        const shape = blockShape || getBlockShape(this.props.preferences);
+        applyBlockShapeAndUpdate(this.ScratchBlocks, this.props.vm, this.workspace, shape);
+    }
+    handleBlockShapeChange (nextBlockShape) {
+        if (nextBlockShape !== this.props.blockShape) {
+            this.applyBlockShapeToWorkspace(nextBlockShape);
+        }
     }
     requestToolboxUpdate () {
         clearTimeout(this.toolboxUpdateTimeout);
@@ -837,7 +859,13 @@ Blocks.propTypes = {
     workspaceMetrics: PropTypes.shape({
         targets: PropTypes.objectOf(PropTypes.object)
     }),
-    hiddenCategories: PropTypes.arrayOf(PropTypes.string)
+    hiddenCategories: PropTypes.arrayOf(PropTypes.string),
+    preferences: PropTypes.object,
+    blockShape: PropTypes.shape({
+        paddingSize: PropTypes.number,
+        cornerSize: PropTypes.number,
+        notchSize: PropTypes.number
+    })
 };
 
 Blocks.defaultOptions = {
@@ -876,6 +904,8 @@ const mapStateToProps = state => ({
     customProceduresVisible: state.scratchGui.customProcedures.active,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
     useCatBlocks: isTimeTravel2020(state),
+    preferences: state.scratchGui.preferences,
+    blockShape: state.scratchGui.preferences['block-shape'],
     hiddenCategories: state.scratchGui.preferences['hidden-categories'],
     nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true),
     disableInspectBlock: state.scratchGui.preferences['disable-inspect-block'] === true

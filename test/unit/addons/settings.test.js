@@ -435,12 +435,12 @@ test('setStore weird values', () => {
 
 test('resetting an addon through setStore', () => {
     const store = new SettingStore();
-    expect(store.getAddonSetting('custom-block-shape', 'paddingSize')).toBe(100);
-    store.setAddonSetting('custom-block-shape', 'paddingSize', 50);
-    expect(store.getAddonSetting('custom-block-shape', 'paddingSize')).toBe(50);
+    expect(store.getAddonSetting('custom-zoom', 'zoomSpeed')).toBe(100);
+    store.setAddonSetting('custom-zoom', 'zoomSpeed', 50);
+    expect(store.getAddonSetting('custom-zoom', 'zoomSpeed')).toBe(50);
     const store2 = new SettingStore();
     store.setStore(store2.store);
-    expect(store.getAddonSetting('custom-block-shape', 'paddingSize')).toBe(100);
+    expect(store.getAddonSetting('custom-zoom', 'zoomSpeed')).toBe(100);
 });
 
 test('setStoreWithVersionCheck', () => {
