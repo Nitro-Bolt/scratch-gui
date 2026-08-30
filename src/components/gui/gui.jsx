@@ -46,7 +46,7 @@ import TWFontsModal from '../../containers/tw-fonts-modal.jsx';
 import TWUnknownPlatformModal from '../../containers/tw-unknown-platform-modal.jsx';
 import TWInvalidProjectModal from '../../containers/tw-invalid-project-modal.jsx';
 
-import {STAGE_SIZE_MODES, FIXED_WIDTH, UNCONSTRAINED_NON_STAGE_WIDTH} from '../../lib/layout-constants';
+import {FIXED_WIDTH, UNCONSTRAINED_NON_STAGE_WIDTH} from '../../lib/layout-constants';
 import {Theme} from '../../lib/themes';
 
 import {isRendererSupported, isBrowserSupported} from '../../lib/tw-environment-support-prober';
@@ -94,7 +94,7 @@ const GUIComponent = props => {
         basePath,
         backdropLibraryVisible,
         backpackHost,
-        _backpackVisible,
+        backpackVisible: _backpackVisible,
         blocksId,
         blocksTabVisible,
         cardsVisible,
@@ -275,7 +275,7 @@ const GUIComponent = props => {
                     isRendererSupported={isRendererSupported()}
                     isRtl={isRtl}
                     loading={loading}
-                    stageSize={STAGE_SIZE_MODES.full}
+                    stageSize={FIXED_WIDTH}
                     setStageSize={setStageSize}
                     preferences={props.preferences}
                     vm={vm}

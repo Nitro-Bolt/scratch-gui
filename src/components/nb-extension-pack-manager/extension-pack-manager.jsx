@@ -100,7 +100,15 @@ class ExtensionPackManager extends React.Component {
                             >
                                 packs.nitrobolt.org
                             </a>
-                            , or ask your favorite extension gallery to support the pack format.
+                            , or ask your favorite extension gallery to support the{' '}
+                            <a
+                                href="https://docs.nitrobolt.org/website/packs"
+                                rel="noreferrer"
+                                target="_blank"
+                            >
+                                pack format
+                            </a>
+                            .
                         </div>
                     )}
                     <p>

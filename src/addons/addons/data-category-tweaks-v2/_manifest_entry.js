@@ -25,13 +25,6 @@ const manifest = {
     },
     {
       "dynamic": true,
-      "name": "Separate Sprite-only Variables",
-      "id": "separateLocalVariables",
-      "type": "boolean",
-      "default": false
-    },
-    {
-      "dynamic": true,
       "name": "Move data blocks above variables list",
       "id": "moveReportersDown",
       "type": "boolean",

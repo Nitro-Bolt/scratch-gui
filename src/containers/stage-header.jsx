@@ -4,6 +4,7 @@ import bindAll from 'lodash.bindall';
 import VM from 'scratch-vm';
 import {STAGE_DISPLAY_SCALE_METADATA, STAGE_DISPLAY_SIZES, STAGE_SIZE_MODES} from '../lib/layout-constants';
 import {setFullScreen} from '../reducers/mode';
+import {setStageSize} from '../reducers/stage-size';
 import {openSettingsModal} from '../reducers/modals';
 import {openDebugger} from '../reducers/debugger';
 
@@ -97,6 +98,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    onSetStageFull: () => dispatch(setStageSize(STAGE_SIZE_MODES.full)),
     onSetStageFullScreen: () => dispatch(setFullScreen(true)),
     onSetStageUnFullScreen: () => dispatch(setFullScreen(false)),
     onOpenSettings: () => dispatch(openSettingsModal()),

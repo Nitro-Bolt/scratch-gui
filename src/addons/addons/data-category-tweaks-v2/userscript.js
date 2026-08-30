@@ -1,7 +1,6 @@
-export default async function ({ addon, console, msg, safeMsg }) {
+export default async function ({ addon, console, safeMsg }) {
   const ScratchBlocks = await addon.tab.traps.getBlockly();
 
-  const SMALL_GAP = 8;
   const BIG_GAP = 24;
 
   const vm = addon.tab.traps.vm;
@@ -27,68 +26,6 @@ export default async function ({ addon, console, msg, safeMsg }) {
       lists: listButtonIndex === -1 ? [] : toolboxXML.slice(listButtonIndex, listsEndIndex),
       tables: tableButtonIndex === -1 ? [] : toolboxXML.slice(tableButtonIndex, toolboxXML.length),
     };
-  };
-
-  const separateLocalVariables = (workspace, toolboxXML) => {
-    const { variables, lists, tables } = separateVariablesByType(toolboxXML);
-
-    const makeLabel = (l10n) => {
-      const label = document.createElement("label");
-      label.setAttribute("text", msg(l10n));
-      return label;
-    };
-
-    const fixGaps = (variables) => {
-      if (variables.length > 0) {
-        for (var i = 0; i < variables.length - 1; i++) {
-          variables[i].setAttribute("gap", SMALL_GAP);
-        }
-        variables[i].setAttribute("gap", BIG_GAP);
-      }
-    };
-
-    const separateVariablesByScope = (xml) => {
-      const before = [];
-      const global = [];
-      const local = [];
-      const after = [];
-
-      for (const blockXML of xml) {
-        if (blockXML.hasAttribute("id")) {
-          const id = blockXML.getAttribute("id");
-          const variable = workspace.getVariableById(id);
-          if (!variable || !variable.isLocal) {
-            global.push(blockXML);
-          } else {
-            local.push(blockXML);
-          }
-        } else if (global.length || local.length) {
-          after.push(blockXML);
-        } else {
-          before.push(blockXML);
-        }
-      }
-
-      const result = before;
-
-      if (global.length) {
-        result.push(makeLabel("for-all-sprites"));
-        fixGaps(global);
-        result.push(...global);
-      }
-
-      if (local.length) {
-        result.push(makeLabel("for-this-sprite-only"));
-        fixGaps(local);
-        result.push(...local);
-      }
-
-      return result.concat(after);
-    };
-
-    return separateVariablesByScope(variables)
-      .concat(separateVariablesByScope(lists))
-      .concat(separateVariablesByScope(tables));
   };
 
   const moveReportersDown = (toolboxXML) => {
@@ -129,10 +66,6 @@ export default async function ({ addon, console, msg, safeMsg }) {
 
     if (!addon.self.disabled && addon.settings.get("moveReportersDown")) {
       result = moveReportersDown(result);
-    }
-
-    if (!addon.self.disabled && addon.settings.get("separateLocalVariables")) {
-      result = separateLocalVariables(workspace, result);
     }
 
     if (addon.self.disabled || !hasSeparateListAndTableCategories) {
@@ -241,7 +174,7 @@ export default async function ({ addon, console, msg, safeMsg }) {
         vm.emitWorkspaceUpdate();
       }
     }
-    if (addon.settings.get("separateLocalVariables") || addon.settings.get("moveReportersDown")) {
+    if (addon.settings.get("moveReportersDown")) {
       const workspace = Blockly.getMainWorkspace();
       if (workspace) {
         workspace.refreshToolboxSelection_();

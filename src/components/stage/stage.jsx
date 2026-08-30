@@ -10,7 +10,6 @@ import TargetHighlight from '../../containers/target-highlight.jsx';
 import GreenFlagOverlay from '../../containers/green-flag-overlay.jsx';
 import Question from '../../containers/question.jsx';
 import MicIndicator from '../mic-indicator/mic-indicator.jsx';
-import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants.js';
 import {getStageDimensions, getMinWidth} from '../../lib/screen-utils.js';
 import styles from './stage.css';
 
@@ -168,7 +167,7 @@ StageComponent.propTypes = {
     onDoubleClick: PropTypes.func,
     onQuestionAnswered: PropTypes.func,
     question: PropTypes.string,
-    stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
+    stageSize: PropTypes.number.isRequired,
     useEditorDragStyle: PropTypes.bool
 };
 StageComponent.defaultProps = {

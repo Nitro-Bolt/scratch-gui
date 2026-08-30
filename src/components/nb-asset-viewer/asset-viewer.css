@@ -115,7 +115,7 @@
     border-radius: 0 $form-radius $form-radius 0;
 }
 
-.button:active {
+.button:active:not(:disabled) {
     background: $looks-transparent;
 }
 
