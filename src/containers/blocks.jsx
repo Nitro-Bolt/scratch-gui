@@ -336,9 +336,7 @@ class Blocks extends React.Component {
         applyBlockShapeAndUpdate(this.ScratchBlocks, this.props.vm, this.workspace, shape);
     }
     handleBlockShapeChange (nextBlockShape) {
-        if (nextBlockShape !== this.props.blockShape) {
-            this.applyBlockShapeToWorkspace(nextBlockShape);
-        }
+        this.applyBlockShapeToWorkspace(nextBlockShape);
     }
     requestToolboxUpdate () {
         clearTimeout(this.toolboxUpdateTimeout);
