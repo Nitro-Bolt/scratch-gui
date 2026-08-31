@@ -446,12 +446,17 @@ class ExtensionLibrary extends React.PureComponent {
                     'shreder95resolution',
                     'skyhigh173JSON'
                 ];
+                const sourceExtensionsToExclude = source.id === 'turbowarp' ? [
+                    'penP',
+                    'xeltallivclipblend'
+                ] : [];
 
                 if (sourceGallery && sourceGallery.status === 'success') {
                     library.push(toLibraryItem(sourceStatusItems.more));
                     library.push(
                         ...sourceGallery.extensions
-                            .filter(i => !extensionsToExclude.includes(i.extensionId))
+                            .filter(i => !extensionsToExclude.includes(i.extensionId) &&
+                                !sourceExtensionsToExclude.includes(i.extensionId))
                             .map(i => translateGalleryItem(i, locale))
                             .map(toLibraryItem)
                     );
