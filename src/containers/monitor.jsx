@@ -228,6 +228,7 @@ class Monitor extends React.Component {
         const showSliderOption = availableModes(this.props.opcode).indexOf('slider') !== -1;
         const isList = this.props.mode === 'list';
         const isTable = this.props.mode === 'table';
+        const isEditableList = isList && this.props.opcode === 'data_listcontents';
         return (
             <React.Fragment>
                 {this.state.sliderPrompt && <SliderPrompt
@@ -251,8 +252,9 @@ class Monitor extends React.Component {
                     theme={this.props.theme}
                     width={this.props.width}
                     onDragEnd={this.handleDragEnd}
-                    onExport={(isList || isTable) ? this.handleExport : null}
-                    onImport={(isList || isTable) ? this.handleImport : null}
+                    editable={isEditableList || isTable}
+                    onExport={(isEditableList || isTable) ? this.handleExport : null}
+                    onImport={(isEditableList || isTable) ? this.handleImport : null}
                     onHide={this.handleHide}
                     onNextMode={this.handleNextMode}
                     onSetModeToDefault={(isList || isTable) ? null : this.handleSetModeToDefault}

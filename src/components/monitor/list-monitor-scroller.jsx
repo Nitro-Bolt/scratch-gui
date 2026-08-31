@@ -46,9 +46,9 @@ class ListMonitorScroller extends React.Component {
                         background: this.props.categoryColor.background,
                         color: this.props.categoryColor.text
                     }}
-                    onClick={this.props.draggable ? this.handleEventFactory(index) : null}
+                    onClick={this.props.draggable && this.props.editable ? this.handleEventFactory(index) : null}
                 >
-                    {this.props.draggable && this.props.activeIndex === index ? (
+                    {this.props.draggable && this.props.editable && this.props.activeIndex === index ? (
                         <div className={styles.inputWrapper}>
                             <input
                                 autoFocus
@@ -109,6 +109,7 @@ ListMonitorScroller.propTypes = {
         text: PropTypes.string.isRequired
     }).isRequired,
     draggable: PropTypes.bool,
+    editable: PropTypes.bool,
     height: PropTypes.number,
     onActivate: PropTypes.func,
     onDeactivate: PropTypes.func,

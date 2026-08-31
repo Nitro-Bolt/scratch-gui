@@ -5,7 +5,7 @@ import {FormattedMessage} from 'react-intl';
 import styles from './monitor.css';
 import ListMonitorScroller from './list-monitor-scroller.jsx';
 
-const ListMonitor = ({draggable, label, width, height, value, onResizeMouseDown, onAdd, ...rowProps}) => (
+const ListMonitor = ({draggable, editable, label, width, height, value, onResizeMouseDown, onAdd, ...rowProps}) => (
     <div
         className={styles.listMonitor}
         style={{
@@ -19,6 +19,7 @@ const ListMonitor = ({draggable, label, width, height, value, onResizeMouseDown,
         <div className={styles.listBody}>
             <ListMonitorScroller
                 draggable={draggable}
+                editable={editable}
                 height={height}
                 values={value}
                 width={width}
@@ -27,8 +28,8 @@ const ListMonitor = ({draggable, label, width, height, value, onResizeMouseDown,
         </div>
         <div className={styles.listFooter}>
             <div
-                className={classNames(draggable ? styles.addButton : null, 'no-drag')}
-                onClick={draggable ? onAdd : null}
+                className={classNames(draggable && editable ? styles.addButton : null, 'no-drag')}
+                onClick={draggable && editable ? onAdd : null}
             >
                 {'+' /* TODO waiting on asset */}
             </div>
@@ -59,6 +60,7 @@ ListMonitor.propTypes = {
         text: PropTypes.string.isRequired
     }).isRequired,
     draggable: PropTypes.bool.isRequired,
+    editable: PropTypes.bool,
     height: PropTypes.number,
     label: PropTypes.string.isRequired,
     onActivate: PropTypes.func,
@@ -76,6 +78,7 @@ ListMonitor.propTypes = {
 };
 
 ListMonitor.defaultProps = {
+    editable: true,
     width: 110,
     height: 200
 };

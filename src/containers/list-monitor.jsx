@@ -188,8 +188,8 @@ class ListMonitor extends React.Component {
                 activeValue={this.state.activeValue}
                 height={this.state.height}
                 width={this.state.width}
-                onActivate={this.handleActivate}
-                onAdd={this.handleAdd}
+                onActivate={props.editable ? this.handleActivate : null}
+                onAdd={props.editable ? this.handleAdd : null}
                 onDeactivate={this.handleDeactivate}
                 onFocus={this.handleFocus}
                 onInput={this.handleInput}
@@ -208,6 +208,7 @@ ListMonitor.propTypes = {
         width: PropTypes.number,
         height: PropTypes.number
     }),
+    editable: PropTypes.bool,
     targetId: PropTypes.string,
     value: PropTypes.oneOfType([
         PropTypes.number,
