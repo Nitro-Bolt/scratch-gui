@@ -247,7 +247,7 @@ const StageHeaderComponent = function (props) {
                                         src={debuggerIcon}
                                     />
                                     {props.unreadLogs > 0 &&
-                                        <span className={styles.logCount}>{props.unreadLogs}</span>
+                                        <span className={styles.logCount}>{props.unreadLogs < 1000 ? props.unreadLogs : "999+"}</span>
                                     }
                                 </Button>
                             </div>
