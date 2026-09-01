@@ -73,10 +73,11 @@
     font-size: 14px;
 }
 
-.noLogs {
+.no-logs {
     margin: auto;
     font-style: italic;
     opacity: 0.5;
+    font-size: 0.9rem;
 }
 
 .filterSelect {

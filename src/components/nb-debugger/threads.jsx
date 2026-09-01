@@ -43,7 +43,7 @@ const ThreadsTab = React.memo(props => {
                     compilerEnabled={props.vm.runtime.compilerOptions.enabled}
                 />
             )) : (
-                <h3 className={styles.noThreads}>No threads running</h3>
+                <span className={styles.noThreads}>No threads running</span>
             )}
         </div>
     );

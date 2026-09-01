@@ -170,7 +170,7 @@ const LogsTab = React.memo(props => {
                     onSelectTarget={() => props.onSelectTarget(log.target)}
                 />
             )) : (
-                <h3 className={styles.noLogs}>{'No logs to display'}</h3>
+                <span className={styles.noLogs}>{'No logs to display'}</span>
             )}
         </div>
     );

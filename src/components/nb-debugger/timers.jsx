@@ -35,7 +35,7 @@ const TimersTab = React.memo(props => {
                     </tbody>
                 </table>
             ) : (
-                <h3 className={styles.noTimers}>{'No timers running'}</h3>
+                <span className={styles.noTimers}>{'No timers running'}</span>
             )}
         </div>
     );
