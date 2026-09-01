@@ -9,6 +9,7 @@ import deleteIcon from './icons/icon--delete.svg';
 import downloadIcon from './icons/icon--download.svg';
 import warningIcon from './icons/icon--warning.svg';
 import errorIcon from './icons/icon--error.svg';
+import { FormattedMessage } from 'react-intl';
 
 const parseLogColor = color => {
     if (!color) return null;
@@ -79,6 +80,7 @@ Log.displayName = 'Log';
 const LogsTab = React.memo(props => {
     const [spriteFilter, setSpriteFilter] = useState('all');
     const [typeFilter, setTypeFilter] = useState('all');
+    const [stringFilter, setStringFilter] = useState('');
     const [isAtBottom, setIsAtBottom] = useState(true);
     const containerRef = useRef(null);
 
@@ -105,8 +107,9 @@ const LogsTab = React.memo(props => {
             (log.target && log.target.sprite.name === spriteFilter) ||
             (spriteFilter === '__stage__' && log.target && log.target.isStage);
         const typeMatch = typeFilter === 'all' || (log.type || 'log') === typeFilter;
-        return spriteMatch && typeMatch;
-    }), [props.logs, spriteFilter, typeFilter]);
+        const stringMatch = log.message.includes(stringFilter);
+        return spriteMatch && typeMatch && stringMatch;
+    }), [props.logs, spriteFilter, typeFilter, stringFilter]);
 
     useEffect(() => {
         const el = containerRef.current;
@@ -158,6 +161,13 @@ const LogsTab = React.memo(props => {
                     <option value="warn">{'Warn'}</option>
                     <option value="error">{'Error'}</option>
                 </select>
+                <input
+                    className={styles.search}
+                    type="search"
+                    value={stringFilter}
+                    onChange={e => setStringFilter(e.target.value)}
+                    placeholder="Search logs"
+                />
             </div>
             {filteredLogs.length > 0 ? filteredLogs.map((log, i) => (
                 <Log

@@ -95,3 +95,31 @@
 .filterSelect > option {
     background-color: $menu-bar-background;
 }
+
+.search {
+    width: 100%;
+    box-sizing: border-box !important;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    padding: 0 0.75rem;
+    padding-left: 0.45rem;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    color: var(--text-primary);
+    background-color: var(--input-background);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--ui-black-transparent);
+    outline: none;
+    cursor: text;
+    transition: 0.25s ease-out;
+    box-shadow: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.search:is(:hover, :focus) {
+    border-color: var(--looks-secondary);
+}
