@@ -205,7 +205,7 @@ importers:
         version: https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/17b738c4a68548252ca1ec76225f27b55fe84b9b(react-dom@16.14.0(react@16.14.0))(react-intl-redux@0.7.0(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-redux@5.0.7(react@16.14.0)(redux@3.7.2)))(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-popover@0.5.10)(react-redux@5.0.7(react@16.14.0)(redux@3.7.2))(react-responsive@5.0.0(react@16.14.0))(react-style-proptype@3.2.2)(react-tooltip@3.8.0(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react@16.14.0)(redux@3.7.2)(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961)
       scratch-render:
         specifier: github:Nitro-Bolt/scratch-render#develop
-        version: https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/02ab72f6c32f0ba3105f565e3c47804c97d06ac9(webpack@4.47.0)
+        version: https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/09d7f141da22e658b9ae024ee8a177801201786b(webpack@4.47.0)
       scratch-vm:
         specifier: github:Nitro-Bolt/scratch-vm#develop
         version: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/a80c23adda2399a6c1d8a23518af365614de3525(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961))(webpack@4.47.0)
@@ -5484,8 +5484,8 @@ packages:
     resolution: {tarball: https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961}
     version: 1.0.0
 
-  scratch-render@https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/02ab72f6c32f0ba3105f565e3c47804c97d06ac9:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/02ab72f6c32f0ba3105f565e3c47804c97d06ac9}
+  scratch-render@https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/09d7f141da22e658b9ae024ee8a177801201786b:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/09d7f141da22e658b9ae024ee8a177801201786b}
     version: 0.1.0
 
   scratch-sb1-converter@0.2.7:
@@ -12956,7 +12956,7 @@ snapshots:
     dependencies:
       base64-loader: 1.0.0
 
-  scratch-render@https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/02ab72f6c32f0ba3105f565e3c47804c97d06ac9(webpack@4.47.0):
+  scratch-render@https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/09d7f141da22e658b9ae024ee8a177801201786b(webpack@4.47.0):
     dependencies:
       '@turbowarp/ancient-hull.js': 0.2.13
       '@turbowarp/nanolog': 0.2.0
