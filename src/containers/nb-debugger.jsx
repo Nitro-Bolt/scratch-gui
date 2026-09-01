@@ -168,6 +168,7 @@ const mapStateToProps = state => ({
     tab: state.scratchGui.debugger.tab,
     dragging: state.scratchGui.debugger.dragging,
     logs: state.scratchGui.debugger.logs,
+    projectTitle: state.scratchGui.projectTitle,
     timers: state.scratchGui.debugger.timers,
     performanceChart: state.scratchGui.debugger.performanceChart
 });

@@ -9,26 +9,30 @@ import deleteIcon from './icons/icon--delete.svg';
 import downloadIcon from './icons/icon--download.svg';
 import warningIcon from './icons/icon--warning.svg';
 import errorIcon from './icons/icon--error.svg';
-import { FormattedMessage } from 'react-intl';
 
 const parseLogColor = color => {
     if (!color) return null;
     return `rgba(${color.r},${color.g},${color.b},1)`;
 };
 
-const handleExportLogs = logs => {
+const handleExportLogs = (logs, projectTitle) => {
     let exported = '';
     logs.forEach(log => {
         const type = (log.type || 'log').toUpperCase();
+        const typeMap = {
+            LOG: "LOG",
+            WARN: "WRN",
+            ERROR: "ERR"
+        };
         if (log.target) {
-            exported += `${log.target.sprite.name}: [${type}] ${log.message}\n`;
+            exported += `[${typeMap[type]}] ${log.target.sprite.name}: ${log.message}\n`;
         } else {
-            exported += `[${type}] ${log.message}\n`;
+            exported += `[${typeMap[type]}] ${log.message}\n`;
         }
     });
 
     const blob = new Blob([exported], {type: 'text/plain'});
-    downloadBlob('logs.txt', blob);
+    downloadBlob(`${(projectTitle).substring(0, 100)}.log`, blob);
 };
 
 const Log = React.memo(props => {
@@ -129,7 +133,7 @@ const LogsTab = React.memo(props => {
                     <span>{'Clear'}</span>
                 </button>
                 {/* eslint-disable-next-line react/jsx-no-bind */}
-                <button onClick={() => handleExportLogs(props.logs)}>
+                <button onClick={() => handleExportLogs(props.logs, props.projectTitle)}>
                     <img src={downloadIcon} />
                     <span>{'Export'}</span>
                 </button>
@@ -190,7 +194,8 @@ LogsTab.propTypes = {
     logs: PropTypes.array,
     sprites: PropTypes.object,
     onClearLogs: PropTypes.func,
-    onSelectTarget: PropTypes.func
+    onSelectTarget: PropTypes.func,
+    projectTitle: PropTypes.string
 };
 
 LogsTab.displayName = 'LogsTab';

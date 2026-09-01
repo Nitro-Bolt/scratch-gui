@@ -107,6 +107,7 @@ const DebuggerComponent = React.memo(props => {
                         onSelectTarget={props.onSelectTarget}
                         logs={props.logs}
                         sprites={props.sprites}
+                        projectTitle={props.projectTitle}
                     />
                 ) : props.tab === 1 ? (
                     <ThreadsTab
