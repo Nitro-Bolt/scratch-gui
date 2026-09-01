@@ -18,6 +18,7 @@ const initialState = {
     visible: false,
     dragging: false,
     logs: [],
+    unreadLogs: 0,
     timers: {},
     performanceChart: 0,
     tab: 0,
@@ -31,6 +32,7 @@ const reducer = function (state, action) {
     case OPEN_DEBUGGER:
         return Object.assign({}, state, {
             visible: true,
+            unreadLogs: state.tab === 0 ? 0 : state.unreadLogs
         });
     case CLOSE_DEBUGGER:
         return Object.assign({}, state, {
@@ -51,7 +53,8 @@ const reducer = function (state, action) {
         });
     case SET_TAB:
         return Object.assign({}, state, {
-            tab: action.tabIndex
+            tab: action.tabIndex,
+            unreadLogs: action.tabIndex === 0 ? 0 : state.unreadLogs
         });
     case SET_PERFORMANCE_CHART:
         return Object.assign({}, state, {
@@ -68,11 +71,13 @@ const reducer = function (state, action) {
             newLogs.shift();
         }
         return Object.assign({}, state, {
-            logs: newLogs
+            logs: newLogs,
+            unreadLogs: state.tab === 0 && state.visible ? 0 : state.unreadLogs + 1
         });
     case CLEAR_LOGS:
         return Object.assign({}, state, {
-            logs: []
+            logs: [],
+            unreadLogs: 0
         });
     case SET_TIMERS:
         return Object.assign({}, state, {

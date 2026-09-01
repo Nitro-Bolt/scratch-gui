@@ -72,6 +72,23 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    position: relative;
+}
+
+.log-count {
+    display: block;
+    position: absolute;
+    top: -.55rem;
+    right: -.55rem;
+    border-radius: 1rem;
+    background-color: $looks-secondary;
+    padding: 0 .25rem;
+    text-indent: 0;
+    line-height: 1rem;
+    color: #fff;
+    font-size: .7rem;
+    font-weight: bold;
+    pointer-events: none;
 }
 
 .stage-button {
