@@ -19,6 +19,7 @@
     background-color: $ui-white;
     box-shadow: 0px 5px 25px 5px $shadow;
     pointer-events: auto;
+    overflow: hidden;
 }
 
 .debugger-header {
