@@ -4,12 +4,18 @@
 
 .page-wrapper {
     height: 100%;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .body-wrapper {
     flex-grow: 1;
+    min-width: 0;
+    min-height: 0;
     background-color: $ui-primary;
 }
 
@@ -50,6 +56,8 @@
     flex-basis: calc(1024px - 408px - (($space + $stage-standard-border-width) * 2));
     flex-grow: 1;
     flex-shrink: 0;
+    min-width: 0;
+    min-height: 0;
     position: relative;
 
     display: flex;
@@ -271,6 +279,8 @@
     */
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    min-height: 0;
 }
 
 .flex-wrapper:not(.stage-hidden)::after {

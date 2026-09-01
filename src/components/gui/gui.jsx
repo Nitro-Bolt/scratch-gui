@@ -291,8 +291,6 @@ const GUIComponent = props => {
                 className={styles.pageWrapper}
                 dir={isRtl ? 'rtl' : 'ltr'}
                 style={{
-                    minWidth: 1024 + Math.max(0, customStageSize.width - 480),
-                    minHeight: 640 + Math.max(0, customStageSize.height - 360),
                     cursor: resizingStage ? 'e-resize' : null
                 }}
                 // eslint-disable-next-line react/jsx-no-bind
