@@ -13,21 +13,29 @@
     display: flex;
     align-items: center;
     padding: 0.2rem;
-    border-bottom: 2px solid $ui-black-transparent;
+    border-bottom: 1px solid $ui-black-transparent;
 }
 
 .log.error {
     background-color: rgba(255, 0, 0, 0.20);
-    border-bottom: 2px solid rgba(255, 0, 0, 0.30);
+    border-color: rgba(255, 0, 0, 0.30);
+    color: hsl(0, 100%, 85%);
 }
 
 .log.warn {
-    background-color: rgba(255, 255, 0, 0.20);
-    border-bottom: 2px solid rgba(255, 255, 0, 0.30);
+    background-color: rgba(255, 150, 0, 0.2);
+    border-color: rgba(255, 150, 0, 0.30);
+    color: hsl(35, 100%, 85%);
+}
+
+.log:not(.error, .warn) {
+    padding-left: calc(16px + 0.6rem);
 }
 
 .log > img {
-    margin-right: 0.25rem;
+    margin-right: 0.3rem;
+    margin-left: 0.1rem;
+    user-select: none;
 }
 
 .log > span {
@@ -37,6 +45,8 @@
 
 .log > .sprite-name {
     margin-left: auto;
+    font-size: 0.8em;
+    user-select: none;
 }
 
 .button-container {
