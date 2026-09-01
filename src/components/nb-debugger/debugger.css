@@ -29,7 +29,8 @@
     align-items: center;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    background-color: $menu-bar-background
+    background-color: $menu-bar-background;
+    user-select: none;
 }
 
 .compiler-warning {
