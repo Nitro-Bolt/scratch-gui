@@ -38,7 +38,7 @@ const PerformanceTab = React.memo(props => {
             const value = Math.round(max * fraction);
             return props.chartIndex === 2 ? formatBytesRound(value) : value;
         });
-    
+
         return (
             <div className={styles.chartQuantities}>
                 {labels.map((val, i) => <p key={i}>{val}</p>)}
@@ -84,8 +84,7 @@ const PerformanceTab = React.memo(props => {
                             data-for="perf-chart-tooltip"
                             style={{
                                 left: `${(i - 0.5) * segmentWidth}%`,
-                                width: `${segmentWidth}%`,
-                                top: `${(1 - value / max) * 100}%`
+                                width: `${segmentWidth}%`
                             }}
                         />
                     ))}

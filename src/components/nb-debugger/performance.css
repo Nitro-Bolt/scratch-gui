@@ -94,6 +94,10 @@
 
 .hit-slice {
     position: absolute;
-    height: 12px;
-    transform: translateY(-50%);
+    top: 0;
+    height: 100%;
+}
+
+:global(#perf-chart-tooltip) {
+    white-space: nowrap;
 }
