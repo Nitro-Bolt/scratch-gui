@@ -49,6 +49,12 @@
     user-select: none;
 }
 
+.log > .sprite-name:not(:hover, :focus) {
+    color: #ffffff;
+    text-decoration: none;
+    opacity: 0.5;
+}
+
 .button-container {
     display: inline-flex;
     padding: 0.25rem;
