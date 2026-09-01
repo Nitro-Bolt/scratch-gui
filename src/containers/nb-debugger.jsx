@@ -34,7 +34,7 @@ class NBDebugger extends React.Component {
         this.sampleMemory = 0;
 
         this.state = {
-            closedCompilerWarning: false,
+            closedCompilerWarning: true,
             fpsData: this.fpsData.slice(),
             cloneData: this.cloneData.slice(),
             memoryData: this.memoryData.slice(),
