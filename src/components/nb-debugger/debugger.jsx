@@ -18,28 +18,23 @@ import styles from './debugger.css';
 
 const DebuggerComponent = React.memo(props => {
     let {x, y} = props;
-    const cardHorizontalDragOffset = 400; // ~80% of card width
-    const cardVerticalDragOffset = 257;// ~80% of card height, if expanded
-    const menuBarHeight = 48; // TODO: get pre-calculated from elsewhere?
+    const width = 576;
+    const height = 400;
+    const menuBarHeight = 48;
 
     if (x === 0 && y === 0) {
         // initialize positions
-        x = 292;
-        x += cardHorizontalDragOffset;
-        // The tallest cards are about 320px high, and the default position is pinned
-        // to near the bottom of the blocks palette to allow room to work above.
-        const tallCardHeight = 320;
-        const bottomMargin = 60; // To avoid overlapping the backpack region
-        y = window.innerHeight - tallCardHeight - bottomMargin - menuBarHeight;
+        x = window.innerWidth - width;
+        y = (window.innerHeight - height) / 2;
     }
    return (
     <div
         className={styles.debuggerContainerOverlay}
         style={{
-            width: `${window.innerWidth + (2 * cardHorizontalDragOffset)}px`,
-            height: `${window.innerHeight - menuBarHeight + cardVerticalDragOffset}px`,
+            width: `${window.innerWidth + (2 * width)}px`,
+            height: `${window.innerHeight - menuBarHeight + height}px`,
             top: `${menuBarHeight}px`,
-            left: `${-cardHorizontalDragOffset}px`
+            left: `${-width}px`
         }}
     >
         <Draggable
