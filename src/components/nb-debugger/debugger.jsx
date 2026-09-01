@@ -38,7 +38,12 @@ const DebuggerComponent = React.memo(props => {
         }}
     >
         <Draggable
-            bounds="parent"
+            bounds={{
+                left: width,
+                right: window.innerWidth,
+                top: -menuBarHeight,
+                bottom: window.innerHeight - height - menuBarHeight
+            }}
             handle={`.${styles.debuggerHeader}`}
             position={{x, y}}
             onDrag={props.onDrag}
