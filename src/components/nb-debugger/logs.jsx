@@ -133,7 +133,7 @@ const LogsTab = React.memo(props => {
                     <span>{'Clear'}</span>
                 </button>
                 {/* eslint-disable-next-line react/jsx-no-bind */}
-                <button onClick={() => handleExportLogs(props.logs, props.projectTitle)}>
+                <button onClick={() => handleExportLogs(filteredLogs, props.projectTitle)}>
                     <img src={downloadIcon} />
                     <span>{'Export'}</span>
                 </button>
