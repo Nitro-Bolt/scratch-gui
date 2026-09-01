@@ -42,6 +42,12 @@ const Log = React.memo(props => {
         backgroundColor: color.replace(',1)', ',0.15)'),
         borderBottomColor: color.replace(',1)', ',0.30)')
     } : null;
+    let message = props.message;
+    if ((message.startsWith("[") && message.endsWith("]")) || (message.startsWith("{") && message.endsWith("}"))) { 
+        try {
+            message = <pre>{JSON.stringify(JSON.parse(props.message), null, 2)}</pre>;
+        } catch {}
+    }
     return (
         <div
             className={classNames(styles.log, styles[props.type])}
@@ -50,7 +56,7 @@ const Log = React.memo(props => {
             {props.type && props.type !== 'log' &&
                 <img src={icon} />
             }
-            <span>{props.message}</span>
+            <span>{message}</span>
             {props.target &&
                 <a
                     className={styles.spriteName}

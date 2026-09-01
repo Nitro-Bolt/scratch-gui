@@ -123,3 +123,8 @@
 .search:is(:hover, :focus) {
     border-color: var(--looks-secondary);
 }
+
+pre {
+    margin: 0;
+    font-size: 0.9em;
+}
