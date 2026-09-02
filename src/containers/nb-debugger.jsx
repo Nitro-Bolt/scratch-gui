@@ -23,7 +23,8 @@ class NBDebugger extends React.Component {
         bindAll(this, [
             'handleCloseCompilerWarning',
             'handleRuntimeStep',
-            'handleSelectTarget'
+            'handleSelectTarget',
+            'handleSelectTargetBlock'
         ]);
 
         this.stepCount = 0;
@@ -106,6 +107,13 @@ class NBDebugger extends React.Component {
         this.props.onActivateCodeTab();
     }
 
+    handleSelectTargetBlock (target, block) {
+        this.props.vm.setEditingTarget(target.id);
+        this.props.onActivateCodeTab();
+        const workspace = window.ScratchBlocks.getMainWorkspace();
+        workspace.centerOnBlock(block);
+    }
+
     componentDidUpdate (prevProps) {
         if (this.props.tab === 2 && prevProps.tab !== 2) {
             this.setState({
@@ -130,6 +138,7 @@ class NBDebugger extends React.Component {
                 showCompilerWarning={this.props.compilerEnabled && !this.state.closedCompilerWarning}
                 onCloseCompilerWarning={this.handleCloseCompilerWarning}
                 onSelectTarget={this.handleSelectTarget}
+                onSelectTargetBlock={this.handleSelectTargetBlock}
                 threads={this.state.threads}
                 sprites={this.props.sprites}
                 fpsData={this.state.fpsData}

@@ -94,7 +94,8 @@ Log.propTypes = {
         })
     }),
     targetBlock: PropTypes.string,
-    onSelectTarget: PropTypes.func
+    onSelectTarget: PropTypes.func,
+    onSelectTargetBlock: PropTypes.func
 };
 
 Log.displayName = 'Log';
@@ -201,6 +202,8 @@ const LogsTab = React.memo(props => {
                     targetBlock={log.targetBlock}
                     // eslint-disable-next-line react/jsx-no-bind
                     onSelectTarget={() => props.onSelectTarget(log.target)}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onSelectTargetBlock={() => props.onSelectTargetBlock(log.target, log.targetBlock)}
                 />
             )) : (
                 <span className={styles.noLogs}>{'No logs to display'}</span>
@@ -214,6 +217,7 @@ LogsTab.propTypes = {
     sprites: PropTypes.object,
     onClearLogs: PropTypes.func,
     onSelectTarget: PropTypes.func,
+    onSelectTargetBlock: PropTypes.func,
     projectTitle: PropTypes.string
 };
 

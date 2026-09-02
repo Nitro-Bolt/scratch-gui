@@ -105,6 +105,7 @@ const DebuggerComponent = React.memo(props => {
                     <LogsTab
                         onClearLogs={props.onClearLogs}
                         onSelectTarget={props.onSelectTarget}
+                        onSelectTargetBlock={props.onSelectTargetBlock}
                         logs={props.logs}
                         sprites={props.sprites}
                         projectTitle={props.projectTitle}
