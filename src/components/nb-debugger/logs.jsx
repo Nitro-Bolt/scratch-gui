@@ -43,7 +43,7 @@ const Log = React.memo(props => {
         borderBottomColor: color.replace(',1)', ',0.30)')
     } : null;
     let message = props.message;
-    if ((message.startsWith("[") && message.endsWith("]")) || (message.startsWith("{") && message.endsWith("}"))) { 
+    if ((message.startsWith("[") && message.endsWith("]")) || (message.startsWith("{") && message.endsWith("}"))) {
         try {
             message = <pre>{JSON.stringify(JSON.parse(props.message), null, 2)}</pre>;
         } catch {}
@@ -65,6 +65,17 @@ const Log = React.memo(props => {
                     {props.target.sprite.name}
                 </a>
             }
+            {props.targetBlock &&
+                <span className={styles.targetBlockName}>
+                    <span>{':'}</span>
+                    <a
+                        onClick={props.onSelectTargetBlock}
+                        title={props.targetBlock}
+                    >
+                        {props.targetBlock.substring(0, 5)}{'...'}
+                    </a>
+                </span>
+            }
         </div>
     );
 });
@@ -82,6 +93,7 @@ Log.propTypes = {
             name: PropTypes.string
         })
     }),
+    targetBlock: PropTypes.string,
     onSelectTarget: PropTypes.func
 };
 
@@ -186,6 +198,7 @@ const LogsTab = React.memo(props => {
                     message={log.message}
                     target={log.target}
                     color={log.color}
+                    targetBlock={log.targetBlock}
                     // eslint-disable-next-line react/jsx-no-bind
                     onSelectTarget={() => props.onSelectTarget(log.target)}
                 />

@@ -46,10 +46,25 @@
 .log > .sprite-name {
     margin-left: auto;
     font-size: 0.8em;
-    user-select: none;
 }
 
-.log > .sprite-name:not(:hover, :focus) {
+.log > .target-block-name {
+    font-size: 0.8em;
+}
+
+.log > .target-block-name > span {
+    opacity: 0.5;
+    cursor: default;
+    margin: 0 0.1rem;
+}
+
+.log > .target-block-name > a {
+    font-family: monospace;
+    font-size: 0.7rem;
+}
+
+.log > .sprite-name:not(:hover, :focus),
+.log > .target-block-name a:not(:hover, :focus) {
     color: #ffffff;
     text-decoration: none;
     opacity: 0.5;
