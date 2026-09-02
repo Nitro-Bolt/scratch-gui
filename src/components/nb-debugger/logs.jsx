@@ -72,7 +72,7 @@ const Log = React.memo(props => {
                         onClick={props.onSelectTargetBlock}
                         title={props.targetBlock}
                     >
-                        {props.targetBlock.substring(0, 5)}{'...'}
+                        {props.targetBlock.substring(0, 5)}{'…'}
                     </a>
                 </span>
             }
