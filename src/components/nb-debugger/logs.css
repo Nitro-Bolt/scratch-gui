@@ -14,18 +14,17 @@
     align-items: center;
     padding: 0.2rem;
     border-bottom: 1px solid $ui-black-transparent;
+    color: $text-primary;
 }
 
 .log.error {
-    background-color: rgba(255, 0, 0, 0.20);
-    border-color: rgba(255, 0, 0, 0.30);
-    color: hsl(0, 100%, 85%);
+    background-color: rgba(255, 0, 0, 0.1);
+    border-color: rgba(255, 0, 0, 0.25);
 }
 
 .log.warn {
-    background-color: rgba(255, 150, 0, 0.2);
-    border-color: rgba(255, 150, 0, 0.30);
-    color: hsl(35, 100%, 85%);
+    background-color: hsla(30, 100%, 50%, 0.1);
+    border-color: hsla(30, 100%, 50%, 0.27);
 }
 
 .log:not(.error, .warn) {
@@ -65,7 +64,7 @@
 
 .log > .sprite-name:not(:hover, :focus),
 .log > .target-block-name a:not(:hover, :focus) {
-    color: #ffffff;
+    color: inherit;
     text-decoration: none;
     opacity: 0.5;
 }
