@@ -678,6 +678,33 @@ const EditorSettingsModal = props => {
                         // eslint-disable-next-line react/jsx-no-bind
                         onChange={() => props.onChangeTheme(props.theme.set('gui', props.theme.gui === GUI_DARK ? GUI_LIGHT : GUI_DARK))}
                     />
+                    <Setting
+                        help={<FormattedMessage
+                            id="nb.editorSettings.labelContrastThresholdHelp"
+                            defaultMessage="Sets how bright a block color must be before its text label switches to dark for readability. Lower values use dark text less often, higher values use dark text more often."
+                        />}
+                        primary={(
+                            <div className={classNames(styles.label, styles.customStageSize)}>
+                                <FormattedMessage
+                                    defaultMessage="Label Contrast Threshold:"
+                                    id="nb.editorSettings.labelContrastThreshold"
+                                />
+                                <BufferedInput
+                                    value={String(props.preferences['label-contrast-threshold'] === (void 0) ? 190 : props.preferences['label-contrast-threshold'])}
+                                    onSubmit={value => {
+                                        const num = Number(value);
+                                        if (Number.isFinite(num) && num >= 0 && num <= 255) {
+                                            props.onSetPreference('label-contrast-threshold', num);
+                                        }
+                                    }}
+                                    type="number"
+                                    min="0"
+                                    max="255"
+                                    spellCheck="false"
+                                />
+                            </div>
+                        )}
+                    />
                 </Section>
                 <Section
                     title={<FormattedMessage
