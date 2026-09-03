@@ -181,6 +181,38 @@ const toolboxCategories = [
 
 const BufferedInput = BufferedInputHOC(Input);
 
+const hexToRgb = hex => {
+    const h = hex.replace('#', '');
+    return {
+        r: parseInt(h.slice(0, 2), 16),
+        g: parseInt(h.slice(2, 4), 16),
+        b: parseInt(h.slice(4, 6), 16)
+    };
+};
+
+const rgbToHex = ({r, g, b}) =>
+    `#${[r, g, b]
+        .map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0'))
+        .join('')}`;
+
+const mixTowardWhite = (hex, fraction) => {
+    const {r, g, b} = hexToRgb(hex);
+    return rgbToHex({
+        r: r + (255 - r) * fraction,
+        g: g + (255 - g) * fraction,
+        b: b + (255 - b) * fraction
+    });
+};
+
+const colorBrightness = hex => {
+    const {r, g, b} = hexToRgb(hex);
+    return (299 * r + 587 * g + 114 * b) / 1000;
+};
+
+const labelContrastDefault = 190;
+const labelContrastShades = [-0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.75, 0.9];
+const labelDarkColor = '#575E75';
+
 const LearnMore = props => (
     <React.Fragment>
         {' '}
@@ -342,6 +374,34 @@ CollapsibleSetting.propTypes = {
     label: PropTypes.node.isRequired,
     help: PropTypes.node,
     children: PropTypes.node
+};
+
+const LabelContrastPreview = ({baseColor, threshold}) => {
+    const currentThreshold = threshold === undefined || threshold === null ? labelContrastDefault : threshold;
+    return (
+        <div className={styles.labelContrastPreview}>
+            {labelContrastShades.map((fraction, index) => {
+                const colour = mixTowardWhite(baseColor, fraction);
+                const darkText = colorBrightness(colour) >= currentThreshold;
+                return (
+                    <div
+                        key={index}
+                        className={styles.labelContrastPreviewCircle}
+                        style={{
+                            backgroundColor: colour,
+                            color: darkText ? labelDarkColor : '#ffffff'
+                        }}
+                    >
+                        {'Aa'}
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+LabelContrastPreview.propTypes = {
+    baseColor: PropTypes.string.isRequired,
+    threshold: PropTypes.number
 };
 
 const EditorSettingsModal = props => {
@@ -677,6 +737,39 @@ const EditorSettingsModal = props => {
                         />}
                         // eslint-disable-next-line react/jsx-no-bind
                         onChange={() => props.onChangeTheme(props.theme.set('gui', props.theme.gui === GUI_DARK ? GUI_LIGHT : GUI_DARK))}
+                    />
+                    <Setting
+                        help={<FormattedMessage
+                            id="nb.editorSettings.labelContrastThresholdHelp"
+                            defaultMessage="Sets how bright a block color must be before its text label switches to dark for readability. Lower values use dark text less often, higher values use dark text more often."
+                        />}
+                        primary={(
+                            <div className={classNames(styles.label, styles.customStageSize)}>
+                                <FormattedMessage
+                                    defaultMessage="Label Contrast Threshold (0-255):"
+                                    id="nb.editorSettings.labelContrastThreshold"
+                                />
+                                <BufferedInput
+                                    value={String(props.preferences['label-contrast-threshold'] === (void 0) ? labelContrastDefault : props.preferences['label-contrast-threshold'])}
+                                    onSubmit={value => {
+                                        const num = Number(value);
+                                        if (Number.isFinite(num) && num >= 0 && num <= 255) {
+                                            props.onSetPreference('label-contrast-threshold', num);
+                                        }
+                                    }}
+                                    type="number"
+                                    min="0"
+                                    max="255"
+                                    spellCheck="false"
+                                />
+                            </div>
+                        )}
+                        secondary={(
+                            <LabelContrastPreview
+                                baseColor={blockColors.motion || BLOCK_COLOR_CATEGORIES[0].default}
+                                threshold={props.preferences['label-contrast-threshold']}
+                            />
+                        )}
                     />
                 </Section>
                 <Section

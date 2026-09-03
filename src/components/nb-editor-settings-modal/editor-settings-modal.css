@@ -495,6 +495,28 @@
     gap: 0.5rem;
 }
 
+.label-contrast-preview {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.label-contrast-preview-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid $ui-black-transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    line-height: 1;
+}
+
 .section {
     margin: 0.5rem 0 0 0;
 }
