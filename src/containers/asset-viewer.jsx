@@ -26,31 +26,33 @@ class AssetViewer extends React.Component {
 
         this.state = {
             blobURL: null,
-            textContent: '',
+            textContent: props.isTextEditable ? this.decodeAssetData() : '',
+            editorKey: 0,
             canUndo: false,
             canRedo: false
         };
 
         this.editor = null;
         this.editorDisposable = null;
+        this.activeAssetObject = this.getAssetObject();
         this.initialContent = '';
-        this.saveTextAssetDebounced = debounce(value => {
-            this.saveTextAsset(value);
+        this.saveTextAssetDebounced = debounce((value, assetObject) => {
+            this.saveTextAsset(value, assetObject);
         }, 150);
     }
 
     componentDidMount () {
         this.updateBlobURL();
-        this.updateTextContent();
     }
 
     componentDidUpdate (prevProps) {
+        const assetObject = this.getAssetObject();
         if (
-            prevProps.assetId !== this.props.assetId ||
-            prevProps.assetIndex !== this.props.assetIndex ||
+            assetObject !== this.activeAssetObject ||
             prevProps.contentType !== this.props.contentType ||
             prevProps.mediaType !== this.props.mediaType
         ) {
+            this.activeAssetObject = assetObject;
             this.initialContent = '';
             this.updateBlobURL();
             this.updateTextContent();
@@ -126,19 +128,15 @@ class AssetViewer extends React.Component {
             return;
         }
 
-        this.setState({
+        this.setState(prevState => ({
             textContent: this.decodeAssetData(),
+            editorKey: prevState.editorKey + 1,
             canUndo: false,
             canRedo: false
-        });
+        }));
     }
 
-    saveTextAsset (value) {
-        if (!this.props.isTextEditable) {
-            return;
-        }
-
-        const assetObject = this.getAssetObject();
+    saveTextAsset (value, assetObject) {
         if (!assetObject || !assetObject.asset || typeof assetObject.asset.encodeTextData !== 'function') {
             return;
         }
@@ -197,8 +195,7 @@ class AssetViewer extends React.Component {
     }
 
     handleTextContentChange (value) {
-        this.setState({textContent: value});
-        this.saveTextAssetDebounced(value);
+        this.saveTextAssetDebounced(value, this.getAssetObject());
         this.updateUndoRedoState();
     }
 
@@ -252,6 +249,7 @@ class AssetViewer extends React.Component {
                 imageURL={imageURL}
                 isTextEditable={this.props.isTextEditable}
                 textContent={this.state.textContent}
+                editorKey={this.state.editorKey}
                 textLanguage={this.props.textLanguage}
                 monacoTheme={monacoTheme}
                 canUndo={this.state.canUndo}
@@ -271,7 +269,6 @@ AssetViewer.propTypes = {
     name: PropTypes.string.isRequired,
     lastModified: PropTypes.string.isRequired,
     size: PropTypes.string.isRequired,
-    assetId: PropTypes.string.isRequired,
     assetIndex: PropTypes.number.isRequired,
     contentType: PropTypes.string,
     mediaType: PropTypes.string,
@@ -299,7 +296,6 @@ const mapStateToProps = (state, {selectedAssetIndex}) => {
             'Unknown',
         size: formatBytes(assetObject.asset.data.byteLength),
         assetIndex: index,
-        assetId: assetObject.asset.assetId,
         contentType: assetObject.contentType,
         mediaType: assetType.displayable ? assetType.type : null,
         isTextEditable: assetType.editable === true,
