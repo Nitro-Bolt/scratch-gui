@@ -152,6 +152,7 @@ class Blocks extends React.Component {
         this.ScratchBlocks.FieldColourSlider.activateEyedropper_ = this.props.onActivateColorPicker;
         this.ScratchBlocks.Procedures.externalProcedureDefCallback = this.props.onActivateCustomProcedures;
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
+        this.ScratchBlocks.LABEL_CONTRAST_THRESHOLD = this.getLabelContrastThreshold();
 
         const Msg = this.ScratchBlocks.Msg;
         Msg.PROCEDURES_RETURN = this.props.intl.formatMessage(messages.PROCEDURES_RETURN, {
@@ -170,14 +171,12 @@ class Blocks extends React.Component {
                 grid: {
                     colour: this.props.theme.getBlockColors().gridColor
                 },
-                disableInspectBlock: this.props.disableInspectBlock,
-                labelContrastThreshold: this.getLabelContrastThreshold()
+                disableInspectBlock: this.props.disableInspectBlock
             },
             Blocks.defaultOptions
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
         this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
-        this.workspace.options.labelContrastThreshold = this.getLabelContrastThreshold();
         this.workspace.vm = this.props.vm;
         AddonHooks.blocklyWorkspace = this.workspace;
 
@@ -349,8 +348,8 @@ class Blocks extends React.Component {
         return Math.max(0, Math.min(255, threshold));
     }
     applyLabelContrastThreshold () {
+        this.ScratchBlocks.LABEL_CONTRAST_THRESHOLD = this.getLabelContrastThreshold();
         if (this.workspace) {
-            this.workspace.options.labelContrastThreshold = this.getLabelContrastThreshold();
             // Re-render all blocks in the workspace and flyout so the label colour updates.
             updateAllBlocks(this.ScratchBlocks, this.props.vm, this.workspace);
         }
