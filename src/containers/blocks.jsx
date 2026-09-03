@@ -556,9 +556,18 @@ class Blocks extends React.Component {
         // Remove and reattach the workspace listener (but allow flyout events)
         this.cancelDeferredWorkspaceLoad();
         this.workspace.removeChangeListener(this.props.vm.blockListener);
-        const dom = this.ScratchBlocks.Xml.textToDom(data.xml);
+        // The VM hands over block descriptions alongside the XML so the editor
+        // can skip the XML round trip. Descriptions also enable unloading
+        // far-off scripts: only VM-backed scripts can be rebuilt after edits.
+        const descs = data.blocks || null;
+        const headerDom = descs && data.headerXml ?
+            this.ScratchBlocks.Xml.textToDom(data.headerXml) : null;
+        const dom = headerDom || this.ScratchBlocks.Xml.textToDom(data.xml);
+        const blockCount = descs ?
+            Object.keys(descs.blocks || {}).length :
+            dom.getElementsByTagName('block').length;
         const useDeferredLoad = !!this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXmlDeferred &&
-            (dom.getElementsByTagName('block').length >= DEFERRED_WORKSPACE_LOAD_MIN_BLOCKS ||
+            (blockCount >= DEFERRED_WORKSPACE_LOAD_MIN_BLOCKS ||
                 Object.keys(this.workspace.blockDB_ || {}).length >= DEFERRED_WORKSPACE_LOAD_MIN_BLOCKS);
         try {
             if (useDeferredLoad) {
@@ -569,8 +578,11 @@ class Blocks extends React.Component {
                         onDone: () => {
                             this.deferredWorkspaceLoad = null;
                         }
-                    }
+                    },
+                    descs
                 );
+            } else if (descs && this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromDescs) {
+                this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromDescs(dom, descs, this.workspace);
             } else {
                 this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, this.workspace);
             }
