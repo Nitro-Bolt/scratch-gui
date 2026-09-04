@@ -8,8 +8,11 @@ const Thread = React.memo(props => (
             <a onClick={props.onSelectTarget}>
                 {props.thread.target.sprite.name}
             </a>
-            {':'}
-            <a onClick={props.onSelectTargetBlock}>
+            <span>{':'}</span>
+            <a
+                className={styles.threadId}
+                onClick={props.onSelectTargetBlock}
+            >
                 {props.thread.topBlock}
             </a>
         </span>

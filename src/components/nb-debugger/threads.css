@@ -14,6 +14,7 @@
 }
 
 .thread {
+    font-size: 0.9em;
     background: var(--ui-white);
     border: 2px solid var(--ui-black-transparent);
     border-radius: 0.5rem;
@@ -25,6 +26,23 @@
 
 .thread > * {
     flex-shrink: 0;
+}
+
+.thread > span > span {
+    opacity: 0.5;
+    cursor: default;
+    margin: 0 0.1rem;
+}
+
+.thread-id {
+    font-family: monospace;
+    font-size: 1.1em;
+}
+
+.thread-id:not(:hover, :focus) {
+    color: inherit;
+  text-decoration: none;
+  opacity: 0.5;
 }
 
 .buttons {
