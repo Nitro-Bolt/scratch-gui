@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: true
 
-overrides:
-  scratch-vm: link:../nitrobolt-vm
-
 importers:
 
   .:

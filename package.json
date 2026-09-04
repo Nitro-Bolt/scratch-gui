@@ -174,9 +174,6 @@
       "chromedriver",
       "core-js",
       "es5-ext"
-    ],
-    "overrides": {
-      "scratch-vm": "link:../nitrobolt-vm"
-    }
+    ]
   }
 }
