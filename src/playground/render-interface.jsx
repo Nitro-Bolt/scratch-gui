@@ -41,12 +41,9 @@ import {isBrowserSupported} from '../lib/tw-environment-support-prober';
 import AddonChannels from '../addons/channels';
 import {loadServiceWorker} from './load-service-worker';
 import runAddons from '../addons/entry';
-import InvalidEmbed from '../components/tw-invalid-embed/invalid-embed.jsx';
 import {APP_NAME} from '../lib/brand.js';
 
 import styles from './interface.css';
-
-const isInvalidEmbed = window.parent !== window;
 
 const messages = defineMessages({
     defaultTitle: {
@@ -205,10 +202,6 @@ class Interface extends React.Component {
         }
     }
     render () {
-        if (isInvalidEmbed) {
-            return <InvalidEmbed />;
-        }
-
         const {
             /* eslint-disable no-unused-vars */
             intl,
