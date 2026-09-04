@@ -41,6 +41,7 @@ import NBExtensionManagerModal from '../../containers/nb-extension-manager-modal
 import NBGitModal from '../../containers/nb-git-modal.jsx';
 import NBGitProjectManager from '../../containers/nb-git-project-manager.jsx';
 import NBInspectBlockModal from '../../containers/nb-inspect-block-modal.jsx';
+import NBInspectThreadModal from '../../containers/nb-inspect-thread-modal.jsx';
 import TWRestorePointManager from '../../containers/tw-restore-point-manager.jsx';
 import TWFontsModal from '../../containers/tw-fonts-modal.jsx';
 import TWUnknownPlatformModal from '../../containers/tw-unknown-platform-modal.jsx';
@@ -173,6 +174,7 @@ const GUIComponent = props => {
         editorSettingsModalVisible,
         extensionManagerModalVisible,
         inspectBlockModalVisible,
+        inspectThreadModalVisible,
         fontsModalVisible,
         unknownPlatformModalVisible,
         invalidProjectModalVisible,
@@ -248,6 +250,7 @@ const GUIComponent = props => {
                 {editorSettingsModalVisible && <NBEditorSettingsModal />}
                 {extensionManagerModalVisible && <NBExtensionManagerModal />}
                 {inspectBlockModalVisible && <NBInspectBlockModal />}
+                {inspectThreadModalVisible && <NBInspectThreadModal />}
                 {fontsModalVisible && <TWFontsModal />}
                 {unknownPlatformModalVisible && <TWUnknownPlatformModal />}
                 {invalidProjectModalVisible && <TWInvalidProjectModal />}
@@ -707,6 +710,7 @@ GUIComponent.propTypes = {
     editorSettingsModalVisible: PropTypes.bool,
     extensionManagerModalVisible: PropTypes.bool,
     inspectBlockModalVisible: PropTypes.bool,
+    inspectThreadModalVisible: PropTypes.bool,
     fontsModalVisible: PropTypes.bool,
     unknownPlatformModalVisible: PropTypes.bool,
     invalidProjectModalVisible: PropTypes.bool,

@@ -24,6 +24,10 @@ const Thread = React.memo(props => (
                 />
             }
             <button
+                className={classNames(styles.button, styles.inspectOption)}
+                onClick={props.onInspectThread}
+            />
+            <button
                 className={classNames(styles.button, styles.deleteOption)}
                 onClick={props.onDelete}
             />
@@ -40,6 +44,7 @@ const ThreadsTab = React.memo(props => {
                     thread={thread}
                     onSelectTarget={() => props.onSelectTarget(thread.target)}
                     onSelectTargetBlock={() => props.onSelectTargetBlock(thread.target, thread.topBlock)}
+                    onInspectThread={() => props.onInspectThread(thread)}
                     onDelete={() => props.vm.runtime._stopThread(thread)}
                 />
             )) : (

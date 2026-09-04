@@ -15,6 +15,7 @@ import {
     clearLogs
 } from '../reducers/debugger';
 import {activateTab, BLOCKS_TAB_INDEX} from '../reducers/editor-tab.js';
+import { openInspectThreadModal } from '../reducers/modals.js';
 
 /**
  * Helper class to flash a Blockly scratch block chain in the users workspace
@@ -213,6 +214,7 @@ NBDebugger.propTypes = {
     onTabClick: PropTypes.func.isRequired,
     onClearLogs: PropTypes.func.isRequired,
     onActivateCodeTab: PropTypes.func.isRequired,
+    onInspectThread: PropTypes.func.isRequired,
     timers: PropTypes.object.isRequired,
 };
 
@@ -238,7 +240,8 @@ const mapDispatchToProps = dispatch => ({
     onTabClick: tabIndex => dispatch(setTab(tabIndex)),
     onClearLogs: () => dispatch(clearLogs()),
     onSelectPerformanceChart: chartIndex => dispatch(setPerformanceChart(chartIndex)),
-    onActivateCodeTab: () => dispatch(activateTab(BLOCKS_TAB_INDEX))
+    onActivateCodeTab: () => dispatch(activateTab(BLOCKS_TAB_INDEX)),
+    onInspectThread: thread => dispatch(openInspectThreadModal(thread))
 });
 
 export default connect(

@@ -115,6 +115,7 @@ const DebuggerComponent = React.memo(props => {
                         vm={props.vm}
                         onSelectTarget={props.onSelectTarget}
                         onSelectTargetBlock={props.onSelectTargetBlock}
+                        onInspectThread={props.onInspectThread}
                         threads={props.threads}
                     />
                 ) : props.tab === 2 ? (

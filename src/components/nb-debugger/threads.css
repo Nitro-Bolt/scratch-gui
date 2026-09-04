@@ -73,6 +73,10 @@
     background-image: url("../delete-button/icon--delete.svg");
 }
 
+.inspect-option {
+    background-image: url("./icons/icon--search.svg");
+}
+
 .pause-option {
     background-image: url("./icons/icon--pause.svg");
 }
