@@ -91,10 +91,9 @@ const AssetViewerComponent = props => (
                     style={{maxWidth: '95%', maxHeight: '67%'}}
                 >
                     <Editor
-                        key={props.editorKey}
                         language={props.textLanguage || 'plaintext'}
                         theme={props.monacoTheme || 'vs'}
-                        defaultValue={props.textContent}
+                        value={props.textContent}
                         options={{
                             minimap: {enabled: false},
                             automaticLayout: true,
@@ -197,7 +196,6 @@ AssetViewerComponent.propTypes = {
     imageURL: PropTypes.string,
     isTextEditable: PropTypes.bool,
     textContent: PropTypes.string,
-    editorKey: PropTypes.number,
     textLanguage: PropTypes.string,
     monacoTheme: PropTypes.string,
     canUndo: PropTypes.bool,
