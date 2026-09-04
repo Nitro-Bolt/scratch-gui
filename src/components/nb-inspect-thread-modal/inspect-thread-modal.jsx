@@ -87,6 +87,9 @@ const InspectThreadModal = props => {
             <Box className={styles.body}>
                 <Section title="Details">
                     <div className={styles.detailsGrid}>
+                        <DetailRow label="Target">
+                            <span>{thread.target.sprite.name} ({thread.target.id})</span>
+                        </DetailRow>
                         <DetailRow label="Top Block">
                             <span>{thread.topBlock}</span>
                         </DetailRow>
