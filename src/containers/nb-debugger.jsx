@@ -154,10 +154,12 @@ class NBDebugger extends React.Component {
 
     handleSelectTargetBlock (target, block) {
         this.props.vm.setEditingTarget(target.id);
-        this.props.onActivateCodeTab();
-        const workspace = window.ScratchBlocks.getMainWorkspace();
-        workspace.centerOnBlock(block);
-        ThreadFlasher.flash(workspace.getBlockById(block));
+        if (block !== "debugger_log") {
+            this.props.onActivateCodeTab();
+            const workspace = window.ScratchBlocks.getMainWorkspace();
+            workspace.centerOnBlock(block);
+            ThreadFlasher.flash(workspace.getBlockById(block));
+        }
     }
 
     componentDidUpdate (prevProps) {
