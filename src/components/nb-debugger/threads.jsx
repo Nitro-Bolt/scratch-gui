@@ -15,7 +15,7 @@ const Thread = React.memo(props => (
             {Object.values(props.thread.blockContainer._blocks).filter(b => !b.shadow).length} blocks
         </span>
         <div className={styles.buttons}>
-            {!props.compilerEnabled &&
+            {!props.thread.isCompiled &&
                 <button
                     className={classNames(styles.button, props.thread.isPaused ? styles.playOption : styles.pauseOption)}
                     src={props.thread.isPaused ? playIcon : pauseIcon}
