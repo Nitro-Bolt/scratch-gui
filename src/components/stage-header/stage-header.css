@@ -8,10 +8,10 @@
     top: 0;
 }
 [dir="ltr"] .stage-header-wrapper {
-    right: 0;
+    left: 0;
 }
 [dir="rtl"] .stage-header-wrapper {
-    left: 0;
+    right: 0;
 }
 
 .stage-header-wrapper-overlay {
