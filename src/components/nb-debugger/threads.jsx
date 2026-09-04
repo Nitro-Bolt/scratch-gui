@@ -13,9 +13,6 @@ const Thread = React.memo(props => (
                 {props.thread.topBlock}
             </a>
         </span>
-        <span>
-            {Object.values(props.thread.blockContainer._blocks).filter(b => !b.shadow).length} blocks
-        </span>
         <div className={styles.buttons}>
             {!props.thread.isCompiled &&
                 <button
