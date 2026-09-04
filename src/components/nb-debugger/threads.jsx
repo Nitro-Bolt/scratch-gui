@@ -4,9 +4,15 @@ import styles from './threads.css';
 
 const Thread = React.memo(props => (
     <div className={styles.thread}>
-        <a onClick={props.onSelectTarget}>
-            {props.thread.target.sprite.name}
-        </a>
+        <span>
+            <a onClick={props.onSelectTarget}>
+                {props.thread.target.sprite.name}
+            </a>
+            {':'}
+            <a onClick={props.onSelectTargetBlock}>
+                {props.thread.topBlock}
+            </a>
+        </span>
         <span>
             {Object.values(props.thread.blockContainer._blocks).filter(b => !b.shadow).length} blocks
         </span>
@@ -18,9 +24,9 @@ const Thread = React.memo(props => (
                 />
             }
             <button
-                    className={classNames(styles.button, styles.deleteOption)}
-                    onClick={props.onDelete}
-                />
+                className={classNames(styles.button, styles.deleteOption)}
+                onClick={props.onDelete}
+            />
         </div>
     </div>
 ));
@@ -33,8 +39,8 @@ const ThreadsTab = React.memo(props => {
                     key={i}
                     thread={thread}
                     onSelectTarget={() => props.onSelectTarget(thread.target)}
+                    onSelectTargetBlock={() => props.onSelectTargetBlock(thread.target, thread.topBlock)}
                     onDelete={() => props.vm.runtime._stopThread(thread)}
-                    compilerEnabled={props.vm.runtime.compilerOptions.enabled}
                 />
             )) : (
                 <span className={styles.noThreads}>No threads running</span>
