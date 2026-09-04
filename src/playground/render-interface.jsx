@@ -246,6 +246,7 @@ class Interface extends React.Component {
                     <GUI
                         onUpdateProjectTitle={this.handleUpdateProjectTitle}
                         backpackHost="_local_"
+                        backpackVisible
                         {...props}
                     />
                     {isHomepage ? (
