@@ -2,10 +2,6 @@ import React from 'react';
 import classNames from 'classnames';
 import styles from './threads.css';
 
-import deleteIcon from './icons/icon--delete.svg';
-import pauseIcon from './icons/icon--pause.svg';
-import playIcon from './icons/icon--play.svg';
-
 const Thread = React.memo(props => (
     <div className={styles.thread}>
         <a onClick={props.onSelectTarget}>
@@ -18,15 +14,11 @@ const Thread = React.memo(props => (
             {!props.thread.isCompiled &&
                 <button
                     className={classNames(styles.button, props.thread.isPaused ? styles.playOption : styles.pauseOption)}
-                    src={props.thread.isPaused ? playIcon : pauseIcon}
-                    draggable={false}
                     onClick={() => props.thread.isPaused = !props.thread.isPaused}
                 />
             }
             <button
                     className={classNames(styles.button, styles.deleteOption)}
-                    src={props.thread.isPaused ? playIcon : pauseIcon}
-                    draggable={false}
                     onClick={props.onDelete}
                 />
         </div>
