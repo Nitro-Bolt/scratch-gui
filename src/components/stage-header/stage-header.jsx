@@ -234,7 +234,7 @@ const StageHeaderComponent = function (props) {
                         className={styles.stageSizeRow}
                         key="editor" // addons require the HTML element to be not be re-used by in-editor buttons
                     >
-                        {props.preferences['enable-debugger'] === true &&
+                        {props.preferences['enable-debugger'] === true && !isPlayerOnly &&
                             <div>
                                 <Button
                                     className={classNames(styles.stageButton, styles.debuggerButton)}
