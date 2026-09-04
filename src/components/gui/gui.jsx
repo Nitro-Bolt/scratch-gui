@@ -291,8 +291,6 @@ const GUIComponent = props => {
                 className={styles.pageWrapper}
                 dir={isRtl ? 'rtl' : 'ltr'}
                 style={{
-                    minWidth: 1024 + Math.max(0, customStageSize.width - 480),
-                    minHeight: 640 + Math.max(0, customStageSize.height - 360),
                     cursor: resizingStage ? 'e-resize' : null
                 }}
                 // eslint-disable-next-line react/jsx-no-bind
@@ -305,7 +303,7 @@ const GUIComponent = props => {
                         event.clientX - 14 :
                         document.body.offsetWidth - event.clientX - 14;
                     if (width < 100) width = 0;
-                    else width = Math.max(Math.min(width, 800), 270);
+                    else width = Math.max(Math.min(width, window.innerWidth - 616), 270);
                     setStageSize(width);
                 })()}
                 {...componentProps}

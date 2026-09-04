@@ -21,7 +21,7 @@ import DragConstants from '../lib/drag-constants';
 import defineDynamicBlock from '../lib/define-dynamic-block';
 import {Theme} from '../lib/themes';
 import {injectExtensionBlockTheme, injectExtensionCategoryTheme} from '../lib/themes/blockHelpers';
-import {applyBlockShapeAndUpdate, getBlockShape} from '../lib/nb-custom-block-shape';
+import {applyBlockShapeAndUpdate, getBlockShape, updateAllBlocks} from '../lib/nb-custom-block-shape';
 
 import {connect} from 'react-redux';
 import {updateToolbox} from '../reducers/toolbox';
@@ -152,6 +152,7 @@ class Blocks extends React.Component {
         this.ScratchBlocks.FieldColourSlider.activateEyedropper_ = this.props.onActivateColorPicker;
         this.ScratchBlocks.Procedures.externalProcedureDefCallback = this.props.onActivateCustomProcedures;
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
+        this.ScratchBlocks.LABEL_CONTRAST_THRESHOLD = this.getLabelContrastThreshold();
 
         const Msg = this.ScratchBlocks.Msg;
         Msg.PROCEDURES_RETURN = this.props.intl.formatMessage(messages.PROCEDURES_RETURN, {
@@ -259,7 +260,8 @@ class Blocks extends React.Component {
             this.props.hiddenCategories !== nextProps.hiddenCategories ||
             this.props.nbBlocks !== nextProps.nbBlocks ||
             this.props.disableInspectBlock !== nextProps.disableInspectBlock ||
-            this.props.blockShape !== nextProps.blockShape
+            this.props.blockShape !== nextProps.blockShape ||
+            this.props.labelContrastThreshold !== nextProps.labelContrastThreshold
         );
     }
     componentDidUpdate (prevProps) {
@@ -268,6 +270,9 @@ class Blocks extends React.Component {
         }
         if (this.props.blockShape !== prevProps.blockShape) {
             this.handleBlockShapeChange(this.props.blockShape);
+        }
+        if (this.props.labelContrastThreshold !== prevProps.labelContrastThreshold) {
+            this.applyLabelContrastThreshold();
         }
         // If any modals are open, call hideChaff to close z-indexed field editors
         if (this.props.anyModalVisible && !prevProps.anyModalVisible) {
@@ -334,6 +339,20 @@ class Blocks extends React.Component {
         }
         const shape = blockShape || getBlockShape(this.props.preferences);
         applyBlockShapeAndUpdate(this.ScratchBlocks, this.props.vm, this.workspace, shape);
+    }
+    getLabelContrastThreshold () {
+        const threshold = this.props.labelContrastThreshold;
+        if (threshold === null || threshold === (void 0) || !Number.isFinite(threshold)) {
+            return 190;
+        }
+        return Math.max(0, Math.min(255, threshold));
+    }
+    applyLabelContrastThreshold () {
+        this.ScratchBlocks.LABEL_CONTRAST_THRESHOLD = this.getLabelContrastThreshold();
+        if (this.workspace) {
+            // Re-render all blocks in the workspace and flyout so the label colour updates.
+            updateAllBlocks(this.ScratchBlocks, this.props.vm, this.workspace);
+        }
     }
     handleBlockShapeChange (nextBlockShape) {
         this.applyBlockShapeToWorkspace(nextBlockShape);
@@ -865,7 +884,8 @@ Blocks.propTypes = {
         maxCornerRadius: PropTypes.number,
         notchSize: PropTypes.number,
         fieldHeight: PropTypes.number
-    })
+    }),
+    labelContrastThreshold: PropTypes.number
 };
 
 Blocks.defaultOptions = {
@@ -906,6 +926,7 @@ const mapStateToProps = state => ({
     useCatBlocks: isTimeTravel2020(state),
     preferences: state.scratchGui.preferences,
     blockShape: state.scratchGui.preferences['block-shape'],
+    labelContrastThreshold: state.scratchGui.preferences['label-contrast-threshold'],
     hiddenCategories: state.scratchGui.preferences['hidden-categories'],
     nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true),
     disableInspectBlock: state.scratchGui.preferences['disable-inspect-block'] === true
