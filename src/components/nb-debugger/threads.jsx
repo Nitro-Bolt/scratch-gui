@@ -8,25 +8,27 @@ import playIcon from './icons/icon--play.svg';
 
 const Thread = React.memo(props => (
     <div className={styles.thread}>
+        <a onClick={props.onSelectTarget}>
+            {props.thread.target.sprite.name}
+        </a>
+        <span>
+            {Object.values(props.thread.blockContainer._blocks).filter(b => !b.shadow).length} blocks
+        </span>
         <div className={styles.buttons}>
-            <img
-                src={deleteIcon}
-                draggable={false}
-                onClick={props.onDelete}
-            />
             {!props.compilerEnabled &&
-                <img
+                <button
+                    className={classNames(styles.button, props.thread.isPaused ? styles.playOption : styles.pauseOption)}
                     src={props.thread.isPaused ? playIcon : pauseIcon}
                     draggable={false}
                     onClick={() => props.thread.isPaused = !props.thread.isPaused}
                 />
             }
-            <a onClick={props.onSelectTarget}>
-                {props.thread.target.sprite.name}
-            </a>
-            <span>
-                {Object.values(props.thread.blockContainer._blocks).filter(b => !b.shadow).length} blocks
-            </span>
+            <button
+                    className={classNames(styles.button, styles.deleteOption)}
+                    src={props.thread.isPaused ? playIcon : pauseIcon}
+                    draggable={false}
+                    onClick={props.onDelete}
+                />
         </div>
     </div>
 ));
