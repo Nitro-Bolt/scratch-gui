@@ -303,7 +303,7 @@ const GUIComponent = props => {
                         event.clientX - 14 :
                         document.body.offsetWidth - event.clientX - 14;
                     if (width < 100) width = 0;
-                    else width = Math.max(Math.min(width, 800), 270);
+                    else width = Math.max(Math.min(width, window.innerWidth - 616), 270);
                     setStageSize(width);
                 })()}
                 {...componentProps}
