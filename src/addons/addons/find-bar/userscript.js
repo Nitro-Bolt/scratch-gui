@@ -218,6 +218,7 @@ export default async function ({ addon, msg, console }) {
     }
 
     getScratchBlocks() {
+      if (this.workspace.materializeAllScripts) this.workspace.materializeAllScripts();
       let myBlocks = [];
       let myBlocksByProcCode = {};
 
@@ -391,6 +392,7 @@ export default async function ({ addon, msg, console }) {
     }
 
     getCallsToEvents() {
+      if (this.workspace.materializeAllScripts) this.workspace.materializeAllScripts();
       const uses = [];
       const alreadyFound = new Set();
 
@@ -577,6 +579,9 @@ export default async function ({ addon, msg, console }) {
         }
         this.carousel.build(item, blocks, instanceBlock);
       } else if (item.data.clones) {
+        if (this.workspace.materializeScriptsForBlockIds) {
+          this.workspace.materializeScriptsForBlockIds([item.data.labelID, ...item.data.clones]);
+        }
         let blocks = [this.workspace.getBlockById(item.data.labelID)];
         for (const cloneID of item.data.clones) {
           blocks.push(this.workspace.getBlockById(cloneID));
@@ -589,6 +594,7 @@ export default async function ({ addon, msg, console }) {
     }
 
     getVariableUsesById(id) {
+      if (this.workspace.materializeAllScripts) this.workspace.materializeAllScripts();
       let uses = [];
 
       let topBlocks = this.workspace.getTopBlocks();
@@ -612,6 +618,7 @@ export default async function ({ addon, msg, console }) {
     }
 
     getCallsToProcedureById(id) {
+      if (this.workspace.materializeAllScripts) this.workspace.materializeAllScripts();
       let procBlock = this.workspace.getBlockById(id);
       let label = procBlock.getChildren()[0];
       let procCode = label.getProcCode();
