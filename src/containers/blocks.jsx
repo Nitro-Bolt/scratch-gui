@@ -1,4 +1,5 @@
 import bindAll from 'lodash.bindall';
+import loadWorkspace from '../lib/nb-load-workspace';
 import debounce from 'lodash.debounce';
 import defaultsDeep from 'lodash.defaultsdeep';
 import makeToolboxXML from '../lib/make-toolbox-xml';
@@ -87,8 +88,6 @@ const addFunctionListener = (object, property, callback) => {
 const DroppableBlocks = DropAreaHOC([
     DragConstants.BACKPACK_CODE
 ])(BlocksComponent);
-
-const DEFERRED_WORKSPACE_LOAD_MIN_BLOCKS = 100;
 
 class Blocks extends React.Component {
     constructor (props) {
@@ -556,36 +555,12 @@ class Blocks extends React.Component {
         // Remove and reattach the workspace listener (but allow flyout events)
         this.cancelDeferredWorkspaceLoad();
         this.workspace.removeChangeListener(this.props.vm.blockListener);
-        // The VM hands over block descriptions alongside the XML so the editor
-        // can skip the XML round trip. Descriptions also enable unloading
-        // far-off scripts: only VM-backed scripts can be rebuilt after edits.
-        const descs = data.blocks || null;
-        const headerDom = descs && data.headerXml ?
-            this.ScratchBlocks.Xml.textToDom(data.headerXml) : null;
-        const dom = headerDom || this.ScratchBlocks.Xml.textToDom(data.xml);
-        const blockCount = descs ?
-            Object.keys(descs.blocks || {}).length :
-            dom.getElementsByTagName('block').length;
-        const useDeferredLoad = !!this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXmlDeferred &&
-            (blockCount >= DEFERRED_WORKSPACE_LOAD_MIN_BLOCKS ||
-                Object.keys(this.workspace.blockDB_ || {}).length >= DEFERRED_WORKSPACE_LOAD_MIN_BLOCKS);
         try {
-            if (useDeferredLoad) {
-                this.deferredWorkspaceLoad = this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXmlDeferred(
-                    dom,
-                    this.workspace,
-                    {
-                        onDone: () => {
-                            this.deferredWorkspaceLoad = null;
-                        }
-                    },
-                    descs
-                );
-            } else if (descs && this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromDescs) {
-                this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromDescs(dom, descs, this.workspace);
-            } else {
-                this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, this.workspace);
-            }
+            this.deferredWorkspaceLoad = loadWorkspace(this.ScratchBlocks, this.workspace, data, {
+                onDone: () => {
+                    this.deferredWorkspaceLoad = null;
+                }
+            });
         } catch (error) {
             // The workspace is likely incomplete. What did update should be
             // functional.
