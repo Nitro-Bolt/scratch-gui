@@ -595,7 +595,7 @@ const EditorSettingsModal = props => {
                         />}
                         help={<FormattedMessage
                             id="nb.editorSettings.enableDebuggerHelp"
-                            defaultMessage="Enables a debugger panel and extension that allows you to inspect logs and performance."
+                            defaultMessage="Enables a debugger panel and extension that allows you to inspect logs and monitor performance. The debugger contains the most functionality with the compiler disabled."
                         />}
                         onChange={e => {
                             props.onSetPreference('enable-debugger', e.target.checked);

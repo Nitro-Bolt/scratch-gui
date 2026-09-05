@@ -15,7 +15,53 @@ import {
     clearLogs
 } from '../reducers/debugger';
 import {activateTab, BLOCKS_TAB_INDEX} from '../reducers/editor-tab.js';
+import { openInspectThreadModal } from '../reducers/modals.js';
 
+/**
+ * Helper class to flash a Blockly scratch block chain in the users workspace
+ */
+class ThreadFlasher {
+  /**
+   * FLash a block 3 times
+   * @param block the block to flash
+   */
+  static flash(block) {
+    if (myFlash.timerID > 0) {
+      clearTimeout(myFlash.timerID);
+      if (myFlash.block.svgPath_) {
+        myFlash.block.svgPath_.style.fill = "";
+      }
+    }
+
+    let count = 4;
+    let flashOn = true;
+    myFlash.block = block;
+
+    /**
+     * Internal method to switch the colour of a block chain between light yellow and its original colour
+     * @private
+     */
+    function _flash() {
+      for (const block of myFlash.block.getDescendants()) {
+          if (block.svgPath_) {
+            block.svgPath_.style.fill = flashOn ? "#ffff80" : "";
+          }
+      }
+      flashOn = !flashOn;
+      count--;
+      if (count > 0) {
+        myFlash.timerID = setTimeout(_flash, 200);
+      } else {
+        myFlash.timerID = 0;
+        myFlash.block = null;
+      }
+    }
+
+    _flash();
+  }
+}
+
+const myFlash = { block: null, timerID: null };
 
 class NBDebugger extends React.Component {
     constructor (props) {
@@ -23,7 +69,8 @@ class NBDebugger extends React.Component {
         bindAll(this, [
             'handleCloseCompilerWarning',
             'handleRuntimeStep',
-            'handleSelectTarget'
+            'handleSelectTarget',
+            'handleSelectTargetBlock'
         ]);
 
         this.stepCount = 0;
@@ -34,7 +81,7 @@ class NBDebugger extends React.Component {
         this.sampleMemory = 0;
 
         this.state = {
-            closedCompilerWarning: false,
+            closedCompilerWarning: true,
             fpsData: this.fpsData.slice(),
             cloneData: this.cloneData.slice(),
             memoryData: this.memoryData.slice(),
@@ -106,6 +153,17 @@ class NBDebugger extends React.Component {
         this.props.onActivateCodeTab();
     }
 
+    handleSelectTargetBlock (target, blockId) {
+        this.props.vm.setEditingTarget(target.id);
+        this.props.onActivateCodeTab();
+        const workspace = window.ScratchBlocks.getMainWorkspace();
+        const block = workspace.getBlockById(blockId);
+        if (!block.isInFlyout) {
+            workspace.centerOnBlock(blockId);
+            ThreadFlasher.flash(block);
+        }
+    }
+
     componentDidUpdate (prevProps) {
         if (this.props.tab === 2 && prevProps.tab !== 2) {
             this.setState({
@@ -130,6 +188,7 @@ class NBDebugger extends React.Component {
                 showCompilerWarning={this.props.compilerEnabled && !this.state.closedCompilerWarning}
                 onCloseCompilerWarning={this.handleCloseCompilerWarning}
                 onSelectTarget={this.handleSelectTarget}
+                onSelectTargetBlock={this.handleSelectTargetBlock}
                 threads={this.state.threads}
                 sprites={this.props.sprites}
                 fpsData={this.state.fpsData}
@@ -156,6 +215,7 @@ NBDebugger.propTypes = {
     onTabClick: PropTypes.func.isRequired,
     onClearLogs: PropTypes.func.isRequired,
     onActivateCodeTab: PropTypes.func.isRequired,
+    onInspectThread: PropTypes.func.isRequired,
     timers: PropTypes.object.isRequired,
 };
 
@@ -168,6 +228,7 @@ const mapStateToProps = state => ({
     tab: state.scratchGui.debugger.tab,
     dragging: state.scratchGui.debugger.dragging,
     logs: state.scratchGui.debugger.logs,
+    projectTitle: state.scratchGui.projectTitle,
     timers: state.scratchGui.debugger.timers,
     performanceChart: state.scratchGui.debugger.performanceChart
 });
@@ -180,7 +241,8 @@ const mapDispatchToProps = dispatch => ({
     onTabClick: tabIndex => dispatch(setTab(tabIndex)),
     onClearLogs: () => dispatch(clearLogs()),
     onSelectPerformanceChart: chartIndex => dispatch(setPerformanceChart(chartIndex)),
-    onActivateCodeTab: () => dispatch(activateTab(BLOCKS_TAB_INDEX))
+    onActivateCodeTab: () => dispatch(activateTab(BLOCKS_TAB_INDEX)),
+    onInspectThread: thread => dispatch(openInspectThreadModal(thread))
 });
 
 export default connect(

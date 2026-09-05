@@ -9,12 +9,12 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    padding: 0.5rem;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
     text-align: center;
 }
 
@@ -42,4 +42,5 @@
     margin: auto;
     font-style: italic;
     opacity: 0.5;
+    font-size: 0.9rem;
 }

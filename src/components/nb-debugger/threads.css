@@ -7,35 +7,87 @@
     flex-direction: column;
     width: 100%;
     flex: 1;
-    overflow-y: auto
+    overflow-y: auto;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    color: $text-primary;
 }
 
 .thread {
-    width: calc(100% - 1rem - 4px);
-    margin: 0.25rem;
-    padding: 0.25rem;
-    border: 2px solid $ui-black-transparent;
-    border-radius: $form-radius
+    font-size: 0.9em;
+    background: var(--ui-white);
+    border: 2px solid var(--ui-black-transparent);
+    border-radius: 0.5rem;
+    padding: calc(0.5rem * 1.5);
+    display: flex;
+    gap: 0.5rem;
+    width: calc(100% - 2.5rem - 4px);
+}
+
+.thread > * {
+    flex-shrink: 0;
+}
+
+.thread > span > span {
+    opacity: 0.5;
+    cursor: default;
+    margin: 0 0.1rem;
+}
+
+.thread-id {
+    font-family: monospace;
+    font-size: 1.1em;
+}
+
+.thread-id:not(:hover, :focus) {
+    color: inherit;
+  text-decoration: none;
+  opacity: 0.5;
 }
 
 .buttons {
     display: inline-flex;
-    gap: 0.25rem;
-    width: 100%;
-    margin-right: 1rem;
+    gap: 0.5rem;
+    margin-left: auto;
     align-items: center;
     text-align: center;
 }
 
-.buttons > img {
-    cursor: pointer;
-    filter: $filter-icon-white;
-    width: 1.25rem;
-    height: 1.25rem
+.button {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: $looks-secondary;
+    background-size: 100%;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 4px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.button:active, .button:focus-within {
+    box-shadow: 0 0 0 3px $looks-transparent;
+}
+
+.delete-option {
+    background-image: url("../delete-button/icon--delete.svg");
+}
+
+.inspect-option {
+    background-image: url("./icons/icon--search.svg");
+}
+
+.pause-option {
+    background-image: url("./icons/icon--pause.svg");
+}
+
+.play-option {
+    background-image: url("./icons/icon--play.svg");
 }
 
 .no-threads {
     margin: auto;
     font-style: italic;
     opacity: 0.5;
+    font-size: 0.9rem;
 }

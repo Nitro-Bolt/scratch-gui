@@ -13,21 +13,28 @@
     display: flex;
     align-items: center;
     padding: 0.2rem;
-    border-bottom: 2px solid $ui-black-transparent;
+    border-bottom: 1px solid $ui-black-transparent;
+    color: $text-primary;
 }
 
 .log.error {
-    background-color: rgba(255, 0, 0, 0.20);
-    border-bottom: 2px solid rgba(255, 0, 0, 0.30);
+    background-color: rgba(255, 0, 0, 0.1);
+    border-color: rgba(255, 0, 0, 0.25);
 }
 
 .log.warn {
-    background-color: rgba(255, 255, 0, 0.20);
-    border-bottom: 2px solid rgba(255, 255, 0, 0.30);
+    background-color: hsla(30, 100%, 50%, 0.1);
+    border-color: hsla(30, 100%, 50%, 0.27);
+}
+
+.log:not(.error, .warn) {
+    padding-left: calc(16px + 0.6rem);
 }
 
 .log > img {
-    margin-right: 0.25rem;
+    margin-right: 0.3rem;
+    margin-left: 0.1rem;
+    user-select: none;
 }
 
 .log > span {
@@ -37,47 +44,103 @@
 
 .log > .sprite-name {
     margin-left: auto;
+    font-size: 0.8em;
+}
+
+.log > .target-block-name {
+    font-size: 0.8em;
+}
+
+.log > .target-block-name > span {
+    opacity: 0.5;
+    cursor: default;
+    margin: 0 0.1rem;
+}
+
+.log > .target-block-name > a {
+    font-family: monospace;
+    font-size: 0.7rem;
+}
+
+.log > .sprite-name:not(:hover, :focus),
+.log > .target-block-name a:not(:hover, :focus) {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.5;
 }
 
 .button-container {
     display: inline-flex;
     padding: 0.25rem;
     gap: 0.25rem;
+    position: sticky;
+    top: 0;
+    background-color: $ui-white;
+    z-index: 2;
 }
 
 .button-container > button {
     display: inline-flex;
-    background-color: $menu-bar-background;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    padding: 0.25rem 0.4rem;
-    gap: 0.25rem;
-    align-items: center;
-    justify-content: center;
-    font-family: inherit;
-    font-weight: bold;
-    font-size: 14px;
 }
 
-.noLogs {
+.button-container > button > img {
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-right: 0.2rem;
+}
+
+.no-logs {
     margin: auto;
     font-style: italic;
     opacity: 0.5;
+    font-size: 0.9rem;
 }
 
-.filterSelect {
+.button-container > button, .filter-select {
     background-color: $menu-bar-background;
     border: none;
     border-radius: 4px;
     color: white;
     padding: 0.25rem;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
     font-weight: bold;
-    font-size: 14px;
     cursor: pointer;
 }
 
-.filterSelect > option {
+.filter-select > option {
     background-color: $menu-bar-background;
+}
+
+.search {
+    width: 100%;
+    box-sizing: border-box !important;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    padding: 0 0.75rem;
+    padding-left: 0.25rem;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    color: var(--text-primary);
+    background-color: var(--input-background);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--ui-black-transparent);
+    outline: none;
+    cursor: text;
+    transition: 0.25s ease-out;
+    box-shadow: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.search:is(:hover, :focus) {
+    border-color: var(--looks-secondary);
+}
+
+pre {
+    margin: 0;
+    font-size: 0.9em;
 }

@@ -234,7 +234,7 @@ const StageHeaderComponent = function (props) {
                         className={styles.stageSizeRow}
                         key="editor" // addons require the HTML element to be not be re-used by in-editor buttons
                     >
-                        {props.preferences['enable-debugger'] === true &&
+                        {props.preferences['enable-debugger'] === true && !isPlayerOnly &&
                             <div>
                                 <Button
                                     className={classNames(styles.stageButton, styles.debuggerButton)}
@@ -246,6 +246,9 @@ const StageHeaderComponent = function (props) {
                                         draggable={false}
                                         src={debuggerIcon}
                                     />
+                                    {props.unreadLogs > 0 &&
+                                        <span className={styles.logCount}>{props.unreadLogs < 1000 ? props.unreadLogs : "999+"}</span>
+                                    }
                                 </Button>
                             </div>
                         }
@@ -275,7 +278,8 @@ const StageHeaderComponent = function (props) {
 
 const mapStateToProps = state => ({
     // This is the button's mode, as opposed to the actual current state
-    stageSizeMode: state.scratchGui.stageSize.stageSize
+    stageSizeMode: state.scratchGui.stageSize.stageSize,
+    unreadLogs: state.scratchGui.debugger.unreadLogs
 });
 
 StageHeaderComponent.propTypes = {
@@ -298,6 +302,7 @@ StageHeaderComponent.propTypes = {
     stageSize: PropTypes.number.isRequired,
     setStageSize: PropTypes.func.isRequired,
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
+    unreadLogs: PropTypes.number.isRequired,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 

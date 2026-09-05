@@ -384,7 +384,7 @@ const vmListenerHOC = function (WrappedComponent) {
             dispatch(openDebugger());
         },
         onDebuggerClear: () => dispatch(clearLogs()),
-        onDebuggerLog: (type, message, target, color) => dispatch(pushLog(type, message, target, color)),
+        onDebuggerLog: (type, message, target, color, targetBlock) => dispatch(pushLog(type, message, target, color, targetBlock)),
         onDebuggerTimerUpdate: data => dispatch(setTimers(data))
     });
     return connect(

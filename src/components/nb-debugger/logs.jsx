@@ -15,19 +15,24 @@ const parseLogColor = color => {
     return `rgba(${color.r},${color.g},${color.b},1)`;
 };
 
-const handleExportLogs = logs => {
+const handleExportLogs = (logs, projectTitle) => {
     let exported = '';
     logs.forEach(log => {
         const type = (log.type || 'log').toUpperCase();
+        const typeMap = {
+            LOG: "LOG",
+            WARN: "WRN",
+            ERROR: "ERR"
+        };
         if (log.target) {
-            exported += `${log.target.sprite.name}: [${type}] ${log.message}\n`;
+            exported += `[${typeMap[type]}] ${log.target.sprite.name}: ${log.message}\n`;
         } else {
-            exported += `[${type}] ${log.message}\n`;
+            exported += `[${typeMap[type]}] ${log.message}\n`;
         }
     });
 
     const blob = new Blob([exported], {type: 'text/plain'});
-    downloadBlob('logs.txt', blob);
+    downloadBlob(`${(projectTitle).substring(0, 100)}.log`, blob);
 };
 
 const Log = React.memo(props => {
@@ -37,6 +42,12 @@ const Log = React.memo(props => {
         backgroundColor: color.replace(',1)', ',0.15)'),
         borderBottomColor: color.replace(',1)', ',0.30)')
     } : null;
+    let message = props.message;
+    if ((message.startsWith("[") && message.endsWith("]")) || (message.startsWith("{") && message.endsWith("}"))) {
+        try {
+            message = <pre>{JSON.stringify(JSON.parse(props.message), null, 2)}</pre>;
+        } catch {}
+    }
     return (
         <div
             className={classNames(styles.log, styles[props.type])}
@@ -45,7 +56,7 @@ const Log = React.memo(props => {
             {props.type && props.type !== 'log' &&
                 <img src={icon} />
             }
-            <span>{props.message}</span>
+            <span>{message}</span>
             {props.target &&
                 <a
                     className={styles.spriteName}
@@ -53,6 +64,17 @@ const Log = React.memo(props => {
                 >
                     {props.target.sprite.name}
                 </a>
+            }
+            {props.targetBlock &&
+                <span className={styles.targetBlockName}>
+                    <span>{':'}</span>
+                    <a
+                        onClick={props.onSelectTargetBlock}
+                        title={props.targetBlock}
+                    >
+                        {props.targetBlock.substring(0, 5)}{'…'}
+                    </a>
+                </span>
             }
         </div>
     );
@@ -71,7 +93,9 @@ Log.propTypes = {
             name: PropTypes.string
         })
     }),
-    onSelectTarget: PropTypes.func
+    targetBlock: PropTypes.string,
+    onSelectTarget: PropTypes.func,
+    onSelectTargetBlock: PropTypes.func
 };
 
 Log.displayName = 'Log';
@@ -79,6 +103,7 @@ Log.displayName = 'Log';
 const LogsTab = React.memo(props => {
     const [spriteFilter, setSpriteFilter] = useState('all');
     const [typeFilter, setTypeFilter] = useState('all');
+    const [stringFilter, setStringFilter] = useState('');
     const [isAtBottom, setIsAtBottom] = useState(true);
     const containerRef = useRef(null);
 
@@ -105,8 +130,9 @@ const LogsTab = React.memo(props => {
             (log.target && log.target.sprite.name === spriteFilter) ||
             (spriteFilter === '__stage__' && log.target && log.target.isStage);
         const typeMatch = typeFilter === 'all' || (log.type || 'log') === typeFilter;
-        return spriteMatch && typeMatch;
-    }), [props.logs, spriteFilter, typeFilter]);
+        const stringMatch = log.message.toLowerCase().includes(stringFilter.toLowerCase());
+        return spriteMatch && typeMatch && stringMatch;
+    }), [props.logs, spriteFilter, typeFilter, stringFilter]);
 
     useEffect(() => {
         const el = containerRef.current;
@@ -126,7 +152,7 @@ const LogsTab = React.memo(props => {
                     <span>{'Clear'}</span>
                 </button>
                 {/* eslint-disable-next-line react/jsx-no-bind */}
-                <button onClick={() => handleExportLogs(props.logs)}>
+                <button onClick={() => handleExportLogs(filteredLogs, props.projectTitle)}>
                     <img src={downloadIcon} />
                     <span>{'Export'}</span>
                 </button>
@@ -158,6 +184,13 @@ const LogsTab = React.memo(props => {
                     <option value="warn">{'Warn'}</option>
                     <option value="error">{'Error'}</option>
                 </select>
+                <input
+                    className={styles.search}
+                    type="search"
+                    value={stringFilter}
+                    onChange={e => setStringFilter(e.target.value)}
+                    placeholder="Search logs"
+                />
             </div>
             {filteredLogs.length > 0 ? filteredLogs.map((log, i) => (
                 <Log
@@ -166,11 +199,14 @@ const LogsTab = React.memo(props => {
                     message={log.message}
                     target={log.target}
                     color={log.color}
+                    targetBlock={log.targetBlock}
                     // eslint-disable-next-line react/jsx-no-bind
                     onSelectTarget={() => props.onSelectTarget(log.target)}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onSelectTargetBlock={() => props.onSelectTargetBlock(log.target, log.targetBlock)}
                 />
             )) : (
-                <h3 className={styles.noLogs}>{'No logs to display'}</h3>
+                <span className={styles.noLogs}>{'No logs to display'}</span>
             )}
         </div>
     );
@@ -180,7 +216,9 @@ LogsTab.propTypes = {
     logs: PropTypes.array,
     sprites: PropTypes.object,
     onClearLogs: PropTypes.func,
-    onSelectTarget: PropTypes.func
+    onSelectTarget: PropTypes.func,
+    onSelectTargetBlock: PropTypes.func,
+    projectTitle: PropTypes.string
 };
 
 LogsTab.displayName = 'LogsTab';

@@ -22,6 +22,7 @@ const MODAL_CUSTOM_ACCENT = 'customAccentModal';
 const MODAL_GIT = 'gitModal';
 const MODAL_EDITOR_SETTINGS = 'editorSettingsModal';
 const MODAL_INSPECT_BLOCK = 'inspectBlockModal';
+const MODAL_INSPECT_THREAD = 'inspectThreadModal';
 
 const initialState = {
     [MODAL_BACKDROP_LIBRARY]: false,
@@ -45,8 +46,10 @@ const initialState = {
     [MODAL_GIT]: false,
     [MODAL_EDITOR_SETTINGS]: false,
     [MODAL_INSPECT_BLOCK]: false,
+    [MODAL_INSPECT_THREAD]: false,
     editorSettingsModalTab: 0,
-    inspectBlockModalBlock: null
+    inspectBlockModalBlock: null,
+    inspectThreadModalThread: null
 };
 
 const reducer = function (state, action) {
@@ -60,6 +63,9 @@ const reducer = function (state, action) {
             }),
             ...(action.modal === MODAL_INSPECT_BLOCK && {
                 inspectBlockModalBlock: action.block
+            }),
+            ...(action.modal === MODAL_INSPECT_THREAD && {
+                inspectThreadModalThread: action.thread
             })
         });
     case CLOSE_MODAL:
@@ -153,6 +159,13 @@ const openInspectBlockModal = function (block) {
         block
     };
 };
+const openInspectThreadModal = function (thread) {
+    return {
+        type: OPEN_MODAL,
+        modal: MODAL_INSPECT_THREAD,
+        thread
+    };
+};
 const closeBackdropLibrary = function () {
     return closeModal(MODAL_BACKDROP_LIBRARY);
 };
@@ -216,6 +229,9 @@ const closeEditorSettingsModal = function () {
 const closeInspectBlockModal = function () {
     return closeModal(MODAL_INSPECT_BLOCK);
 };
+const closeInspectThreadModal = function () {
+    return closeModal(MODAL_INSPECT_THREAD);
+};
 export {
     reducer as default,
     initialState as modalsInitialState,
@@ -240,6 +256,7 @@ export {
     openGitModal,
     openEditorSettingsModal,
     openInspectBlockModal,
+    openInspectThreadModal,
     closeBackdropLibrary,
     closeCostumeLibrary,
     closeExtensionLibrary,
@@ -260,5 +277,6 @@ export {
     closeCustomAccentModal,
     closeGitModal,
     closeEditorSettingsModal,
-    closeInspectBlockModal
+    closeInspectBlockModal,
+    closeInspectThreadModal
 };

@@ -2,31 +2,35 @@ import React from 'react';
 import classNames from 'classnames';
 import styles from './threads.css';
 
-import deleteIcon from './icons/icon--delete.svg';
-import pauseIcon from './icons/icon--pause.svg';
-import playIcon from './icons/icon--play.svg';
-
 const Thread = React.memo(props => (
     <div className={styles.thread}>
-        <div className={styles.buttons}>
-            <img
-                src={deleteIcon}
-                draggable={false}
-                onClick={props.onDelete}
-            />
-            {!props.compilerEnabled &&
-                <img
-                    src={props.thread.isPaused ? playIcon : pauseIcon}
-                    draggable={false}
-                    onClick={() => props.thread.isPaused = !props.thread.isPaused}
-                />
-            }
+        <span>
             <a onClick={props.onSelectTarget}>
                 {props.thread.target.sprite.name}
             </a>
-            <span>
-                {Object.values(props.thread.blockContainer._blocks).filter(b => !b.shadow).length} blocks
-            </span>
+            <span>{':'}</span>
+            <a
+                className={styles.threadId}
+                onClick={props.onSelectTargetBlock}
+            >
+                {props.thread.topBlock}
+            </a>
+        </span>
+        <div className={styles.buttons}>
+            {!props.thread.isCompiled &&
+                <button
+                    className={classNames(styles.button, props.thread.isPaused ? styles.playOption : styles.pauseOption)}
+                    onClick={() => props.thread.isPaused = !props.thread.isPaused}
+                />
+            }
+            <button
+                className={classNames(styles.button, styles.inspectOption)}
+                onClick={props.onInspectThread}
+            />
+            <button
+                className={classNames(styles.button, styles.deleteOption)}
+                onClick={props.onDelete}
+            />
         </div>
     </div>
 ));
@@ -39,11 +43,12 @@ const ThreadsTab = React.memo(props => {
                     key={i}
                     thread={thread}
                     onSelectTarget={() => props.onSelectTarget(thread.target)}
+                    onSelectTargetBlock={() => props.onSelectTargetBlock(thread.target, thread.topBlock)}
+                    onInspectThread={() => props.onInspectThread(thread)}
                     onDelete={() => props.vm.runtime._stopThread(thread)}
-                    compilerEnabled={props.vm.runtime.compilerOptions.enabled}
                 />
             )) : (
-                <h3 className={styles.noThreads}>No threads running</h3>
+                <span className={styles.noThreads}>No threads running</span>
             )}
         </div>
     );
