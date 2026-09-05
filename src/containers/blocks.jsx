@@ -120,6 +120,8 @@ class Blocks extends React.Component {
             'handleExtensionReordered',
             'handleExtensionRemoved',
             'handleBlocksInfoUpdate',
+            'handleShapeAdded',
+            'handleShapeRemoved',
             'handleInspectBlock',
             'onTargetsUpdate',
             'onVisualReport',
@@ -431,6 +433,8 @@ class Blocks extends React.Component {
         this.props.vm.addListener('EXTENSION_REORDERED', this.handleExtensionReordered);
         this.props.vm.addListener('EXTENSION_REMOVED', this.handleExtensionRemoved);
         this.props.vm.addListener('BLOCKSINFO_UPDATE', this.handleBlocksInfoUpdate);
+        this.props.vm.addListener('EXTENSION_SHAPE_ADDED', this.handleShapeAdded);
+        this.props.vm.addListener('EXTENSION_SHAPE_REMOVED', this.handleShapeRemoved);
         this.props.vm.addListener('PERIPHERAL_CONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.addListener('PERIPHERAL_DISCONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.addListener('CREATE_UNSANDBOXED_EXTENSION_API', this.onExtensionAPI);
@@ -446,6 +450,8 @@ class Blocks extends React.Component {
         this.props.vm.removeListener('MONITORS_UPDATE', this.handleMonitorsUpdate);
         this.props.vm.removeListener('EXTENSION_ADDED', this.handleExtensionAdded);
         this.props.vm.removeListener('BLOCKSINFO_UPDATE', this.handleBlocksInfoUpdate);
+        this.props.vm.removeListener('EXTENSION_SHAPE_ADDED', this.handleShapeAdded);
+        this.props.vm.removeListener('EXTENSION_SHAPE_REMOVED', this.handleShapeRemoved);
         this.props.vm.removeListener('PERIPHERAL_CONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.removeListener('PERIPHERAL_DISCONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.removeListener('CREATE_UNSANDBOXED_EXTENSION_API', this.onExtensionAPI);
@@ -663,6 +669,20 @@ class Blocks extends React.Component {
     handleBlocksInfoUpdate (categoryInfo) {
         // @todo Later we should replace this to avoid all the warnings from redefining blocks.
         this.handleExtensionAdded(categoryInfo);
+    }
+    handleShapeAdded (shapeInfo) {
+        if (!this.ScratchBlocks || !this.ScratchBlocks.BlockShapes) return;
+        if (shapeInfo && shapeInfo.name && shapeInfo.definition) {
+            this.ScratchBlocks.BlockShapes.register(shapeInfo.name, shapeInfo.definition);
+        }
+        updateAllBlocks(this.ScratchBlocks, this.props.vm, this.workspace);
+    }
+    handleShapeRemoved (shapeInfo) {
+        if (!this.ScratchBlocks || !this.ScratchBlocks.BlockShapes) return;
+        if (shapeInfo && shapeInfo.name) {
+            this.ScratchBlocks.BlockShapes.unregister(shapeInfo.name);
+        }
+        updateAllBlocks(this.ScratchBlocks, this.props.vm, this.workspace);
     }
     handleCategorySelected (categoryId) {
         const extension = extensionData.find(ext => ext.extensionId === categoryId);
