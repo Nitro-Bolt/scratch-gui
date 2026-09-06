@@ -4,10 +4,11 @@ import classNames from 'classnames';
 
 import styles from './delete-button.css';
 import deleteIcon from './icon--delete.svg';
+import undoIcon from './icon--undo.svg';
 
 const DeleteButton = props => (
     <div
-        aria-label="Delete"
+        aria-label={props.useUndoIcon ? 'Undo' : 'Delete'}
         className={classNames(
             styles.deleteButton,
             props.className
@@ -19,7 +20,7 @@ const DeleteButton = props => (
         <div className={styles.deleteButtonVisible}>
             <img
                 className={styles.deleteIcon}
-                src={deleteIcon}
+                src={props.useUndoIcon ? undoIcon : deleteIcon}
                 draggable={false}
             />
         </div>
@@ -30,11 +31,13 @@ const DeleteButton = props => (
 DeleteButton.propTypes = {
     className: PropTypes.string,
     onClick: PropTypes.func.isRequired,
-    tabIndex: PropTypes.number
+    tabIndex: PropTypes.number,
+    useUndoIcon: PropTypes.bool
 };
 
 DeleteButton.defaultProps = {
-    tabIndex: 0
+    tabIndex: 0,
+    useUndoIcon: false
 };
 
 export default DeleteButton;

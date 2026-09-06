@@ -876,6 +876,7 @@ const EditorSettingsModal = props => {
                                             <DeleteButton
                                                 onClick={handleDeleteBlockColor(cat.colorId)}
                                                 className={styles.deleteButton}
+                                                useUndoIcon
                                             />
                                         </div>
                                     );
