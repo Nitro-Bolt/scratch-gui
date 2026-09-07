@@ -14,6 +14,15 @@
     right: 0;
 }
 
+[dir="ltr"] .stage-header-wrapper:has(.stage-hidden) {
+    right: 0;
+    left: unset;
+}
+[dir="rtl"] .stage-header-wrapper:has(.stage-hidden) {
+    left: 0;
+    right: unset;
+}
+
 .stage-header-wrapper-overlay {
     position: fixed;
     background-color: $fullscreen-accent;
