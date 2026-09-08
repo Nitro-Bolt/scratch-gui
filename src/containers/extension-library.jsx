@@ -432,8 +432,6 @@ class ExtensionLibrary extends React.PureComponent {
                 const sourceStatusItems = galleryStatusItems[source.id];
 
                 const extensionsToExclude = [
-                    'faceSensing',
-                    'fetch',
                     'fullscreen0419',
                     'images',
                     'lmsCast',
@@ -443,7 +441,6 @@ class ExtensionLibrary extends React.PureComponent {
                     'lmsutilsblocks',
                     'RixxyX',
                     'ShovelUtils',
-                    'shreder95resolution',
                     'skyhigh173JSON'
                 ];
                 const sourceExtensionsToExclude = source.id === 'turbowarp' ? [
