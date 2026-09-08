@@ -63,6 +63,9 @@
     align-items: center;
     white-space: nowrap;
     height: $menu-bar-height;
+    border: none;
+    background-color: transparent;
+    text-align: inherit;
 }
 
 .menu-bar-item.hoverable {
@@ -70,8 +73,9 @@
 }
 
 .menu-bar-item.active,
-.menu-bar-item.hoverable:hover {
+.menu-bar-item.hoverable:is(:hover, :focus-visible) {
     background-color: $ui-black-transparent;
+    outline: none;
 }
 
 .menu-bar-item.growable {

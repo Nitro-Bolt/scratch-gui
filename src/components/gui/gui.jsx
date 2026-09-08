@@ -228,12 +228,6 @@ const GUIComponent = props => {
         onExtensionButtonClick
     );
 
-    registerKeyboardShortcut({
-        key: 'Escape'
-    }, event => {
-        event.target?.blur?.();
-    });
-
     const [resizingStage, setResizingStage] = useState(false);
     const [stageSize, setStageSize] = useState(480);
 
