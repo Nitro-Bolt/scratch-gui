@@ -69,10 +69,13 @@ export default class Utils {
     if (blockOrId instanceof BlockInstance) {
       // Switch to sprite
       this.setEditingTarget(blockOrId.targetId);
+      workspace.materializeScriptsForBlockIds([blockOrId.id]);
       // Highlight the block!
       block = workspace.getBlockById(blockOrId.id);
     } else {
-      block = blockOrId && blockOrId.id ? blockOrId : workspace.getBlockById(blockOrId);
+      const id = blockOrId && blockOrId.id ? blockOrId.id : blockOrId;
+      workspace.materializeScriptsForBlockIds([id]);
+      block = workspace.getBlockById(id);
     }
 
     if (!block) {
