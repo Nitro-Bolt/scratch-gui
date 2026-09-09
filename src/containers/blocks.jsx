@@ -686,7 +686,7 @@ class Blocks extends React.Component {
     }
     cancelDeferredWorkspaceLoad () {
         this.deferredWorkspaceLoad = null;
-        if (this.workspace && this.workspace.cancelDeferredRender) {
+        if (this.workspace) {
             this.workspace.cancelDeferredRender();
         }
     }
