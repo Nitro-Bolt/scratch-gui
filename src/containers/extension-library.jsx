@@ -432,6 +432,7 @@ class ExtensionLibrary extends React.PureComponent {
                 const sourceStatusItems = galleryStatusItems[source.id];
 
                 const extensionsToExclude = [
+                    'faceSensing',
                     'fullscreen0419',
                     'images',
                     'lmsCast',
