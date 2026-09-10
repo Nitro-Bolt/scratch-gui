@@ -1,5 +1,4 @@
 import bindAll from 'lodash.bindall';
-import loadWorkspace from '../lib/nb-load-workspace';
 import debounce from 'lodash.debounce';
 import defaultsDeep from 'lodash.defaultsdeep';
 import makeToolboxXML from '../lib/make-toolbox-xml';
@@ -142,7 +141,6 @@ class Blocks extends React.Component {
         };
         this.onTargetsUpdate = debounce(this.onTargetsUpdate, 100);
         this.toolboxUpdateQueue = [];
-        this.deferredWorkspaceLoad = null;
     }
     componentDidMount () {
         this.ScratchBlocks = VMScratchBlocks(this.props.vm, this.props.useCatBlocks);
@@ -327,7 +325,6 @@ class Blocks extends React.Component {
     componentWillUnmount () {
         this.detachVM();
         this.unmounted = true;
-        this.cancelDeferredWorkspaceLoad();
         this.workspace.dispose();
         clearTimeout(this.toolboxUpdateTimeout);
 
@@ -553,14 +550,10 @@ class Blocks extends React.Component {
         }
 
         // Remove and reattach the workspace listener (but allow flyout events)
-        this.cancelDeferredWorkspaceLoad();
         this.workspace.removeChangeListener(this.props.vm.blockListener);
+        const dom = this.ScratchBlocks.Xml.textToDom(data.xml);
         try {
-            this.deferredWorkspaceLoad = loadWorkspace(this.ScratchBlocks, this.workspace, data, {
-                onDone: () => {
-                    this.deferredWorkspaceLoad = null;
-                }
-            });
+            this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, this.workspace);
         } catch (error) {
             // The workspace is likely incomplete. What did update should be
             // functional.
@@ -683,12 +676,6 @@ class Blocks extends React.Component {
     }
     setBlocks (blocks) {
         this.blocks = blocks;
-    }
-    cancelDeferredWorkspaceLoad () {
-        this.deferredWorkspaceLoad = null;
-        if (this.workspace) {
-            this.workspace.cancelDeferredRender();
-        }
     }
     handlePromptStart (message, defaultValue, callback, optTitle, optVarType) {
         const p = {prompt: {callback, message, defaultValue}};
