@@ -199,7 +199,7 @@ importers:
         version: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/c175494427486a2b2eb0359f562aab2d7f50f05b
       scratch-l10n:
         specifier: github:Nitro-Bolt/scratch-l10n#develop
-        version: https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/2152bab1c9e56a608840022a59e9dc4725cc3927
+        version: https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/6d59164cd6cf0e4a67a03d6d60c685e71a692081
       scratch-paint:
         specifier: github:Nitro-Bolt/scratch-paint#develop
         version: https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/495a1021576340d5bd38114baa734fde3efe95e2(react-dom@16.14.0(react@16.14.0))(react-intl-redux@0.7.0(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-redux@5.0.7(react@16.14.0)(redux@3.7.2)))(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-popover@0.5.10)(react-redux@5.0.7(react@16.14.0)(redux@3.7.2))(react-responsive@5.0.0(react@16.14.0))(react-style-proptype@3.2.2)(react-tooltip@3.8.0(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react@16.14.0)(redux@3.7.2)(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961)
@@ -5312,8 +5312,8 @@ packages:
     resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/c175494427486a2b2eb0359f562aab2d7f50f05b}
     version: 0.1.0
 
-  scratch-l10n@https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/2152bab1c9e56a608840022a59e9dc4725cc3927:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/2152bab1c9e56a608840022a59e9dc4725cc3927}
+  scratch-l10n@https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/6d59164cd6cf0e4a67a03d6d60c685e71a692081:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/6d59164cd6cf0e4a67a03d6d60c685e71a692081}
     version: 3.1001.0
     hasBin: true
 
@@ -12570,7 +12570,7 @@ snapshots:
       exports-loader: 0.7.0
       imports-loader: 0.8.0
 
-  scratch-l10n@https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/2152bab1c9e56a608840022a59e9dc4725cc3927:
+  scratch-l10n@https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/6d59164cd6cf0e4a67a03d6d60c685e71a692081:
     dependencies:
       '@babel/cli': 7.27.2(@babel/core@7.27.4)
       '@babel/core': 7.27.4
