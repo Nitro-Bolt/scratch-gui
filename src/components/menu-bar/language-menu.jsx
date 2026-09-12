@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {FormattedMessage} from 'react-intl';
 import {connect} from 'react-redux';
-import locales from '@turbowarp/scratch-l10n';
+import locales from 'scratch-l10n';
 
 import check from './check.svg';
 import {MenuItem, Submenu} from '../menu/menu.jsx';
