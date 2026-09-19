@@ -368,18 +368,7 @@ class Blocks extends React.Component {
         const localeMessages = blockMessages[this.props.locale];
         if (localeMessages) {
             const locales = this.ScratchBlocks.ScratchMsgs.locales;
-            const sourceMessages = blockMessages.en || {};
-            const compatibleMessages = {};
-            for (const id of Object.keys(localeMessages)) {
-                const sourcePlaceholders = String(sourceMessages[id]).match(/%\d+/g) || [];
-                const translationPlaceholders = String(localeMessages[id]).match(/%\d+/g) || [];
-                if (sourcePlaceholders.sort().join(',') !== translationPlaceholders.sort().join(',')) {
-                    log.warn(`Ignoring block translation with incompatible placeholders: ${id}`);
-                    continue;
-                }
-                compatibleMessages[id] = localeMessages[id];
-            }
-            locales[this.props.locale] = Object.assign({}, locales[this.props.locale], compatibleMessages);
+            locales[this.props.locale] = Object.assign({}, locales[this.props.locale], localeMessages);
         }
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
         this.props.vm.setLocale(this.props.locale, this.props.messages)
