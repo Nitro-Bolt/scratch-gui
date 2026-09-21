@@ -7,7 +7,7 @@ import Box from '../box/box.jsx';
 import SpriteInfo from '../../containers/sprite-info.jsx';
 import SpriteList from './sprite-list.jsx';
 import ActionMenu from '../action-menu/action-menu.jsx';
-import {isRtl} from '@turbowarp/scratch-l10n';
+import {isRtl} from 'scratch-l10n';
 import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
 
 import styles from './sprite-selector.css';

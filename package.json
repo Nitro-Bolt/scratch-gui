@@ -37,7 +37,6 @@
     "@nitro-bolt/scratch-storage": "1.0.1",
     "@turbowarp/jszip": "^3.11.1",
     "@turbowarp/nanolog": "^1.0.1",
-    "@turbowarp/scratch-l10n": "^3.1001.0-202401241456-994097a5",
     "@turbowarp/scratch-svg-renderer": "^1.1.0",
     "@turbowarp/startaudiocontext": "^1.0.0",
     "arraybuffer-loader": "^1.0.6",
@@ -97,6 +96,7 @@
     "redux-throttle": "0.1.1",
     "scratch-audio": "github:TurboWarp/scratch-audio#develop",
     "scratch-blocks": "github:Nitro-Bolt/scratch-blocks#develop-builds",
+    "scratch-l10n": "github:Nitro-Bolt/scratch-l10n#develop",
     "scratch-paint": "github:Nitro-Bolt/scratch-paint#develop",
     "scratch-render": "github:Nitro-Bolt/scratch-render#develop",
     "scratch-vm": "github:Nitro-Bolt/scratch-vm#develop",
@@ -121,6 +121,7 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "10.1.0",
     "babel-loader": "8.3.0",
+    "babel-plugin-react-intl": "3.5.1",
     "chromedriver": "117.0.3",
     "enzyme": "3.10.0",
     "enzyme-adapter-react-16": "1.15.7",
@@ -173,7 +174,8 @@
     "onlyBuiltDependencies": [
       "chromedriver",
       "core-js",
-      "es5-ext"
+      "es5-ext",
+      "scratch-l10n"
     ]
   }
 }

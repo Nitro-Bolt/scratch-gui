@@ -936,6 +936,18 @@ const json = function (colors, nbBlocks = true) {
         </block>
         <block type="json_reverse_array">
         </block>
+        <block type="json_split">
+            <value name="INPUT">
+                <shadow type="text">
+                    <field name="TEXT">a,b,c</field>
+                </shadow>
+            </value>
+            <value name="DELIMITER">
+                <shadow type="text">
+                    <field name="TEXT">,</field>
+                </shadow>
+            </value>
+        </block>
         <block type="json_map">
             <value name="VALUE">
                 <shadow type="json_map_value">

@@ -506,7 +506,7 @@ const EditorSettingsModal = props => {
                         <FormattedMessage
                         // eslint-disable-next-line max-len
                             defaultMessage="Sorry, the cloud variable server thinks your username may be unsafe. Please change it to something else or {resetIt}."
-                            id="tw.usernameModal.mustChange"
+                            id="nb.editorSettings.username.mustChange"
                             values={{
                                 resetIt: (
                                     <a
@@ -517,7 +517,7 @@ const EditorSettingsModal = props => {
                                         <FormattedMessage
                                             defaultMessage="reset it (recommended)"
                                             description="link to reset username"
-                                            id="tw.usernameModal.mustChange.resetIt"
+                                            id="nb.editorSettings.username.mustChange.resetIt"
                                         />
                                     </a>
                                 )
@@ -876,6 +876,7 @@ const EditorSettingsModal = props => {
                                             <DeleteButton
                                                 onClick={handleDeleteBlockColor(cat.colorId)}
                                                 className={styles.deleteButton}
+                                                useUndoIcon
                                             />
                                         </div>
                                     );

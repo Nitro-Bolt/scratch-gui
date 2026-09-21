@@ -7,6 +7,7 @@ import React from 'react';
 import {intlShape, injectIntl, defineMessages} from 'react-intl';
 import VMScratchBlocks from '../lib/blocks';
 import VM from 'scratch-vm';
+import blockMessages from 'scratch-l10n/locales/blocks-msgs';
 
 import log from '../lib/log.js';
 import Prompt from './prompt.jsx';
@@ -366,6 +367,11 @@ class Blocks extends React.Component {
         }, 0);
     }
     setLocale () {
+        const localeMessages = blockMessages[this.props.locale];
+        if (localeMessages) {
+            const locales = this.ScratchBlocks.ScratchMsgs.locales;
+            locales[this.props.locale] = Object.assign({}, locales[this.props.locale], localeMessages);
+        }
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
         this.props.vm.setLocale(this.props.locale, this.props.messages)
             .then(() => {
