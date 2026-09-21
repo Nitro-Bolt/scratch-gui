@@ -140,6 +140,7 @@ UsernameModal.propTypes = {
     interpolation: PropTypes.bool,
     infiniteClones: PropTypes.bool,
     removeFencing: PropTypes.bool,
+    cameraExtensionLoaded: PropTypes.bool,
     removeLimits: PropTypes.bool,
     warpTimer: PropTypes.bool,
     customStageSize: PropTypes.shape({
@@ -157,6 +158,7 @@ const mapStateToProps = state => ({
     interpolation: state.scratchGui.tw.interpolation,
     infiniteClones: state.scratchGui.tw.runtimeOptions.maxClones === Infinity,
     removeFencing: !state.scratchGui.tw.runtimeOptions.fencing,
+    cameraExtensionLoaded: state.scratchGui.vm.extensionManager.isExtensionLoaded('camera'),
     removeLimits: !state.scratchGui.tw.runtimeOptions.miscLimits,
     warpTimer: state.scratchGui.tw.compilerOptions.warpTimer,
     customStageSize: state.scratchGui.customStageSize,

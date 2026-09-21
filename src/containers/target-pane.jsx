@@ -323,6 +323,7 @@ TargetPane.propTypes = {
 };
 
 const mapStateToProps = state => ({
+    cameraExtensionLoaded: state.scratchGui.vm.extensionManager.isExtensionLoaded('camera'),
     editingTarget: state.scratchGui.targets.editingTarget,
     hoveredTarget: state.scratchGui.hoveredTarget,
     isFullScreen: state.scratchGui.mode.isFullScreen,

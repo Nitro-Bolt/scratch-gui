@@ -45,6 +45,12 @@ class SpriteInfo extends React.Component {
         return (
             this.props.rotationStyle !== nextProps.rotationStyle ||
             this.props.disabled !== nextProps.disabled ||
+            this.props.cameraExtensionLoaded !== nextProps.cameraExtensionLoaded ||
+            (this.props.camera && this.props.camera.name) !== (nextProps.camera && nextProps.camera.name) ||
+            (this.props.camera && this.props.camera.x) !== (nextProps.camera && nextProps.camera.x) ||
+            (this.props.camera && this.props.camera.y) !== (nextProps.camera && nextProps.camera.y) ||
+            (this.props.camera && this.props.camera.zoom) !== (nextProps.camera && nextProps.camera.zoom) ||
+            (this.props.camera && this.props.camera.direction) !== (nextProps.camera && nextProps.camera.direction) ||
             this.props.name !== nextProps.name ||
             this.props.stageSize !== nextProps.stageSize ||
             this.props.visible !== nextProps.visible ||
@@ -81,6 +87,27 @@ class SpriteInfo extends React.Component {
                 defaultMessage="Size"
                 description="Sprite info size label"
                 id="gui.SpriteInfo.size"
+            />
+        );
+        const cameraLabel = (
+            <FormattedMessage
+                defaultMessage="Camera"
+                description="Sprite info bound camera label"
+                id="gui.SpriteInfo.camera"
+            />
+        );
+        const zoomLabel = (
+            <FormattedMessage
+                defaultMessage="Zoom"
+                description="Sprite info camera zoom label"
+                id="gui.SpriteInfo.cameraZoom"
+            />
+        );
+        const directionLabel = (
+            <FormattedMessage
+                defaultMessage="Direction"
+                description="Sprite info camera direction label"
+                id="gui.SpriteInfo.cameraDirection"
             />
         );
 
@@ -212,6 +239,79 @@ class SpriteInfo extends React.Component {
             </div>
         );
 
+        const camera = this.props.camera;
+        const formatCameraNumber = value => Math.round(Number(value) * 100) / 100;
+        const cameraPosition = (axis, icon, value) => (
+            <div className={styles.group}>
+                <div className={styles.iconWrapper}>
+                    <img
+                        aria-hidden="true"
+                        className={classNames(styles[`${axis}Icon`], styles.icon)}
+                        src={icon}
+                        draggable={false}
+                    />
+                </div>
+                <Label text={axis}>
+                    <Input
+                        small
+                        readOnly
+                        tabIndex="-1"
+                        type="number"
+                        value={formatCameraNumber(value)}
+                    />
+                </Label>
+            </div>
+        );
+        const cameraInfo = this.props.cameraExtensionLoaded && !this.props.disabled ? (
+            <div className={styles.cameraInfo}>
+                <div className={classNames(styles.row, styles.rowPrimary)}>
+                    <div className={classNames(styles.group, styles.cameraName)}>
+                        <Label text={cameraLabel}>
+                            <Input
+                                readOnly
+                                className={styles.cameraNameInput}
+                                tabIndex="-1"
+                                type="text"
+                                value={camera.name}
+                            />
+                        </Label>
+                    </div>
+                    {cameraPosition('x', xIcon, camera.x)}
+                    {cameraPosition('y', yIcon, camera.y)}
+                </div>
+                <div className={classNames(styles.row, styles.cameraSecondary)}>
+                    <div className={classNames(styles.group, styles.largerInput)}>
+                        <Label
+                            secondary
+                            text={zoomLabel}
+                        >
+                            <Input
+                                small
+                                readOnly
+                                tabIndex="-1"
+                                type="number"
+                                value={formatCameraNumber(camera.zoom)}
+                            />
+                        </Label>
+                    </div>
+                    <div className={classNames(styles.group, styles.largerInput)}>
+                        <Label
+                            secondary
+                            text={directionLabel}
+                        >
+                            <Input
+                                small
+                                readOnly
+                                tabIndex="-1"
+                                type="number"
+                                value={formatCameraNumber(camera.direction)}
+                            />
+                        </Label>
+                    </div>
+                </div>
+            </div>
+        ) : null;
+
         if (stageSize <= smallThreshold && stageSize > smallThreshold - 100) {
             return (
                 <Box className={styles.spriteInfo}>
@@ -233,6 +333,7 @@ class SpriteInfo extends React.Component {
                         {size}
                         {yPosition}
                     </div>
+                    {cameraInfo}
                 </Box>
             );
         }
@@ -255,6 +356,7 @@ class SpriteInfo extends React.Component {
                         {xPosition}
                         {yPosition}
                     </div>
+                    {cameraInfo}
                 </Box>
             );
         }
@@ -293,12 +395,21 @@ class SpriteInfo extends React.Component {
                     {size}
                     {direction}
                 </div>
+                {cameraInfo}
             </Box>
         );
     }
 }
 
 SpriteInfo.propTypes = {
+    camera: PropTypes.shape({
+        direction: PropTypes.number,
+        name: PropTypes.string,
+        x: PropTypes.number,
+        y: PropTypes.number,
+        zoom: PropTypes.number
+    }),
+    cameraExtensionLoaded: PropTypes.bool,
     direction: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number

@@ -106,7 +106,7 @@ UnwrappedSetting.propTypes = {
 };
 const Setting = injectIntl(UnwrappedSetting);
 
-const BooleanSetting = ({value, onChange, label, ...props}) => (
+const BooleanSetting = ({value, onChange, label, disabled, ...props}) => (
     <Setting
         {...props}
         active={value}
@@ -115,6 +115,7 @@ const BooleanSetting = ({value, onChange, label, ...props}) => (
                 <FancyCheckbox
                     className={styles.checkbox}
                     checked={value}
+                    disabled={disabled}
                     onChange={onChange}
                 />
                 {label}
@@ -123,6 +124,7 @@ const BooleanSetting = ({value, onChange, label, ...props}) => (
     />
 );
 BooleanSetting.propTypes = {
+    disabled: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     value: PropTypes.bool.isRequired,
     label: PropTypes.node.isRequired
@@ -476,7 +478,8 @@ const SettingsModalComponent = props => (
                 onChange={props.onInfiniteClonesChange}
             />
             <RemoveFencing
-                value={props.removeFencing}
+                disabled={props.cameraExtensionLoaded}
+                value={props.removeFencing || props.cameraExtensionLoaded}
                 onChange={props.onRemoveFencingChange}
             />
             <RemoveMiscLimits
@@ -522,6 +525,7 @@ SettingsModalComponent.propTypes = {
     infiniteClones: PropTypes.bool,
     onInfiniteClonesChange: PropTypes.func,
     removeFencing: PropTypes.bool,
+    cameraExtensionLoaded: PropTypes.bool,
     onRemoveFencingChange: PropTypes.func,
     removeLimits: PropTypes.bool,
     onRemoveLimitsChange: PropTypes.func,
