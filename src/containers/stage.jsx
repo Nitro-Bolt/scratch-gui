@@ -177,6 +177,10 @@ class Stage extends React.Component {
             (nativeSize[1] / this.rect.height) * (y - (this.rect.height / 2))
         ];
     }
+    getTargetScratchCoords (x, y, target) {
+        const [screenX, screenY] = this.getScratchCoords(x, y);
+        return this.renderer.screenToCameraSpace(screenX, -screenY, target.cameraName);
+    }
     getColorInfo (x, y) {
         return {
             x: x,
@@ -224,10 +228,13 @@ class Stage extends React.Component {
             if (this.props.useEditorDragStyle) {
                 this.positionDragCanvas(mousePosition[0], mousePosition[1]);
             } else {
-                const spritePosition = this.getScratchCoords(mousePosition[0], mousePosition[1]);
+                const target = this.props.vm.runtime.getTargetById(this.state.dragId);
+                const spritePosition = this.getTargetScratchCoords(
+                    mousePosition[0], mousePosition[1], target
+                );
                 this.props.vm.postSpriteInfo({
                     x: spritePosition[0] + this.state.dragOffset[0],
-                    y: -(spritePosition[1] + this.state.dragOffset[1]),
+                    y: spritePosition[1] + this.state.dragOffset[1],
                     force: true
                 });
             }
@@ -388,9 +395,9 @@ class Stage extends React.Component {
         // Dragging always brings the target to the front
         target.goToFront();
 
-        const [scratchMouseX, scratchMouseY] = this.getScratchCoords(x, y);
+        const [scratchMouseX, scratchMouseY] = this.getTargetScratchCoords(x, y, target);
         const offsetX = target.x - scratchMouseX;
-        const offsetY = -(target.y + scratchMouseY);
+        const offsetY = target.y - scratchMouseY;
 
         this.props.vm.startDrag(targetId);
         this.setState({
@@ -423,9 +430,10 @@ class Stage extends React.Component {
             // First update the sprite position if dropped in the stage.
             if (mouseX > 0 && mouseX < this.rect.width &&
                 mouseY > 0 && mouseY < this.rect.height) {
-                const spritePosition = this.getScratchCoords(mouseX, mouseY);
+                const target = this.props.vm.runtime.getTargetById(dragId);
+                const spritePosition = this.getTargetScratchCoords(mouseX, mouseY, target);
                 spriteInfo.x = spritePosition[0] + this.state.dragOffset[0];
-                spriteInfo.y = -(spritePosition[1] + this.state.dragOffset[1]);
+                spriteInfo.y = spritePosition[1] + this.state.dragOffset[1];
                 spriteInfo.force = true;
             }
             this.props.vm.postSpriteInfo(spriteInfo);
