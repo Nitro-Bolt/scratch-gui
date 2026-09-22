@@ -12,6 +12,10 @@ export default async function ({ addon, console, msg }) {
   const observer = new MutationObserver(() => {
     injectInfoButton();
   });
+  const propertiesObserver = new MutationObserver(() => {
+    injectCloseButton();
+    requestAnimationFrame(updatePropertiesPanelHeight);
+  });
 
   // Toggle the properties panel when double clicking in the sprite grid
   document.addEventListener("click", (e) => {
@@ -23,6 +27,7 @@ export default async function ({ addon, console, msg }) {
   function setPropertiesPanelVisible(visible) {
     document.body.classList.toggle(SHOW_PROPS_CLASS, visible);
     document.body.classList.toggle(HIDE_PROPS_CLASS, !visible);
+    if (visible) requestAnimationFrame(updatePropertiesPanelHeight);
   }
 
   function togglePropertiesPanel() {
@@ -98,7 +103,22 @@ export default async function ({ addon, console, msg }) {
     if (!closeButton) {
       closeButton = createButton(PROPS_CLOSE_BTN_CLASS, "/collapse.svg", msg("close-properties-panel-tooltip"));
     }
-    propertiesPanel.appendChild(closeButton);
+    if (propertiesPanel.lastElementChild !== closeButton) {
+      propertiesPanel.appendChild(closeButton);
+    }
+  }
+
+  function updatePropertiesPanelHeight() {
+    if (!propertiesPanel || !closeButton || propertiesPanel.lastElementChild !== closeButton) return;
+    const style = getComputedStyle(propertiesPanel);
+    const targetPaddingTop = parseFloat(getComputedStyle(document.documentElement).fontSize) * 0.75;
+    const height =
+      closeButton.offsetTop +
+      closeButton.offsetHeight +
+      targetPaddingTop -
+      parseFloat(style.paddingTop) +
+      parseFloat(style.borderBottomWidth);
+    propertiesPanel.style.setProperty("--sa-sprite-properties-height", `${Math.ceil(height)}px`);
   }
 
   function updateWideLocaleMode() {
@@ -133,9 +153,14 @@ export default async function ({ addon, console, msg }) {
       childList: true,
       subtree: true,
     });
+    propertiesObserver.disconnect();
+    propertiesObserver.observe(propertiesPanel, {
+      childList: true,
+    });
 
     updateWideLocaleMode();
     injectInfoButton();
     injectCloseButton();
+    requestAnimationFrame(updatePropertiesPanelHeight);
   }
 }

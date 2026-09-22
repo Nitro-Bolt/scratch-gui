@@ -43,6 +43,7 @@ const messages = defineMessages({
 
 const SpriteSelectorComponent = function (props) {
     const {
+        cameraExtensionLoaded,
         editingTarget,
         hoveredTarget,
         intl,
@@ -96,6 +97,8 @@ const SpriteSelectorComponent = function (props) {
         >
 
             <SpriteInfo
+                camera={selectedSprite.camera}
+                cameraExtensionLoaded={cameraExtensionLoaded}
                 direction={selectedSprite.direction}
                 disabled={spriteInfoDisabled}
                 name={selectedSprite.name}
@@ -162,6 +165,7 @@ const SpriteSelectorComponent = function (props) {
 };
 
 SpriteSelectorComponent.propTypes = {
+    cameraExtensionLoaded: PropTypes.bool,
     editingTarget: PropTypes.string,
     hoveredTarget: PropTypes.shape({
         hoveredSprite: PropTypes.string,

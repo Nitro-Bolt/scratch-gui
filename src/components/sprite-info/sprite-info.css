@@ -84,3 +84,32 @@ label:has(.sprite-input) {
     flex-grow: 1;
     width: 0;
 }
+
+.camera-info {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid $ui-black-transparent;
+}
+
+.camera-name {
+    flex-grow: 1;
+}
+
+.camera-name label {
+    flex-grow: 1;
+}
+
+.camera-name-input {
+    flex-grow: 1;
+    width: 0;
+    pointer-events: none;
+}
+
+.camera-secondary {
+    justify-content: flex-end;
+    gap: 2rem;
+}
+
+.camera-info input {
+    pointer-events: none;
+}

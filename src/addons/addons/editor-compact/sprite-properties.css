@@ -2,7 +2,7 @@
    when sprite-properties is dynamically disabled. */
 .sa-show-sprite-properties [class^="sprite-info_sprite-info_"],
 .sa-sprite-properties-wide-locale.sa-show-sprite-properties [class^="sprite-info_sprite-info_"] {
-  height: calc(5.25rem + 1px);
+  height: var(--sa-sprite-properties-height, calc(5.25rem + 1px));
 }
 .sa-sprite-properties-close-btn {
   height: 1rem;
