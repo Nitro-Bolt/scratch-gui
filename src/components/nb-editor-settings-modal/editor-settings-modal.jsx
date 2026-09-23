@@ -192,21 +192,24 @@ const hexToRgb = hex => {
 
 const rgbToHex = ({r, g, b}) =>
     `#${[r, g, b]
-        .map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0'))
+        .map(v => Math.round(Math.max(0, Math.min(255, v)))
+            .toString(16)
+            .padStart(2, '0')
+        )
         .join('')}`;
 
 const mixTowardWhite = (hex, fraction) => {
     const {r, g, b} = hexToRgb(hex);
     return rgbToHex({
-        r: r + (255 - r) * fraction,
-        g: g + (255 - g) * fraction,
-        b: b + (255 - b) * fraction
+        r: r + ((255 - r) * fraction),
+        g: g + ((255 - g) * fraction),
+        b: b + ((255 - b) * fraction)
     });
 };
 
 const colorBrightness = hex => {
     const {r, g, b} = hexToRgb(hex);
-    return (299 * r + 587 * g + 114 * b) / 1000;
+    return ((299 * r) + (587 * g) + (114 * b)) / 1000;
 };
 
 const labelContrastDefault = 190;
@@ -377,7 +380,7 @@ CollapsibleSetting.propTypes = {
 };
 
 const LabelContrastPreview = ({baseColor, threshold}) => {
-    const currentThreshold = threshold === undefined || threshold === null ? labelContrastDefault : threshold;
+    const currentThreshold = typeof threshold === 'undefined' || threshold === null ? labelContrastDefault : threshold;
     return (
         <div className={styles.labelContrastPreview}>
             {labelContrastShades.map((fraction, index) => {
@@ -786,10 +789,23 @@ const EditorSettingsModal = props => {
                         />}
                         help={<FormattedMessage
                             id="nb.editorSettings.vanillaPaletteHelp"
-                            defaultMessage="Hides NitroBolt-exclusive blocks (e.g. extended operators, switch, for-each-in-range, etc.) and hides the JSON and assets categories."
+                            defaultMessage="Hides NitroBolt-exclusive blocks and hides the JSON and assets categories."
                         />}
                         // eslint-disable-next-line react/jsx-no-bind
                         onChange={e => props.onSetPreference('hide-nb-blocks', e.target.checked)}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['extendable-arrows-left']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.extendableArrowsLeft"
+                            defaultMessage="Extendable arrows on left"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.extendableArrowsLeftHelp"
+                            defaultMessage="Moves the arrows of expandable blocks from the right side to the left side."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('extendable-arrows-left', e.target.checked)}
                     />
                     <CollapsibleSetting
                         label={<FormattedMessage
