@@ -196,7 +196,7 @@ importers:
         version: https://codeload.github.com/TurboWarp/scratch-audio/tar.gz/aba00cd02e36d95407effafa03f3678e4c669b30
       scratch-blocks:
         specifier: github:Nitro-Bolt/scratch-blocks#develop-builds
-        version: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/5ade89fcc3072322c22407aadde760f5b15a8ece
+        version: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/f82bda4b95aa1ab46d9bfa2f43c345d1866376db
       scratch-l10n:
         specifier: github:Nitro-Bolt/scratch-l10n#develop
         version: https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/e2d474f92ba916976588ce018f189ebe4b5ddd2f
@@ -5308,8 +5308,8 @@ packages:
     resolution: {tarball: https://codeload.github.com/TurboWarp/scratch-audio/tar.gz/aba00cd02e36d95407effafa03f3678e4c669b30}
     version: 0.1.0
 
-  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/5ade89fcc3072322c22407aadde760f5b15a8ece:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/5ade89fcc3072322c22407aadde760f5b15a8ece}
+  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/f82bda4b95aa1ab46d9bfa2f43c345d1866376db:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/f82bda4b95aa1ab46d9bfa2f43c345d1866376db}
     version: 0.1.0
 
   scratch-l10n@https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/e2d474f92ba916976588ce018f189ebe4b5ddd2f:
@@ -12565,7 +12565,7 @@ snapshots:
       '@turbowarp/nanolog': 0.2.0
       '@turbowarp/startaudiocontext': 1.0.0
 
-  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/5ade89fcc3072322c22407aadde760f5b15a8ece:
+  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/f82bda4b95aa1ab46d9bfa2f43c345d1866376db:
     dependencies:
       exports-loader: 0.7.0
       imports-loader: 0.8.0
