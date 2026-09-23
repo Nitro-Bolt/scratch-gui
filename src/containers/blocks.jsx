@@ -156,6 +156,13 @@ class Blocks extends React.Component {
         this.ScratchBlocks.Procedures.externalProcedureDefCallback = this.props.onActivateCustomProcedures;
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
         this.ScratchBlocks.LABEL_CONTRAST_THRESHOLD = this.getLabelContrastThreshold();
+        const customColourConverters = this.props.theme.getCustomExtensionColors();
+        this.ScratchBlocks.CustomProcedureColourTransform = customColourConverters.primary ? primary => [
+            customColourConverters.primary(primary),
+            customColourConverters.secondary(primary),
+            customColourConverters.tertiary(primary),
+            customColourConverters.quaternary(primary)
+        ] : null;
 
         const Msg = this.ScratchBlocks.Msg;
         Msg.PROCEDURES_RETURN = this.props.intl.formatMessage(messages.PROCEDURES_RETURN, {
