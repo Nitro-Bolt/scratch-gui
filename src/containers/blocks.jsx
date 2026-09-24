@@ -46,6 +46,7 @@ import AddonHooks from '../addons/hooks.js';
 import LoadScratchBlocksHOC from '../lib/tw-load-scratch-blocks-hoc.jsx';
 import {findTopBlock} from '../lib/backpack/code-payload.js';
 import {gentlyRequestPersistentStorage} from '../lib/tw-persistent-storage.js';
+import { registerKeyboardShortcut } from '../lib/nb-keyboard-shortcut.js';
 
 // TW: Strings we add to scratch-blocks are localized here
 const messages = defineMessages({
