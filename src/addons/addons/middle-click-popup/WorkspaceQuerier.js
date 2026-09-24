@@ -712,6 +712,12 @@ class TokenTypeBlock extends TokenType {
           case BlockInputType.BOOLEAN:
             fullTokenProvider = querier.tokenGroupBoolean;
             break;
+          case BlockInputType.OBJECT:
+            fullTokenProvider = querier.tokenGroupObject;
+            break;
+          case BlockInputType.ARRAY:
+            fullTokenProvider = querier.tokenGroupArray;
+            break;
           case BlockInputType.BLOCK:
             fullTokenProvider = querier.tokenGroupStack;
             break;
@@ -1323,6 +1329,8 @@ export default class WorkspaceQuerier {
 
     this.tokenGroupRoundBlocks = new TokenProviderGroup(); // Round blocks like (() + ()) or (my variable)
     this.tokenGroupBooleanBlocks = new TokenProviderGroup(); // Boolean blocks like <not ()>
+    this.tokenGroupObjectBlocks = new TokenProviderGroup();
+    this.tokenGroupArrayBlocks = new TokenProviderGroup();
     this.tokenGroupStackBlocks = new TokenProviderGroup(); // Stackable blocks like `move (10) steps`
     this.tokenGroupHatBlocks = new TokenProviderGroup(); // Hat block like `when green flag clicked`
 
@@ -1352,6 +1360,18 @@ export default class WorkspaceQuerier {
       new TokenTypeBrackets(this.tokenGroupString),
     ]);
 
+    this.tokenGroupObject = new TokenProviderOptional(new TokenProviderGroup());
+    this.tokenGroupObject.inner.pushProviders([
+      this.tokenGroupObjectBlocks,
+      new TokenTypeBrackets(this.tokenGroupObject),
+    ]);
+
+    this.tokenGroupArray = new TokenProviderOptional(new TokenProviderGroup());
+    this.tokenGroupArray.inner.pushProviders([
+      this.tokenGroupArrayBlocks,
+      new TokenTypeBrackets(this.tokenGroupArray),
+    ]);
+
     // Anything that fits into a c shaped hole (Stackable blocks)
     this.tokenGroupStack = new TokenProviderOptional(this.tokenGroupStackBlocks);
 
@@ -1361,6 +1381,8 @@ export default class WorkspaceQuerier {
       this.tokenGroupStackBlocks,
       this.tokenGroupBooleanBlocks,
       this.tokenGroupRoundBlocks,
+      this.tokenGroupObjectBlocks,
+      this.tokenGroupArrayBlocks,
       this.tokenGroupHatBlocks,
     ]);
   }
@@ -1397,6 +1419,12 @@ export default class WorkspaceQuerier {
         case BlockShape.Boolean:
           this.tokenGroupBooleanBlocks.pushProviders([blockTokenType]);
           break;
+        case BlockShape.Object:
+          this.tokenGroupObjectBlocks.pushProviders([blockTokenType]);
+          break;
+        case BlockShape.Array:
+          this.tokenGroupArrayBlocks.pushProviders([blockTokenType]);
+          break;
         case BlockShape.Stack:
         case BlockShape.End:
           this.tokenGroupStackBlocks.pushProviders([blockTokenType]);
@@ -1425,11 +1453,15 @@ export default class WorkspaceQuerier {
 
     this.tokenGroupBooleanBlocks = null;
     this.tokenGroupRoundBlocks = null;
+    this.tokenGroupObjectBlocks = null;
+    this.tokenGroupArrayBlocks = null;
     this.tokenGroupStackBlocks = null;
     this.tokenGroupHatBlocks = null;
     this.tokenGroupBoolean = null;
     this.tokenGroupNumber = null;
     this.tokenGroupString = null;
+    this.tokenGroupObject = null;
+    this.tokenGroupArray = null;
     this.tokenGroupStack = null;
     this.tokenGroupBlocks = null;
   }

@@ -15,6 +15,8 @@ export const BlockInputType = {
   COLOUR: 3,
   ENUM: 4,
   BLOCK: 5,
+  OBJECT: 6,
+  ARRAY: 7,
 };
 
 /**
@@ -158,6 +160,32 @@ export class BlockInputBoolean extends BlockInput {
   }
 }
 
+export class BlockInputObject extends BlockInput {
+  constructor(inputIdx, fieldIdx) {
+    super(BlockInputType.OBJECT, inputIdx, fieldIdx);
+  }
+
+  setValue(block, value) {
+    if (!(value instanceof BlockInstance) || value.typeInfo.shape !== BlockShape.Object) {
+      throw new Error("Object inputs can only contain object blocks.");
+    }
+    value.createWorkspaceForm().outputConnection.connect(this.getInput(block).connection);
+  }
+}
+
+export class BlockInputArray extends BlockInput {
+  constructor(inputIdx, fieldIdx) {
+    super(BlockInputType.ARRAY, inputIdx, fieldIdx);
+  }
+
+  setValue(block, value) {
+    if (!(value instanceof BlockInstance) || value.typeInfo.shape !== BlockShape.Array) {
+      throw new Error("Array inputs can only contain array blocks.");
+    }
+    value.createWorkspaceForm().outputConnection.connect(this.getInput(block).connection);
+  }
+}
+
 export class BlockInputColour extends BlockInput {
   constructor(inputIdx, fieldIdx) {
     super(BlockInputType.COLOUR, inputIdx, fieldIdx);
@@ -293,15 +321,22 @@ export class BlockInstance {
 export class BlockShape {
   static Round = new BlockShape(false, false, true);
   static Boolean = new BlockShape(false, false, true);
+  static Object = new BlockShape(false, false, false);
+  static Array = new BlockShape(false, false, false);
   static Hat = new BlockShape(false, true, false);
   static End = new BlockShape(true, false, false);
   static Stack = new BlockShape(true, true, false);
 
-  static getBlockShape(workspaceBlock) {
-    if (workspaceBlock.edgeShape_ === 2) {
+  static getBlockShape(Blockly, workspaceBlock) {
+    const outputShape = workspaceBlock.outputConnection?.getOutputShape();
+    if (outputShape === Blockly.OUTPUT_SHAPE_ROUND) {
       return BlockShape.Round;
-    } else if (workspaceBlock.edgeShape_ === 1) {
+    } else if (outputShape === Blockly.OUTPUT_SHAPE_HEXAGONAL) {
       return BlockShape.Boolean;
+    } else if (outputShape === Blockly.OUTPUT_SHAPE_OBJECT) {
+      return BlockShape.Object;
+    } else if (outputShape === Blockly.OUTPUT_SHAPE_SQUARE) {
+      return BlockShape.Array;
     } else if (workspaceBlock.startHat_) {
       return BlockShape.Hat;
     } else if (!workspaceBlock.nextConnection) {
@@ -448,7 +483,12 @@ export class BlockTypeInfo {
           let innerField = innerBlock.inputList[0].fieldRow[0];
           addFieldInputs(innerField, inputIdx, -1);
         } else {
-          if (input.outlinePath) {
+          const outputShape = input.connection.getOutputShape();
+          if (outputShape === Blockly.OUTPUT_SHAPE_OBJECT) {
+            addInput(new BlockInputObject(inputIdx, -1));
+          } else if (outputShape === Blockly.OUTPUT_SHAPE_SQUARE) {
+            addInput(new BlockInputArray(inputIdx, -1));
+          } else if (input.outlinePath) {
             addInput(new BlockInputBoolean(inputIdx, -1));
           } else {
             addInput(new BlockInputBlock(inputIdx, -1));
@@ -556,7 +596,7 @@ export class BlockTypeInfo {
     this.workspaceForm = workspaceForm;
     this.domForm = domForm;
     /** @type {BlockShape} */
-    this.shape = shape ?? BlockShape.getBlockShape(this.workspaceForm);
+    this.shape = shape ?? BlockShape.getBlockShape(Blockly, this.workspaceForm);
     /** @type {BlockCategory} */
     this.category = BlockTypeInfo.getBlockCategory(this.workspaceForm, vm);
     this.workspace = workspace;

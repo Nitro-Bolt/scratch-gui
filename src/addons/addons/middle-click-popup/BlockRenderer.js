@@ -4,7 +4,15 @@
  * @author Tacodiva
  */
 
-import { BlockShape, BlockInstance, BlockInputEnum, BlockInputBoolean, BlockInputBlock } from "./BlockTypeInfo.js";
+import {
+  BlockShape,
+  BlockInstance,
+  BlockInputEnum,
+  BlockInputBoolean,
+  BlockInputObject,
+  BlockInputArray,
+  BlockInputBlock,
+} from "./BlockTypeInfo.js";
 import { getTextWidth } from "./module.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -40,6 +48,25 @@ const BlockShapes = {
     get snuggleWith() {
       return [BlockShapes.Boolean];
     },
+  },
+
+  Object: {
+    padding: 20,
+    minWidth: 20,
+    backgroundPath: (width) =>
+      `m -20 -20 m 20 0 h ${width} c 12 0 7 17.5 20 20 c -13 2.5 -8 20 -20 20 H 0 c -12 0 -7 -17.5 -20 -20 c 13 -2.5 8 -20 20 -20 z`,
+
+    snugglePadding: 0,
+    get snuggleWith() {
+      return [BlockShapes.Object];
+    },
+  },
+
+  Array: {
+    padding: 8,
+    minWidth: 20,
+    backgroundPath: (width) =>
+      `m -8 -20 A 4 4 0 0 1 -4 -24 H ${width + 4} a 4 4 0 0 1 4 4 v 40 a 4 4 0 0 1 -4 4 H -4 a 4 4 0 0 1 -4 -4 z`,
   },
 
   // Square dropdowns like variables
@@ -97,6 +124,18 @@ const BlockShapes = {
     },
   },
 
+  ObjectInput: {
+    padding: 16,
+    minWidth: 16,
+    backgroundPath: (width) =>
+      `m 0 -16 h ${width} c 12 0 7 14 16 16 c -9 2 -2 16 -16 16 h -16 c -12 0 -7 -14 -16 -16 c 9 -2 2 -16 16 -16 z`,
+
+    snugglePadding: 6,
+    get snuggleWith() {
+      return [BlockShapes.Object];
+    },
+  },
+
   HorizontalBlock: {
     padding: 16,
     minWidth: 45,
@@ -123,6 +162,8 @@ const BlockShapes = {
 function getShapeInfo(shape, isVertical) {
   if (shape === BlockShape.Round) return BlockShapes.Round;
   if (shape === BlockShape.Boolean) return BlockShapes.Boolean;
+  if (shape === BlockShape.Object) return BlockShapes.Object;
+  if (shape === BlockShape.Array) return BlockShapes.Array;
   if (shape === BlockShape.Stack) return isVertical ? BlockShapes.Stack : BlockShapes.HorizontalBlock;
   if (shape === BlockShape.Hat) return BlockShapes.Hat;
   if (shape === BlockShape.End) return isVertical ? BlockShapes.End : BlockShapes.HorizontalBlockEnd;
@@ -141,6 +182,8 @@ export function getBlockHeight(block) {
       return 62;
     case BlockShape.Boolean:
     case BlockShape.Round:
+    case BlockShape.Object:
+    case BlockShape.Array:
       return 48;
   }
   return 0;
@@ -315,6 +358,26 @@ function _renderBlock(block, container, parentCategory, isVertical) {
           "",
           blockContainer,
           BlockShapes.BooleanInput,
+          categoryClass,
+          `--sa-block-field-background, ${category.colorTertiary}`,
+          `--sa-block-field-background, ${category.colorTertiary}`,
+          "--sa-block-text"
+        );
+      } else if (blockPart instanceof BlockInputObject) {
+        component = createBackedTextedComponent(
+          "",
+          blockContainer,
+          BlockShapes.ObjectInput,
+          categoryClass,
+          `--sa-block-field-background, ${category.colorTertiary}`,
+          `--sa-block-field-background, ${category.colorTertiary}`,
+          "--sa-block-text"
+        );
+      } else if (blockPart instanceof BlockInputArray) {
+        component = createBackedTextedComponent(
+          "",
+          blockContainer,
+          BlockShapes.SquareInput,
           categoryClass,
           `--sa-block-field-background, ${category.colorTertiary}`,
           `--sa-block-field-background, ${category.colorTertiary}`,
