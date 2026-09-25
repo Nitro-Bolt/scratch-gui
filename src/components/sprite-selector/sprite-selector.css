@@ -54,6 +54,7 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+    user-select: none;
 }
 
 .scroll-wrapper-dragging {
@@ -84,6 +85,7 @@
 .add-button {
     position: absolute;
     bottom: 0.75rem;
+    user-select: none;
 }
 
 [dir="ltr"] .add-button {

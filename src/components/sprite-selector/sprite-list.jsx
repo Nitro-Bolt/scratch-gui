@@ -30,12 +30,14 @@ const SpriteList = function (props) {
         onDuplicateSprite,
         onExportSprite,
         onSelectSprite,
+        onToggleSpriteProperties,
         onAddSortable,
         onRemoveSortable,
         ordering,
         mouseOverIndex,
         raised,
         selectedId,
+        showSpritePropertiesButton,
         vm,
         items
     } = props;
@@ -125,10 +127,12 @@ const SpriteList = function (props) {
                     key={candidate.id}
                     name={candidate.name}
                     selected={candidate.id === selectedId}
+                    showSpritePropertiesButton={candidate.id === selectedId && showSpritePropertiesButton}
                     onClick={onSelectSprite}
                     onDeleteButtonClick={onDeleteSprite}
                     onDuplicateButtonClick={onDuplicateSprite}
                     onExportButtonClick={onExportSprite}
+                    onToggleSpriteProperties={onToggleSpriteProperties}
                 />
             </SortableAsset>
         );
@@ -205,9 +209,11 @@ SpriteList.propTypes = {
     onExportSprite: PropTypes.func,
     onRemoveSortable: PropTypes.func,
     onSelectSprite: PropTypes.func,
+    onToggleSpriteProperties: PropTypes.func,
     ordering: PropTypes.arrayOf(PropTypes.number),
     raised: PropTypes.bool,
     selectedId: PropTypes.string,
+    showSpritePropertiesButton: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 

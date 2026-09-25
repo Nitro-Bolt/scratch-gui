@@ -98,6 +98,31 @@
     z-index: auto;
 }
 
+.sprite-properties-button {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background-color: $looks-secondary;
+}
+
+.sprite-properties-button img {
+    width: calc(1rem - 6px);
+    height: calc(1rem - 6px);
+}
+
+[dir="rtl"] .sprite-properties-button {
+    right: -2px;
+    left: auto;
+}
+
 [dir="ltr"] .delete-button {
     right: -.625rem;
 }

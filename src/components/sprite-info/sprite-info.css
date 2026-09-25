@@ -3,13 +3,44 @@
 @import "../../css/filters.css";
 
 .sprite-info {
-    padding: 0.75rem;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: $ui-white;
     color: $text-primary;
     border-top-left-radius: $space;
     border-top-right-radius: $space;
     border-bottom: 1px solid $ui-black-transparent;
+}
+
+.properties-panel {
+    min-height: 1.25rem;
+}
+
+.camera-panel {
+    min-height: 1.25rem;
+    border-top: 1px solid $ui-black-transparent;
+}
+
+.collapsible-content {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.25s ease;
+}
+
+.collapsible-content-collapsed {
+    grid-template-rows: 0fr;
+}
+
+.collapsible-content-inner {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.properties-content {
+    padding: 0.75rem 0.75rem 0;
+}
+
+.camera-content {
+    padding: 0 0.75rem;
 }
 
 .row {
@@ -86,9 +117,7 @@ label:has(.sprite-input) {
 }
 
 .camera-info {
-    margin-top: 0.75rem;
     padding-top: 0.75rem;
-    border-top: 1px solid $ui-black-transparent;
 }
 
 .camera-name {
@@ -112,4 +141,29 @@ label:has(.sprite-input) {
 
 .camera-info input {
     pointer-events: none;
+}
+
+.collapse-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 1.25rem;
+    padding: 0.5rem 0 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    user-select: none;
+}
+
+.collapse-icon {
+    transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+}
+
+.collapse-icon-collapsed {
+    transform: rotate(180deg);
+}
+
+.collapse-button:hover .collapse-icon {
+    opacity: 0.75;
 }

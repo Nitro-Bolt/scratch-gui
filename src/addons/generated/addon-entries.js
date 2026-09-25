@@ -37,7 +37,6 @@ export default {
   "editor-buttons-reverse-order": () => import(/* webpackChunkName: "addon-entry-editor-buttons-reverse-order" */ "../addons/editor-buttons-reverse-order/_runtime_entry.js"),
   //"variable-manager": () => import(/* webpackChunkName: "addon-entry-variable-manager" */ "../addons/variable-manager/_runtime_entry.js"),
   "search-sprites": () => import(/* webpackChunkName: "addon-entry-search-sprites" */ "../addons/search-sprites/_runtime_entry.js"),
-  "sprite-properties": () => import(/* webpackChunkName: "addon-entry-sprite-properties" */ "../addons/sprite-properties/_runtime_entry.js"),
   "gamepad": () => import(/* webpackChunkName: "addon-entry-gamepad" */ "../addons/gamepad/_runtime_entry.js"),
   "editor-sounds": () => import(/* webpackChunkName: "addon-entry-editor-sounds" */ "../addons/editor-sounds/_runtime_entry.js"),
   "load-extensions": () => import(/* webpackChunkName: "addon-entry-load-extensions" */ "../addons/load-extensions/_runtime_entry.js"),

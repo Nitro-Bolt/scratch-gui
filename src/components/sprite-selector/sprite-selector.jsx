@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+/* eslint-disable react/jsx-no-bind */
 import React from 'react';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import VM from 'scratch-vm';
@@ -75,6 +76,8 @@ const SpriteSelectorComponent = function (props) {
     } = props;
     let selectedSprite = sprites[selectedId];
     let spriteInfoDisabled = false;
+    const [cameraPropertiesCollapsed, setCameraPropertiesCollapsed] = React.useState(false);
+    const [spritePropertiesCollapsed, setSpritePropertiesCollapsed] = React.useState(false);
     if (typeof selectedSprite === 'undefined') {
         selectedSprite = {};
         spriteInfoDisabled = true;
@@ -90,20 +93,38 @@ const SpriteSelectorComponent = function (props) {
             document.querySelector('[class*="sprite-info_sprite-input_"]').focus();
         }
     );
+    const handleToggleSpriteProperties = () => {
+        setSpritePropertiesCollapsed(collapsed => !collapsed);
+    };
+    const handleToggleCameraProperties = () => {
+        setCameraPropertiesCollapsed(collapsed => !collapsed);
+    };
+    const handleDoubleClick = event => {
+        if (event.target.closest(`.${styles.scrollWrapper}`)) {
+            const allCollapsed = spritePropertiesCollapsed &&
+                (!cameraExtensionLoaded || cameraPropertiesCollapsed);
+            const collapseAll = !allCollapsed;
+            setSpritePropertiesCollapsed(collapseAll);
+            setCameraPropertiesCollapsed(collapseAll);
+        }
+    };
     return (
         <Box
             className={styles.spriteSelector}
+            onDoubleClick={handleDoubleClick}
             {...componentProps}
         >
 
             <SpriteInfo
                 camera={selectedSprite.camera}
                 cameraExtensionLoaded={cameraExtensionLoaded}
+                cameraPropertiesCollapsed={cameraPropertiesCollapsed}
                 direction={selectedSprite.direction}
                 disabled={spriteInfoDisabled}
                 name={selectedSprite.name}
                 rotationStyle={selectedSprite.rotationStyle}
                 size={selectedSprite.size}
+                spritePropertiesCollapsed={spritePropertiesCollapsed}
                 stageSize={stageSize}
                 visible={selectedSprite.visible}
                 x={selectedSprite.x}
@@ -115,6 +136,8 @@ const SpriteSelectorComponent = function (props) {
                 onChangeVisibility={onChangeSpriteVisibility}
                 onChangeX={onChangeSpriteX}
                 onChangeY={onChangeSpriteY}
+                onToggleCameraProperties={handleToggleCameraProperties}
+                onToggleSpriteProperties={handleToggleSpriteProperties}
             />
 
             <SpriteList
@@ -123,12 +146,14 @@ const SpriteSelectorComponent = function (props) {
                 items={Object.keys(sprites).map(id => sprites[id])}
                 raised={raised}
                 selectedId={selectedId}
+                showSpritePropertiesButton={spritePropertiesCollapsed}
                 vm={vm}
                 onDeleteSprite={onDeleteSprite}
                 onDrop={onDrop}
                 onDuplicateSprite={onDuplicateSprite}
                 onExportSprite={onExportSprite}
                 onSelectSprite={onSelectSprite}
+                onToggleSpriteProperties={handleToggleSpriteProperties}
             />
             <ActionMenu
                 className={styles.addButton}
