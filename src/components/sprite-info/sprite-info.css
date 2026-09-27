@@ -3,6 +3,7 @@
 @import "../../css/filters.css";
 
 .sprite-info {
+    container-type: inline-size;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: $ui-white;
     color: $text-primary;
@@ -174,4 +175,23 @@ label:has(.sprite-input) {
 
 .collapse-button:hover .collapse-icon {
     opacity: 0.75;
+}
+
+@container (max-width: 360px) {
+    .row {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .row-primary > .group:first-child {
+        flex-basis: 100%;
+    }
+
+    .row-primary > .group:first-child .sprite-input {
+        width: 100%;
+    }
+
+    .camera-name {
+        flex-basis: 100%;
+    }
 }
