@@ -46,6 +46,8 @@
 .row {
     display: flex;
     justify-content: space-between;
+    min-width: 0;
+    gap: $space;
 }
 
 .row-primary {
@@ -62,6 +64,7 @@
     display: inline-flex;
     flex-direction: row; /* makes columns, for each label/form group */
     align-items: center;
+    min-width: 0;
 }
 
 .column {
@@ -122,6 +125,7 @@ label:has(.sprite-input) {
 
 .camera-name {
     flex-grow: 1;
+    min-width: 6rem;
 }
 
 .camera-name label {
@@ -136,7 +140,11 @@ label:has(.sprite-input) {
 
 .camera-secondary {
     justify-content: flex-end;
-    gap: 2rem;
+    gap: 0.5rem;
+}
+
+.camera-info .row-primary {
+    flex-wrap: wrap;
 }
 
 .camera-info input {
