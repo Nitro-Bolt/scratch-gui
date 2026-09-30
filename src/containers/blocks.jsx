@@ -134,6 +134,7 @@ class Blocks extends React.Component {
             'applyBlockShapeToWorkspace',
             'handleBlockShapeChange'
         ]);
+        this.ScratchBlocks.FieldExtendable.ARROWS_LEFT = this.props.extendableArrowsLeft;
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
@@ -147,6 +148,7 @@ class Blocks extends React.Component {
     }
     componentDidMount () {
         this.ScratchBlocks = VMScratchBlocks(this.props.vm, this.props.useCatBlocks);
+        this.ScratchBlocks.FieldExtendable.ARROWS_LEFT = this.props.extendableArrowsLeft;
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
@@ -156,6 +158,13 @@ class Blocks extends React.Component {
         this.ScratchBlocks.Procedures.externalProcedureDefCallback = this.props.onActivateCustomProcedures;
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
         this.ScratchBlocks.LABEL_CONTRAST_THRESHOLD = this.getLabelContrastThreshold();
+        const customColourConverters = this.props.theme.getCustomExtensionColors();
+        this.ScratchBlocks.CustomProcedureColourTransform = customColourConverters.primary ? primary => [
+            customColourConverters.primary(primary),
+            customColourConverters.secondary(primary),
+            customColourConverters.tertiary(primary),
+            customColourConverters.quaternary(primary)
+        ] : null;
 
         const Msg = this.ScratchBlocks.Msg;
         Msg.PROCEDURES_RETURN = this.props.intl.formatMessage(messages.PROCEDURES_RETURN, {
@@ -264,7 +273,8 @@ class Blocks extends React.Component {
             this.props.nbBlocks !== nextProps.nbBlocks ||
             this.props.disableInspectBlock !== nextProps.disableInspectBlock ||
             this.props.blockShape !== nextProps.blockShape ||
-            this.props.labelContrastThreshold !== nextProps.labelContrastThreshold
+            this.props.labelContrastThreshold !== nextProps.labelContrastThreshold ||
+            this.props.extendableArrowsLeft !== nextProps.extendableArrowsLeft
         );
     }
     componentDidUpdate (prevProps) {
@@ -273,6 +283,10 @@ class Blocks extends React.Component {
         }
         if (this.props.blockShape !== prevProps.blockShape) {
             this.handleBlockShapeChange(this.props.blockShape);
+        }
+        if (this.props.extendableArrowsLeft !== prevProps.extendableArrowsLeft) {
+            this.ScratchBlocks.FieldExtendable.ARROWS_LEFT = this.props.extendableArrowsLeft;
+            updateAllBlocks(this.ScratchBlocks, this.props.vm, this.workspace);
         }
         if (this.props.labelContrastThreshold !== prevProps.labelContrastThreshold) {
             this.applyLabelContrastThreshold();
@@ -810,6 +824,7 @@ class Blocks extends React.Component {
             updateMetrics: updateMetricsProp,
             useCatBlocks,
             disableInspectBlock,
+            extendableArrowsLeft,
             workspaceMetrics,
             ...props
         } = this.props;
@@ -911,7 +926,8 @@ Blocks.propTypes = {
         notchSize: PropTypes.number,
         fieldHeight: PropTypes.number
     }),
-    labelContrastThreshold: PropTypes.number
+    labelContrastThreshold: PropTypes.number,
+    extendableArrowsLeft: PropTypes.bool
 };
 
 Blocks.defaultOptions = {
@@ -955,7 +971,8 @@ const mapStateToProps = state => ({
     labelContrastThreshold: state.scratchGui.preferences['label-contrast-threshold'],
     hiddenCategories: state.scratchGui.preferences['hidden-categories'],
     nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true),
-    disableInspectBlock: state.scratchGui.preferences['disable-inspect-block'] === true
+    disableInspectBlock: state.scratchGui.preferences['disable-inspect-block'] === true,
+    extendableArrowsLeft: state.scratchGui.preferences['extendable-arrows-left'] === true
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import DeleteButton from '../delete-button/delete-button.jsx';
+import spritePropertiesIcon from './icon--sprite-properties.svg';
 import styles from './sprite-selector-item.css';
 import {ContextMenuTrigger} from 'react-contextmenu';
 import {
@@ -127,6 +128,19 @@ const SpriteSelectorItem = props => (
                 onClick={props.onDeleteButtonClick}
             />
         ) : null }
+        {props.showSpritePropertiesButton ? (
+            <button
+                className={styles.spritePropertiesButton}
+                title="Open sprite properties"
+                type="button"
+                onClick={props.onToggleSpriteProperties}
+            >
+                <img
+                    draggable={false}
+                    src={spritePropertiesIcon}
+                />
+            </button>
+        ) : null}
         {hasContextMenu(props) ? (
             <ContextMenu id={props.contextMenuId}>
                 {props.onDuplicateButtonClick ? (
@@ -306,6 +320,7 @@ SpriteSelectorItem.propTypes = {
     onRenameButtonClick: PropTypes.func,
     onMoveToTopButtonClick: PropTypes.func,
     onMoveToBottomButtonClick: PropTypes.func,
+    onToggleSpriteProperties: PropTypes.func,
     onNativeDragOver: PropTypes.func,
     onNativeDrop: PropTypes.func,
     onCreateFolder: PropTypes.func,
@@ -316,6 +331,7 @@ SpriteSelectorItem.propTypes = {
     onMouseMove: PropTypes.func,
     preventContextMenu: PropTypes.bool,
     selected: PropTypes.bool.isRequired,
+    showSpritePropertiesButton: PropTypes.bool,
     // eslint-disable-next-line react/forbid-prop-types
     style: PropTypes.object
 };

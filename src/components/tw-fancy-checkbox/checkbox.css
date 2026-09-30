@@ -22,3 +22,7 @@
     background-color: $looks-secondary;
     background-image: url("./checkbox.svg");
 }
+.checkbox:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

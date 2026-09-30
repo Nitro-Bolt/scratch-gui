@@ -16,6 +16,7 @@ import styles from './target-pane.css';
  * @returns {React.Component} rendered component
  */
 const TargetPane = ({
+    cameraExtensionLoaded,
     editingTarget,
     fileInputRef,
     hoveredTarget,
@@ -57,6 +58,7 @@ const TargetPane = ({
     >
 
         <SpriteSelectorComponent
+            cameraExtensionLoaded={cameraExtensionLoaded}
             editingTarget={editingTarget}
             hoveredTarget={hoveredTarget}
             raised={raiseSprites}
@@ -109,6 +111,13 @@ const TargetPane = ({
 );
 
 const spriteShape = PropTypes.shape({
+    camera: PropTypes.shape({
+        direction: PropTypes.number,
+        name: PropTypes.string,
+        x: PropTypes.number,
+        y: PropTypes.number,
+        zoom: PropTypes.number
+    }),
     costume: PropTypes.shape({
         // asset is defined in scratch-storage's Asset.js
         asset: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -132,6 +141,7 @@ const spriteShape = PropTypes.shape({
 });
 
 TargetPane.propTypes = {
+    cameraExtensionLoaded: PropTypes.bool,
     editingTarget: PropTypes.string,
     extensionLibraryVisible: PropTypes.bool,
     fileInputRef: PropTypes.func,

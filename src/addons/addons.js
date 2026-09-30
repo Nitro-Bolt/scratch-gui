@@ -37,7 +37,6 @@ const addons = [
     'editor-buttons-reverse-order',
     'variable-manager',
     'search-sprites',
-    'sprite-properties',
     'gamepad',
     'editor-sounds',
     'load-extensions',
