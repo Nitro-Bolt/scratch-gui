@@ -10,6 +10,7 @@ import {openFontsModal} from '../reducers/modals';
 import {connect} from 'react-redux';
 import {Theme} from '../lib/themes/index.js';
 import PaintGradientModal from '../components/nb-paint-gradient-modal/paint-gradient-modal.jsx';
+import {requestEffectParams, cancelEffectParams} from '../lib/nb-effect-params';
 
 class PaintEditorWrapper extends React.Component {
     constructor (props) {
@@ -49,6 +50,7 @@ class PaintEditorWrapper extends React.Component {
     }
     componentWillUnmount () {
         this.props.vm.runtime.fontManager.off('change', this.handleUpdateFonts);
+        this.props.onCancelEffectParams();
     }
     handleUpdateFonts () {
         this.setState({
@@ -113,6 +115,7 @@ class PaintEditorWrapper extends React.Component {
         const {
             selectedCostumeIndex,
             vm,
+            onCancelEffectParams, // eslint-disable-line no-unused-vars
             ...componentProps
         } = this.props;
         const costume = vm.getCostume(selectedCostumeIndex);
@@ -153,6 +156,8 @@ PaintEditorWrapper.propTypes = {
         height: PropTypes.number
     }),
     onManageFonts: PropTypes.func.isRequired,
+    onCancelEffectParams: PropTypes.func.isRequired,
+    onRequestEffectParams: PropTypes.func.isRequired,
     imageFormat: PropTypes.string.isRequired,
     imageId: PropTypes.string.isRequired,
     nudgeMultiplier: PropTypes.number,
@@ -195,7 +200,9 @@ const mapStateToProps = (state, {selectedCostumeIndex}) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    onManageFonts: () => dispatch(openFontsModal())
+    onManageFonts: () => dispatch(openFontsModal()),
+    onRequestEffectParams: request => requestEffectParams(dispatch, request),
+    onCancelEffectParams: () => cancelEffectParams(dispatch)
 });
 
 export default ErrorBoundaryHOC('paint')(connect(

@@ -1,0 +1,56 @@
+@import "../../css/colors.css";
+@import "../../css/units.css";
+
+.modal-content {
+    width: 400px;
+}
+
+.body {
+    background: $ui-modal-background;
+    padding: 1.5rem 2.25rem;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Confirmation buttons at the bottom of the modal */
+.button-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    font-weight: bolder;
+    text-align: right;
+}
+
+.button-row button {
+    border: 1px solid $ui-black-transparent;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    background: white;
+    color: black;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.button-row button.ok-button {
+    background: $looks-secondary;
+    border: $looks-secondary;
+    color: white;
+}
+
+[dir="ltr"] .button-row button + button {
+    margin-left: 0.5rem;
+}
+
+[dir="rtl"] .button-row button + button {
+    margin-right: 0.5rem;
+}
