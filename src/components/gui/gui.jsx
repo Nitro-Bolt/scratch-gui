@@ -42,6 +42,7 @@ import NBGitModal from '../../containers/nb-git-modal.jsx';
 import NBGitProjectManager from '../../containers/nb-git-project-manager.jsx';
 import NBInspectBlockModal from '../../containers/nb-inspect-block-modal.jsx';
 import NBInspectThreadModal from '../../containers/nb-inspect-thread-modal.jsx';
+import NBEffectParamsModal from '../../containers/nb-effect-params-modal.jsx';
 import TWRestorePointManager from '../../containers/tw-restore-point-manager.jsx';
 import TWFontsModal from '../../containers/tw-fonts-modal.jsx';
 import TWUnknownPlatformModal from '../../containers/tw-unknown-platform-modal.jsx';
@@ -251,6 +252,7 @@ const GUIComponent = props => {
                 {extensionManagerModalVisible && <NBExtensionManagerModal />}
                 {inspectBlockModalVisible && <NBInspectBlockModal />}
                 {inspectThreadModalVisible && <NBInspectThreadModal />}
+                <NBEffectParamsModal />
                 {fontsModalVisible && <TWFontsModal />}
                 {unknownPlatformModalVisible && <TWUnknownPlatformModal />}
                 {invalidProjectModalVisible && <TWInvalidProjectModal />}
