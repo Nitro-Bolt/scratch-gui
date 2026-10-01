@@ -286,6 +286,38 @@ const CustomProcedures = props => {
                         />
                     </label>
                 </div>
+                <div className={styles.outputRow}>
+                    <label>
+                        <FormattedMessage
+                            defaultMessage="Output:"
+                            description="Label for custom procedure output type menu"
+                            id="gui.customProcedures.output"
+                        />
+                    </label>
+                    <select
+                        value={props.outputMode}
+                        onChange={props.handleOutputMenuChange}
+                    >
+                        <option value="auto">Auto</option>
+                        <option value="reporter">Reporter</option>
+                        <option value="boolean">Boolean</option>
+                        <option value="object">Object</option>
+                        <option value="array">Array</option>
+                    </select>
+                    {props.outputMode !== 'auto' && (
+                        <label>
+                            <FancyCheckbox
+                                checked={props.dual}
+                                onChange={props.onToggleDual}
+                            />
+                            <FormattedMessage
+                                defaultMessage="Dual block"
+                                description="Label for checkbox to make a custom procedure both a reporter and command"
+                                id="gui.customProcedures.dualBlock"
+                            />
+                        </label>
+                    )}
+                </div>
                 <Box className={styles.buttonRow}>
                     <button
                         className={styles.cancelButton}
@@ -322,12 +354,16 @@ CustomProcedures.propTypes = {
     onAddLabel: PropTypes.func.isRequired,
     handlePropagation: PropTypes.func.isRequired,
     handleInputMenuChange: PropTypes.func.isRequired,
+    handleOutputMenuChange: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     onToggleWarp: PropTypes.func.isRequired,
     warp: PropTypes.bool.isRequired,
     onToggleGlobal: PropTypes.func.isRequired,
-    global: PropTypes.bool.isRequired
+    global: PropTypes.bool.isRequired,
+    onToggleDual: PropTypes.func.isRequired,
+    dual: PropTypes.bool.isRequired,
+    outputMode: PropTypes.oneOf(['auto', 'reporter', 'boolean', 'object', 'array']).isRequired
 };
 
 export default injectIntl(CustomProcedures);

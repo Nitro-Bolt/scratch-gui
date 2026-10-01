@@ -166,14 +166,32 @@
     margin-top: 1rem;
 }
 
-.checkbox-row label {
+.checkbox-row label,
+.output-row > label {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.checkbox-row input[type="checkbox"] {
+.checkbox-row input[type="checkbox"],
+.output-row input[type="checkbox"] {
     margin: 0;
+}
+
+.output-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.output-row select,
+.output-row option {
+    text-align: center;
+}
+
+.output-row select {
+    text-align-last: center;
 }
 
 /* Confirmation buttons at the bottom of the modal */
