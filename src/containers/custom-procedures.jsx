@@ -229,10 +229,10 @@ class CustomProcedures extends React.Component {
                 onAddDropdown={this.handleAddDropdown}
                 onAddBranch={this.handleAddBranch}
                 onAddLabel={this.handleAddLabel}
-                setColor={this.handleAddColor}
-                handlePropagation={this.handlePropagation}
-                handleInputMenuChange={this.handleInputMenuChange}
-                handleOutputMenuChange={this.handleOutputMenuChange}
+                onSetColor={this.handleAddColor}
+                onInputMenuClick={this.handlePropagation}
+                onInputMenuChange={this.handleInputMenuChange}
+                onOutputMenuChange={this.handleOutputMenuChange}
                 menuOption={this.state.menuInput}
                 onCancel={this.handleCancel}
                 onOk={this.handleOk}
