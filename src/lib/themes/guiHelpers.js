@@ -74,7 +74,7 @@ const applyGuiColors = theme => {
     window.Recolor = {
         primary: guiColors['looks-secondary'],
         secondary: guiColors['looks-secondary-dark'],
-        tertiary: guiColors['pen-primary']
+        tertiary: guiColors['extensions-primary']
     };
     AddonHooks.recolorCallbacks.forEach(i => i());
 };
