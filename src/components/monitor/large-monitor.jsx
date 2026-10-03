@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './monitor.css';
 
-const LargeMonitor = ({categoryColor, value}) => (
+const LargeMonitor = ({categoryColor, monitorContent, value}) => (
     <div className={styles.largeMonitor}>
         <div
             className={styles.largeValue}
@@ -11,7 +11,9 @@ const LargeMonitor = ({categoryColor, value}) => (
                 color: categoryColor.text
             }}
         >
-            {value}
+            {monitorContent ? (
+                <div dangerouslySetInnerHTML={{__html: monitorContent}} />
+            ) : value}
         </div>
     </div>
 );
@@ -21,6 +23,7 @@ LargeMonitor.propTypes = {
         background: PropTypes.string.isRequired,
         text: PropTypes.string.isRequired
     }).isRequired,
+    monitorContent: PropTypes.string,
     value: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number

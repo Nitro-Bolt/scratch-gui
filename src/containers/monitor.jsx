@@ -277,6 +277,7 @@ Monitor.propTypes = {
     max: PropTypes.number,
     min: PropTypes.number,
     mode: PropTypes.oneOf(['default', 'slider', 'large', 'list', 'table']),
+    monitorContent: PropTypes.string,
     monitorLayout: PropTypes.shape({
         monitors: PropTypes.object, // eslint-disable-line react/forbid-prop-types
         savedMonitorPositions: PropTypes.object // eslint-disable-line react/forbid-prop-types
