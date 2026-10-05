@@ -162,7 +162,8 @@ class Blocks extends React.Component {
                 colours: this.props.theme.getBlockColors(),
                 grid: {
                     colour: this.props.theme.getBlockColors().gridColor
-                }
+                },
+                horizontalLayout: true
             },
             Blocks.defaultOptions
         );
