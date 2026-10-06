@@ -28,6 +28,7 @@ const MonitorList = props => (
                     max={monitorData.sliderMax}
                     min={monitorData.sliderMin}
                     mode={monitorData.mode}
+                    monitorContent={monitorData.monitorContent}
                     opcode={monitorData.opcode}
                     params={monitorData.params}
                     spriteName={monitorData.spriteName}
