@@ -807,6 +807,19 @@ const EditorSettingsModal = props => {
                         // eslint-disable-next-line react/jsx-no-bind
                         onChange={e => props.onSetPreference('extendable-arrows-left', e.target.checked)}
                     />
+                    <BooleanSetting
+                        value={!!props.preferences['hide-extendable-arrow-separator']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.hideExtendableArrowSeparator"
+                            defaultMessage="Hide extendable middle line"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.hideExtendableArrowSeparatorHelp"
+                            defaultMessage="Hides the middle line between arrows on extendables that accept arrays."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('hide-extendable-arrow-separator', e.target.checked)}
+                    />
                     <CollapsibleSetting
                         label={<FormattedMessage
                             id="nb.editorSettings.hiddenCategories"
