@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import VM from 'scratch-vm';
 import {getIsError} from '../reducers/project-state';
 import {ProjectUnsharedError, ProjectFetchError} from '../lib/tw-load-project-error';
 
@@ -61,28 +62,59 @@ const submitChime = async (resource, event) => {
     }
 };
 
+const isEligible = projectId => projectId !== '0' && projectId !== null;
+
+const submitOnce = (submitted, projectId, event) => {
+    if (!isEligible(projectId) || submitted.has(projectId)) {
+        return;
+    }
+    submitted.add(projectId);
+    submitChime(`scratch/${projectId}`, event);
+};
+
 class TWWindchimeSubmitter extends React.Component {
+    constructor (props) {
+        super(props);
+        this.handleContextLost = this.handleContextLost.bind(this);
+        this.handleCompileError = this.handleCompileError.bind(this);
+    }
+
+    componentDidMount () {
+        const vm = this.props.vm;
+        vm.on('COMPILE_ERROR', this.handleCompileError);
+        if (vm.renderer) {
+            vm.renderer.on('ContextLost', this.handleContextLost);
+        }
+    }
+
     componentDidUpdate (prevProps) {
-        if (this.props.projectId === '0' || this.props.projectId === null) {
-            // Only projects with a real ID are eligible for windchimes.
-            return;
+        if (this.props.isStarted && !prevProps.isStarted) {
+            submitOnce(
+                submittedViewsThisSession,
+                this.props.projectId,
+                this.props.isEmbedded ? 'view/embed' : 'view/index'
+            );
         }
 
-        if (
-            this.props.isStarted && !prevProps.isStarted &&
-            !submittedViewsThisSession.has(this.props.projectId)
-        ) {
-            submittedViewsThisSession.add(this.props.projectId);
-            submitChime(`scratch/${this.props.projectId}`, this.props.isEmbedded ? 'view/embed' : 'view/index');
+        if (this.props.isError && !prevProps.isError) {
+            submitOnce(submittedErrorsThisSession, this.props.projectId, getErrorEvent(this.props.error));
         }
+    }
 
-        if (
-            this.props.isError && !prevProps.isError &&
-            !submittedErrorsThisSession.has(this.props.projectId)
-        ) {
-            submittedErrorsThisSession.add(this.props.projectId);
-            submitChime(`scratch/${this.props.projectId}`, getErrorEvent(this.props.error));
+    componentWillUnmount () {
+        const vm = this.props.vm;
+        vm.off('COMPILE_ERROR', this.handleCompileError);
+        if (vm.renderer) {
+            vm.renderer.off('ContextLost', this.handleContextLost);
         }
+    }
+
+    handleCompileError () {
+        submitOnce(submittedErrorsThisSession, this.props.projectId, 'error/compiler');
+    }
+
+    handleContextLost () {
+        submitOnce(submittedErrorsThisSession, this.props.projectId, 'error/webgl');
     }
 
     render () {
@@ -96,7 +128,8 @@ TWWindchimeSubmitter.propTypes = {
     isEmbedded: PropTypes.bool.isRequired,
     isError: PropTypes.bool.isRequired,
     isStarted: PropTypes.bool.isRequired,
-    projectId: PropTypes.string
+    projectId: PropTypes.string,
+    vm: PropTypes.instanceOf(VM).isRequired
 };
 
 const mapStateToProps = state => ({
@@ -104,7 +137,8 @@ const mapStateToProps = state => ({
     isEmbedded: state.scratchGui.mode.isEmbedded,
     isStarted: state.scratchGui.vmStatus.running,
     isError: getIsError(state.scratchGui.projectState.loadingState),
-    projectId: state.scratchGui.projectState.projectId
+    projectId: state.scratchGui.projectState.projectId,
+    vm: state.scratchGui.vm
 });
 
 const mapDispatchToProps = () => ({});
