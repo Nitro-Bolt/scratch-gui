@@ -361,12 +361,6 @@ const TWStateManager = function (WrappedComponent) {
                 });
             }
 
-            if (urlParams.has('pentiling')) {
-                this.props.vm.setRuntimeOptions({
-                    penTiling: true
-                });
-            }
-
             for (const extension of urlParams.getAll('extension')) {
                 this.props.vm.extensionManager.loadExtensionURL(extension);
             }
@@ -483,12 +477,6 @@ const TWStateManager = function (WrappedComponent) {
                     searchParams.set('limitless', '');
                 }
 
-                if (runtimeOptions.penTiling) {
-                    searchParams.set('pentiling', '');
-                } else {
-                    searchParams.delete('pentiling');
-                }
-
                 setSearchParams(searchParams);
             }
         }
@@ -571,7 +559,6 @@ const TWStateManager = function (WrappedComponent) {
         runtimeOptions: PropTypes.shape({
             miscLimits: PropTypes.bool,
             fencing: PropTypes.bool,
-            penTiling: PropTypes.bool,
             maxClones: PropTypes.number
         }),
         highQualityPen: PropTypes.bool,

@@ -26,7 +26,6 @@ class UsernameModal extends React.Component {
             'handleInfiniteClonesChange',
             'handleRemoveFencingChange',
             'handleRemoveLimitsChange',
-            'handlePenTilingChange',
             'handleWarpTimerChange',
             'handleStageWidthChange',
             'handleStageHeightChange',
@@ -67,11 +66,6 @@ class UsernameModal extends React.Component {
             miscLimits: !e.target.checked
         });
     }
-    handlePenTilingChange (e) {
-        this.props.vm.setRuntimeOptions({
-            penTiling: e.target.checked
-        });
-    }
     handleWarpTimerChange (e) {
         this.props.vm.setCompilerOptions({
             warpTimer: e.target.checked
@@ -109,7 +103,6 @@ class UsernameModal extends React.Component {
                 onInfiniteClonesChange={this.handleInfiniteClonesChange}
                 onRemoveFencingChange={this.handleRemoveFencingChange}
                 onRemoveLimitsChange={this.handleRemoveLimitsChange}
-                onPenTilingChange={this.handlePenTilingChange}
                 onWarpTimerChange={this.handleWarpTimerChange}
                 onStageWidthChange={this.handleStageWidthChange}
                 onStageHeightChange={this.handleStageHeightChange}
@@ -149,7 +142,6 @@ UsernameModal.propTypes = {
     removeFencing: PropTypes.bool,
     cameraExtensionLoaded: PropTypes.bool,
     removeLimits: PropTypes.bool,
-    penTiling: PropTypes.bool,
     warpTimer: PropTypes.bool,
     customStageSize: PropTypes.shape({
         width: PropTypes.number,
@@ -168,7 +160,6 @@ const mapStateToProps = state => ({
     removeFencing: !state.scratchGui.tw.runtimeOptions.fencing,
     cameraExtensionLoaded: state.scratchGui.vm.extensionManager.isExtensionLoaded('camera'),
     removeLimits: !state.scratchGui.tw.runtimeOptions.miscLimits,
-    penTiling: state.scratchGui.tw.runtimeOptions.penTiling,
     warpTimer: state.scratchGui.tw.compilerOptions.warpTimer,
     customStageSize: state.scratchGui.customStageSize,
     disableCompiler: !state.scratchGui.tw.compilerOptions.enabled
