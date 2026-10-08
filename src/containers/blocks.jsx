@@ -135,6 +135,7 @@ class Blocks extends React.Component {
             'handleBlockShapeChange'
         ]);
         this.ScratchBlocks.FieldExtendable.ARROWS_LEFT = this.props.extendableArrowsLeft;
+        this.ScratchBlocks.FieldExtendable.HIDE_ARROW_SEPARATOR = this.props.hideExtendableArrowSeparator;
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
@@ -149,6 +150,7 @@ class Blocks extends React.Component {
     componentDidMount () {
         this.ScratchBlocks = VMScratchBlocks(this.props.vm, this.props.useCatBlocks);
         this.ScratchBlocks.FieldExtendable.ARROWS_LEFT = this.props.extendableArrowsLeft;
+        this.ScratchBlocks.FieldExtendable.HIDE_ARROW_SEPARATOR = this.props.hideExtendableArrowSeparator;
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
@@ -274,7 +276,8 @@ class Blocks extends React.Component {
             this.props.disableInspectBlock !== nextProps.disableInspectBlock ||
             this.props.blockShape !== nextProps.blockShape ||
             this.props.labelContrastThreshold !== nextProps.labelContrastThreshold ||
-            this.props.extendableArrowsLeft !== nextProps.extendableArrowsLeft
+            this.props.extendableArrowsLeft !== nextProps.extendableArrowsLeft ||
+            this.props.hideExtendableArrowSeparator !== nextProps.hideExtendableArrowSeparator
         );
     }
     componentDidUpdate (prevProps) {
@@ -286,6 +289,10 @@ class Blocks extends React.Component {
         }
         if (this.props.extendableArrowsLeft !== prevProps.extendableArrowsLeft) {
             this.ScratchBlocks.FieldExtendable.ARROWS_LEFT = this.props.extendableArrowsLeft;
+            updateAllBlocks(this.ScratchBlocks, this.props.vm, this.workspace);
+        }
+        if (this.props.hideExtendableArrowSeparator !== prevProps.hideExtendableArrowSeparator) {
+            this.ScratchBlocks.FieldExtendable.HIDE_ARROW_SEPARATOR = this.props.hideExtendableArrowSeparator;
             updateAllBlocks(this.ScratchBlocks, this.props.vm, this.workspace);
         }
         if (this.props.labelContrastThreshold !== prevProps.labelContrastThreshold) {
@@ -825,6 +832,7 @@ class Blocks extends React.Component {
             useCatBlocks,
             disableInspectBlock,
             extendableArrowsLeft,
+            hideExtendableArrowSeparator,
             workspaceMetrics,
             ...props
         } = this.props;
@@ -927,7 +935,8 @@ Blocks.propTypes = {
         fieldHeight: PropTypes.number
     }),
     labelContrastThreshold: PropTypes.number,
-    extendableArrowsLeft: PropTypes.bool
+    extendableArrowsLeft: PropTypes.bool,
+    hideExtendableArrowSeparator: PropTypes.bool
 };
 
 Blocks.defaultOptions = {
@@ -972,7 +981,9 @@ const mapStateToProps = state => ({
     hiddenCategories: state.scratchGui.preferences['hidden-categories'],
     nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true),
     disableInspectBlock: state.scratchGui.preferences['disable-inspect-block'] === true,
-    extendableArrowsLeft: state.scratchGui.preferences['extendable-arrows-left'] === true
+    extendableArrowsLeft: state.scratchGui.preferences['extendable-arrows-left'] === true,
+    hideExtendableArrowSeparator:
+        state.scratchGui.preferences['hide-extendable-arrow-separator'] === true
 });
 
 const mapDispatchToProps = dispatch => ({
