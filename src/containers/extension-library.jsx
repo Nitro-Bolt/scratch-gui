@@ -445,6 +445,8 @@ class ExtensionLibrary extends React.PureComponent {
                     'skyhigh173JSON'
                 ];
                 const sourceExtensionsToExclude = source.id === 'turbowarp' ? [
+                    'DTcameracontrols',
+                    'SPcamera',
                     'penP',
                     'xeltallivclipblend'
                 ] : [];
