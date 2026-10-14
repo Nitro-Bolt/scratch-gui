@@ -831,6 +831,8 @@ class Blocks extends React.Component {
             updateMetrics: updateMetricsProp,
             useCatBlocks,
             disableInspectBlock,
+            blockShape,
+            labelContrastThreshold,
             extendableArrowsLeft,
             hideExtendableArrowSeparator,
             workspaceMetrics,

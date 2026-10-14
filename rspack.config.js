@@ -1,11 +1,10 @@
 const defaultsDeep = require('lodash.defaultsdeep');
 const path = require('path');
-const webpack = require('webpack');
+const rspack = require('@rspack/core');
 
 // Plugins
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const {CopyRspackPlugin} = rspack;
+const HtmlRspackPlugin = require('html-rspack-plugin');
 
 // PostCss
 const autoprefixer = require('autoprefixer');
@@ -33,9 +32,9 @@ const base = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     devtool: process.env.SOURCEMAP || (process.env.NODE_ENV === 'production' ? false : 'cheap-module-source-map'),
     devServer: {
-        contentBase: path.resolve(__dirname, 'build'),
+        static: false,
         host: '0.0.0.0',
-        disableHostCheck: true,
+        allowedHosts: 'all',
         compress: true,
         port: process.env.PORT || 8601,
         // allows ROUTING_STYLE=wildcard to work properly
@@ -60,14 +59,41 @@ const base = {
         publicPath: root
     },
     resolve: {
-        symlinks: false,
         alias: {
             'text-encoding$': path.resolve(__dirname, 'src/lib/tw-text-encoder'),
             'scratch-render-fonts$': path.resolve(__dirname, 'src/lib/tw-scratch-render-fonts')
+        },
+        fallback: {
+            buffer: require.resolve('buffer/'),
+            path: require.resolve('path-browserify'),
+            url: require.resolve('url/')
         }
     },
     module: {
         rules: [{
+            resourceQuery: /service-worker/,
+            type: 'asset/resource',
+            generator: {filename: 'sw.js'}
+        }, {
+            resourceQuery: /bytes/,
+            type: 'asset/bytes'
+        }, {
+            resourceQuery: /source/,
+            type: 'asset/source'
+        }, {
+            resourceQuery: /inline/,
+            type: 'asset/inline'
+        }, {
+            test: /\.svg$/i,
+            resourceQuery: /recolor/,
+            loader: path.resolve(__dirname, 'src/lib/tw-recolor/build.js'),
+            type: 'javascript/auto'
+        }, {
+            test: /\.css$/,
+            resourceQuery: /addon-style/,
+            loader: 'css-loader',
+            options: {exportType: 'string'}
+        }, {
             test: /\.css$/,
             include: /node_modules[\\/]monaco-editor/,
             use: [{
@@ -77,9 +103,14 @@ const base = {
             }]
         }, {
             test: /\.jsx?$/,
+            resourceQuery: {not: [/service-worker/]},
             loader: 'babel-loader',
             include: [
                 path.resolve(__dirname, 'src'),
+                path.resolve(__dirname, '../scratch-l10n'),
+                path.resolve(__dirname, '../scratch-paint/src'),
+                path.resolve(__dirname, '../scratch-render/src'),
+                path.resolve(__dirname, '../scratch-vm/src'),
                 /node_modules[\\/]scratch-[^\\/]+[\\/]src/,
                 /node_modules[\\/]pify/,
                 /node_modules[\\/]@vernier[\\/]godirect/
@@ -96,35 +127,41 @@ const base = {
             }
         },
         {
+            test: /\.(frag|vert)$/,
+            type: 'asset/source'
+        }, {
             test: /\.css$/,
             exclude: /node_modules[\\/]monaco-editor/,
+            resourceQuery: {not: [/addon-style/]},
             use: [{
                 loader: 'style-loader'
             }, {
                 loader: 'css-loader',
                 options: {
-                    modules: true,
-                    importLoaders: 1,
-                    localIdentName: '[name]_[local]_[hash:base64:5]',
-                    camelCase: true
+                    esModule: false,
+                    modules: {
+                        localIdentName: '[name]_[local]_[hash:base64:5]',
+                        exportLocalsConvention: 'camel-case',
+                        namedExport: false
+                    },
+                    importLoaders: 1
                 }
             }, {
                 loader: 'postcss-loader',
                 options: {
-                    ident: 'postcss',
-                    plugins: function () {
-                        return [
-                            postcssImport,
-                            postcssVars,
-                            autoprefixer
-                        ];
+                    postcssOptions: {
+                        plugins: [postcssImport, postcssVars, autoprefixer]
                     }
                 }
             }]
         }]
     },
     plugins: [
-        new CopyWebpackPlugin({
+        new rspack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+            process: require.resolve('process/browser')
+        }),
+        new CopyRspackPlugin({
             patterns: [
                 {
                     from: 'node_modules/scratch-blocks/media',
@@ -140,13 +177,12 @@ const base = {
                     force: true
                 }
             ]
-        }),
-        new MonacoWebpackPlugin()
+        })
     ]
 };
 
 if (!process.env.CI) {
-    base.plugins.push(new webpack.ProgressPlugin());
+    base.plugins.push(new rspack.ProgressPlugin());
 }
 
 module.exports = [
@@ -167,12 +203,10 @@ module.exports = [
             rules: base.module.rules.concat([
                 {
                     test: /\.(svg|png|wav|mp3|gif|jpg|woff|woff2|ttf|eot|hex)$/,
-                    loader: 'url-loader',
-                    options: {
-                        limit: 2048,
-                        outputPath: 'static/assets/',
-                        esModule: false
-                    }
+                    resourceQuery: {not: [/inline/, /recolor/, /source/]},
+                    type: 'asset',
+                    parser: {dataUrlCondition: {maxSize: 2048}},
+                    generator: {filename: 'static/assets/[contenthash][ext]'}
                 }
             ])
         },
@@ -185,7 +219,7 @@ module.exports = [
             }
         },
         plugins: base.plugins.concat([
-            new webpack.DefinePlugin({
+            new rspack.DefinePlugin({
                 'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
                 'process.env.DEBUG': Boolean(process.env.DEBUG),
                 'process.env.ENABLE_SERVICE_WORKER': JSON.stringify(process.env.ENABLE_SERVICE_WORKER || ''),
@@ -193,7 +227,7 @@ module.exports = [
                 'process.env.ROUTING_STYLE': JSON.stringify(process.env.ROUTING_STYLE || 'filehash'),
                 'process.env.ENABLE_WINDCHIMES': JSON.stringify(process.env.ENABLE_WINDCHIMES || '')
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 chunks: ['editor'],
                 template: 'src/playground/index.ejs',
                 filename: 'editor.html',
@@ -201,42 +235,42 @@ module.exports = [
                 isEditor: true,
                 ...htmlWebpackPluginCommon
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 chunks: ['player'],
                 template: 'src/playground/index.ejs',
                 filename: 'index.html',
                 title: `${APP_NAME} - Home`,
                 ...htmlWebpackPluginCommon
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 chunks: ['fullscreen'],
                 template: 'src/playground/index.ejs',
                 filename: 'fullscreen.html',
                 title: `${APP_NAME} - Fullscreen`,
                 ...htmlWebpackPluginCommon
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 chunks: ['embed'],
                 template: 'src/playground/embed.ejs',
                 filename: 'embed.html',
                 title: `Embedded Project - ${APP_NAME}`,
                 ...htmlWebpackPluginCommon
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 chunks: ['addon-settings'],
                 template: 'src/playground/simple.ejs',
                 filename: 'addons.html',
                 title: `Addon Settings - ${APP_NAME}`,
                 ...htmlWebpackPluginCommon
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 chunks: ['credits'],
                 template: 'src/playground/simple.ejs',
                 filename: 'credits.html',
                 title: `${APP_NAME} Credits`,
                 ...htmlWebpackPluginCommon
             }),
-            new CopyWebpackPlugin({
+            new CopyRspackPlugin({
                 patterns: [
                     {
                         from: 'static',
@@ -244,7 +278,7 @@ module.exports = [
                     }
                 ]
             }),
-            new CopyWebpackPlugin({
+            new CopyRspackPlugin({
                 patterns: [
                     {
                         from: 'extensions/**',
@@ -278,18 +312,18 @@ module.exports = [
                 rules: base.module.rules.concat([
                     {
                         test: /\.(svg|png|wav|mp3|gif|jpg|woff|woff2|ttf|eot|hex)$/,
-                        loader: 'url-loader',
-                        options: {
-                            limit: 2048,
-                            outputPath: 'static/assets/',
-                            publicPath: `${STATIC_PATH}/assets/`,
-                            esModule: false
+                        resourceQuery: {not: [/inline/, /recolor/, /source/]},
+                        type: 'asset',
+                        parser: {dataUrlCondition: {maxSize: 2048}},
+                        generator: {
+                            filename: 'static/assets/[contenthash][ext]',
+                            publicPath: `${STATIC_PATH}/assets/`
                         }
                     }
                 ])
             },
             plugins: base.plugins.concat([
-                new CopyWebpackPlugin({
+                new CopyRspackPlugin({
                     patterns: [
                         {
                             from: 'extension-worker.{js,js.map}',
@@ -299,7 +333,7 @@ module.exports = [
                     ]
                 }),
                 // Include library JSON files for scratch-desktop to use for downloading
-                new CopyWebpackPlugin({
+                new CopyRspackPlugin({
                     patterns: [
                         {
                             from: 'src/lib/libraries/*.json',

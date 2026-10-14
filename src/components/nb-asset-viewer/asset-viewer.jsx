@@ -1,19 +1,73 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
-import Editor from 'react-monaco-editor';
+import '../../lib/monaco-workers';
+import * as monaco from 'monaco-editor/editor/editor.api.js';
 
 import BufferedInputHOC from '../forms/buffered-input-hoc.jsx';
 import Label from '../forms/label.jsx';
 import Input from '../forms/input.jsx';
 import TWRenderRecoloredImage from '../../lib/tw-recolor/render.jsx';
 
-import redoIcon from '!../../lib/tw-recolor/build!../sound-editor/icon--redo.svg';
-import undoIcon from '!../../lib/tw-recolor/build!../sound-editor/icon--undo.svg';
+import redoIcon from '../sound-editor/icon--redo.svg?recolor';
+import undoIcon from '../sound-editor/icon--undo.svg?recolor';
 
 import styles from './asset-viewer.css';
 
 const BufferedInput = BufferedInputHOC(Input);
+
+const MonacoEditor = ({language, onChange, onMount, theme, value}) => {
+    const element = useRef(null);
+    const editor = useRef(null);
+    const model = useRef(null);
+    const onChangeRef = useRef(onChange);
+    onChangeRef.current = onChange;
+
+    useEffect(() => {
+        model.current = monaco.editor.createModel(value || '', language);
+        editor.current = monaco.editor.create(element.current, {
+            automaticLayout: true,
+            fontSize: 13,
+            minimap: {enabled: false},
+            model: model.current,
+            occurrencesHighlight: 'off',
+            renderWhitespace: 'none',
+            scrollBeyondLastLine: false,
+            selectionHighlight: false,
+            tabSize: 4,
+            theme
+        });
+        const listener = editor.current.onDidChangeModelContent(() => onChangeRef.current(model.current.getValue()));
+        onMount(editor.current);
+        return () => {
+            listener.dispose();
+            editor.current.dispose();
+            model.current.dispose();
+            editor.current = null;
+            model.current = null;
+        };
+    }, []);
+
+    useEffect(() => {
+        if (model.current && model.current.getValue() !== value) model.current.setValue(value || '');
+    }, [value]);
+    useEffect(() => {
+        if (model.current) monaco.editor.setModelLanguage(model.current, language);
+    }, [language]);
+    useEffect(() => {
+        monaco.editor.setTheme(theme);
+    }, [theme]);
+
+    return <div ref={element} style={{height: '100%'}} />;
+};
+
+MonacoEditor.propTypes = {
+    language: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onMount: PropTypes.func.isRequired,
+    theme: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired
+};
 
 const messages = defineMessages({
     asset: {
@@ -90,22 +144,12 @@ const AssetViewerComponent = props => (
                     className={styles.editorSurface}
                     style={{maxWidth: '95%', maxHeight: '67%'}}
                 >
-                    <Editor
+                    <MonacoEditor
                         language={props.textLanguage || 'plaintext'}
                         theme={props.monacoTheme || 'vs'}
-                        value={props.textContent}
-                        options={{
-                            minimap: {enabled: false},
-                            automaticLayout: true,
-                            scrollBeyondLastLine: false,
-                            fontSize: 13,
-                            tabSize: 4,
-                            selectionHighlight: false,
-                            occurrencesHighlight: false,
-                            renderWhitespace: 'none'
-                        }}
+                        value={props.textContent || ''}
                         onChange={props.onChangeText}
-                        editorDidMount={props.onEditorDidMount}
+                        onMount={props.onEditorDidMount}
                     />
                 </div>
                 <div className={styles.infoRow}>

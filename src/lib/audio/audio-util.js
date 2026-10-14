@@ -1,4 +1,4 @@
-import EncoderWorker from 'worker-loader!../nb-encode-mp3-worker.js';
+import EncoderWorker from '../nb-encode-mp3-worker-browser';
 
 const _computeRMS = function (samples, start, end, scaling = 0.55) {
     const length = end - start;

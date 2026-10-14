@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo, useRef} from 'react';
 import {SequenceMatcher} from 'difflib';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import '../../lib/monaco-workers';
+import * as monaco from 'monaco-editor/editor/editor.api.js';
 
 import styles from './text-diff.css';
 

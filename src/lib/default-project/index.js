@@ -1,10 +1,8 @@
 import projectData from './project-data';
 
-/* eslint-disable import/no-unresolved */
-import overrideDefaultProject from '!arraybuffer-loader!./override-default-project.sb3';
-import backdrop from '!raw-loader!./cd21514d0531fdffb22204e0ec5ed84a.svg';
-import costume1 from '!raw-loader!./nitro-canister.svg';
-/* eslint-enable import/no-unresolved */
+import overrideDefaultProject from './override-default-project.sb3?bytes';
+import backdrop from './cd21514d0531fdffb22204e0ec5ed84a.svg?source';
+import costume1 from './nitro-canister.svg?source';
 import {TextEncoder} from '../tw-text-encoder';
 
 const defaultProject = translator => {
@@ -17,13 +15,7 @@ const defaultProject = translator => {
         }];
     }
 
-    let _TextEncoder;
-    if (typeof TextEncoder === 'undefined') {
-        _TextEncoder = require('text-encoding').TextEncoder;
-    } else {
-        _TextEncoder = TextEncoder;
-    }
-    const encoder = new _TextEncoder();
+    const encoder = new TextEncoder();
 
     const projectJson = projectData(translator);
     return [{

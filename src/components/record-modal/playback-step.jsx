@@ -8,9 +8,9 @@ import TWRenderRecoloredImage from '../../lib/tw-recolor/render.jsx';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
 import styles from './record-modal.css';
-import backIcon from '!../../lib/tw-recolor/build!./icon--back.svg';
-import stopIcon from '!../../lib/tw-recolor/build!./icon--stop-playback.svg';
-import playIcon from '!../../lib/tw-recolor/build!./icon--play.svg';
+import backIcon from './icon--back.svg?recolor';
+import stopIcon from './icon--stop-playback.svg?recolor';
+import playIcon from './icon--play.svg?recolor';
 
 const messages = defineMessages({
     stopMsg: {

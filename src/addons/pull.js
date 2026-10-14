@@ -21,7 +21,7 @@
 
 const fs = require('fs');
 const childProcess = require('child_process');
-const rimraf = require('rimraf');
+const {rimrafSync} = require('rimraf');
 const pathUtil = require('path');
 const {addons, newAddons} = require('./addons.js');
 
@@ -47,18 +47,18 @@ const clone = obj => JSON.parse(JSON.stringify(obj));
 
 const repoPath = pathUtil.resolve(__dirname, 'ScratchAddons');
 if (!process.argv.includes('-')) {
-    rimraf.sync(repoPath);
+    rimrafSync(repoPath);
     childProcess.execSync(`git clone --depth=1 --branch=tw https://github.com/TurboWarp/addons ${repoPath}`);
 }
 
 for (const folder of ['addons', 'addons-l10n', 'addons-l10n-settings', 'libraries']) {
     const path = pathUtil.resolve(__dirname, folder);
-    rimraf.sync(path);
+    rimrafSync(path);
     fs.mkdirSync(path, {recursive: true});
 }
 
 const generatedPath = pathUtil.resolve(__dirname, 'generated');
-rimraf.sync(generatedPath);
+rimrafSync(generatedPath);
 fs.mkdirSync(generatedPath, {recursive: true});
 
 process.chdir(repoPath);
@@ -260,12 +260,12 @@ const generateRuntimeEntry = (id, manifest, assets) => {
 
     for (const userstyle of manifest.userstyles || []) {
         const src = userstyle.url;
-        const importName = importSection.add(`!css-loader!./${src}`, 'css');
+        const importName = importSection.add(`./${src}?addon-style`, 'css');
         exportSection += `  ${JSON.stringify(src)}: ${importName},\n`;
     }
 
     for (const assetName of assets) {
-        const importName = importSection.add(`!url-loader!./${assetName}`, 'asset');
+        const importName = importSection.add(`./${assetName}`, 'asset');
         exportSection += `  ${JSON.stringify(assetName)}: ${importName},\n`;
     }
 

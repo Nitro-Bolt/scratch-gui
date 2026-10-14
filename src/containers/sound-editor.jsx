@@ -17,7 +17,7 @@ import AudioBufferPlayer from '../lib/audio/audio-buffer-player.js';
 import DragRecognizer from '../lib/drag-recognizer';
 import {getEventXY} from '../lib/touch-utils';
 import log from '../lib/log.js';
-import EncoderWorker from 'worker-loader!../lib/nb-encode-mp3-worker.js';
+import EncoderWorker from '../lib/nb-encode-mp3-worker-browser.js';
 import {closeAlertWithId, showStandardAlert} from '../reducers/alerts.js';
 
 const UNDO_STACK_SIZE = 99;
