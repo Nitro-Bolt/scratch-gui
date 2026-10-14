@@ -1,5 +1,3 @@
-import queryString from 'query-string';
-import xhr from 'xhr';
 import storage from '../lib/storage';
 
 /**
@@ -15,13 +13,12 @@ import storage from '../lib/storage';
  * @return {Promise} A promise that resolves when the network request resolves.
  */
 export default function (projectId, vmState, params) {
-    const opts = {
+    const options = {
         body: vmState,
-        // If we set json:true then the body is double-stringified, so don't
         headers: {
             'Content-Type': 'application/json'
         },
-        withCredentials: true
+        credentials: 'include'
     };
     const creatingProject = projectId === null || typeof projectId === 'undefined';
     const queryParams = {};
@@ -29,35 +26,17 @@ export default function (projectId, vmState, params) {
     if (Object.prototype.hasOwnProperty.call(params, 'isCopy')) queryParams.is_copy = params.isCopy;
     if (Object.prototype.hasOwnProperty.call(params, 'isRemix')) queryParams.is_remix = params.isRemix;
     if (Object.prototype.hasOwnProperty.call(params, 'title')) queryParams.title = params.title;
-    let qs = queryString.stringify(queryParams);
-    if (qs) qs = `?${qs}`;
-    if (creatingProject) {
-        Object.assign(opts, {
-            method: 'post',
-            url: `${storage.projectHost}/${qs}`
+    const query = new URLSearchParams(queryParams).toString();
+    const path = creatingProject ? '' : projectId;
+    const url = `${storage.projectHost}/${path}${query ? `?${query}` : ''}`;
+    options.method = creatingProject ? 'POST' : 'PUT';
+
+    return fetch(url, options).then(response => {
+        if (response.status !== 200) return Promise.reject(response.status);
+        return response.json();
+    })
+        .then(body => {
+            body.id = creatingProject ? body['content-name'] : projectId;
+            return body;
         });
-    } else {
-        Object.assign(opts, {
-            method: 'put',
-            url: `${storage.projectHost}/${projectId}${qs}`
-        });
-    }
-    return new Promise((resolve, reject) => {
-        xhr(opts, (err, response) => {
-            if (err) return reject(err);
-            if (response.statusCode !== 200) return reject(response.statusCode);
-            let body;
-            try {
-                // Since we didn't set json: true, we have to parse manually
-                body = JSON.parse(response.body);
-            } catch (e) {
-                return reject(e);
-            }
-            body.id = projectId;
-            if (creatingProject) {
-                body.id = body['content-name'];
-            }
-            resolve(body);
-        });
-    });
 }
