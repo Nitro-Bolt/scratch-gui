@@ -967,7 +967,7 @@ class AddonRunner {
                 }
                 if (this.isCustom) {
                     // Resources are stored as ArrayBuffers
-                    const str = new TextDecoder().decode(userscript);
+                    const str = new TextDecoder().decode(this.manifest.resources[userscript.url]);
                     const fn = new Function('addon', str);
                     fn(this.publicAPI.addon);
                 } else {
