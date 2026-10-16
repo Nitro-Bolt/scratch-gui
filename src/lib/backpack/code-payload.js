@@ -27,8 +27,11 @@ const findTopBlock = payload => {
 };
 
 const placeInViewport = (payload, workspaceMetrics, isRtl) => {
+    const blocks = payload.extensionURLs ? payload.blocks : payload;
     const topBlock = findTopBlock(payload);
     if (topBlock) {
+        const oldX = Number(topBlock.x);
+        const oldY = Number(topBlock.y);
         const {scrollX, scrollY, scale} = workspaceMetrics || {
             scrollX: 0,
             scrollY: 0,
@@ -43,8 +46,16 @@ const placeInViewport = (payload, workspaceMetrics, isRtl) => {
             posX = -scrollX + 30;
         }
 
-        topBlock.x = posX / scale;
-        topBlock.y = posY / scale;
+        const newX = posX / scale;
+        const newY = posY / scale;
+        const dx = newX - oldX;
+        const dy = newY - oldY;
+        for (let i = 0; i < blocks.length; i++) {
+            if (blocks[i].topLevel) {
+                blocks[i].x = Number(blocks[i].x) + dx;
+                blocks[i].y = Number(blocks[i].y) + dy;
+            }
+        }
     }
 
     return payload;

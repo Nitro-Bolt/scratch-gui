@@ -611,6 +611,32 @@ const EditorSettingsModal = props => {
                             }
                         }}
                     />
+                    <BooleanSetting
+                        value={!!props.preferences['deselect-block-selection-after-action']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.deselectBlockSelectionAfterAction"
+                            defaultMessage="Deselect multi-selection after actions"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.deselectBlockSelectionAfterActionHelp"
+                            defaultMessage="Clears selected blocks after you act on them. When disabled, selections remain until you click elsewhere."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('deselect-block-selection-after-action', e.target.checked)}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['swap-multi-select-modifiers']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.swapMultiSelectModifiers"
+                            defaultMessage="Swap multi-selection controls"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.swapMultiSelectModifiersHelp"
+                            defaultMessage="Uses Ctrl for selecting whole scripts and Shift for selecting individual blocks."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('swap-multi-select-modifiers', e.target.checked)}
+                    />
                 </Section>
                 <Section
                     title={<FormattedMessage
