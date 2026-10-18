@@ -74,6 +74,7 @@ export default async function ({ addon, console, msg }) {
   addon.tab.addBlock("\u200B\u200Bstart timer\u200B\u200B %s", {
     // TurboWarp's addon block API expects argument names rather than descriptor objects.
     args: ["label"],
+    defaults: [msg("default-timer-label")],
     displayName: msg("block-start-timer"),
     callback: ({ label }, thread) => {
       const normalizedLabel = label === "" || typeof label === "undefined" ? msg("default-timer-label") : label;
@@ -82,6 +83,7 @@ export default async function ({ addon, console, msg }) {
   });
   addon.tab.addBlock("\u200B\u200Bstop timer\u200B\u200B %s", {
     args: ["label"],
+    defaults: [msg("default-timer-label")],
     displayName: msg("block-stop-timer"),
     callback: ({ label }, thread) => {
       const normalizedLabel = label === "" || typeof label === "undefined" ? msg("default-timer-label") : label;
