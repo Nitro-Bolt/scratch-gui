@@ -190,19 +190,19 @@ importers:
         version: https://codeload.github.com/TurboWarp/scratch-audio/tar.gz/dc47bf3bc177289531ed8a4fb616fed895dc303a
       scratch-blocks:
         specifier: github:Nitro-Bolt/scratch-blocks#develop-builds
-        version: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/8451f72bcf30c68ec62face034d5d58fc921b408
+        version: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/fcd4f57ff323ea04f437855ebaab3142dc017ac8
       scratch-l10n:
         specifier: github:Nitro-Bolt/scratch-l10n#develop
-        version: https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/2f651de5b6f97b192b1e20362d7fb2b2afa006ae
+        version: https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/92c99a729e943bc21a1a06151dcf78a00cd205f0
       scratch-paint:
         specifier: github:Nitro-Bolt/scratch-paint#develop
-        version: https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/b95dd0e9c4c53d05aa5821f7c875c752cb063a10(react-dom@16.14.0(react@16.14.0))(react-intl-redux@0.7.0(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-redux@5.0.7(react@16.14.0)(redux@3.7.2)))(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-popover@0.5.10)(react-redux@5.0.7(react@16.14.0)(redux@3.7.2))(react-responsive@5.0.0(react@16.14.0))(react-style-proptype@3.2.2)(react-tooltip@3.8.0(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react@16.14.0)(redux@3.7.2)(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961)
+        version: https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/6c0bd51f4a33c36ee18be114cc81ca319682ec90(react-dom@16.14.0(react@16.14.0))(react-intl-redux@0.7.0(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-redux@5.0.7(react@16.14.0)(redux@3.7.2)))(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-popover@0.5.10)(react-redux@5.0.7(react@16.14.0)(redux@3.7.2))(react-responsive@5.0.0(react@16.14.0))(react-style-proptype@3.2.2)(react-tooltip@3.8.0(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react@16.14.0)(redux@3.7.2)(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961)
       scratch-render:
         specifier: github:Nitro-Bolt/scratch-render#develop
-        version: https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/c72a34f207701b6e13373f315e3aaa589a754688(webpack@4.47.0)
+        version: https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/505bff3e6997597ae1892cb5a33dce6d9bfe0ade(webpack@4.47.0)
       scratch-vm:
         specifier: github:Nitro-Bolt/scratch-vm#develop
-        version: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/9071c8c80570035f103e3d09a3f8c1736adf8ba8(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961))(webpack@4.47.0)
+        version: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/3bbb1379b6263047c547829428aae5f66d5ae859(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961))(webpack@4.47.0)
       style-loader:
         specifier: ^0.23.0
         version: 0.23.1
@@ -1747,11 +1747,6 @@ packages:
   bser@2.1.1:
     resolution: {integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==}
 
-  btoa@1.2.1:
-    resolution: {integrity: sha512-SB4/MIGlsiVkMcHmT+pSmIPoNDoHg+7cMzmt3Uxt628MTz2487DKSqK/fuhFBrkuqrYv5UCEnACpF4dTFNKc/g==}
-    engines: {node: '>= 0.4.0'}
-    hasBin: true
-
   buffer-alloc-unsafe@1.1.0:
     resolution: {integrity: sha512-TEM2iMIEQdJ2yjPJoSIsldnleVaAk1oW3DBVUykyOLsEsFmEc9kn+SFFPz+gl54KQNxlDnAwCXosOS9Okx2xAg==}
 
@@ -1845,9 +1840,6 @@ packages:
 
   caniuse-lite@1.0.30001722:
     resolution: {integrity: sha512-DCQHBBZtiK6JVkAGw7drvAMK0Q0POD/xZvEmDp6baiMMP6QXXk9HpD6mNYBZWhOPG6LvIDb82ITqtWjhDckHCA==}
-
-  canvas-toBlob@1.0.0:
-    resolution: {integrity: sha512-oU5bawygt/Nef9F+C49eTFmzXzz6yKdGqn6J1wn/LZQF5ulnnZVm0KIZzik85I6tjCbZFH6aa47j4bU2tkHxRw==}
 
   chalk@1.1.3:
     resolution: {integrity: sha512-U3lRVLMSlsCfjqYPbLyVv11M9CPW4I728d6TCKMAOJueEeB9/8o+eSsMnxPJD+Q+K909sdESg7C+tIkoH6on1A==}
@@ -5216,17 +5208,17 @@ packages:
     resolution: {tarball: https://codeload.github.com/TurboWarp/scratch-audio/tar.gz/dc47bf3bc177289531ed8a4fb616fed895dc303a}
     version: 0.1.0
 
-  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/8451f72bcf30c68ec62face034d5d58fc921b408:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/8451f72bcf30c68ec62face034d5d58fc921b408}
+  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/fcd4f57ff323ea04f437855ebaab3142dc017ac8:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/fcd4f57ff323ea04f437855ebaab3142dc017ac8}
     version: 0.1.0
 
-  scratch-l10n@https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/2f651de5b6f97b192b1e20362d7fb2b2afa006ae:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/2f651de5b6f97b192b1e20362d7fb2b2afa006ae}
+  scratch-l10n@https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/92c99a729e943bc21a1a06151dcf78a00cd205f0:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/92c99a729e943bc21a1a06151dcf78a00cd205f0}
     version: 3.1001.0
     hasBin: true
 
-  scratch-paint@https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/b95dd0e9c4c53d05aa5821f7c875c752cb063a10:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/b95dd0e9c4c53d05aa5821f7c875c752cb063a10}
+  scratch-paint@https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/6c0bd51f4a33c36ee18be114cc81ca319682ec90:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/6c0bd51f4a33c36ee18be114cc81ca319682ec90}
     version: 2.1.61
     peerDependencies:
       react: ^16
@@ -5241,17 +5233,16 @@ packages:
       redux: ^3
       scratch-render-fonts: ^1.0.0-prerelease.20210401210003
 
-  scratch-parser@https://codeload.github.com/Nitro-Bolt/scratch-parser/tar.gz/0a062a2b01340f61df4ef0b49d0cccd513b7630e:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-parser/tar.gz/0a062a2b01340f61df4ef0b49d0cccd513b7630e}
+  scratch-parser@https://codeload.github.com/Nitro-Bolt/scratch-parser/tar.gz/bffa170b1746ffcf8ceb1a8bcb798b1b7938f5f8:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-parser/tar.gz/bffa170b1746ffcf8ceb1a8bcb798b1b7938f5f8}
     version: 0.0.0-development
-    engines: {node: '>=8.0'}
 
   scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961:
     resolution: {tarball: https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961}
     version: 1.0.0
 
-  scratch-render@https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/c72a34f207701b6e13373f315e3aaa589a754688:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/c72a34f207701b6e13373f315e3aaa589a754688}
+  scratch-render@https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/505bff3e6997597ae1892cb5a33dce6d9bfe0ade:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/505bff3e6997597ae1892cb5a33dce6d9bfe0ade}
     version: 0.1.0
 
   scratch-sb1-converter@0.2.7:
@@ -5263,8 +5254,8 @@ packages:
   scratch-translate-extension-languages@1.0.7:
     resolution: {integrity: sha512-6+bQU9iVYv23T8J0SjpV6MTugm0y8myh/4DPgu1BGfccysdkaWzu3MkNGQyQRUlbqAiW9wM7ctfv3USPEkzTgg==}
 
-  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/9071c8c80570035f103e3d09a3f8c1736adf8ba8:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/9071c8c80570035f103e3d09a3f8c1736adf8ba8}
+  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/3bbb1379b6263047c547829428aae5f66d5ae859:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/3bbb1379b6263047c547829428aae5f66d5ae859}
     version: 2.1.46
     peerDependencies:
       '@turbowarp/scratch-svg-renderer': ^1.1.0
@@ -8101,8 +8092,6 @@ snapshots:
     dependencies:
       node-int64: 0.4.0
 
-  btoa@1.2.1: {}
-
   buffer-alloc-unsafe@1.1.0: {}
 
   buffer-alloc@1.2.0:
@@ -8239,8 +8228,6 @@ snapshots:
   camelcase@6.3.0: {}
 
   caniuse-lite@1.0.30001722: {}
-
-  canvas-toBlob@1.0.0: {}
 
   chalk@1.1.3:
     dependencies:
@@ -12358,23 +12345,22 @@ snapshots:
       '@turbowarp/nanolog': 0.2.0
       '@turbowarp/startaudiocontext': 1.0.0
 
-  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/8451f72bcf30c68ec62face034d5d58fc921b408:
+  scratch-blocks@https://codeload.github.com/Nitro-Bolt/scratch-blocks/tar.gz/fcd4f57ff323ea04f437855ebaab3142dc017ac8:
     dependencies:
       exports-loader: 0.7.0
       imports-loader: 0.8.0
 
-  scratch-l10n@https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/2f651de5b6f97b192b1e20362d7fb2b2afa006ae:
+  scratch-l10n@https://codeload.github.com/Nitro-Bolt/scratch-l10n/tar.gz/92c99a729e943bc21a1a06151dcf78a00cd205f0:
     dependencies:
       '@babel/cli': 7.27.2(@babel/core@7.27.4)
       '@babel/core': 7.27.4
       '@transifex/api': 4.3.0
-      babel-plugin-react-intl: 3.5.1
       download: 8.0.0
       yaml: 2.9.1
     transitivePeerDependencies:
       - supports-color
 
-  scratch-paint@https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/b95dd0e9c4c53d05aa5821f7c875c752cb063a10(react-dom@16.14.0(react@16.14.0))(react-intl-redux@0.7.0(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-redux@5.0.7(react@16.14.0)(redux@3.7.2)))(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-popover@0.5.10)(react-redux@5.0.7(react@16.14.0)(redux@3.7.2))(react-responsive@5.0.0(react@16.14.0))(react-style-proptype@3.2.2)(react-tooltip@3.8.0(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react@16.14.0)(redux@3.7.2)(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961):
+  scratch-paint@https://codeload.github.com/Nitro-Bolt/scratch-paint/tar.gz/6c0bd51f4a33c36ee18be114cc81ca319682ec90(react-dom@16.14.0(react@16.14.0))(react-intl-redux@0.7.0(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-redux@5.0.7(react@16.14.0)(redux@3.7.2)))(react-intl@2.9.0(prop-types@15.8.1)(react@16.14.0))(react-popover@0.5.10)(react-redux@5.0.7(react@16.14.0)(redux@3.7.2))(react-responsive@5.0.0(react@16.14.0))(react-style-proptype@3.2.2)(react-tooltip@3.8.0(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react@16.14.0)(redux@3.7.2)(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961):
     dependencies:
       '@nitro-bolt/paper': 0.13.1
       '@turbowarp/nanolog': 0.2.0
@@ -12396,19 +12382,18 @@ snapshots:
       redux: 3.7.2
       scratch-render-fonts: https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961
 
-  scratch-parser@https://codeload.github.com/Nitro-Bolt/scratch-parser/tar.gz/0a062a2b01340f61df4ef0b49d0cccd513b7630e:
+  scratch-parser@https://codeload.github.com/Nitro-Bolt/scratch-parser/tar.gz/bffa170b1746ffcf8ceb1a8bcb798b1b7938f5f8:
     dependencies:
       '@turbowarp/json': 0.1.2
       '@turbowarp/jszip': 3.12.0
       '@turbowarp/sb3fix': 0.5.0
       ajv: 6.3.0
-      pify: 4.0.1
 
   scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961:
     dependencies:
       base64-loader: 1.0.0
 
-  scratch-render@https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/c72a34f207701b6e13373f315e3aaa589a754688(webpack@4.47.0):
+  scratch-render@https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/505bff3e6997597ae1892cb5a33dce6d9bfe0ade(webpack@4.47.0):
     dependencies:
       '@turbowarp/ancient-hull.js': 0.2.13
       '@turbowarp/nanolog': 0.2.0
@@ -12442,7 +12427,7 @@ snapshots:
 
   scratch-translate-extension-languages@1.0.7: {}
 
-  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/9071c8c80570035f103e3d09a3f8c1736adf8ba8(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961))(webpack@4.47.0):
+  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/3bbb1379b6263047c547829428aae5f66d5ae859(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961))(webpack@4.47.0):
     dependencies:
       '@turbowarp/json': 0.1.2
       '@turbowarp/jszip': 3.12.0
@@ -12450,17 +12435,13 @@ snapshots:
       '@turbowarp/scratch-svg-renderer': 1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961)
       '@vernier/godirect': 1.5.0
       arraybuffer-loader: 1.0.8
-      atob: 2.1.2
-      btoa: 1.2.1
-      canvas-toBlob: 1.0.0
       decode-html: 2.0.0
       diff-match-patch: 1.0.4
       format-message: 6.2.1
       htmlparser2: 3.10.0
-      scratch-parser: https://codeload.github.com/Nitro-Bolt/scratch-parser/tar.gz/0a062a2b01340f61df4ef0b49d0cccd513b7630e
+      scratch-parser: https://codeload.github.com/Nitro-Bolt/scratch-parser/tar.gz/bffa170b1746ffcf8ceb1a8bcb798b1b7938f5f8
       scratch-sb1-converter: 0.2.7
       scratch-translate-extension-languages: 1.0.7
-      text-encoding: 0.7.0
       uuid: 8.3.2
       worker-loader: 1.1.1(webpack@4.47.0)
     transitivePeerDependencies:
