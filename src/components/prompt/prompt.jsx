@@ -53,7 +53,7 @@ const messages = defineMessages({
     }
 });
 
-const defaultTypes = ['Any', 'Object', 'Array'];
+const defaultTypes = ['Any', 'Boolean', 'Object', 'Array'];
 
 const Packager = () => (
     <a
