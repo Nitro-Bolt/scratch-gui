@@ -193,6 +193,7 @@ class Blocks extends React.Component {
         this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
         this.workspace.options.deselectMultiSelectionAfterAction = this.props.deselectMultiSelectionAfterAction;
         this.workspace.options.swapMultiSelectModifiers = this.props.swapMultiSelectModifiers;
+        this.workspace.options.inwardSelection = this.props.inwardSelection;
         this.workspace.vm = this.props.vm;
         AddonHooks.blocklyWorkspace = this.workspace;
 
@@ -278,6 +279,7 @@ class Blocks extends React.Component {
             this.props.disableInspectBlock !== nextProps.disableInspectBlock ||
             this.props.deselectMultiSelectionAfterAction !== nextProps.deselectMultiSelectionAfterAction ||
             this.props.swapMultiSelectModifiers !== nextProps.swapMultiSelectModifiers ||
+            this.props.inwardSelection !== nextProps.inwardSelection ||
             this.props.blockShape !== nextProps.blockShape ||
             this.props.labelContrastThreshold !== nextProps.labelContrastThreshold ||
             this.props.extendableArrowsLeft !== nextProps.extendableArrowsLeft ||
@@ -296,6 +298,9 @@ class Blocks extends React.Component {
         }
         if (this.workspace && this.props.swapMultiSelectModifiers !== prevProps.swapMultiSelectModifiers) {
             this.workspace.options.swapMultiSelectModifiers = this.props.swapMultiSelectModifiers;
+        }
+        if (this.workspace && this.props.inwardSelection !== prevProps.inwardSelection) {
+            this.workspace.options.inwardSelection = this.props.inwardSelection;
         }
         if (this.props.blockShape !== prevProps.blockShape) {
             this.handleBlockShapeChange(this.props.blockShape);
@@ -846,6 +851,7 @@ class Blocks extends React.Component {
             disableInspectBlock,
             deselectMultiSelectionAfterAction,
             swapMultiSelectModifiers,
+            inwardSelection,
             extendableArrowsLeft,
             hideExtendableArrowSeparator,
             workspaceMetrics,
@@ -938,6 +944,7 @@ Blocks.propTypes = {
     disableInspectBlock: PropTypes.bool,
     deselectMultiSelectionAfterAction: PropTypes.bool,
     swapMultiSelectModifiers: PropTypes.bool,
+    inwardSelection: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired,
     workspaceMetrics: PropTypes.shape({
         targets: PropTypes.objectOf(PropTypes.object)
@@ -1001,6 +1008,7 @@ const mapStateToProps = state => ({
     deselectMultiSelectionAfterAction:
         state.scratchGui.preferences['deselect-block-selection-after-action'] === true,
     swapMultiSelectModifiers: state.scratchGui.preferences['swap-multi-select-modifiers'] === true,
+    inwardSelection: state.scratchGui.preferences['inward-selection'] === true,
     extendableArrowsLeft: state.scratchGui.preferences['extendable-arrows-left'] === true,
     hideExtendableArrowSeparator:
         state.scratchGui.preferences['hide-extendable-arrow-separator'] === true
