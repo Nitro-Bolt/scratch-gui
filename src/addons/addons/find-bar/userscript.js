@@ -791,7 +791,10 @@ export default async function ({ addon, msg, console }) {
 
   const _doBlockClick_ = Blockly.Gesture.prototype.doBlockClick_;
   Blockly.Gesture.prototype.doBlockClick_ = function () {
-    if (!addon.self.disabled && (this.mostRecentEvent_.button === 1 || this.mostRecentEvent_.shiftKey)) {
+    const modifiedShiftClick =
+      this.mostRecentEvent_.shiftKey &&
+      (this.mostRecentEvent_.ctrlKey || this.mostRecentEvent_.metaKey);
+    if (!addon.self.disabled && (this.mostRecentEvent_.button === 1 || modifiedShiftClick)) {
       // Wheel button...
       // Intercept clicks to allow jump to...?
       let block = this.startBlock_;

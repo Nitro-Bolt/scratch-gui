@@ -191,6 +191,9 @@ class Blocks extends React.Component {
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
         this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
+        this.workspace.options.deselectMultiSelectionAfterAction = this.props.deselectMultiSelectionAfterAction;
+        this.workspace.options.swapMultiSelectModifiers = this.props.swapMultiSelectModifiers;
+        this.workspace.options.inwardSelection = this.props.inwardSelection;
         this.workspace.vm = this.props.vm;
         AddonHooks.blocklyWorkspace = this.workspace;
 
@@ -274,6 +277,9 @@ class Blocks extends React.Component {
             this.props.hiddenCategories !== nextProps.hiddenCategories ||
             this.props.nbBlocks !== nextProps.nbBlocks ||
             this.props.disableInspectBlock !== nextProps.disableInspectBlock ||
+            this.props.deselectMultiSelectionAfterAction !== nextProps.deselectMultiSelectionAfterAction ||
+            this.props.swapMultiSelectModifiers !== nextProps.swapMultiSelectModifiers ||
+            this.props.inwardSelection !== nextProps.inwardSelection ||
             this.props.blockShape !== nextProps.blockShape ||
             this.props.labelContrastThreshold !== nextProps.labelContrastThreshold ||
             this.props.extendableArrowsLeft !== nextProps.extendableArrowsLeft ||
@@ -283,6 +289,18 @@ class Blocks extends React.Component {
     componentDidUpdate (prevProps) {
         if (this.workspace && this.props.disableInspectBlock !== prevProps.disableInspectBlock) {
             this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
+        }
+        if (
+            this.workspace &&
+            this.props.deselectMultiSelectionAfterAction !== prevProps.deselectMultiSelectionAfterAction
+        ) {
+            this.workspace.options.deselectMultiSelectionAfterAction = this.props.deselectMultiSelectionAfterAction;
+        }
+        if (this.workspace && this.props.swapMultiSelectModifiers !== prevProps.swapMultiSelectModifiers) {
+            this.workspace.options.swapMultiSelectModifiers = this.props.swapMultiSelectModifiers;
+        }
+        if (this.workspace && this.props.inwardSelection !== prevProps.inwardSelection) {
+            this.workspace.options.inwardSelection = this.props.inwardSelection;
         }
         if (this.props.blockShape !== prevProps.blockShape) {
             this.handleBlockShapeChange(this.props.blockShape);
@@ -831,6 +849,9 @@ class Blocks extends React.Component {
             updateMetrics: updateMetricsProp,
             useCatBlocks,
             disableInspectBlock,
+            deselectMultiSelectionAfterAction,
+            swapMultiSelectModifiers,
+            inwardSelection,
             extendableArrowsLeft,
             hideExtendableArrowSeparator,
             workspaceMetrics,
@@ -921,6 +942,9 @@ Blocks.propTypes = {
     updateToolboxState: PropTypes.func,
     useCatBlocks: PropTypes.bool,
     disableInspectBlock: PropTypes.bool,
+    deselectMultiSelectionAfterAction: PropTypes.bool,
+    swapMultiSelectModifiers: PropTypes.bool,
+    inwardSelection: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired,
     workspaceMetrics: PropTypes.shape({
         targets: PropTypes.objectOf(PropTypes.object)
@@ -981,6 +1005,10 @@ const mapStateToProps = state => ({
     hiddenCategories: state.scratchGui.preferences['hidden-categories'],
     nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true),
     disableInspectBlock: state.scratchGui.preferences['disable-inspect-block'] === true,
+    deselectMultiSelectionAfterAction:
+        state.scratchGui.preferences['deselect-block-selection-after-action'] === true,
+    swapMultiSelectModifiers: state.scratchGui.preferences['swap-multi-select-modifiers'] === true,
+    inwardSelection: state.scratchGui.preferences['inward-selection'] === true,
     extendableArrowsLeft: state.scratchGui.preferences['extendable-arrows-left'] === true,
     hideExtendableArrowSeparator:
         state.scratchGui.preferences['hide-extendable-arrow-separator'] === true
