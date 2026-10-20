@@ -20,6 +20,7 @@ import {BLOCKS_DEFAULT_SCALE} from '../lib/layout-constants';
 import DropAreaHOC from '../lib/drop-area-hoc.jsx';
 import DragConstants from '../lib/drag-constants';
 import defineDynamicBlock from '../lib/define-dynamic-block';
+import validateVariableEdit from '../lib/validate-variable-edit';
 import {Theme} from '../lib/themes';
 import {injectExtensionBlockTheme, injectExtensionCategoryTheme} from '../lib/themes/blockHelpers';
 import {applyBlockShapeAndUpdate, getBlockShape, updateAllBlocks} from '../lib/nb-custom-block-shape';
@@ -73,6 +74,31 @@ const messages = defineMessages({
         // eslint-disable-next-line max-len
         description: 'Button in extension list to learn how to use the "return" block from the Custom Reporters extension.',
         id: 'tw.blocks.PROCEDURES_DOCS'
+    },
+    VARIABLE_CLOUD_LOCAL_ERROR: {
+        defaultMessage: 'Cloud variables cannot be limited to one sprite.',
+        description: 'Error shown when editing a cloud variable to be sprite-only',
+        id: 'gui.gui.variableCloudLocalError'
+    },
+    VARIABLE_STAGE_LOCAL_ERROR: {
+        defaultMessage: 'The stage cannot have sprite-only variables.',
+        description: 'Error shown when editing a stage variable to be sprite-only',
+        id: 'gui.gui.variableStageLocalError'
+    },
+    VARIABLE_USED_ELSEWHERE_ERROR: {
+        defaultMessage: 'This variable cannot be made sprite-only because another sprite uses it.',
+        description: 'Error shown when another sprite uses a variable being made local',
+        id: 'gui.gui.variableUsedElsewhereError'
+    },
+    VARIABLE_GLOBAL_CONFLICT_ERROR: {
+        defaultMessage: 'This variable conflicts with a sprite-only variable in another sprite.',
+        description: 'Error shown when making a variable global would cause a name conflict',
+        id: 'gui.gui.variableGlobalConflictError'
+    },
+    VARIABLE_LOCAL_CONFLICT_ERROR: {
+        defaultMessage: 'This variable conflicts with another sprite-only variable in this sprite.',
+        description: 'Error shown when making a variable sprite-only would cause a name conflict',
+        id: 'gui.gui.variableLocalConflictError'
     }
 });
 
@@ -161,20 +187,14 @@ class Blocks extends React.Component {
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
         this.ScratchBlocks.LABEL_CONTRAST_THRESHOLD = this.getLabelContrastThreshold();
         const customColourConverters = this.props.theme.getCustomExtensionColors();
-        this.ScratchBlocks.CustomProcedureColourTransform = customColourConverters.primary ? primary => [
+        this.ScratchBlocks.CustomBlockColourTransform = customColourConverters.primary ? primary => [
             customColourConverters.primary(primary),
             customColourConverters.secondary(primary),
             customColourConverters.tertiary(primary),
             customColourConverters.quaternary(primary)
         ] : null;
 
-        const Msg = this.ScratchBlocks.Msg;
-        Msg.PROCEDURES_RETURN = this.props.intl.formatMessage(messages.PROCEDURES_RETURN, {
-            v: '%1'
-        });
-        Msg.PROCEDURES_TO_REPORTER = this.props.intl.formatMessage(messages.PROCEDURES_TO_REPORTER);
-        Msg.PROCEDURES_TO_STATEMENT = this.props.intl.formatMessage(messages.PROCEDURES_TO_STATEMENT);
-        Msg.PROCEDURES_DOCS = this.props.intl.formatMessage(messages.PROCEDURES_DOCS);
+        this.setScratchBlocksMessages();
 
         const workspaceConfig = defaultsDeep({},
             this.props.options,
@@ -405,6 +425,15 @@ class Blocks extends React.Component {
             this.updateToolbox();
         }, 0);
     }
+    setScratchBlocksMessages () {
+        const Msg = this.ScratchBlocks.Msg;
+        Msg.PROCEDURES_RETURN = this.props.intl.formatMessage(messages.PROCEDURES_RETURN, {
+            v: '%1'
+        });
+        Msg.PROCEDURES_TO_REPORTER = this.props.intl.formatMessage(messages.PROCEDURES_TO_REPORTER);
+        Msg.PROCEDURES_TO_STATEMENT = this.props.intl.formatMessage(messages.PROCEDURES_TO_STATEMENT);
+        Msg.PROCEDURES_DOCS = this.props.intl.formatMessage(messages.PROCEDURES_DOCS);
+    }
     setLocale () {
         const localeMessages = blockMessages[this.props.locale];
         if (localeMessages) {
@@ -412,6 +441,7 @@ class Blocks extends React.Component {
             locales[this.props.locale] = Object.assign({}, locales[this.props.locale], localeMessages);
         }
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
+        this.setScratchBlocksMessages();
         this.props.vm.setLocale(this.props.locale, this.props.messages)
             .then(() => {
                 if (this.unmounted) return;
@@ -742,16 +772,21 @@ class Blocks extends React.Component {
     setBlocks (blocks) {
         this.blocks = blocks;
     }
-    handlePromptStart (message, defaultValue, callback, optTitle, optVarType) {
-        const p = {prompt: {callback, message, defaultValue}};
+    handlePromptStart (message, defaultValue, callback, optTitle, optVarType, optVariable) {
+        const showVariableOptions = optVarType !== this.ScratchBlocks.BROADCAST_MESSAGE_VARIABLE_TYPE;
+        const p = {prompt: {
+            callback,
+            message,
+            defaultValue,
+            variable: showVariableOptions ? optVariable || null : null
+        }};
         p.prompt.title = optTitle ? optTitle :
             this.ScratchBlocks.Msg.VARIABLE_MODAL_TITLE;
         p.prompt.varType = typeof optVarType === 'string' ?
             optVarType : this.ScratchBlocks.SCALAR_VARIABLE_TYPE;
-        p.prompt.showVariableOptions = // This flag means that we should show variable/list options about scope
-            optVarType !== this.ScratchBlocks.BROADCAST_MESSAGE_VARIABLE_TYPE &&
-            p.prompt.title !== this.ScratchBlocks.Msg.RENAME_VARIABLE_MODAL_TITLE &&
-            p.prompt.title !== this.ScratchBlocks.Msg.RENAME_LIST_MODAL_TITLE;
+        p.prompt.showVariableOptions = showVariableOptions;
+        p.prompt.showTypeAndColourOptions =
+            optVarType === this.ScratchBlocks.SCALAR_VARIABLE_TYPE;
         p.prompt.showCloudOption = (optVarType === this.ScratchBlocks.SCALAR_VARIABLE_TYPE) && this.props.canUseCloud;
         this.setState(p);
     }
@@ -778,10 +813,44 @@ class Blocks extends React.Component {
      * to the variable validation prompt callback used in scratch-blocks.
      */
     handlePromptCallback (input, variableOptions) {
-        this.state.prompt.callback(
-            input,
-            this.props.vm.runtime.getAllVarNamesOfType(this.state.prompt.varType),
-            variableOptions);
+        const prompt = this.state.prompt;
+        const editingVariable = Boolean(prompt.variable && variableOptions);
+        if (editingVariable) {
+            const errors = {
+                cloudLocal: this.props.intl.formatMessage(messages.VARIABLE_CLOUD_LOCAL_ERROR),
+                stageLocal: this.props.intl.formatMessage(messages.VARIABLE_STAGE_LOCAL_ERROR),
+                usedElsewhere: this.props.intl.formatMessage(messages.VARIABLE_USED_ELSEWHERE_ERROR),
+                globalConflict: this.props.intl.formatMessage(messages.VARIABLE_GLOBAL_CONFLICT_ERROR),
+                localConflict: this.props.intl.formatMessage(messages.VARIABLE_LOCAL_CONFLICT_ERROR)
+            };
+            if (!validateVariableEdit(
+                this.ScratchBlocks,
+                this.props.vm,
+                prompt.variable,
+                variableOptions,
+                errors,
+                input
+            )) return;
+        }
+        if (editingVariable) this.ScratchBlocks.Events.setGroup(true);
+        let accepted;
+        try {
+            accepted = prompt.callback(
+                input,
+                this.props.vm.runtime.getAllVarNamesOfType(prompt.varType),
+                variableOptions);
+            if (accepted && editingVariable) {
+                this.workspace.updateVariableById(
+                    prompt.variable.getId(),
+                    variableOptions.scope === 'local',
+                    variableOptions.isCloud,
+                    variableOptions.isCloud ? 'Any' : variableOptions.valueType,
+                    variableOptions.colour
+                );
+            }
+        } finally {
+            if (editingVariable) this.ScratchBlocks.Events.setGroup(false);
+        }
         this.handlePromptClose();
     }
     handlePromptClose () {
@@ -873,8 +942,10 @@ class Blocks extends React.Component {
                         showTableMessage={this.state.prompt.varType === this.ScratchBlocks.TABLE_VARIABLE_TYPE}
                         label={this.state.prompt.message}
                         showCloudOption={this.state.prompt.showCloudOption}
+                        showTypeAndColourOptions={this.state.prompt.showTypeAndColourOptions}
                         showVariableOptions={this.state.prompt.showVariableOptions}
                         title={this.state.prompt.title}
+                        variableOptions={this.state.prompt.variable}
                         vm={vm}
                         onCancel={this.handlePromptClose}
                         onOk={this.handlePromptCallback}

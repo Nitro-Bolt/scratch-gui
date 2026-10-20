@@ -181,7 +181,7 @@ const compareArrays = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 let _firstAddBlockRan = false;
 
 const contextMenuCallbacks = [];
-const CONTEXT_MENU_ORDER = ['blocks2image', 'swap-local-global'];
+const CONTEXT_MENU_ORDER = ['blocks2image'];
 let createdAnyBlockContextMenus = false;
 
 const updateClasses = () => {

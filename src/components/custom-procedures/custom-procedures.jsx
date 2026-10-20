@@ -4,6 +4,7 @@ import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
 import FancyDropdown from '../nb-fancy-dropdown/dropdown.jsx';
+import FancyColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 import {defineMessages, injectIntl, intlShape, FormattedMessage} from 'react-intl';
 
 import booleanInputIcon from './icon--boolean-input.svg';
@@ -161,7 +162,7 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#FF6680'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#FF6680"
+                        data-color="#FF6680"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
@@ -169,7 +170,7 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#4C97FF'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#4C97FF"
+                        data-color="#4C97FF"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
@@ -177,7 +178,7 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#9966FF'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#9966FF"
+                        data-color="#9966FF"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
@@ -185,7 +186,7 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#CF63CF'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#CF63CF"
+                        data-color="#CF63CF"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
@@ -193,7 +194,7 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#FFBF00'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#FFBF00"
+                        data-color="#FFBF00"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
@@ -201,7 +202,7 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#FFAB19'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#FFAB19"
+                        data-color="#FFAB19"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
@@ -209,7 +210,7 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#5CB1D6'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#5CB1D6"
+                        data-color="#5CB1D6"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
@@ -217,7 +218,7 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#59C059'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#59C059"
+                        data-color="#59C059"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
@@ -225,7 +226,7 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#FF8C1A'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#FF8C1A"
+                        data-color="#FF8C1A"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
@@ -233,7 +234,7 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#FF661A'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#FF661A"
+                        data-color="#FF661A"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
@@ -241,7 +242,7 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#66BD5C'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#66BD5C"
+                        data-color="#66BD5C"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
@@ -249,15 +250,13 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#5755D4'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#5755D4"
+                        data-color="#5755D4"
                         draggable={false}
                         onClick={props.onSetColor}
                     />
-                    <input
-                        style={{backgroundColor: props.colour}}
-                        type="color"
+                    <FancyColorPicker
                         value={props.colour}
-                        className={styles.colorPicker}
+                        rootClassName={styles.colorPicker}
                         onChange={props.onSetColor}
                     />
                 </Box>

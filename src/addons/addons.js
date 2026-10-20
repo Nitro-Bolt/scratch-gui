@@ -56,8 +56,6 @@ const addons = [
     // 'move-to-top-layer',
     'disable-paste-offset',
     'block-duplicate',
-    'rename-broadcasts',
-    'swap-local-global',
     'editor-comment-previews',
     'columns',
     'number-pad',

@@ -63,6 +63,12 @@
     }
 }
 
+.color-option-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 [dir="rtl"] .type-dropdown {
     margin-right: 0.5rem;
     margin-left: 0;

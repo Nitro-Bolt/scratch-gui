@@ -171,9 +171,9 @@ class CustomProcedures extends React.Component {
             }
         }
     }
-    handleAddColor (element) {
+    handleAddColor (value) {
         if (this.mutationRoot) {
-            const colour = element.target.value ?? element.target.getAttribute('color');
+            const colour = typeof value === 'string' ? value : value.currentTarget.dataset.color;
             this.mutationRoot.setProcedureColour(colour);
             this.mutationRoot.updateDisplay_();
             this.setState({colour});

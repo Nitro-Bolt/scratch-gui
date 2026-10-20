@@ -73,9 +73,9 @@ class NBCustomAccentModal extends React.Component {
         });
     }
 
-    handleChangeGradientColorColor (e, i) {
+    handleChangeGradientColorColor (color, i) {
         const colors = [...this.state.gradientColors];
-        colors[i].color = e.target.value;
+        colors[i].color = color;
         this.setState({
             gradientColors: colors
         });
@@ -102,22 +102,22 @@ class NBCustomAccentModal extends React.Component {
             name: e.target.value
         });
     }
-    
-    handleChangePrimaryColor (e) {
+
+    handleChangePrimaryColor (primaryColor) {
         this.setState({
-            primaryColor: e.target.value
-        });
-    }
-    
-    handleChangeSecondaryColor (e) {
-        this.setState({
-            secondaryColor: e.target.value
+            primaryColor
         });
     }
 
-    handleChangeTertiaryColor (e) {
+    handleChangeSecondaryColor (secondaryColor) {
         this.setState({
-            tertiaryColor: e.target.value
+            secondaryColor
+        });
+    }
+
+    handleChangeTertiaryColor (tertiaryColor) {
+        this.setState({
+            tertiaryColor
         });
     }
 
@@ -127,7 +127,7 @@ class NBCustomAccentModal extends React.Component {
             gradientColors: this.state.gradientColors.filter((_, index) => i !== index)
         });
     }
-    
+
     handleOk () {
         if (this.state.name.trim().length === 0) return;
         const accent = {

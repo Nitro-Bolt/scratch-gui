@@ -506,7 +506,6 @@ body:not(.sa-columns-enabled) [class*="gui_tab-panel"] [class*="gui_extension-bu
   padding: 0 0.5rem;
   margin-bottom: 1rem;
 }
-.sa-swap-local-global-hint,
 [class*="prompt_options-row"] {
   padding-bottom: 0.5rem;
 }

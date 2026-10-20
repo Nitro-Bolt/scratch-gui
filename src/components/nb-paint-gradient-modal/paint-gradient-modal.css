@@ -79,23 +79,6 @@
     background: $ui-white;
 }
 
-.color-picker {
-    appearance: none;
-    width: 35px;
-    height: 35px;
-    padding: $space;
-    border: 2px solid $ui-black-transparent;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.color-picker::-webkit-color-swatch,
-.color-picker::-webkit-color-swatch-wrapper {
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-}
-
 .delete-container {
     display: flex;
     justify-content: flex-end;

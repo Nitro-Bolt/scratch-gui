@@ -12,15 +12,22 @@ const isUndefined = a => typeof a === 'undefined';
  * @param {string} block.opcode - The opcode of the monitor
  * @param {object} block.params - Extra params to the monitor block
  * @param {string|number|Array} block.value - The monitor value
+ * @param {?string} block.targetId - The ID of the target that owns a local variable
  * @param {?string} block.monitorContent - Custom HTML to show instead of the value
  * @param {VirtualMachine} block.vm - the VM instance which owns the block
  * @return {object} The adapted monitor with label and category
  */
-export default function ({id, mode, spriteName, opcode, params, value, monitorContent, vm}) {
+export default function ({id, mode, spriteName, opcode, params, value, monitorContent, targetId, vm}) {
     // Extension monitors get their labels from the Runtime through `getLabelForOpcode`.
     // Other monitors' labels are hard-coded in `OpcodeLabels`.
     let {label, category, color, labelFn} =
         (vm && vm.runtime.getLabelForOpcode(opcode)) || OpcodeLabels.getLabel(opcode);
+
+    if (vm && opcode === 'data_variable') {
+        const target = targetId ? vm.runtime.getTargetById(targetId) : vm.runtime.getTargetForStage();
+        const variable = target && target.variables[id];
+        if (variable && variable.colour) color = variable.colour;
+    }
 
     // Use labelFn if provided for dynamic labelling (e.g. variables)
     if (!isUndefined(labelFn)) label = labelFn(params);

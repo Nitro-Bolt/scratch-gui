@@ -36,7 +36,7 @@ import {
 } from '../../lib/block-color-persistence.js';
 import {setHiddenCategories} from '../../reducers/hidden-categories';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
-import ColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
+import FancyColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 import DeleteButton from '../delete-button/delete-button.jsx';
 import {BLOCK_SHAPE_PRESETS, getBlockShape} from '../../lib/nb-custom-block-shape';
 
@@ -938,13 +938,12 @@ const EditorSettingsModal = props => {
                                             key={cat.colorId}
                                             className={classNames(styles.label, styles.categoryColorLabel)}
                                         >
-                                            <ColorPicker
+                                            <FancyColorPicker
                                                 value={value}
                                                 onChange={v => handleBlockColorPreview(cat.colorId, v)}
                                                 onCommit={handleBlockColorCommit(cat.colorId)}
                                                 className={styles.colorInput}
                                                 showIcon={false}
-                                                label={false}
                                                 size={'1.8rem'}
                                             />
                                             <span>{cat.label}</span>

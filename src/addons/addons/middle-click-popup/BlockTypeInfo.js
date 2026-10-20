@@ -211,17 +211,16 @@ export class BlockInputColour extends BlockInput {
 export class BlockInputEnum extends BlockInput {
   static INVALID_VALUES = [
     "DELETE_VARIABLE_ID",
-    "RENAME_VARIABLE_ID",
+    "EDIT_VARIABLE_ID",
     "NEW_BROADCAST_MESSAGE_ID",
-    "NEW_BROADCAST_MESSAGE_ID",
+    "RENAME_BROADCAST_ID",
+    "DELETE_BROADCAST_ID",
     // editor-searchable-dropdowns compatibility
     "createGlobalVariable",
     "createLocalVariable",
     "createGlobalList",
     "createLocalList",
     "createBroadcast",
-    // rename-broadcasts compatibility
-    "RENAME_BROADCAST_MESSAGE_ID",
   ];
 
   /**
