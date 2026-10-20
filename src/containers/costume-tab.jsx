@@ -350,7 +350,8 @@ class CostumeTab extends React.Component {
         // Convert size to stage units by dividing by resolution
         // Round up width and height for scratch-flash compatibility
         // https://github.com/LLK/scratch-flash/blob/9fbac92ef3d09ceca0c0782f8a08deaa79e4df69/src/ui/media/MediaInfo.as#L224-L237
-        return `${Math.ceil(size[0] / resolution)} x ${Math.ceil(size[1] / resolution)}`;
+        // Additionally, the displayed size is doubled to reflect actual pixel values if the costume is bitmap (SVG already has the correct dimensions)
+        return `${Math.ceil(size[0] / resolution * optResolution)} x ${Math.ceil(size[1] / resolution * optResolution)}`;
     }
     render () {
         const {
