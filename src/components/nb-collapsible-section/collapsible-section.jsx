@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './styles.css';
-import dropdownCaret from './dropdown-caret.svg';
+import dropdownCaret from '../dropdown-caret.svg';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-const RichDropdown = function ({label, children}) {
+const CollapsibleSection = function ({label, children}) {
     const [isCollapsed, setIsCollapsed] = React.useState(false);
     const toggleCollapsed = React.useCallback(() => {
         setIsCollapsed(collapsed => !collapsed);
@@ -39,9 +39,9 @@ const RichDropdown = function ({label, children}) {
     );
 };
 
-RichDropdown.propTypes = {
+CollapsibleSection.propTypes = {
     label: PropTypes.string,
     children: PropTypes.node
 };
 
-export default RichDropdown;
+export default CollapsibleSection;

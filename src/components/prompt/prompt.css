@@ -52,6 +52,24 @@
 
 .type-dropdown {
     margin-left: 0.5rem;
+
+    & select {
+        text-align: center;
+        text-align-last: center;
+    }
+
+    & option {
+        text-align: left;
+    }
+}
+
+[dir="rtl"] .type-dropdown {
+    margin-right: 0.5rem;
+    margin-left: 0;
+
+    & option {
+        text-align: right;
+    }
 }
 
 .button-row {

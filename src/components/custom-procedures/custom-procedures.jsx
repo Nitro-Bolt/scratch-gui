@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
+import FancyDropdown from '../nb-fancy-dropdown/dropdown.jsx';
 import {defineMessages, injectIntl, intlShape, FormattedMessage} from 'react-intl';
 
 import booleanInputIcon from './icon--boolean-input.svg';
@@ -294,7 +295,7 @@ const CustomProcedures = props => {
                             id="gui.customProcedures.output"
                         />
                     </label>
-                    <select
+                    <FancyDropdown
                         value={props.outputMode}
                         onChange={props.onOutputMenuChange}
                     >
@@ -303,7 +304,7 @@ const CustomProcedures = props => {
                         <option value="boolean">{'Boolean'}</option>
                         <option value="object">{'Object'}</option>
                         <option value="array">{'Array'}</option>
-                    </select>
+                    </FancyDropdown>
                     {props.outputMode !== 'auto' && (
                         <label>
                             <FancyCheckbox

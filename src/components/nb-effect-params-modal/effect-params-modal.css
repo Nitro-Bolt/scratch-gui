@@ -22,6 +22,10 @@
     margin-bottom: 1rem;
 }
 
+.input {
+    flex: 1;
+}
+
 /* Confirmation buttons at the bottom of the modal */
 .button-row {
     display: flex;

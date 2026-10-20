@@ -2,14 +2,14 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import dropdownCaret from '../nb-rich-dropdown/dropdown-caret.svg';
+import dropdownCaret from '../dropdown-caret.svg';
 import styles from './dropdown.css';
 
-const FancyDropdown = ({children, className, disabled, ...props}) => (
+const FancyDropdown = ({children, className, disabled, selectClassName, ...props}) => (
     <div className={classNames(styles.wrapper, className)}>
         <select
             {...props}
-            className={styles.select}
+            className={classNames(styles.select, selectClassName)}
             disabled={disabled}
         >
             {children}
@@ -28,7 +28,8 @@ const FancyDropdown = ({children, className, disabled, ...props}) => (
 FancyDropdown.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    selectClassName: PropTypes.string
 };
 
 export default FancyDropdown;

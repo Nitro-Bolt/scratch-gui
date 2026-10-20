@@ -185,13 +185,17 @@
     margin-top: 1rem;
 }
 
-.output-row select,
-.output-row option {
+.output-row select {
     text-align: center;
+    text-align-last: center;
 }
 
-.output-row select {
-    text-align-last: center;
+.output-row option {
+    text-align: left;
+}
+
+[dir="rtl"] .output-row option {
+    text-align: right;
 }
 
 /* Confirmation buttons at the bottom of the modal */
