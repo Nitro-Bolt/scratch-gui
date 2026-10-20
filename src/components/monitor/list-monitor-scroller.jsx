@@ -88,6 +88,7 @@ class ListMonitorScroller extends React.Component {
             <List
                 activeIndex={activeIndex}
                 activeValue={activeValue}
+                categoryColor={this.props.categoryColor}
                 height={(height) - 42 /* Header/footer size, approx */}
                 noRowsRenderer={this.noRowsRenderer}
                 rowCount={values.length}
