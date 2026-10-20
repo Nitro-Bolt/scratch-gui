@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
-import dropdownCaret from '../nb-rich-dropdown/dropdown-caret.svg';
+import FancyDropdown from '../nb-fancy-dropdown/dropdown.jsx';
 import ProjectDiff from './project-diff.jsx';
 import log from '../../lib/log';
 import LazyScratchBlocks from '../../lib/tw-lazy-scratch-blocks';
@@ -37,27 +37,6 @@ const Badge = ({value}) => (
     <span className={`${styles.statusBadge} ${styles[badgeClass[value] || 'statusM']}`}>{value}</span>
 );
 Badge.propTypes = {value: PropTypes.string.isRequired};
-
-const DropdownSelect = ({children, onChange, value}) => (
-    <div className={styles.selectWrapper}>
-        <select
-            value={value}
-            onChange={onChange}
-        >{children}</select>
-        <img
-            className={styles.selectCaret}
-            draggable={false}
-            height={5}
-            src={dropdownCaret}
-            width={8}
-        />
-    </div>
-);
-DropdownSelect.propTypes = {
-    children: PropTypes.node.isRequired,
-    onChange: PropTypes.func.isRequired,
-    value: PropTypes.string.isRequired
-};
 
 const ReadmeEditor = ({dark, onChange, value}) => {
     const element = React.useRef(null);
@@ -716,7 +695,8 @@ const GitModal = props => {
                 >Revert to this commit</button>}</div></div>))}</div></>);
     } else if (view === 'controls') {
         context = (<>{header('Merging & Controls')}<div className={styles.formCard}>
-            <label>Merge branch</label><DropdownSelect
+            <label>Merge branch</label><FancyDropdown
+                className={styles.selectWrapper}
                 value={mergeBranch}
                 onChange={event => setMergeBranch(event.target.value)}
             >
@@ -724,8 +704,9 @@ const GitModal = props => {
                     (<option
                         value={item.ref}
                         key={item.ref}
-                    >{item.name}</option>))}</DropdownSelect>
-            <label>Into branch</label><DropdownSelect
+                    >{item.name}</option>))}</FancyDropdown>
+            <label>Into branch</label><FancyDropdown
+                className={styles.selectWrapper}
                 value={mergeTarget}
                 onChange={event => setMergeTarget(event.target.value)}
             >
@@ -736,19 +717,20 @@ const GitModal = props => {
                         key={item.ref}
                     >{item.name}</option>
                 ))}
-            </DropdownSelect>
+            </FancyDropdown>
             <button
                 className={styles.primaryButton}
                 disabled={!mergeBranch || !mergeTarget || mergeBranch === mergeTarget}
                 onClick={merge}
             >Merge</button></div><div className={styles.formCard}>
-                <label>Remote sync</label><DropdownSelect
+                <label>Remote sync</label><FancyDropdown
+                    className={styles.selectWrapper}
                     value={remote}
                     onChange={event => setRemote(event.target.value)}
                 >
                     {!remotes.length && <option value="">No remotes</option>}
                     {remotes.map(item => <option key={item.name}>{item.name}</option>)}
-                </DropdownSelect>
+                </FancyDropdown>
                 <div className={styles.inputRow}>
                     <button
                         disabled={busy || !selectedRemoteExists}

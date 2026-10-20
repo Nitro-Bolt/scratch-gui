@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
+import FancyDropdown from '../nb-fancy-dropdown/dropdown.jsx';
 import Input from '../forms/input.jsx';
 import BufferedInputHOC from '../forms/buffered-input-hoc.jsx';
 
@@ -94,7 +95,7 @@ class EffectParamsModal extends React.Component {
             );
         case 'select':
             return (
-                <select
+                <FancyDropdown
                     className={styles.input}
                     value={value}
                     onChange={e => setVal(e.target.value)} // eslint-disable-line react/jsx-no-bind
@@ -107,7 +108,7 @@ class EffectParamsModal extends React.Component {
                             {option.label}
                         </option>
                     ))}
-                </select>
+                </FancyDropdown>
             );
         case 'color':
             return (

@@ -5,6 +5,7 @@ import React from 'react';
 
 import Box from '../box/box.jsx';
 import Modal from '../../containers/modal.jsx';
+import FancyDropdown from '../nb-fancy-dropdown/dropdown.jsx';
 
 import styles from './prompt.css';
 import {SCRATCH_MAX_CLOUD_VARIABLES} from '../../lib/tw-cloud-limits.js';
@@ -21,6 +22,11 @@ const messages = defineMessages({
         defaultMessage: 'For this sprite only',
         description: 'Option message when creating a varaible for making it only available to the current sprite',
         id: 'gui.gui.variableScopeOptionSpriteOnly'
+    },
+    variableTypeMessage: {
+        defaultMessage: 'Type:',
+        description: 'Option message to define the type for a variable',
+        id: 'gui.gui.variableTypeMessage'
     },
     cloudVarOptionMessage: {
         defaultMessage: 'Cloud variable (stored on server)',
@@ -46,6 +52,8 @@ const messages = defineMessages({
         id: 'gui.gui.tablePromptAllSpritesMessage'
     }
 });
+
+const defaultTypes = ['Any', 'Boolean', 'Object', 'Array'];
 
 const Packager = () => (
     <a
@@ -127,6 +135,30 @@ const PromptComponent = props => (
                                 />
                             </label>
                         </Box>}
+                    {!props.showListMessage && !props.showTableMessage ? (
+                        <Box className={styles.optionsRow}>
+                            <label>
+                                <FormattedMessage
+                                    {...messages.variableTypeMessage}
+                                />
+                                <FancyDropdown
+                                    className={styles.typeDropdown}
+                                    disabled={props.cloudSelected}
+                                    value={props.valueType}
+                                    onChange={props.onTypeSelection}
+                                >
+                                    {defaultTypes.concat(props.customTypes).map(type => (
+                                        <option
+                                            key={type}
+                                            value={type}
+                                        >
+                                            {type}
+                                        </option>
+                                    ))}
+                                </FancyDropdown>
+                            </label>
+                        </Box>
+                    ) : null}
                     {props.showCloudOption ?
                         <Box className={classNames(styles.cloudOption)}>
                             <label
@@ -214,6 +246,8 @@ const PromptComponent = props => (
 );
 
 PromptComponent.propTypes = {
+    customTypes: PropTypes.arrayOf(PropTypes.string),
+    valueType: PropTypes.string,
     isAddingCloudVariableScratchSafe: PropTypes.bool.isRequired,
     canAddCloudVariable: PropTypes.bool.isRequired,
     cloudSelected: PropTypes.bool.isRequired,
@@ -230,9 +264,15 @@ PromptComponent.propTypes = {
     onKeyPress: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     onScopeOptionSelection: PropTypes.func.isRequired,
+    onTypeSelection: PropTypes.func,
     showCloudOption: PropTypes.bool.isRequired,
     showVariableOptions: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired
+};
+
+PromptComponent.defaultProps = {
+    customTypes: [],
+    valueType: 'Any'
 };
 
 export default PromptComponent;

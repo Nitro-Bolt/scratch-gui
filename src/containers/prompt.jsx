@@ -14,6 +14,7 @@ class Prompt extends React.Component {
             'handleCancel',
             'handleChange',
             'handleKeyPress',
+            'handleTypeSelection',
             'handleCloudVariableOptionChange'
         ]);
         this.state = {
@@ -24,6 +25,7 @@ class Prompt extends React.Component {
             inputValue: '',
             globalSelected: true,
             cloudSelected: false,
+            valueType: 'Any',
             canAddCloudVariable: (props.vm && props.vm.runtime.canAddCloudVariable()) || false
         };
     }
@@ -36,7 +38,8 @@ class Prompt extends React.Component {
     handleOk () {
         this.props.onOk(this.state.inputValue, {
             scope: this.state.globalSelected ? 'global' : 'local',
-            isCloud: this.state.cloudSelected
+            isCloud: this.state.cloudSelected,
+            valueType: this.state.valueType
         });
     }
     handleCancel () {
@@ -48,13 +51,16 @@ class Prompt extends React.Component {
     handleScopeOptionSelection (e) {
         this.setState({globalSelected: (e.target.value === 'global')});
     }
+    handleTypeSelection (e) {
+        this.setState({valueType: e.target.value});
+    }
     handleCloudVariableOptionChange (e) {
         if (!this.props.showCloudOption) return;
 
         const checked = e.target.checked;
         this.setState({cloudSelected: checked});
         if (checked) {
-            this.setState({globalSelected: true});
+            this.setState({globalSelected: true, valueType: 'Any'});
         }
     }
     render () {
@@ -65,6 +71,8 @@ class Prompt extends React.Component {
                 cloudSelected={this.state.cloudSelected}
                 defaultValue={this.props.defaultValue}
                 globalSelected={this.state.globalSelected}
+                valueType={this.state.valueType}
+                customTypes={this.props.vm ? Array.from(this.props.vm.runtime.customTypes.keys()) : []}
                 isStage={this.props.isStage}
                 showListMessage={this.props.showListMessage}
                 showTableMessage={this.props.showTableMessage}
@@ -79,6 +87,7 @@ class Prompt extends React.Component {
                 onKeyPress={this.handleKeyPress}
                 onOk={this.handleOk}
                 onScopeOptionSelection={this.handleScopeOptionSelection}
+                onTypeSelection={this.handleTypeSelection}
             />
         );
     }

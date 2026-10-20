@@ -338,20 +338,6 @@
     width: 100%;
 }
 
-.select-caret {
-    position: absolute;
-    top: 50%;
-    right: .8rem;
-    pointer-events: none;
-    filter: var(--filter-icon-black);
-    transform: translateY(-50%);
-}
-
-[dir="rtl"] .select-caret {
-    right: auto;
-    left: .8rem;
-}
-
 .commit-input {
     min-height: 70px;
     resize: vertical;

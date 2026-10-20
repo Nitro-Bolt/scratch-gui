@@ -7,6 +7,13 @@ import LazyScratchBlocks from './tw-lazy-scratch-blocks';
  */
 export default function (vm) {
     const ScratchBlocks = LazyScratchBlocks.get();
+    ScratchBlocks.Variables.getCustomTypeShape = valueType => {
+        const classDef = vm.runtime.getCustomType(valueType);
+        if (classDef) {
+            return classDef.shape;
+        }
+    };
+
     const jsonForMenuBlock = function (name, menuOptionsFn, colors, start) {
         return {
             message0: '%1',

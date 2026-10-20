@@ -1,0 +1,63 @@
+@import "../../css/colors.css";
+@import "../../css/units.css";
+
+.wrapper {
+    position: relative;
+    display: inline-flex;
+    min-width: 0;
+}
+
+.select {
+    appearance: none;
+    width: 100%;
+    min-width: 0;
+    height: 2rem;
+    padding: 0 2rem 0 0.75rem;
+    border: 1px solid $ui-black-transparent;
+    border-radius: $form-radius;
+    background-color: $input-background;
+    color: $text-primary;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.select:hover:not(:disabled),
+.select:focus {
+    border-color: $looks-secondary;
+}
+
+.select:focus {
+    box-shadow: 0 0 0 0.25rem $looks-transparent;
+}
+
+.select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.caret {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    filter: var(--filter-icon-black);
+    pointer-events: none;
+}
+
+.select:disabled + .caret {
+    opacity: 0.5;
+}
+
+[dir="rtl"] .select {
+    padding: 0 0.75rem 0 2rem;
+}
+
+[dir="rtl"] .caret {
+    right: auto;
+    left: 0.75rem;
+}

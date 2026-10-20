@@ -47,7 +47,29 @@
     display: flex;
     font-weight: normal;
     justify-content: space-between;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.type-dropdown {
+    margin-left: 0.5rem;
+
+    & select {
+        text-align: center;
+        text-align-last: center;
+    }
+
+    & option {
+        text-align: left;
+    }
+}
+
+[dir="rtl"] .type-dropdown {
+    margin-right: 0.5rem;
+    margin-left: 0;
+
+    & option {
+        text-align: right;
+    }
 }
 
 .button-row {
