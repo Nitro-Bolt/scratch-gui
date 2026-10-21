@@ -4,7 +4,7 @@ import bindAll from 'lodash.bindall';
 import {FormattedMessage} from 'react-intl';
 import styles from './key-input.css';
 
-class Shortcut {
+export class KeyboardShortcutClass {
     ctrl;
     shift;
     alt;
@@ -47,7 +47,7 @@ class KeyInput extends React.Component {
         ]);
         this.state = {
             listening: false,
-            shortcut: props.shortcut ? new Shortcut(props.shortcut) : null
+            shortcut: props.shortcut ? new KeyboardShortcutClass(props.shortcut) : null
         };
     }
 
@@ -56,7 +56,7 @@ class KeyInput extends React.Component {
         if (e.key === 'Backspace') {
             shortcut = null;
         } else if (e.key !== 'Escape') {
-            shortcut = new Shortcut({
+            shortcut = new KeyboardShortcutClass({
                 ctrl: e.ctrlKey,
                 shift: e.shiftKey,
                 alt: e.altKey,
