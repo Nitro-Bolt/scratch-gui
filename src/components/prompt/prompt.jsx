@@ -7,6 +7,7 @@ import Box from '../box/box.jsx';
 import Modal from '../../containers/modal.jsx';
 import FancyDropdown from '../nb-fancy-dropdown/dropdown.jsx';
 import FancyColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
+import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
 
 import styles from './prompt.css';
 import {SCRATCH_MAX_CLOUD_VARIABLES} from '../../lib/tw-cloud-limits.js';
@@ -180,10 +181,9 @@ const PromptComponent = props => (
                             <label
                                 className={classNames({[styles.disabledLabel]: !props.canAddCloudVariable})}
                             >
-                                <input
+                                <FancyCheckbox
                                     checked={props.cloudSelected && props.canAddCloudVariable}
                                     disabled={!props.canAddCloudVariable}
-                                    type="checkbox"
                                     onChange={props.onCloudVarOptionChange}
                                 />
                                 <FormattedMessage
