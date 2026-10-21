@@ -147,6 +147,7 @@ const GUIComponent = props => {
         onEditorSettings,
         onExtensionButtonClick,
         onOpenCustomExtensionModal,
+        onOpenDebugger,
         onProjectTelemetryEvent,
         onRequestCloseBackdropLibrary,
         onRequestCloseCostumeLibrary,
@@ -225,6 +226,11 @@ const GUIComponent = props => {
             if (i > 0 && i <= 5) props.onActivateTab(parseInt(i, 10) - 1);
         });
     }
+
+    registerKeyboardShortcut(
+        props.preferences['keybind-open-debugger'] ?? defaultKeyboardShortcuts['open-debugger'],
+        onOpenDebugger
+    );
 
     registerKeyboardShortcut(
         props.preferences['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings'],
@@ -741,6 +747,7 @@ GUIComponent.propTypes = {
     onCloseAccountNav: PropTypes.func,
     onExtensionButtonClick: PropTypes.func,
     onOpenCustomExtensionModal: PropTypes.func,
+    onOpenDebugger: PropTypes.func,
     onLogOut: PropTypes.func,
     onOpenRegistration: PropTypes.func,
     onRequestCloseBackdropLibrary: PropTypes.func,

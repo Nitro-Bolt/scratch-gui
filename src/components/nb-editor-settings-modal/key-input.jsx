@@ -14,7 +14,7 @@ class Shortcut {
         this.ctrl = object.ctrl;
         this.shift = object.shift;
         this.alt = object.alt;
-        this.key = object.key;
+        this.key = object.key.toString().toLowerCase();
     }
 
     toString () {

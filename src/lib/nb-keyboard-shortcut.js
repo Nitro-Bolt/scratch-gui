@@ -15,9 +15,10 @@ import {useCallback, useEffect} from 'react';
  */
 export const defaultKeyboardShortcuts = {
     'change-sprite-name': {key: 'F2'},
-    'open-backpack': {ctrl: true, key: 'b'},
+    'open-backpack': {ctrl: true, shift: true, key: 'b'},
+    'open-debugger': {ctrl: true, shift: true, key: 'd'},
     'open-editor-settings': {ctrl: true, key: ','},
-    'open-extensions': {ctrl: true, key: 'e'},
+    'open-extensions': {ctrl: true, shift: true, key: 'e'},
     'project-full-screen': {alt: true, key: 'Enter'},
     'start-project': {ctrl: true, key: 'Enter'},
     'stop-project': {ctrl: true, shift: true, key: 'Enter'},
@@ -48,7 +49,7 @@ export const registerKeyboardShortcut = (shortcut, callback) => {
         ) return;
 
         if (
-            (shortcut.key === event.key) &&
+            (shortcut.key.toString().toLowerCase() === event.key.toString().toLowerCase()) &&
             (!!shortcut.ctrl === ctrl) &&
             (!!shortcut.alt === event.altKey) &&
             (!!shortcut.shift === event.shiftKey)) {
