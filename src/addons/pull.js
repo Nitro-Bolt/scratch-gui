@@ -105,6 +105,19 @@ const matchAll = (str, regex) => {
     return matches;
 };
 
+const includePolyfills = (contents, newPath) => {
+    if (contents.includes('EventTarget')) {
+        const eventTargetPath = pathUtil.relative(
+            pathUtil.dirname(newPath),
+            pathUtil.resolve(__dirname, 'event-target.js')
+        )
+            .split(pathUtil.sep)
+            .join('/');
+        contents = `import EventTarget from "${eventTargetPath}"; /* inserted by pull.js */\n\n${contents}`;
+    }
+    return contents;
+};
+
 const includeImportedLibraries = contents => {
     // Parse things like:
     // import { normalizeHex, getHexRegex } from "../../libraries/normalize-color.js";
@@ -112,26 +125,19 @@ const includeImportedLibraries = contents => {
     // import "../../libraries/thirdparty/cs/chart.min.js";
     const matches = matchAll(
         contents,
-        /import +(?:(?:{.*}|.*) +from +)?["']\.\.\/\.\.\/libraries\/([\w\d_./-]+(?:\.esm)?\.js)["'];/g
+        /import +(?:(?:{.*}|.*) +from +)?["'](?:\.\.\/)+libraries\/([\w\d_./-]+(?:\.esm)?\.js)["'];/g
     );
     for (const match of matches) {
         const libraryFile = match[1];
         const oldLibraryPath = pathUtil.resolve(__dirname, 'ScratchAddons', 'libraries', libraryFile);
         const newLibraryPath = pathUtil.resolve(__dirname, 'libraries', libraryFile);
-        const libraryContents = fs.readFileSync(oldLibraryPath, 'utf-8');
+        const libraryContents = includePolyfills(fs.readFileSync(oldLibraryPath, 'utf-8'), newLibraryPath);
         const newLibraryDirName = pathUtil.dirname(newLibraryPath);
         fs.mkdirSync(newLibraryDirName, {
             recursive: true
         });
         fs.writeFileSync(newLibraryPath, libraryContents);
     }
-};
-
-const includePolyfills = contents => {
-    if (contents.includes('EventTarget')) {
-        contents = `import EventTarget from "../../event-target.js"; /* inserted by pull.js */\n\n${contents}`;
-    }
-    return contents;
 };
 
 const detectUnimplementedAPIs = (addonId, contents) => {
@@ -312,7 +318,7 @@ const processAddon = (id, oldDirectory, newDirectory) => {
 
             if (file.endsWith('.js')) {
                 includeImportedLibraries(contents);
-                contents = includePolyfills(contents);
+                contents = includePolyfills(contents, newPath);
                 contents = rewriteAssetImports(contents);
             }
 
