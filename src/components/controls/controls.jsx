@@ -21,13 +21,13 @@ const messages = defineMessages({
         description: 'Green flag button title'
     },
     pauseTitle: {
-        id: 'gui.controls.pause',
-        defaultMessage: 'Pause',
+        id: 'nb.gui.controls.pause',
+        defaultMessage: 'Pause ({shortcut})',
         description: 'Pause button title'
     },
     stepTitle: {
-        id: 'gui.controls.step',
-        defaultMessage: 'Step',
+        id: 'nb.gui.controls.step',
+        defaultMessage: 'Step ({shortcut})',
         description: 'Step button title'
     },
     stopTitle: {
@@ -97,12 +97,16 @@ const Controls = function (props) {
                     <>
                         <Pause
                             paused={paused}
-                            title={intl.formatMessage(messages.pauseTitle)}
+                            title={intl.formatMessage(messages.pauseTitle, {
+                                shortcut: new KeybindClass(preferences["keybind-pause-project"] ?? defaultKeybinds["pause-project"]).toString()
+                            })}
                             onClick={onPauseClick}
                         />
                         {paused && !compilerEnabled &&
                             <Step
-                                title={intl.formatMessage(messages.stepTitle)}
+                                title={intl.formatMessage(messages.stepTitle, {
+                                    shortcut: new KeybindClass(preferences["keybind-step-project"] ?? defaultKeybinds["step-project"]).toString()
+                                })}
                                 onClick={onStepClick}
                             />
                         }
