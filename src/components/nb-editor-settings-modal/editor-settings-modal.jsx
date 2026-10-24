@@ -1463,6 +1463,53 @@ const EditorSettingsModal = props => {
                 </Section>
                 <Section
                     title={<FormattedMessage
+                        id="nb.editorSettings.keymap.file"
+                        defaultMessage="File"
+                    />}
+                >
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="New project"
+                            id="nb.editorSettings.keymap.newProject"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-new-project', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-new-project'] ?? defaultKeyboardShortcuts['new-project']}
+                        />
+                    </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="New window"
+                            id="nb.editorSettings.keymap.newWindow"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-new-window', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-new-window'] ?? defaultKeyboardShortcuts['new-window']}
+                        />
+                    </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="Open project"
+                            id="nb.editorSettings.keymap.openProject"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-open-project', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-open-project'] ?? defaultKeyboardShortcuts['open-project']}
+                        />
+                    </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="Save to computer"
+                            id="nb.editorSettings.keymap.save"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-save', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-save'] ?? defaultKeyboardShortcuts['save']}
+                        />
+                    </Box>
+                </Section>
+                <Section
+                    title={<FormattedMessage
                         id="nb.editorSettings.keymap.projectControls"
                         defaultMessage="Project Controls"
                     />}

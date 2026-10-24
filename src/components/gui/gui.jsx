@@ -504,6 +504,7 @@ const GUIComponent = props => {
                     onStartSelectingFileUpload={onStartSelectingFileUpload}
                     onStartSelectingGitProject={onStartSelectingGitProject}
                     onToggleLoginOpen={onToggleLoginOpen}
+                    preferences={props.preferences}
                 />
                 <Box className={styles.bodyWrapper}>
                     <Box

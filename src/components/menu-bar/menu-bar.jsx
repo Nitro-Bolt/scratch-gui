@@ -112,6 +112,7 @@ import sharedMessages from '../../lib/shared-messages';
 import SeeInsideButton from './tw-see-inside.jsx';
 import {isScratchDesktop, notScratchDesktop} from '../../lib/isScratchDesktop.js';
 import {APP_NAME} from '../../lib/brand.js';
+import { defaultKeyboardShortcuts, registerKeyboardShortcut } from '../../lib/nb-keyboard-shortcut.js';
 
 const ariaMessages = defineMessages({
     tutorials: {
@@ -213,6 +214,15 @@ MenuItemLink.propTypes = {
     href: PropTypes.string.isRequired
 };
 
+const MenuBarKeybindWrapper = props => {
+    registerKeyboardShortcut(props.preferences['keybind-new-project'] ?? defaultKeyboardShortcuts['new-project'], props.onClickNew);
+    registerKeyboardShortcut(props.preferences['keybind-new-window'] ?? defaultKeyboardShortcuts['new-window'], isScratchDesktop() ? props.onClickNewWindow : () => {});
+    registerKeyboardShortcut(props.preferences['keybind-save'] ?? defaultKeyboardShortcuts['save'], props.onClickSave);
+    registerKeyboardShortcut(props.preferences['keybind-open-project'] ?? defaultKeyboardShortcuts['open-project'], props.onStartSelectingFileUpload);
+
+    return props.children;
+}
+
 class MenuBar extends React.Component {
     constructor (props) {
         super(props);
@@ -229,17 +239,10 @@ class MenuBar extends React.Component {
             'handleClickSeeCommunity',
             'handleClickShare',
             'handleSetMode',
-            'handleKeyPress',
             'handleRestoreOption',
             'getSaveToComputerHandler',
             'restoreOptionMessage'
         ]);
-    }
-    componentDidMount () {
-        document.addEventListener('keydown', this.handleKeyPress);
-    }
-    componentWillUnmount () {
-        document.removeEventListener('keydown', this.handleKeyPress);
     }
     handleClickNew () {
         // if the project is dirty, and user owns the project, we will autosave.
@@ -340,18 +343,6 @@ class MenuBar extends React.Component {
             restoreFun();
             this.props.onRequestCloseEdit();
         };
-    }
-    handleKeyPress (event) {
-        const modifier = bowser.mac ? event.metaKey : event.ctrlKey;
-        if (modifier) {
-            if (event.key.toLowerCase() === 's') {
-                this.props.handleSaveProject();
-                event.preventDefault();
-            } else if (event.key.toLowerCase() === 'o') {
-                event.preventDefault();
-                this.props.onStartSelectingFileUpload();
-            }
-        }
     }
     getSaveToComputerHandler (downloadProjectCallback) {
         return () => {
@@ -1051,10 +1042,18 @@ class MenuBar extends React.Component {
         );
 
         return (
-            <React.Fragment>
-                {menuBar}
-                <TWNews />
-            </React.Fragment>
+            <MenuBarKeybindWrapper
+                onClickNew={this.handleClickNew}
+                onClickNewWindow={this.handleClickNewWindow}
+                onClickSave={this.props.handleSaveProject}
+                onStartSelectingFileUpload={this.props.onStartSelectingFileUpload}
+                preferences={this.props.preferences}
+            >
+                <React.Fragment>
+                    {menuBar}
+                    <TWNews />
+                </React.Fragment>
+            </MenuBarKeybindWrapper>
         );
     }
 }
