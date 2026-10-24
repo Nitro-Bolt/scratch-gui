@@ -92,7 +92,12 @@ class Backpack extends React.Component {
         // TODO remove the hacky flag that prevents double adding
         if (props.host && !storage._hasAddedBackpackSource && props.host !== LOCAL_API) {
             storage.addWebSource(
-                [storage.AssetType.ImageVector, storage.AssetType.ImageBitmap, storage.AssetType.Sound],
+                [
+                    storage.AssetType.ImageVector,
+                    storage.AssetType.ImageBitmap,
+                    storage.AssetType.Sound,
+                    storage.AssetType.Asset
+                ],
                 this.getBackpackAssetURL
             );
             storage._hasAddedBackpackSource = true;

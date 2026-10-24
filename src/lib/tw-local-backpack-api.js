@@ -65,9 +65,10 @@ const idbItemToBackpackItem = item => {
     } else if (item.type === 'sound') {
         assetType = storage.AssetType.Sound;
     } else if (item.type === 'asset') {
-        assetType = storage.AssetType.Asset;
-        assetType.runtimeFormat = item.dataFormat;
-        assetType.contentType = item.contentType;
+        assetType = Object.assign({}, storage.AssetType.Asset, {
+            runtimeFormat: item.dataFormat,
+            contentType: item.contentType
+        });
     }
 
     if (assetType) {

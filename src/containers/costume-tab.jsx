@@ -14,6 +14,8 @@ import {emptyCostume} from '../lib/empty-assets';
 import sharedMessages from '../lib/shared-messages';
 import downloadBlob from '../lib/download-blob';
 import getAssetType from '../lib/nb-asset-type.js';
+import getBackpackData from '../lib/backpack/get-data';
+import log from '../lib/log';
 
 import {
     openCostumeLibrary,
@@ -325,10 +327,12 @@ class CostumeTab extends React.Component {
             const payload = dropInfo.payload;
             const vm = this.props.vm;
             if (type === 'image') {
-                costumeUpload(payload.bodyData, payload.mime, vm, vmCostume => {
-                    vmCostume[0].name = payload.name;
-                    this.handleNewCostume(vmCostume, false, vm.editingTarget.id);
-                });
+                getBackpackData(payload)
+                    .then(data => costumeUpload(data, payload.mime, vm, vmCostume => {
+                        vmCostume[0].name = payload.name;
+                        this.handleNewCostume(vmCostume, false, vm.editingTarget.id);
+                    }, error => log.error(error)))
+                    .catch(error => log.error(error));
             } else {
                 this.props.onActivateAssetsTab();
                 this.props.vm.addAsset({

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import bindAll from 'lodash.bindall';
-import debounce from 'lodash.debounce';
 import VM from 'scratch-vm';
 
 import {formatBytes} from '../lib/tw-bytes-utils.js';
@@ -28,15 +27,15 @@ class AssetViewer extends React.Component {
             blobURL: null,
             textContent: '',
             canUndo: false,
-            canRedo: false
+            canRedo: false,
+            displayedLastModified: props.lastModified,
+            displayedSize: props.size
         };
 
         this.editor = null;
         this.editorDisposable = null;
         this.initialContent = '';
-        this.saveTextAssetDebounced = debounce(value => {
-            this.saveTextAsset(value);
-        }, 150);
+        this.savedAssetId = null;
     }
 
     componentDidMount () {
@@ -45,22 +44,34 @@ class AssetViewer extends React.Component {
     }
 
     componentDidUpdate (prevProps) {
+        const assetSelectionChanged = prevProps.targetId !== this.props.targetId ||
+            prevProps.assetIndex !== this.props.assetIndex;
+        if (assetSelectionChanged) this.savedAssetId = null;
+        if (!assetSelectionChanged && prevProps.assetId !== this.props.assetId &&
+            this.props.assetId === this.savedAssetId) {
+            this.savedAssetId = null;
+            this.updateDisplayedMetadata();
+            return;
+        }
         if (
+            assetSelectionChanged ||
             prevProps.assetId !== this.props.assetId ||
-            prevProps.assetIndex !== this.props.assetIndex ||
             prevProps.contentType !== this.props.contentType ||
             prevProps.mediaType !== this.props.mediaType
         ) {
             this.initialContent = '';
             this.updateBlobURL();
             this.updateTextContent();
+            return;
+        }
+        if (prevProps.lastModified !== this.props.lastModified || prevProps.size !== this.props.size) {
+            this.updateDisplayedMetadata();
         }
     }
 
     componentWillUnmount () {
         this.revokeBlobURL();
         this.clearEditorListener();
-        this.saveTextAssetDebounced.cancel();
     }
 
     clearEditorListener () {
@@ -68,6 +79,13 @@ class AssetViewer extends React.Component {
             this.editorDisposable.dispose();
             this.editorDisposable = null;
         }
+    }
+
+    updateDisplayedMetadata () {
+        this.setState({
+            displayedLastModified: this.props.lastModified,
+            displayedSize: this.props.size
+        });
     }
 
     revokeBlobURL () {
@@ -121,7 +139,9 @@ class AssetViewer extends React.Component {
             this.setState({
                 textContent: '',
                 canUndo: false,
-                canRedo: false
+                canRedo: false,
+                displayedLastModified: this.props.lastModified,
+                displayedSize: this.props.size
             });
             return;
         }
@@ -129,15 +149,13 @@ class AssetViewer extends React.Component {
         this.setState({
             textContent: this.decodeAssetData(),
             canUndo: false,
-            canRedo: false
+            canRedo: false,
+            displayedLastModified: this.props.lastModified,
+            displayedSize: this.props.size
         });
     }
 
     saveTextAsset (value) {
-        if (!this.props.isTextEditable) {
-            return;
-        }
-
         const assetObject = this.getAssetObject();
         if (!assetObject || !assetObject.asset || typeof assetObject.asset.encodeTextData !== 'function') {
             return;
@@ -147,6 +165,12 @@ class AssetViewer extends React.Component {
         assetObject.asset.encodeTextData(value, extension, true);
         assetObject.md5 = `${assetObject.asset.assetId}.${extension}`;
         assetObject.assetId = assetObject.asset.assetId;
+        assetObject.lastModified = Date.now();
+        this.savedAssetId = assetObject.assetId;
+        this.setState({
+            displayedLastModified: new Date(assetObject.lastModified).toLocaleString(),
+            displayedSize: formatBytes(assetObject.asset.data.byteLength)
+        });
         this.props.vm.runtime.emitProjectChanged();
     }
 
@@ -198,7 +222,7 @@ class AssetViewer extends React.Component {
 
     handleTextContentChange (value) {
         this.setState({textContent: value});
-        this.saveTextAssetDebounced(value);
+        this.saveTextAsset(value);
         this.updateUndoRedoState();
     }
 
@@ -227,8 +251,9 @@ class AssetViewer extends React.Component {
     }
 
     handleAssetRename (newName) {
-        const [name, ...extensionParts] = newName.split('.');
-        const extension = extensionParts.join('.') || 'file';
+        const extensionSeparator = newName.lastIndexOf('.');
+        const name = extensionSeparator > 0 ? newName.slice(0, extensionSeparator) : newName;
+        const extension = extensionSeparator > 0 ? newName.slice(extensionSeparator + 1) || 'file' : 'file';
         this.props.vm.renameAsset(this.props.assetIndex, name, extension);
     }
 
@@ -245,14 +270,15 @@ class AssetViewer extends React.Component {
         return (
             <AssetViewerComponent
                 name={this.props.name}
-                lastModified={this.props.lastModified}
-                size={this.props.size}
+                lastModified={this.state.displayedLastModified}
+                size={this.state.displayedSize}
                 blobURL={this.state.blobURL}
                 mediaType={this.props.mediaType}
                 imageURL={imageURL}
                 isTextEditable={this.props.isTextEditable}
                 textContent={this.state.textContent}
                 textLanguage={this.props.textLanguage}
+                editorKey={`${this.props.targetId}:${this.props.assetIndex}`}
                 monacoTheme={monacoTheme}
                 canUndo={this.state.canUndo}
                 canRedo={this.state.canRedo}
@@ -277,6 +303,7 @@ AssetViewer.propTypes = {
     mediaType: PropTypes.string,
     isTextEditable: PropTypes.bool,
     textLanguage: PropTypes.string,
+    targetId: PropTypes.string.isRequired,
     theme: PropTypes.object,
     vm: PropTypes.instanceOf(VM).isRequired
 };
@@ -290,17 +317,18 @@ const mapStateToProps = (state, {selectedAssetIndex}) => {
 
     return {
         vm: state.scratchGui.vm,
+        targetId: state.scratchGui.vm.editingTarget.id,
         theme: state.scratchGui.theme.theme,
-        name: assetObject.dataFormat !== '' ?
-            `${assetObject.name}.${assetObject.dataFormat}` :
-            assetObject.name,
+        name: assetObject.dataFormat === '' ?
+            assetObject.name :
+            `${assetObject.name}.${assetObject.dataFormat}`,
         lastModified: assetObject.lastModified ?
             new Date(assetObject.lastModified).toLocaleString() :
             'Unknown',
         size: formatBytes(assetObject.asset.data.byteLength),
         assetIndex: index,
         assetId: assetObject.asset.assetId,
-        contentType: assetObject.contentType,
+        contentType: assetObject.contentType || assetObject.asset.assetType.contentType,
         mediaType: assetType.displayable ? assetType.type : null,
         isTextEditable: assetType.editable === true,
         textLanguage: assetType.language || 'plaintext'

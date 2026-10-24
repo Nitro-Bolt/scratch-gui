@@ -14,6 +14,7 @@ import {handleFileUpload, assetUpload} from '../lib/file-uploader.js';
 import downloadBlob from '../lib/download-blob';
 import getAssetType from '../lib/nb-asset-type.js';
 import {showStandardAlert, closeAlertWithId} from '../reducers/alerts';
+import {setRestore} from '../reducers/restore-deletion';
 
 import {defineMessages, intlShape, injectIntl} from 'react-intl';
 import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
@@ -23,9 +24,27 @@ import {connect} from 'react-redux';
 const formatSize = bytes => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(2)} KB`;
-    if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(2)} MB`;
-    return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
+    if (bytes < 1024 ** 3) return `${(bytes / (1024 ** 2)).toFixed(2)} MB`;
+    return `${(bytes / (1024 ** 3)).toFixed(2)} GB`;
 };
+
+const messages = defineMessages({
+    fileUploadAsset: {
+        defaultMessage: 'Upload Asset',
+        description: 'Button to upload asset from file in the editor tab',
+        id: 'gui.assetTab.fileUploadAsset'
+    },
+    newTextFile: {
+        defaultMessage: 'New Text File',
+        description: 'Button to create a blank text file in the asset tab',
+        id: 'gui.assetTab.newTextFile'
+    },
+    newTextFileName: {
+        defaultMessage: 'file',
+        description: 'Default name for new blank text files in the asset tab',
+        id: 'gui.assetTab.newTextFileName'
+    }
+});
 
 class AssetTab extends React.Component {
     constructor (props) {
@@ -49,13 +68,30 @@ class AssetTab extends React.Component {
         this.state = {selectedAssetIndex: 0};
     }
 
+    componentWillReceiveProps (nextProps) {
+        const {
+            editingTarget,
+            sprites,
+            stage
+        } = nextProps;
+        const target = editingTarget && sprites[editingTarget] ? sprites[editingTarget] : stage;
+        if (!target || !target.assets) {
+            return;
+        }
+
+        if (this.props.editingTarget !== editingTarget) {
+            this.setState({selectedAssetIndex: 0});
+        } else if (this.state.selectedAssetIndex > target.assets.length - 1) {
+            this.setState({selectedAssetIndex: Math.max(target.assets.length - 1, 0)});
+        }
+    }
+
     getAssetIcon (assetObject) {
         const assetType = getAssetType(assetObject);
         if (assetType.type === 'image') {
             return {asset: assetObject.asset};
         }
         return {url: assetType.icon};
-        
     }
 
     handleSelectAsset (assetIndex) {
@@ -105,10 +141,15 @@ class AssetTab extends React.Component {
     }
 
     handleDeleteAsset (assetIndex) {
-        this.props.vm.deleteAsset(assetIndex);
-        if (assetIndex >= this.state.selectedAssetIndex) {
-            this.setState({selectedAssetIndex: Math.max(0, assetIndex - 1)});
+        const selectedAssetIndex = this.state.selectedAssetIndex;
+        const restoreFun = this.props.vm.deleteAsset(assetIndex);
+        if (assetIndex < selectedAssetIndex) {
+            this.setState({selectedAssetIndex: selectedAssetIndex - 1});
+        } else if (assetIndex === selectedAssetIndex) {
+            const lastAssetIndex = this.props.vm.editingTarget.sprite.assets.length - 1;
+            this.setState({selectedAssetIndex: Math.max(0, Math.min(assetIndex, lastAssetIndex))});
         }
+        this.props.dispatchUpdateRestore({restoreFun, deletedItem: 'Asset'});
     }
 
     handleAssetUpload (e) {
@@ -218,13 +259,13 @@ class AssetTab extends React.Component {
     }
 
     handleMoveToTop (assetIndex) {
-        this.props.vm.editingTarget.reorderAsset(assetIndex, 0);
+        this.props.vm.reorderAsset(this.props.vm.editingTarget.id, assetIndex, 0);
         this.setState({selectedAssetIndex: 0});
     }
 
     handleMoveToBottom (assetIndex) {
         const lastAssetIndex = this.props.vm.editingTarget.sprite.assets.length - 1;
-        this.props.vm.editingTarget.reorderAsset(assetIndex, lastAssetIndex);
+        this.props.vm.reorderAsset(this.props.vm.editingTarget.id, assetIndex, lastAssetIndex);
         this.setState({selectedAssetIndex: lastAssetIndex});
     }
 
@@ -312,40 +353,20 @@ class AssetTab extends React.Component {
     }
 }
 
-const messages = defineMessages({
-    fileUploadAsset: {
-        defaultMessage: 'Upload Asset',
-        description: 'Button to upload asset from file in the editor tab',
-        id: 'gui.assetTab.fileUploadAsset'
-    },
-    newTextFile: {
-        defaultMessage: 'New Text File',
-        description: 'Button to create a blank text file in the asset tab',
-        id: 'gui.assetTab.newTextFile'
-    },
-    newTextFileName: {
-        defaultMessage: 'file',
-        description: 'Default name for new blank text files in the asset tab',
-        id: 'gui.assetTab.newTextFileName'
-    }
-});
-
 AssetTab.propTypes = {
-    dispatchUpdateRestore: PropTypes.func,
+    dispatchUpdateRestore: PropTypes.func.isRequired,
     editingTarget: PropTypes.string,
     intl: intlShape,
     isRtl: PropTypes.bool,
     onCloseImporting: PropTypes.func.isRequired,
     onShowImporting: PropTypes.func.isRequired,
-    sprites: PropTypes.shape({
-        id: PropTypes.shape({
-            sounds: PropTypes.arrayOf(PropTypes.shape({
-                name: PropTypes.string.isRequired
-            }))
-        })
-    }),
+    sprites: PropTypes.objectOf(PropTypes.shape({
+        assets: PropTypes.arrayOf(PropTypes.shape({
+            name: PropTypes.string.isRequired
+        }))
+    })),
     stage: PropTypes.shape({
-        sounds: PropTypes.arrayOf(PropTypes.shape({
+        assets: PropTypes.arrayOf(PropTypes.shape({
             name: PropTypes.string.isRequired
         }))
     }),
@@ -360,6 +381,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    dispatchUpdateRestore: restoreState => dispatch(setRestore(restoreState)),
     onCloseImporting: () => dispatch(closeAlertWithId('importingAsset')),
     onShowImporting: () => dispatch(showStandardAlert('importingAsset'))
 });
