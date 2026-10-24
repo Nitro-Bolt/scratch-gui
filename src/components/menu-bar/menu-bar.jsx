@@ -263,6 +263,12 @@ class MenuBar extends React.Component {
         if (this.props.onClickNewWindow) {
             this.props.onClickNewWindow();
             this.props.onRequestCloseFile();
+        } else {
+            const a = document.createElement('a');
+            a.href = '.';
+            a.target = "_blank";
+            a.click();
+            a.remove();
         }
     }
     handleClickRemix () {
@@ -590,19 +596,17 @@ class MenuBar extends React.Component {
                                     >
                                         {newProjectMessage}
                                     </MenuItem>
-                                    {this.props.onClickNewWindow && (
-                                        <MenuItem
-                                            isRtl={this.props.isRtl}
-                                            onClick={this.handleClickNewWindow}
-                                        >
-                                            <FormattedMessage
-                                                defaultMessage="New window"
-                                                // eslint-disable-next-line max-len
-                                                description="Part of desktop app. Menu bar item that creates a new window."
-                                                id="tw.menuBar.newWindow"
-                                            />
-                                        </MenuItem>
-                                    )}
+                                    <MenuItem
+                                        isRtl={this.props.isRtl}
+                                        onClick={this.handleClickNewWindow}
+                                    >
+                                        <FormattedMessage
+                                            defaultMessage="New window"
+                                            // eslint-disable-next-line max-len
+                                            description="Menu bar item that creates a new window."
+                                            id="nb.menuBar.newWindow"
+                                        />
+                                    </MenuItem>
                                     {(this.props.canSave || this.props.canCreateCopy || this.props.canRemix) && (
                                         <MenuSection>
                                             {this.props.canSave && (
