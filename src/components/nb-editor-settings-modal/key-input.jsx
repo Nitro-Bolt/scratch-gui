@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import bindAll from 'lodash.bindall';
 import {FormattedMessage} from 'react-intl';
 import styles from './key-input.css';
+import deleteIcon from './delete.svg';
 
-export class KeyboardShortcutClass {
+export class KeybindClass {
     ctrl;
     shift;
     alt;
@@ -43,11 +44,12 @@ class KeyInput extends React.Component {
         super(props);
         bindAll(this, [
             'handleChange',
-            'handleClick'
+            'handleClick',
+            'handleDelete'
         ]);
         this.state = {
             listening: false,
-            shortcut: props.shortcut ? new KeyboardShortcutClass(props.shortcut) : null
+            shortcut: props.shortcut ? new KeybindClass(props.shortcut) : null
         };
     }
 
@@ -56,7 +58,7 @@ class KeyInput extends React.Component {
         if (e.key === 'Backspace') {
             shortcut = null;
         } else if (e.key !== 'Escape') {
-            shortcut = new KeyboardShortcutClass({
+            shortcut = new KeybindClass({
                 ctrl: e.ctrlKey,
                 shift: e.shiftKey,
                 alt: e.altKey,
@@ -79,24 +81,43 @@ class KeyInput extends React.Component {
         document.addEventListener('keydown', listener);
     }
 
+    handleDelete () {
+        this.setState({
+            shortcut: null
+        });
+        this.props.onChange(null);
+    }
+
     render () {
         return (
-            <button
-                className={styles.container}
-                onClick={this.handleClick}
-            >
-                {this.state.listening ? <FormattedMessage
-                    defaultMessage="Listening..."
-                    id="nb.keyInput.listening"
-                /> : this.state.shortcut ? (
-                    <span>{this.state.shortcut.toString()}</span>
-                ) : (
-                    <FormattedMessage
-                        defaultMessage="Not set"
-                        id="nb.keyInput.none"
+            <div>
+                <button
+                    className={styles.container}
+                    onClick={this.handleClick}
+                >
+                    {this.state.listening ? <FormattedMessage
+                        defaultMessage="Listening..."
+                        id="nb.keyInput.listening"
+                    /> : this.state.shortcut ? (
+                        <span>{this.state.shortcut.toString()}</span>
+                    ) : (
+                        <FormattedMessage
+                            defaultMessage="Not set"
+                            id="nb.keyInput.none"
+                        />
+                    )}
+                </button>
+                <button
+                    className={styles.deleteButton}
+                    onClick={this.handleDelete}
+                >
+                    <img
+                        src={deleteIcon}
+                        alt="Delete"
+                        draggable={false}
                     />
-                )}
-            </button>
+                </button>
+            </div>
         );
     }
 }

@@ -12,7 +12,7 @@ import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.js
 
 import styles from './controls.css';
 import {defaultKeybinds, registerKeybind} from '../../lib/nb-keybinds.js';
-import { KeyboardShortcutClass } from '../nb-editor-settings-modal/key-input.jsx';
+import { KeybindClass } from '../nb-editor-settings-modal/key-input.jsx';
 
 const messages = defineMessages({
     goTitle: {
@@ -89,7 +89,7 @@ const Controls = function (props) {
                 <GreenFlag
                     active={active}
                     title={intl.formatMessage(messages.goTitle, {
-                        shortcut: new KeyboardShortcutClass(preferences["keybind-start-project"] ?? defaultKeybinds["start-project"]).toString()
+                        shortcut: new KeybindClass(preferences["keybind-start-project"] ?? defaultKeybinds["start-project"]).toString()
                     })}
                     onClick={onGreenFlagClick}
                 />
@@ -111,7 +111,7 @@ const Controls = function (props) {
                 <StopAll
                     active={active}
                     title={intl.formatMessage(messages.stopTitle, {
-                        shortcut: new KeyboardShortcutClass(preferences["keybind-stop-project"] ?? defaultKeybinds["stop-project"]).toString()
+                        shortcut: new KeybindClass(preferences["keybind-stop-project"] ?? defaultKeybinds["stop-project"]).toString()
                     })}
                     onClick={onStopAllClick}
                 />
