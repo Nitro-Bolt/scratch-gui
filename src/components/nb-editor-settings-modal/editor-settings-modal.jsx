@@ -87,6 +87,14 @@ const messages = defineMessages({
         id: 'nb.editorSettings.canvasSizeMultiplierHelp',
         defaultMessage: 'How large the canvas is in the paint editor relative to the stage.'
     },
+    pixelUploadSize: {
+        id: 'nb.editorSettings.pixelUploadSize',
+        defaultMessage: 'Bitmap file upload doubling'
+    },
+    pixelUploadSizeHelp: {
+        id: 'nb.editorSettings.pixelUploadSizeHelp',
+        defaultMessage: 'Toggle whether Bitmap file uploads in the paint editor are doubled or not, and change how it displays their sizes.'
+    },
     keymap: {
         id: 'nb.editorSettings.keymapSection',
         defaultMessage: 'Keymap'
@@ -1328,6 +1336,21 @@ const EditorSettingsModal = props => {
                             defaultMessage="How large the canvas is in the paint editor relative to the stage."
                         />
                     }
+                />
+                <BooleanSetting
+                    value={!!props.preferences['paint-pixel-upload-size']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.pixelUploadSize"
+                        defaultMessage="Bitmap file upload doubling"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.pixelUploadSizeHelp"
+                        defaultMessage="Toggle whether Bitmap file uploads in the paint editor are doubled or not, and change how it displays their sizes."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('paint-pixel-upload-size', e.target.checked);
+                    }}
                 />
                 <BooleanSetting
                     value={!!props.preferences['paint-no-swap-button']}

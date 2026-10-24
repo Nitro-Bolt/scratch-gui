@@ -107,7 +107,7 @@ const createVMAsset = function (storage, assetType, dataFormat, data) {
  * adding the costume to the VM and handling other UI flow that should come after adding the costume
  * @param {Function} handleError The function to execute if there is an error parsing the costume
  */
-const costumeUpload = function (fileData, fileType, vm, handleCostume, handleError = () => {}) {
+const costumeUpload = function (fileData, fileType, vm, handleCostume, handleError = () => {}, pixelUploadSize) {
     const storage = vm.runtime.storage;
     let costumeFormat = null;
     let assetType = null;
@@ -195,20 +195,25 @@ const costumeUpload = function (fileData, fileType, vm, handleCostume, handleErr
     } else {
         // otherwise it's a bitmap (extra gross edition)
         bitmapAdapter.importBitmap(fileData, fileType).then(async dataBuffer => {
-            const bitmap = await createImageBitmap(
-                new Blob([dataBuffer], {type: fileType})
-            );
-            const newWidth = bitmap.width / 2; // Halve bitmap size to adjust for unexpected doubling of uploaded images' sizes
-            const newHeight = bitmap.height / 2;
+            console.log(pixelUploadSize)
+            if (pixelUploadSize) {
+                const bitmap = await createImageBitmap(
+                    new Blob([dataBuffer], {type: fileType})
+                );
+                const newWidth = bitmap.width / 2; // Halve bitmap size to adjust for unexpected doubling of uploaded images' sizes
+                const newHeight = bitmap.height / 2;
 
-            const canvas = new OffscreenCanvas(newWidth, newHeight); // Draw the bitmap on a new canvas of the new dimensions
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(bitmap, 0, 0, newWidth, newHeight);
-            bitmap.close();
+                const canvas = new OffscreenCanvas(newWidth, newHeight); // Draw the bitmap on a new canvas of the new dimensions
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(bitmap, 0, 0, newWidth, newHeight);
+                bitmap.close();
 
-            const blob = await canvas.convertToBlob({type: fileType});
-            const resized = new Uint8Array(await blob.arrayBuffer());
-            addCostumeFromBuffer(resized);
+                const blob = await canvas.convertToBlob({type: fileType});
+                const resized = new Uint8Array(await blob.arrayBuffer());
+                addCostumeFromBuffer(resized);
+            } else {
+                addCostumeFromBuffer(dataBuffer);
+            }
         }).catch(handleError);
     }
 };
@@ -307,7 +312,7 @@ const spriteUpload = function (fileData, fileType, spriteName, vm, handleSprite,
         costumeUpload(fileData, fileType, vm, vmCostumes => {
             vmCostumes.forEach((costume, i) => {
                 costume.name = `${spriteName}${i ? i + 1 : ''}`;
-            });
+            }, pixelUploadSize);
             const newSprite = {
                 name: spriteName,
                 isStage: false,
