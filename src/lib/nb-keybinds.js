@@ -29,7 +29,7 @@ export const defaultKeybinds = {
     'new-window': {ctrl: true, alt: true, key: 'n'},
     'package-project': {ctrl: true, key: 'Enter'},
     'pause-project': {disabled: true},
-    'project-full-screen': {alt: true, key: 'Enter'},
+    'project-full-screen': {key: 'F11'},
     'save': {ctrl: true, key: 's'},
     'start-project': {ctrl: true, key: ' '},
     'step-project': {disabled: true},
