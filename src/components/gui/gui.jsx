@@ -243,10 +243,9 @@ const GUIComponent = props => {
         onExtensionButtonClick
     );
 
-    registerKeyboardShortcut({
-        ctrl: true,
-        key: "/"
-    }, () => {
+    registerKeyboardShortcut(
+        props.preferences['keybind-create-comment'] ?? defaultKeyboardShortcuts['create-comment'],
+        () => {
         const ws = window.Blockly.getMainWorkspace();
         const goog = window.Blockly.goog;
         const Blockly = window.ScratchBlocks;

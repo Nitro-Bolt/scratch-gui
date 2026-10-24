@@ -1525,6 +1525,23 @@ const EditorSettingsModal = props => {
                         />
                     </Box>
                 </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.keymap.blockEditor"
+                        defaultMessage="Block Editor"
+                    />}
+                >
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="Create comment"
+                            id="nb.editorSettings.keymap.createComment"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-create-comment', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-create-comment'] ?? defaultKeyboardShortcuts['create-comment']}
+                        />
+                    </Box>
+                </Section>
             </Box>
         }
     ];
