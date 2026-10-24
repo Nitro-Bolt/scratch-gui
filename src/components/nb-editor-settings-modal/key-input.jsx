@@ -15,7 +15,8 @@ export class KeybindClass {
         this.ctrl = object.ctrl;
         this.shift = object.shift;
         this.alt = object.alt;
-        this.key = object.key.toString().toLowerCase();
+        this.key = object.key?.toString().toLowerCase();
+        this.disabled = object.disabled;
     }
 
     toString () {
@@ -23,7 +24,7 @@ export class KeybindClass {
             this.ctrl ? 'Ctrl' : false,
             this.shift ? 'Shift' : false,
             this.alt ? 'Alt' : false,
-            this.key.toUpperCase()
+            this.key?.toUpperCase()
                 .replace('ENTER', 'Enter')
                 .replace(' ', 'Space')
         ].filter(v => v).join('+');
@@ -34,7 +35,8 @@ export class KeybindClass {
             ctrl: this.ctrl,
             shift: this.shift,
             alt: this.alt,
-            key: this.key
+            key: this.key,
+            disabled: this.disabled
         };
     }
 }
@@ -49,14 +51,14 @@ class KeyInput extends React.Component {
         ]);
         this.state = {
             listening: false,
-            shortcut: props.shortcut ? new KeybindClass(props.shortcut) : null
+            shortcut: props.shortcut ? new KeybindClass(props.shortcut) : {disabled: true}
         };
     }
 
     handleChange (e) {
         let shortcut;
         if (e.key === 'Backspace') {
-            shortcut = null;
+            shortcut = {disabled: true};
         } else if (e.key !== 'Escape') {
             shortcut = new KeybindClass({
                 ctrl: e.ctrlKey,
@@ -82,10 +84,9 @@ class KeyInput extends React.Component {
     }
 
     handleDelete () {
-        this.setState({
-            shortcut: null
-        });
-        this.props.onChange(null);
+        const shortcut = {disabled: true};
+        this.setState({shortcut});
+        this.props.onChange(shortcut);
     }
 
     render () {
@@ -98,13 +99,16 @@ class KeyInput extends React.Component {
                     {this.state.listening ? <FormattedMessage
                         defaultMessage="Listening..."
                         id="nb.keyInput.listening"
-                    /> : this.state.shortcut ? (
+                    /> : !this.state.shortcut.disabled ? (
                         <span>{this.state.shortcut.toString()}</span>
                     ) : (
-                        <FormattedMessage
-                            defaultMessage="Not set"
-                            id="nb.keyInput.none"
-                        />
+                        <span className={styles.notSet}>
+                            <FormattedMessage
+                                defaultMessage="Not set"
+                                description="Indicates that no keybind has been set for a specific action"
+                                id="nb.keyInput.none"
+                            />
+                        </span>
                     )}
                 </button>
                 <button

@@ -24,6 +24,10 @@
     border-color: $looks-secondary;
 }
 
+.not-set {
+    opacity: 0.5;
+}
+
 .delete-button {
     appearance: none;
     background: none;

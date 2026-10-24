@@ -50,6 +50,7 @@ export const registerKeybind = (shortcut, callback) => {
     ) => {
         // eslint-disable-next-line no-undefined
         if ([null, undefined].includes(shortcut)) return;
+        if (shortcut.disabled) return;
 
         const ctrl = navigator.userAgent.includes('Mac') ? event.metaKey : event.ctrlKey;
 
