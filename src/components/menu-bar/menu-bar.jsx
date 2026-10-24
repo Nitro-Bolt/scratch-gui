@@ -1163,6 +1163,7 @@ MenuBar.propTypes = {
     showComingSoon: PropTypes.bool,
     username: PropTypes.string,
     userOwnsProject: PropTypes.bool,
+    preferences: PropTypes.object,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 
@@ -1202,7 +1203,8 @@ const mapStateToProps = (state, ownProps) => {
         mode1920: isTimeTravel1920(state),
         mode1990: isTimeTravel1990(state),
         mode2020: isTimeTravel2020(state),
-        modeNow: isTimeTravelNow(state)
+        modeNow: isTimeTravelNow(state),
+        preferences: state.scratchGui.preferences
     };
 };
 
