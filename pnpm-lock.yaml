@@ -202,11 +202,7 @@ importers:
         version: https://codeload.github.com/Nitro-Bolt/scratch-render/tar.gz/ffbea37972a309c0990d916665fe12d8b608c3c6(webpack@4.47.0)
       scratch-vm:
         specifier: github:Nitro-Bolt/scratch-vm#develop
-<<<<<<< HEAD
         version: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/e266f9a501051ea6ecaa3c5194586ca9db7ead40(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961))(webpack@4.47.0)
-=======
-        version: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/ba36a27b6271399c625cb2db2e8c57df3231b4a8(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961))(webpack@4.47.0)
->>>>>>> 26e48dff8 (chore: update scratch-vm)
       style-loader:
         specifier: ^0.23.0
         version: 0.23.1
@@ -5223,8 +5219,8 @@ packages:
   scratch-translate-extension-languages@1.0.7:
     resolution: {integrity: sha512-6+bQU9iVYv23T8J0SjpV6MTugm0y8myh/4DPgu1BGfccysdkaWzu3MkNGQyQRUlbqAiW9wM7ctfv3USPEkzTgg==}
 
-  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/ba36a27b6271399c625cb2db2e8c57df3231b4a8:
-    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/ba36a27b6271399c625cb2db2e8c57df3231b4a8}
+  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/e266f9a501051ea6ecaa3c5194586ca9db7ead40:
+    resolution: {tarball: https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/e266f9a501051ea6ecaa3c5194586ca9db7ead40}
     version: 2.1.46
     peerDependencies:
       '@turbowarp/scratch-svg-renderer': ^1.1.0
@@ -12358,7 +12354,7 @@ snapshots:
 
   scratch-translate-extension-languages@1.0.7: {}
 
-  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/ba36a27b6271399c625cb2db2e8c57df3231b4a8(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961))(webpack@4.47.0):
+  scratch-vm@https://codeload.github.com/Nitro-Bolt/scratch-vm/tar.gz/e266f9a501051ea6ecaa3c5194586ca9db7ead40(@turbowarp/scratch-svg-renderer@1.1.0(scratch-render-fonts@https://codeload.github.com/TurboWarp/scratch-render-fonts/tar.gz/7b6768fc6dfef6b343a06f992587b74807043961))(webpack@4.47.0):
     dependencies:
       '@turbowarp/json': 0.1.2
       '@turbowarp/jszip': 3.12.0
