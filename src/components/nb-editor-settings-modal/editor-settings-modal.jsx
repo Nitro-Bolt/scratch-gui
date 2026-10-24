@@ -1574,6 +1574,10 @@ const EditorSettingsModal = props => {
                             defaultMessage="Step through project"
                             id="nb.editorSettings.keymap.stepProject"
                         />}
+                        help={<FormattedMessage
+                            defaultMessage="Only available with the compiler disabled."
+                            id="nb.editorSettings.keymap.stepProjectHelp"
+                        />}
                         onSetPreference={props.onSetPreference}
                         preferences={props.preferences}
                         shortcutId="step-project"
