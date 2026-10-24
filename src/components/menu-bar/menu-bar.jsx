@@ -216,7 +216,7 @@ MenuItemLink.propTypes = {
 
 const MenuBarKeybindWrapper = props => {
     registerKeybind(props.preferences['keybind-new-project'] ?? defaultKeybinds['new-project'], props.onClickNew);
-    registerKeybind(props.preferences['keybind-new-window'] ?? defaultKeybinds['new-window'], isScratchDesktop() ? props.onClickNewWindow : () => {});
+    registerKeybind(props.preferences['keybind-new-window'] ?? defaultKeybinds['new-window'], props.onClickNewWindow);
     registerKeybind(props.preferences['keybind-save'] ?? defaultKeybinds['save'], props.onClickSave);
     registerKeybind(props.preferences['keybind-open-project'] ?? defaultKeybinds['open-project'], props.onStartSelectingFileUpload);
 
@@ -260,8 +260,10 @@ class MenuBar extends React.Component {
         this.props.onRequestCloseFile();
     }
     handleClickNewWindow () {
-        this.props.onClickNewWindow();
-        this.props.onRequestCloseFile();
+        if (this.props.onClickNewWindow) {
+            this.props.onClickNewWindow();
+            this.props.onRequestCloseFile();
+        }
     }
     handleClickRemix () {
         this.props.onClickRemix();
