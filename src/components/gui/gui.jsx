@@ -303,6 +303,29 @@ const GUIComponent = props => {
         addWsComment();
     });
 
+    registerKeyboardShortcut(
+        props.preferences['keybind-create-group'] ?? defaultKeyboardShortcuts['create-group'],
+        () => {
+        const ws = window.Blockly.getMainWorkspace();
+        const goog = window.Blockly.goog;
+        const Blockly = window.ScratchBlocks;
+
+        let rect = ws.getInjectionDiv().getBoundingClientRect();
+        let point = new goog.math.Coordinate(
+            window.mouseCoords.x - rect.left - (240 / 2),
+            window.mouseCoords.y - rect.top - (21 / 2)
+        );
+        let position = goog.math.Coordinate.difference(
+            point, ws.getOriginOffsetInPixels()).scale(1 / ws.scale);
+        Blockly.Group.fromJSON(ws, {
+            title: 'Group',
+            x: position.x,
+            y: position.y,
+            width: 360,
+            height: 240
+        }, true);
+    });
+
     const [resizingStage, setResizingStage] = useState(false);
     const [stageSize, setStageSize] = useState(480);
 

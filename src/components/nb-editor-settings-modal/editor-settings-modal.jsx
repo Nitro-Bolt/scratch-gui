@@ -1541,6 +1541,16 @@ const EditorSettingsModal = props => {
                             shortcut={props.preferences['keybind-create-comment'] ?? defaultKeyboardShortcuts['create-comment']}
                         />
                     </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="Create group"
+                            id="nb.editorSettings.keymap.createGroup"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-create-group', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-create-group'] ?? defaultKeyboardShortcuts['create-group']}
+                        />
+                    </Box>
                 </Section>
             </Box>
         }

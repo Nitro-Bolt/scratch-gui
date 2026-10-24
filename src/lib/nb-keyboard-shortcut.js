@@ -16,6 +16,7 @@ import {useCallback, useEffect} from 'react';
 export const defaultKeyboardShortcuts = {
     'change-sprite-name': {key: 'F2'},
     'create-comment': {ctrl: true, key: '/'},
+    'create-group': {ctrl: true, key: 'g'},
     'open-backpack': {ctrl: true, shift: true, key: 'b'},
     'open-debugger': {ctrl: true, shift: true, key: 'd'},
     'open-editor-settings': {ctrl: true, key: ','},
