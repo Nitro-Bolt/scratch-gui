@@ -340,6 +340,8 @@ const GUIComponent = props => {
         }
     );
 
+    registerKeybind(props.preferences['keybind-package-project'] ?? defaultKeybinds['package-project'], onClickPackager);
+
     const [resizingStage, setResizingStage] = useState(false);
     const [stageSize, setStageSize] = useState(480);
 

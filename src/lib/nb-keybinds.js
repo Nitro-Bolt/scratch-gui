@@ -27,6 +27,7 @@ export const defaultKeybinds = {
     'open-project': {ctrl: true, key: 'o'},
     'new-project': {ctrl: true, shift: true, key: 'n'},
     'new-window': {ctrl: true, alt: true, key: 'n'},
+    'package-project': {ctrl: true, key: 'Enter'},
     'pause-project': {ctrl: true, shift: true, key: ' '},
     'project-full-screen': {alt: true, key: 'Enter'},
     'save': {ctrl: true, key: 's'},

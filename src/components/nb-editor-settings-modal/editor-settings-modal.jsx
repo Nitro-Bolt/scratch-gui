@@ -1509,12 +1509,22 @@ const EditorSettingsModal = props => {
                     </Box>
                     <Box className={styles.keySetting}>
                         <FormattedMessage
-                            defaultMessage="Save to computer"
+                            defaultMessage="Save project"
                             id="nb.editorSettings.keymap.save"
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-save', shortcut.toJSON())}
                             shortcut={props.preferences['keybind-save'] ?? defaultKeybinds['save']}
+                        />
+                    </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="Package project"
+                            id="nb.editorSettings.keymap.packageProject"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-package-project', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-package-project'] ?? defaultKeybinds['package-project']}
                         />
                     </Box>
                 </Section>
