@@ -28,7 +28,7 @@
     opacity: 0.5;
 }
 
-.delete-button {
+.action-button {
     appearance: none;
     background: none;
     border: none;
@@ -41,6 +41,6 @@
     flex-shrink: 0;
 }
 
-.delete-button:hover {
+.action-button:hover {
     background-color: $ui-black-transparent;
 }

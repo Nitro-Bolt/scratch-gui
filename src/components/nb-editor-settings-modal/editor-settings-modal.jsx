@@ -428,6 +428,7 @@ const KeybindSetting = ({
             <KeyInput
                 onChange={shortcut => onSetPreference(`keybind-${shortcutId}`, !shortcut.disabled ? shortcut.toJSON() : {disabled: true})}
                 shortcut={preferences[`keybind-${shortcutId}`] ?? defaultKeybinds[shortcutId]}
+                shortcutId={shortcutId}
             />
         </Box>
     );

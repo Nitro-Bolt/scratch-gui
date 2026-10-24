@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import bindAll from 'lodash.bindall';
 import {FormattedMessage} from 'react-intl';
-import styles from './key-input.css';
+import { defaultKeybinds } from '../../lib/nb-keybinds';
 import deleteIcon from './delete.svg';
+import resetIcon from './reset.svg';
+import styles from './key-input.css';
 
 export class KeybindClass {
     ctrl;
@@ -47,7 +49,8 @@ class KeyInput extends React.Component {
         bindAll(this, [
             'handleChange',
             'handleClick',
-            'handleDelete'
+            'handleDelete',
+            'handleReset'
         ]);
         this.state = {
             listening: false,
@@ -89,6 +92,12 @@ class KeyInput extends React.Component {
         this.props.onChange(shortcut);
     }
 
+    handleReset () {
+        const shortcut = new KeybindClass(defaultKeybinds[this.props.shortcutId]);
+        this.setState({shortcut});
+        this.props.onChange(shortcut);
+    }
+
     render () {
         return (
             <div>
@@ -112,12 +121,20 @@ class KeyInput extends React.Component {
                     )}
                 </button>
                 <button
-                    className={styles.deleteButton}
+                    className={styles.actionButton}
                     onClick={this.handleDelete}
                 >
                     <img
                         src={deleteIcon}
-                        alt="Delete"
+                        draggable={false}
+                    />
+                </button>
+                <button
+                    className={styles.actionButton}
+                    onClick={this.handleReset}
+                >
+                    <img
+                        src={resetIcon}
                         draggable={false}
                     />
                 </button>
