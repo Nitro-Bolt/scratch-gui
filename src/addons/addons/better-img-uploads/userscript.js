@@ -165,19 +165,13 @@ export default async function ({ addon, console, msg }) {
         const STAGE_HEIGHT = 360;
         const STAGE_RATIO = STAGE_WIDTH / STAGE_HEIGHT;
 
-        // If neither dimension is larger than 2x corresponding stage dimension,
-        // this is an in-between image, return it at half the size (it likes to double)
-        if (oldWidth <= STAGE_WIDTH && oldHeight <= STAGE_HEIGHT) {
-          return { width: oldWidth / 2, height: oldHeight / 2 };
-        }
-
         const imageRatio = oldWidth / oldHeight;
         // Otherwise, figure out how to resize
         if (imageRatio >= STAGE_RATIO) {
           // Wide Image
           return {
-            width: STAGE_WIDTH,
-            height: Math.floor(STAGE_WIDTH / imageRatio),
+            width: STAGE_WIDTH / 2,
+            height: Math.floor(STAGE_WIDTH / imageRatio) / 2,
           };
         }
         // In this case we have either:
@@ -189,8 +183,8 @@ export default async function ({ addon, console, msg }) {
         // - A tall image
         // In any of these cases, resize the image to fit the height to double the stage height
         return {
-          width: Math.floor(STAGE_HEIGHT * imageRatio),
-          height: STAGE_HEIGHT,
+          width: Math.floor(STAGE_HEIGHT * imageRatio) / 2,
+          height: STAGE_HEIGHT / 2,
         };
       }
 

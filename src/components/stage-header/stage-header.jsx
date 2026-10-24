@@ -239,6 +239,7 @@ const StageHeaderComponent = function (props) {
                                 <Button
                                     className={classNames(styles.stageButton, styles.debuggerButton)}
                                     onClick={onOpenDebugger}
+                                    tabIndex={0}
                                 >
                                     <img
                                         alt={props.intl.formatMessage(messages.openDebuggerMessage)}

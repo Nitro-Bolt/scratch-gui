@@ -136,20 +136,15 @@ label:has(.sprite-input) {
 .camera-name-input {
     flex-grow: 1;
     width: 0;
-    pointer-events: none;
 }
 
 .camera-secondary {
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 0.5rem;
 }
 
 .camera-info .row-primary {
     flex-wrap: wrap;
-}
-
-.camera-info input {
-    pointer-events: none;
 }
 
 .collapse-button {
@@ -175,23 +170,4 @@ label:has(.sprite-input) {
 
 .collapse-button:hover .collapse-icon {
     opacity: 0.75;
-}
-
-@container (max-width: 360px) {
-    .row {
-        flex-wrap: wrap;
-        justify-content: flex-start;
-    }
-
-    .row-primary > .group:first-child {
-        flex-basis: 100%;
-    }
-
-    .row-primary > .group:first-child .sprite-input {
-        width: 100%;
-    }
-
-    .camera-name {
-        flex-basis: 100%;
-    }
 }

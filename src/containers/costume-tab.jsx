@@ -250,7 +250,7 @@ class CostumeTab extends React.Component {
                         this.props.onCloseImporting();
                     }
                 });
-            }, this.props.onCloseImporting);
+            }, this.props.onCloseImporting, this.props.pixelUploadSize);
         }, this.props.onCloseImporting);
     }
     handleFileUploadClick () {
@@ -353,9 +353,13 @@ class CostumeTab extends React.Component {
         const resolution = optResolution ? optResolution : 1;
         // Convert size to stage units by dividing by resolution
         // Round up width and height for scratch-flash compatibility
+        const xDim = Math.ceil(size[0] / resolution);
+        const yDim = Math.ceil(size[1] / resolution);
         // https://github.com/LLK/scratch-flash/blob/9fbac92ef3d09ceca0c0782f8a08deaa79e4df69/src/ui/media/MediaInfo.as#L224-L237
         // Additionally, the displayed size is doubled to reflect actual pixel values if the costume is bitmap (SVG already has the correct dimensions)
-        return `${Math.ceil(size[0] / resolution * optResolution)} x ${Math.ceil(size[1] / resolution * optResolution)}`;
+        return this.props.pixelUploadSize
+        ? `${xDim * optResolution} x ${yDim * optResolution}`
+        : `${xDim} x ${yDim}`
     }
     render () {
         const {
@@ -454,6 +458,7 @@ CostumeTab.propTypes = {
     editingTarget: PropTypes.string,
     intl: intlShape,
     isRtl: PropTypes.bool,
+    pixelUploadSize: PropTypes.bool,
     onActivateSoundsTab: PropTypes.func.isRequired,
     onActivateAssetsTab: PropTypes.func.isRequired,
     onCloseImporting: PropTypes.func.isRequired,
@@ -482,7 +487,8 @@ const mapStateToProps = state => ({
     isRtl: state.locales.isRtl,
     sprites: state.scratchGui.targets.sprites,
     stage: state.scratchGui.targets.stage,
-    dragging: state.scratchGui.assetDrag.dragging
+    dragging: state.scratchGui.assetDrag.dragging,
+    pixelUploadSize: state.scratchGui.preferences['paint-pixel-upload-size']
 });
 
 const mapDispatchToProps = dispatch => ({

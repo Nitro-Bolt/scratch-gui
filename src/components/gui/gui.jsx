@@ -430,7 +430,10 @@ const GUIComponent = props => {
                                             {
                                                 [styles.compact]: props.preferences['compact-tabs'],
                                                 [styles.leftHiddenOffset]: stageSize === 0 &&
-                                                    props.preferences['stage-left']
+                                                    props.preferences['stage-left'],
+                                                [styles.debuggerEnabled]: stageSize === 0 &&
+                                                    props.preferences['stage-left'] &&
+                                                    props.preferences['enable-debugger']
                                             }
                                         )
                                     }

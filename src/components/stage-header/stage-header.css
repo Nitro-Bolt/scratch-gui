@@ -82,6 +82,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    outline: none;
 }
 
 .log-count {

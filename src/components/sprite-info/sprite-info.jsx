@@ -266,14 +266,16 @@ class SpriteInfo extends React.Component {
         const formatCameraNumber = value => Math.round(Number(value) * 100) / 100;
         const cameraPosition = (axis, icon, value) => (
             <div className={styles.group}>
-                <div className={styles.iconWrapper}>
-                    <img
-                        aria-hidden="true"
-                        className={classNames(styles[`${axis}Icon`], styles.icon)}
-                        src={icon}
-                        draggable={false}
-                    />
-                </div>
+                {icon &&
+                    <div className={styles.iconWrapper}>
+                        <img
+                            aria-hidden="true"
+                            className={classNames(styles[`${axis}Icon`], styles.icon)}
+                            src={icon}
+                            draggable={false}
+                        />
+                    </div>
+                }
                 <Label text={axis}>
                     <Input
                         small
@@ -299,44 +301,51 @@ class SpriteInfo extends React.Component {
                             />
                         </Label>
                     </div>
-                    {cameraPosition('x', xIcon, camera.x)}
-                    {cameraPosition('y', yIcon, camera.y)}
+                    {stageSize > smallThreshold - 90 && (stageSize > smallThreshold ? cameraPosition('x', xIcon, camera.x) : cameraPosition('x', null, camera.x))}
+                    {stageSize > smallThreshold && cameraPosition('y', yIcon, camera.y)}
                 </div>
                 <div className={classNames(styles.row, styles.cameraSecondary)}>
-                    <div className={classNames(styles.group, styles.largerInput)}>
-                        <Label
-                            secondary
-                            text={zoomLabel}
-                        >
-                            <Input
-                                small
-                                readOnly
-                                tabIndex="-1"
-                                type="number"
-                                value={formatCameraNumber(camera.zoom)}
-                            />
-                        </Label>
-                    </div>
-                    <div className={classNames(styles.group, styles.largerInput)}>
-                        <Label
-                            secondary
-                            text={directionLabel}
-                        >
-                            <Input
-                                small
-                                readOnly
-                                tabIndex="-1"
-                                type="number"
-                                value={formatCameraNumber(camera.direction)}
-                            />
-                        </Label>
-                    </div>
+                    {stageSize > smallThreshold - 90 ?
+                        <div className={classNames(styles.group, styles.largerInput)}>
+                            <Label
+                                secondary
+                                text={zoomLabel}
+                            >
+                                <Input
+                                    small
+                                    readOnly
+                                    tabIndex="-1"
+                                    type="number"
+                                    value={formatCameraNumber(camera.zoom)}
+                                />
+                            </Label>
+                        </div>
+                    :
+                        cameraPosition('x', null, camera.x)
+                    }
+                    {stageSize > smallThreshold &&
+                        <div className={classNames(styles.group, styles.largerInput)}>
+                            <Label
+                                secondary
+                                text={directionLabel}
+                            >
+                                <Input
+                                    small
+                                    readOnly
+                                    tabIndex="-1"
+                                    type="number"
+                                    value={formatCameraNumber(camera.direction)}
+                                />
+                            </Label>
+                        </div>
+                    }
+                    {stageSize <= smallThreshold && cameraPosition('y', null, camera.y)}
                 </div>
             </div>
         ) : null;
 
         let spriteInfo;
-        if (stageSize <= smallThreshold && stageSize > smallThreshold - 100) {
+        if (stageSize <= smallThreshold && stageSize > smallThreshold - 90) {
             spriteInfo = (
                 <React.Fragment>
                     <div
@@ -373,7 +382,7 @@ class SpriteInfo extends React.Component {
                         </div>
                     </div>
                     <div className={classNames(styles.row, styles.rowSecondary)}>
-                        {stageSize > smallThreshold - 100 && visibility}
+                        {stageSize > smallThreshold - 90 && visibility}
                         {xPosition}
                         {yPosition}
                     </div>
