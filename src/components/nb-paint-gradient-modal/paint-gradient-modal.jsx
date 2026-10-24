@@ -4,6 +4,7 @@ import React from 'react';
 
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
+import FancyColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 import styles from './paint-gradient-modal.css';
 import arrowIcon from './icon--arrow.svg';
 
@@ -13,10 +14,9 @@ const gradientToCSS = gradient => `${gradient.type}-gradient(${
 
 const PaintGradientModal = props => {
     const update = changes => props.onChange({...props.gradient, ...changes});
-    const handleStopColorChange = event => {
-        const index = Number(event.currentTarget.dataset.index);
+    const handleStopColorChange = (index, color) => {
         const stops = props.gradient.stops.map((item, itemIndex) =>
-            itemIndex === index ? {...item, color: event.currentTarget.value} : item);
+            itemIndex === index ? {...item, color} : item);
         update({stops});
     };
     return (
@@ -72,14 +72,10 @@ const PaintGradientModal = props => {
                             className={styles.card}
                             key={index}
                         >
-                            <input
-                                className={styles.colorPicker}
-                                data-index={index}
-                                style={{backgroundColor: stop.color}}
-                                type="color"
+                            <FancyColorPicker
                                 value={stop.color.substr(0, 7)}
-                                onChange={handleStopColorChange}
-                                onInput={handleStopColorChange}
+                                showIcon={false}
+                                onChange={color => handleStopColorChange(index, color)}
                             />
                             <input
                                 max={100}

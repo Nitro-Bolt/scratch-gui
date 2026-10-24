@@ -19,6 +19,7 @@ import yIcon from './icon--y.svg';
 import showIcon from '!../../lib/tw-recolor/build!./icon--show.svg';
 import hideIcon from '!../../lib/tw-recolor/build!./icon--hide.svg';
 import ToggleButtons from '../toggle-buttons/toggle-buttons.jsx';
+import collapseIcon from './icon--collapse.svg';
 
 const BufferedInput = BufferedInputHOC(Input);
 
@@ -37,14 +38,42 @@ const messages = defineMessages({
         id: 'gui.SpriteInfo.hideSpriteAction',
         defaultMessage: 'Hide sprite',
         description: 'Tooltip for hide sprite button'
+    },
+    collapseSpriteProperties: {
+        id: 'gui.SpriteInfo.collapseSpriteProperties',
+        defaultMessage: 'Collapse sprite properties',
+        description: 'Tooltip for collapsing the sprite properties panel'
+    },
+    expandSpriteProperties: {
+        id: 'gui.SpriteInfo.expandSpriteProperties',
+        defaultMessage: 'Expand sprite properties',
+        description: 'Tooltip for expanding the sprite properties panel'
+    },
+    collapseCameraProperties: {
+        id: 'gui.SpriteInfo.collapseCameraProperties',
+        defaultMessage: 'Collapse camera properties',
+        description: 'Tooltip for collapsing the camera properties panel'
+    },
+    expandCameraProperties: {
+        id: 'gui.SpriteInfo.expandCameraProperties',
+        defaultMessage: 'Expand camera properties',
+        description: 'Tooltip for expanding the camera properties panel'
     }
 });
 
 class SpriteInfo extends React.Component {
     shouldComponentUpdate (nextProps) {
         return (
+            this.props.cameraPropertiesCollapsed !== nextProps.cameraPropertiesCollapsed ||
+            this.props.spritePropertiesCollapsed !== nextProps.spritePropertiesCollapsed ||
             this.props.rotationStyle !== nextProps.rotationStyle ||
             this.props.disabled !== nextProps.disabled ||
+            this.props.cameraExtensionLoaded !== nextProps.cameraExtensionLoaded ||
+            (this.props.camera && this.props.camera.name) !== (nextProps.camera && nextProps.camera.name) ||
+            (this.props.camera && this.props.camera.x) !== (nextProps.camera && nextProps.camera.x) ||
+            (this.props.camera && this.props.camera.y) !== (nextProps.camera && nextProps.camera.y) ||
+            (this.props.camera && this.props.camera.zoom) !== (nextProps.camera && nextProps.camera.zoom) ||
+            (this.props.camera && this.props.camera.direction) !== (nextProps.camera && nextProps.camera.direction) ||
             this.props.name !== nextProps.name ||
             this.props.stageSize !== nextProps.stageSize ||
             this.props.visible !== nextProps.visible ||
@@ -81,6 +110,27 @@ class SpriteInfo extends React.Component {
                 defaultMessage="Size"
                 description="Sprite info size label"
                 id="gui.SpriteInfo.size"
+            />
+        );
+        const cameraLabel = (
+            <FormattedMessage
+                defaultMessage="Camera"
+                description="Sprite info bound camera label"
+                id="gui.SpriteInfo.camera"
+            />
+        );
+        const zoomLabel = (
+            <FormattedMessage
+                defaultMessage="Zoom"
+                description="Sprite info camera zoom label"
+                id="gui.SpriteInfo.cameraZoom"
+            />
+        );
+        const directionLabel = (
+            <FormattedMessage
+                defaultMessage="Direction"
+                description="Sprite info camera direction label"
+                id="gui.SpriteInfo.cameraDirection"
             />
         );
 
@@ -212,9 +262,83 @@ class SpriteInfo extends React.Component {
             </div>
         );
 
+        const camera = this.props.camera;
+        const formatCameraNumber = value => Math.round(Number(value) * 100) / 100;
+        const cameraPosition = (axis, icon, value) => (
+            <div className={styles.group}>
+                <div className={styles.iconWrapper}>
+                    <img
+                        aria-hidden="true"
+                        className={classNames(styles[`${axis}Icon`], styles.icon)}
+                        src={icon}
+                        draggable={false}
+                    />
+                </div>
+                <Label text={axis}>
+                    <Input
+                        small
+                        readOnly
+                        tabIndex="-1"
+                        type="number"
+                        value={formatCameraNumber(value)}
+                    />
+                </Label>
+            </div>
+        );
+        const cameraInfo = this.props.cameraExtensionLoaded && !this.props.disabled ? (
+            <div className={styles.cameraInfo}>
+                <div className={classNames(styles.row, styles.rowPrimary)}>
+                    <div className={classNames(styles.group, styles.cameraName)}>
+                        <Label text={cameraLabel}>
+                            <Input
+                                readOnly
+                                className={styles.cameraNameInput}
+                                tabIndex="-1"
+                                type="text"
+                                value={camera.name}
+                            />
+                        </Label>
+                    </div>
+                    {cameraPosition('x', xIcon, camera.x)}
+                    {cameraPosition('y', yIcon, camera.y)}
+                </div>
+                <div className={classNames(styles.row, styles.cameraSecondary)}>
+                    <div className={classNames(styles.group, styles.largerInput)}>
+                        <Label
+                            secondary
+                            text={zoomLabel}
+                        >
+                            <Input
+                                small
+                                readOnly
+                                tabIndex="-1"
+                                type="number"
+                                value={formatCameraNumber(camera.zoom)}
+                            />
+                        </Label>
+                    </div>
+                    <div className={classNames(styles.group, styles.largerInput)}>
+                        <Label
+                            secondary
+                            text={directionLabel}
+                        >
+                            <Input
+                                small
+                                readOnly
+                                tabIndex="-1"
+                                type="number"
+                                value={formatCameraNumber(camera.direction)}
+                            />
+                        </Label>
+                    </div>
+                </div>
+            </div>
+        ) : null;
+
+        let spriteInfo;
         if (stageSize <= smallThreshold && stageSize > smallThreshold - 100) {
-            return (
-                <Box className={styles.spriteInfo}>
+            spriteInfo = (
+                <React.Fragment>
                     <div
                         className={classNames(styles.row, styles.rowPrimary, styles.rowSmall)}
                     >
@@ -233,13 +357,11 @@ class SpriteInfo extends React.Component {
                         {size}
                         {yPosition}
                     </div>
-                </Box>
+                </React.Fragment>
             );
-        }
-
-        if (stageSize <= smallThreshold) {
-            return (
-                <Box className={styles.spriteInfo}>
+        } else if (stageSize <= smallThreshold) {
+            spriteInfo = (
+                <React.Fragment>
                     <div className={classNames(styles.row, styles.rowPrimary)}>
                         <div
                             className={styles.group}
@@ -255,50 +377,122 @@ class SpriteInfo extends React.Component {
                         {xPosition}
                         {yPosition}
                     </div>
-                </Box>
+                </React.Fragment>
+            );
+        } else {
+            spriteInfo = (
+                <React.Fragment>
+                    <div className={classNames(styles.row, styles.rowPrimary)}>
+                        <div
+                            className={styles.group}
+                            style={{
+                                flexGrow: 1
+                            }}
+                        >
+                            <Label
+                                above={labelAbove}
+                                text={sprite}
+                            >
+                                {spriteNameInput}
+                            </Label>
+                        </div>
+                        {xPosition}
+                        {yPosition}
+                    </div>
+                    <div className={classNames(styles.row, styles.rowSecondary)}>
+                        <div className={labelAbove ? styles.column : styles.group}>
+                            {
+                                stageSize > smallThreshold ?
+                                    <Label
+                                        secondary
+                                        text={showLabel}
+                                    /> :
+                                    null
+                            }
+                            {visibility}
+                        </div>
+                        {size}
+                        {direction}
+                    </div>
+                </React.Fragment>
             );
         }
 
+        const collapseButton = (collapsed, onClick, collapseMessage, expandMessage) => (
+            <button
+                aria-expanded={!collapsed}
+                className={styles.collapseButton}
+                title={this.props.intl.formatMessage(collapsed ? expandMessage : collapseMessage)}
+                type="button"
+                onClick={onClick}
+            >
+                <img
+                    className={classNames(styles.collapseIcon, {
+                        [styles.collapseIconCollapsed]: collapsed
+                    })}
+                    draggable={false}
+                    src={collapseIcon}
+                />
+            </button>
+        );
+
         return (
             <Box className={styles.spriteInfo}>
-                <div className={classNames(styles.row, styles.rowPrimary)}>
+                <div className={styles.propertiesPanel}>
                     <div
-                        className={styles.group}
-                        style={{
-                            flexGrow: 1
-                        }}
+                        className={classNames(styles.collapsibleContent, {
+                            [styles.collapsibleContentCollapsed]: this.props.spritePropertiesCollapsed
+                        })}
                     >
-                        <Label
-                            above={labelAbove}
-                            text={sprite}
+                        <div className={styles.collapsibleContentInner}>
+                            <div className={styles.propertiesContent}>
+                                {spriteInfo}
+                            </div>
+                        </div>
+                    </div>
+                    {collapseButton(
+                        this.props.spritePropertiesCollapsed,
+                        this.props.onToggleSpriteProperties,
+                        messages.collapseSpriteProperties,
+                        messages.expandSpriteProperties
+                    )}
+                </div>
+                {cameraInfo && (
+                    <div className={styles.cameraPanel}>
+                        <div
+                            className={classNames(styles.collapsibleContent, {
+                                [styles.collapsibleContentCollapsed]: this.props.cameraPropertiesCollapsed
+                            })}
                         >
-                            {spriteNameInput}
-                        </Label>
+                            <div className={styles.collapsibleContentInner}>
+                                <div className={styles.cameraContent}>
+                                    {cameraInfo}
+                                </div>
+                            </div>
+                        </div>
+                        {collapseButton(
+                            this.props.cameraPropertiesCollapsed,
+                            this.props.onToggleCameraProperties,
+                            messages.collapseCameraProperties,
+                            messages.expandCameraProperties
+                        )}
                     </div>
-                    {xPosition}
-                    {yPosition}
-                </div>
-                <div className={classNames(styles.row, styles.rowSecondary)}>
-                    <div className={labelAbove ? styles.column : styles.group}>
-                        {
-                            stageSize > smallThreshold ?
-                                <Label
-                                    secondary
-                                    text={showLabel}
-                                /> :
-                                null
-                        }
-                        {visibility}
-                    </div>
-                    {size}
-                    {direction}
-                </div>
+                )}
             </Box>
         );
     }
 }
 
 SpriteInfo.propTypes = {
+    camera: PropTypes.shape({
+        direction: PropTypes.number,
+        name: PropTypes.string,
+        x: PropTypes.number,
+        y: PropTypes.number,
+        zoom: PropTypes.number
+    }),
+    cameraExtensionLoaded: PropTypes.bool,
+    cameraPropertiesCollapsed: PropTypes.bool.isRequired,
     direction: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number
@@ -314,11 +508,14 @@ SpriteInfo.propTypes = {
     onChangeY: PropTypes.func,
     onClickNotVisible: PropTypes.func,
     onClickVisible: PropTypes.func,
+    onToggleCameraProperties: PropTypes.func.isRequired,
+    onToggleSpriteProperties: PropTypes.func.isRequired,
     rotationStyle: PropTypes.string,
     size: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number
     ]),
+    spritePropertiesCollapsed: PropTypes.bool.isRequired,
     stageSize: PropTypes.number.isRequired,
     visible: PropTypes.bool,
     x: PropTypes.oneOfType([

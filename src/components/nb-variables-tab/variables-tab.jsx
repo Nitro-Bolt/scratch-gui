@@ -6,7 +6,7 @@ import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {safeStringify} from '../../lib/tw-safe-stringify.js';
-import RichDropdown from '../nb-rich-dropdown/dropdown.jsx';
+import CollapsibleSection from '../nb-collapsible-section/collapsible-section.jsx';
 
 const messages = defineMessages({
     forThisSprite: {
@@ -197,7 +197,7 @@ Variables.propTypes = {
 
 const LocalVariables = ({isStage, label, clones, variables}) => (
     isStage ? '' : (
-        <RichDropdown label={label}>
+        <CollapsibleSection label={label}>
             <div className={styles.localVariablesSelector}>
                 <div className={styles.clonesSelectorItemsWrapper}>
                     { clones }
@@ -206,7 +206,7 @@ const LocalVariables = ({isStage, label, clones, variables}) => (
                     { variables }
                 </div>
             </div>
-        </RichDropdown>
+        </CollapsibleSection>
     )
 );
 
@@ -225,7 +225,7 @@ const VariableTab = props => {
     return (
         <div className={styles.wrapper}>
             <div className={styles.container}>
-                <RichDropdown
+                <CollapsibleSection
                     label={props.intl.formatMessage(messages.forAllSprites)}
                 >
                     <Variables
@@ -237,7 +237,7 @@ const VariableTab = props => {
                         onKeyDown={props.handleKeyDown}
                         onSubmitEdit={props.handleSubmitEdit}
                     />
-                </RichDropdown>
+                </CollapsibleSection>
 
                 <LocalVariables
                     isStage={props.isStage}

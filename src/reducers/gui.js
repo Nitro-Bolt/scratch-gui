@@ -7,6 +7,7 @@ import connectionModalReducer, {connectionModalInitialState} from './connection-
 import customProceduresReducer, {customProceduresInitialState} from './custom-procedures';
 import blockDragReducer, {blockDragInitialState} from './block-drag';
 import editorTabReducer, {editorTabInitialState} from './editor-tab';
+import effectParamsReducer, {effectParamsInitialState} from './nb-effects-params';
 import hoveredTargetReducer, {hoveredTargetInitialState} from './hovered-target';
 import menuReducer, {menuInitialState} from './menus';
 import micIndicatorReducer, {micIndicatorInitialState} from './mic-indicator';
@@ -58,6 +59,7 @@ const guiInitialState = {
     modals: modalsInitialState,
     monitors: monitorsInitialState,
     monitorLayout: monitorLayoutInitialState,
+    nbEffectParams: effectParamsInitialState,
     preferences: preferencesInitialState,
     projectChanged: projectChangedInitialState,
     projectState: projectStateInitialState,
@@ -167,6 +169,7 @@ const guiReducer = combineReducers({
     monitors: monitorReducer,
     preferences: preferencesReducer,
     monitorLayout: monitorLayoutReducer,
+    nbEffectParams: effectParamsReducer,
     projectChanged: projectChangedReducer,
     projectState: projectStateReducer,
     projectTitle: projectTitleReducer,

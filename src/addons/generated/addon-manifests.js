@@ -35,7 +35,6 @@ import _editor_colored_context_menus from "../addons/editor-colored-context-menu
 import _editor_buttons_reverse_order from "../addons/editor-buttons-reverse-order/_manifest_entry.js";
 //import _variable_manager from "../addons/variable-manager/_manifest_entry.js";
 import _search_sprites from "../addons/search-sprites/_manifest_entry.js";
-import _sprite_properties from "../addons/sprite-properties/_manifest_entry.js";
 import _gamepad from "../addons/gamepad/_manifest_entry.js";
 import _editor_sounds from "../addons/editor-sounds/_manifest_entry.js";
 import _load_extensions from "../addons/load-extensions/_manifest_entry.js";
@@ -55,8 +54,6 @@ import _disable_stage_drag_select from "../addons/disable-stage-drag-select/_man
 //import _move_to_top_layer from "../addons/move-to-top-layer/_manifest_entry.js";
 import _disable_paste_offset from "../addons/disable-paste-offset/_manifest_entry.js";
 import _block_duplicate from "../addons/block-duplicate/_manifest_entry.js";
-import _rename_broadcasts from "../addons/rename-broadcasts/_manifest_entry.js";
-import _swap_local_global from "../addons/swap-local-global/_manifest_entry.js";
 import _editor_comment_previews from "../addons/editor-comment-previews/_manifest_entry.js";
 import _columns from "../addons/columns/_manifest_entry.js";
 import _number_pad from "../addons/number-pad/_manifest_entry.js";
@@ -104,7 +101,6 @@ export default {
   "editor-buttons-reverse-order": _editor_buttons_reverse_order,
   //"variable-manager": _variable_manager,
   "search-sprites": _search_sprites,
-  "sprite-properties": _sprite_properties,
   "gamepad": _gamepad,
   "editor-sounds": _editor_sounds,
   "load-extensions": _load_extensions,
@@ -124,8 +120,6 @@ export default {
   //"move-to-top-layer": _move_to_top_layer,
   "disable-paste-offset": _disable_paste_offset,
   "block-duplicate": _block_duplicate,
-  "rename-broadcasts": _rename_broadcasts,
-  "swap-local-global": _swap_local_global,
   "editor-comment-previews": _editor_comment_previews,
   "columns": _columns,
   "number-pad": _number_pad,

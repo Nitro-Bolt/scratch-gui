@@ -35,14 +35,6 @@ const manifest = {
           "hideLabels": true
         }
       }
-    },
-    {
-      "url": "sprite-properties.css",
-      "if": {
-        "addonEnabled": [
-          "sprite-properties"
-        ]
-      }
     }
   ],
   "userscripts": [

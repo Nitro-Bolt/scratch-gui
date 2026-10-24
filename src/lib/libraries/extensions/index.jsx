@@ -7,6 +7,9 @@ import musicInsetIconURL from './music/music-small.svg';
 import penIconURL from './pen/pen.png';
 import penInsetIconURL from './pen/pen-small.svg';
 
+import cameraIconURL from './camera/camera.svg';
+import cameraInsetIconURL from './camera/camera-small.png';
+
 import videoSensingIconURL from './videoSensing/video-sensing.png';
 import videoSensingInsetIconURL from './videoSensing/video-sensing-small.svg';
 
@@ -96,6 +99,27 @@ export default [
             />
         ),
         tags: ['scratch'],
+        featured: true
+    },
+    {
+        name: (
+            <FormattedMessage
+                defaultMessage="Camera"
+                description="Name for the Camera extension"
+                id="gui.extension.camera.name"
+            />
+        ),
+        extensionId: 'camera',
+        iconURL: cameraIconURL,
+        insetIconURL: cameraInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="Move around the viewport of the stage."
+                description="Description for the Camera extension"
+                id="gui.extension.camera.description"
+            />
+        ),
+        tags: ['nb'],
         featured: true
     },
     {

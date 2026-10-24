@@ -8,23 +8,30 @@ import {SCRATCH_MAX_CLOUD_VARIABLES} from '../lib/tw-cloud-limits.js';
 class Prompt extends React.Component {
     constructor (props) {
         super(props);
+        const variableOptions = props.variableOptions;
         bindAll(this, [
             'handleOk',
             'handleScopeOptionSelection',
             'handleCancel',
             'handleChange',
             'handleKeyPress',
+            'handleTypeSelection',
+            'handleColourSelection',
             'handleCloudVariableOptionChange'
         ]);
         this.state = {
             isAddingCloudVariableScratchSafe: (
-                props.vm &&
-                props.vm.runtime.getNumberOfCloudVariables() < SCRATCH_MAX_CLOUD_VARIABLES
+                (variableOptions && variableOptions.isCloud) ||
+                (props.vm &&
+                    props.vm.runtime.getNumberOfCloudVariables() < SCRATCH_MAX_CLOUD_VARIABLES)
             ) || false,
-            inputValue: '',
-            globalSelected: true,
-            cloudSelected: false,
-            canAddCloudVariable: (props.vm && props.vm.runtime.canAddCloudVariable()) || false
+            inputValue: props.defaultValue || '',
+            globalSelected: variableOptions ? !variableOptions.isLocal : true,
+            cloudSelected: variableOptions ? variableOptions.isCloud : false,
+            valueType: variableOptions ? variableOptions.valueType : 'Any',
+            colour: variableOptions ? variableOptions.colour : null,
+            canAddCloudVariable: (variableOptions && variableOptions.isCloud) ||
+                (props.vm && props.vm.runtime.canAddCloudVariable()) || false
         };
     }
     handleKeyPress (event) {
@@ -36,7 +43,9 @@ class Prompt extends React.Component {
     handleOk () {
         this.props.onOk(this.state.inputValue, {
             scope: this.state.globalSelected ? 'global' : 'local',
-            isCloud: this.state.cloudSelected
+            isCloud: this.state.cloudSelected,
+            valueType: this.state.valueType,
+            colour: this.state.colour
         });
     }
     handleCancel () {
@@ -48,13 +57,19 @@ class Prompt extends React.Component {
     handleScopeOptionSelection (e) {
         this.setState({globalSelected: (e.target.value === 'global')});
     }
+    handleTypeSelection (e) {
+        this.setState({valueType: e.target.value});
+    }
+    handleColourSelection (colour) {
+        this.setState({colour});
+    }
     handleCloudVariableOptionChange (e) {
         if (!this.props.showCloudOption) return;
 
         const checked = e.target.checked;
         this.setState({cloudSelected: checked});
         if (checked) {
-            this.setState({globalSelected: true});
+            this.setState({globalSelected: true, valueType: 'Any'});
         }
     }
     render () {
@@ -65,11 +80,15 @@ class Prompt extends React.Component {
                 cloudSelected={this.state.cloudSelected}
                 defaultValue={this.props.defaultValue}
                 globalSelected={this.state.globalSelected}
+                valueType={this.state.valueType}
+                colour={this.state.colour || '#FF8C1A'}
+                customTypes={this.props.vm ? Array.from(this.props.vm.runtime.customTypes.keys()) : []}
                 isStage={this.props.isStage}
                 showListMessage={this.props.showListMessage}
                 showTableMessage={this.props.showTableMessage}
                 label={this.props.label}
                 showCloudOption={this.props.showCloudOption}
+                showTypeAndColourOptions={this.props.showTypeAndColourOptions}
                 showVariableOptions={this.props.showVariableOptions}
                 title={this.props.title}
                 onCancel={this.handleCancel}
@@ -79,6 +98,8 @@ class Prompt extends React.Component {
                 onKeyPress={this.handleKeyPress}
                 onOk={this.handleOk}
                 onScopeOptionSelection={this.handleScopeOptionSelection}
+                onTypeSelection={this.handleTypeSelection}
+                onColourSelection={this.handleColourSelection}
             />
         );
     }
@@ -93,8 +114,15 @@ Prompt.propTypes = {
     onCancel: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     showCloudOption: PropTypes.bool.isRequired,
+    showTypeAndColourOptions: PropTypes.bool.isRequired,
     showVariableOptions: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
+    variableOptions: PropTypes.shape({
+        colour: PropTypes.string,
+        isCloud: PropTypes.bool.isRequired,
+        isLocal: PropTypes.bool.isRequired,
+        valueType: PropTypes.string.isRequired
+    }),
     vm: PropTypes.instanceOf(VM)
 };
 

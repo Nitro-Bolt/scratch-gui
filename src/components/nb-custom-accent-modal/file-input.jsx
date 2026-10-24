@@ -46,7 +46,7 @@ class FileInput extends React.Component {
                         defaultMessage="Selected: {names}"
                         // eslint-disable-next-line max-len
                         description="Appears in a file selector when a file is selected. {names} could be a string like 'fetch.js, network.js'"
-                        id="tw.fileInput.selected"
+                        id="nb.customAccent.fileInput.selected"
                         values={{
                             names: Array.from(this.props.files)
                                 .map(i => i.name)
@@ -57,7 +57,7 @@ class FileInput extends React.Component {
                     <FormattedMessage
                         defaultMessage="No files selected."
                         description="Appears in a file selector when no file is selected."
-                        id="tw.fileInput.none"
+                        id="nb.customAccent.fileInput.none"
                     />
                 )}
             </button>

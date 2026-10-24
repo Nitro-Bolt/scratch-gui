@@ -4,6 +4,27 @@ import ArgumentType from 'scratch-vm/src/extension-support/argument-type';
 import BlockType from 'scratch-vm/src/extension-support/block-type';
 import {injectExtensionBlockTheme} from './themes/blockHelpers';
 
+const setReporterType = (block, ScratchBlocks, reporterType) => {
+    switch (reporterType) {
+    case BlockType.REPORTER:
+        block.setOutput(true);
+        block.setOutputShape(ScratchBlocks.OUTPUT_SHAPE_ROUND);
+        break;
+    case BlockType.BOOLEAN:
+        block.setOutput(true, 'Boolean');
+        block.setOutputShape(ScratchBlocks.OUTPUT_SHAPE_HEXAGONAL);
+        break;
+    case BlockType.OBJECT:
+        block.setOutput(true, 'Object');
+        block.setOutputShape(ScratchBlocks.OUTPUT_SHAPE_OBJECT);
+        break;
+    case BlockType.ARRAY:
+        block.setOutput(true, 'Array');
+        block.setOutputShape(ScratchBlocks.OUTPUT_SHAPE_SQUARE);
+        break;
+    }
+};
+
 /**
  * Define a block using extension info which has the ability to dynamically determine (and update) its layout.
  * This functionality is used for extension blocks which can change its properties based on different state
@@ -64,17 +85,24 @@ const defineDynamicBlock = (ScratchBlocks, categoryInfo, staticBlockInfo, extend
             this.setOutputShape(ScratchBlocks.OUTPUT_SHAPE_SQUARE);
             this.setPreviousStatement(true);
             this.setNextStatement(!blockInfo.isTerminal);
+            if (blockInfo.dualType) {
+                setReporterType(this, ScratchBlocks, blockInfo.dualType);
+            }
             break;
         case BlockType.REPORTER:
-            this.setOutput(true);
-            this.setOutputShape(ScratchBlocks.OUTPUT_SHAPE_ROUND);
+            setReporterType(this, ScratchBlocks, BlockType.REPORTER);
             if (!blockInfo.disableMonitor) {
                 this.setCheckboxInFlyout(true);
             }
             break;
         case BlockType.BOOLEAN:
-            this.setOutput(true);
-            this.setOutputShape(ScratchBlocks.OUTPUT_SHAPE_HEXAGONAL);
+            setReporterType(this, ScratchBlocks, BlockType.BOOLEAN);
+            break;
+        case BlockType.OBJECT:
+            setReporterType(this, ScratchBlocks, BlockType.OBJECT);
+            break;
+        case BlockType.ARRAY:
+            setReporterType(this, ScratchBlocks, BlockType.ARRAY);
             break;
         case BlockType.HAT:
         case BlockType.EVENT:

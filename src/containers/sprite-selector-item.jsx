@@ -25,6 +25,7 @@ class SpriteSelectorItem extends React.PureComponent {
             'handleDuplicate',
             'handleExport',
             'handleExportBitmap',
+            'handleToggleSpriteProperties',
             'handleRename',
             'handleMoveToTop',
             'handleMoveToBottom',
@@ -124,6 +125,10 @@ class SpriteSelectorItem extends React.PureComponent {
     handleExportBitmap (scale, e) {
         e.stopPropagation();
         this.props.onExportBitmapButtonClick(this.props.id, scale);
+    }
+    handleToggleSpriteProperties (e) {
+        e.stopPropagation();
+        this.props.onToggleSpriteProperties();
     }
     handleRename (e) {
         e.stopPropagation();
@@ -247,6 +252,7 @@ class SpriteSelectorItem extends React.PureComponent {
             onRenameButtonClick,
             onMoveToTopButtonClick,
             onMoveToBottomButtonClick,
+            onToggleSpriteProperties,
             dragPayload,
             isBitmap,
             receivedBlocks,
@@ -276,6 +282,7 @@ class SpriteSelectorItem extends React.PureComponent {
                 onMoveToTopButtonClick={onMoveToTopButtonClick && index !== 0 ? this.handleMoveToTop : null}
                 onMoveToBottomButtonClick={onMoveToBottomButtonClick && index !== totalItems - 1 ?
                     this.handleMoveToBottom : null}
+                onToggleSpriteProperties={onToggleSpriteProperties ? this.handleToggleSpriteProperties : null}
                 folderId={folderId}
                 folderOptions={this.props.folderOptions || this.getFolderOptions()}
                 onCreateFolder={this.props.disableFolderManagement ? null :
@@ -330,6 +337,7 @@ SpriteSelectorItem.propTypes = {
     onFolderChange: PropTypes.func,
     onMoveToTopButtonClick: PropTypes.func,
     onMoveToBottomButtonClick: PropTypes.func,
+    onToggleSpriteProperties: PropTypes.func,
     onNativeDragOver: PropTypes.func,
     onNativeDrop: PropTypes.func,
     onMouseMove: PropTypes.func,

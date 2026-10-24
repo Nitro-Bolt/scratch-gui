@@ -3,11 +3,11 @@ export default async function ({ addon, console, msg }) {
   const vm = addon.tab.traps.vm;
 
   const SCRATCH_ITEMS_TO_HIDE = [
-    "RENAME_VARIABLE_ID",
+    "EDIT_VARIABLE_ID",
     "DELETE_VARIABLE_ID",
     "NEW_BROADCAST_MESSAGE_ID",
-    // From rename-broadcasts addon
-    "RENAME_BROADCAST_MESSAGE_ID",
+    "RENAME_BROADCAST_ID",
+    "DELETE_BROADCAST_ID",
   ];
 
   const canUseAsGlobalVariableName = (name, type) => {

@@ -7,6 +7,7 @@ import React from 'react';
 import {intlShape, injectIntl, defineMessages} from 'react-intl';
 import VMScratchBlocks from '../lib/blocks';
 import VM from 'scratch-vm';
+import blockMessages from 'scratch-l10n/locales/blocks-msgs';
 
 import log from '../lib/log.js';
 import Prompt from './prompt.jsx';
@@ -19,6 +20,7 @@ import {BLOCKS_DEFAULT_SCALE} from '../lib/layout-constants';
 import DropAreaHOC from '../lib/drop-area-hoc.jsx';
 import DragConstants from '../lib/drag-constants';
 import defineDynamicBlock from '../lib/define-dynamic-block';
+import validateVariableEdit from '../lib/validate-variable-edit';
 import {Theme} from '../lib/themes';
 import {injectExtensionBlockTheme, injectExtensionCategoryTheme} from '../lib/themes/blockHelpers';
 import {applyBlockShapeAndUpdate, getBlockShape, updateAllBlocks} from '../lib/nb-custom-block-shape';
@@ -72,6 +74,31 @@ const messages = defineMessages({
         // eslint-disable-next-line max-len
         description: 'Button in extension list to learn how to use the "return" block from the Custom Reporters extension.',
         id: 'tw.blocks.PROCEDURES_DOCS'
+    },
+    VARIABLE_CLOUD_LOCAL_ERROR: {
+        defaultMessage: 'Cloud variables cannot be limited to one sprite.',
+        description: 'Error shown when editing a cloud variable to be sprite-only',
+        id: 'gui.gui.variableCloudLocalError'
+    },
+    VARIABLE_STAGE_LOCAL_ERROR: {
+        defaultMessage: 'The stage cannot have sprite-only variables.',
+        description: 'Error shown when editing a stage variable to be sprite-only',
+        id: 'gui.gui.variableStageLocalError'
+    },
+    VARIABLE_USED_ELSEWHERE_ERROR: {
+        defaultMessage: 'This variable cannot be made sprite-only because another sprite uses it.',
+        description: 'Error shown when another sprite uses a variable being made local',
+        id: 'gui.gui.variableUsedElsewhereError'
+    },
+    VARIABLE_GLOBAL_CONFLICT_ERROR: {
+        defaultMessage: 'This variable conflicts with a sprite-only variable in another sprite.',
+        description: 'Error shown when making a variable global would cause a name conflict',
+        id: 'gui.gui.variableGlobalConflictError'
+    },
+    VARIABLE_LOCAL_CONFLICT_ERROR: {
+        defaultMessage: 'This variable conflicts with another sprite-only variable in this sprite.',
+        description: 'Error shown when making a variable sprite-only would cause a name conflict',
+        id: 'gui.gui.variableLocalConflictError'
     }
 });
 
@@ -120,6 +147,8 @@ class Blocks extends React.Component {
             'handleExtensionReordered',
             'handleExtensionRemoved',
             'handleBlocksInfoUpdate',
+            'handleShapeAdded',
+            'handleShapeRemoved',
             'handleInspectBlock',
             'onTargetsUpdate',
             'onVisualReport',
@@ -131,6 +160,8 @@ class Blocks extends React.Component {
             'applyBlockShapeToWorkspace',
             'handleBlockShapeChange'
         ]);
+        this.ScratchBlocks.FieldExtendable.ARROWS_LEFT = this.props.extendableArrowsLeft;
+        this.ScratchBlocks.FieldExtendable.HIDE_ARROW_SEPARATOR = this.props.hideExtendableArrowSeparator;
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
@@ -144,6 +175,8 @@ class Blocks extends React.Component {
     }
     componentDidMount () {
         this.ScratchBlocks = VMScratchBlocks(this.props.vm, this.props.useCatBlocks);
+        this.ScratchBlocks.FieldExtendable.ARROWS_LEFT = this.props.extendableArrowsLeft;
+        this.ScratchBlocks.FieldExtendable.HIDE_ARROW_SEPARATOR = this.props.hideExtendableArrowSeparator;
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
@@ -153,14 +186,15 @@ class Blocks extends React.Component {
         this.ScratchBlocks.Procedures.externalProcedureDefCallback = this.props.onActivateCustomProcedures;
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
         this.ScratchBlocks.LABEL_CONTRAST_THRESHOLD = this.getLabelContrastThreshold();
+        const customColourConverters = this.props.theme.getCustomExtensionColors();
+        this.ScratchBlocks.CustomBlockColourTransform = customColourConverters.primary ? primary => [
+            customColourConverters.primary(primary),
+            customColourConverters.secondary(primary),
+            customColourConverters.tertiary(primary),
+            customColourConverters.quaternary(primary)
+        ] : null;
 
-        const Msg = this.ScratchBlocks.Msg;
-        Msg.PROCEDURES_RETURN = this.props.intl.formatMessage(messages.PROCEDURES_RETURN, {
-            v: '%1'
-        });
-        Msg.PROCEDURES_TO_REPORTER = this.props.intl.formatMessage(messages.PROCEDURES_TO_REPORTER);
-        Msg.PROCEDURES_TO_STATEMENT = this.props.intl.formatMessage(messages.PROCEDURES_TO_STATEMENT);
-        Msg.PROCEDURES_DOCS = this.props.intl.formatMessage(messages.PROCEDURES_DOCS);
+        this.setScratchBlocksMessages();
 
         const workspaceConfig = defaultsDeep({},
             this.props.options,
@@ -177,6 +211,9 @@ class Blocks extends React.Component {
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
         this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
+        this.workspace.options.deselectMultiSelectionAfterAction = this.props.deselectMultiSelectionAfterAction;
+        this.workspace.options.swapMultiSelectModifiers = this.props.swapMultiSelectModifiers;
+        this.workspace.options.inwardSelection = this.props.inwardSelection;
         this.workspace.vm = this.props.vm;
         AddonHooks.blocklyWorkspace = this.workspace;
 
@@ -260,16 +297,41 @@ class Blocks extends React.Component {
             this.props.hiddenCategories !== nextProps.hiddenCategories ||
             this.props.nbBlocks !== nextProps.nbBlocks ||
             this.props.disableInspectBlock !== nextProps.disableInspectBlock ||
+            this.props.deselectMultiSelectionAfterAction !== nextProps.deselectMultiSelectionAfterAction ||
+            this.props.swapMultiSelectModifiers !== nextProps.swapMultiSelectModifiers ||
+            this.props.inwardSelection !== nextProps.inwardSelection ||
             this.props.blockShape !== nextProps.blockShape ||
-            this.props.labelContrastThreshold !== nextProps.labelContrastThreshold
+            this.props.labelContrastThreshold !== nextProps.labelContrastThreshold ||
+            this.props.extendableArrowsLeft !== nextProps.extendableArrowsLeft ||
+            this.props.hideExtendableArrowSeparator !== nextProps.hideExtendableArrowSeparator
         );
     }
     componentDidUpdate (prevProps) {
         if (this.workspace && this.props.disableInspectBlock !== prevProps.disableInspectBlock) {
             this.workspace.options.disableInspectBlock = this.props.disableInspectBlock;
         }
+        if (
+            this.workspace &&
+            this.props.deselectMultiSelectionAfterAction !== prevProps.deselectMultiSelectionAfterAction
+        ) {
+            this.workspace.options.deselectMultiSelectionAfterAction = this.props.deselectMultiSelectionAfterAction;
+        }
+        if (this.workspace && this.props.swapMultiSelectModifiers !== prevProps.swapMultiSelectModifiers) {
+            this.workspace.options.swapMultiSelectModifiers = this.props.swapMultiSelectModifiers;
+        }
+        if (this.workspace && this.props.inwardSelection !== prevProps.inwardSelection) {
+            this.workspace.options.inwardSelection = this.props.inwardSelection;
+        }
         if (this.props.blockShape !== prevProps.blockShape) {
             this.handleBlockShapeChange(this.props.blockShape);
+        }
+        if (this.props.extendableArrowsLeft !== prevProps.extendableArrowsLeft) {
+            this.ScratchBlocks.FieldExtendable.ARROWS_LEFT = this.props.extendableArrowsLeft;
+            updateAllBlocks(this.ScratchBlocks, this.props.vm, this.workspace);
+        }
+        if (this.props.hideExtendableArrowSeparator !== prevProps.hideExtendableArrowSeparator) {
+            this.ScratchBlocks.FieldExtendable.HIDE_ARROW_SEPARATOR = this.props.hideExtendableArrowSeparator;
+            updateAllBlocks(this.ScratchBlocks, this.props.vm, this.workspace);
         }
         if (this.props.labelContrastThreshold !== prevProps.labelContrastThreshold) {
             this.applyLabelContrastThreshold();
@@ -363,8 +425,23 @@ class Blocks extends React.Component {
             this.updateToolbox();
         }, 0);
     }
+    setScratchBlocksMessages () {
+        const Msg = this.ScratchBlocks.Msg;
+        Msg.PROCEDURES_RETURN = this.props.intl.formatMessage(messages.PROCEDURES_RETURN, {
+            v: '%1'
+        });
+        Msg.PROCEDURES_TO_REPORTER = this.props.intl.formatMessage(messages.PROCEDURES_TO_REPORTER);
+        Msg.PROCEDURES_TO_STATEMENT = this.props.intl.formatMessage(messages.PROCEDURES_TO_STATEMENT);
+        Msg.PROCEDURES_DOCS = this.props.intl.formatMessage(messages.PROCEDURES_DOCS);
+    }
     setLocale () {
+        const localeMessages = blockMessages[this.props.locale];
+        if (localeMessages) {
+            const locales = this.ScratchBlocks.ScratchMsgs.locales;
+            locales[this.props.locale] = Object.assign({}, locales[this.props.locale], localeMessages);
+        }
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
+        this.setScratchBlocksMessages();
         this.props.vm.setLocale(this.props.locale, this.props.messages)
             .then(() => {
                 if (this.unmounted) return;
@@ -431,6 +508,8 @@ class Blocks extends React.Component {
         this.props.vm.addListener('EXTENSION_REORDERED', this.handleExtensionReordered);
         this.props.vm.addListener('EXTENSION_REMOVED', this.handleExtensionRemoved);
         this.props.vm.addListener('BLOCKSINFO_UPDATE', this.handleBlocksInfoUpdate);
+        this.props.vm.addListener('EXTENSION_SHAPE_ADDED', this.handleShapeAdded);
+        this.props.vm.addListener('EXTENSION_SHAPE_REMOVED', this.handleShapeRemoved);
         this.props.vm.addListener('PERIPHERAL_CONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.addListener('PERIPHERAL_DISCONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.addListener('CREATE_UNSANDBOXED_EXTENSION_API', this.onExtensionAPI);
@@ -446,6 +525,8 @@ class Blocks extends React.Component {
         this.props.vm.removeListener('MONITORS_UPDATE', this.handleMonitorsUpdate);
         this.props.vm.removeListener('EXTENSION_ADDED', this.handleExtensionAdded);
         this.props.vm.removeListener('BLOCKSINFO_UPDATE', this.handleBlocksInfoUpdate);
+        this.props.vm.removeListener('EXTENSION_SHAPE_ADDED', this.handleShapeAdded);
+        this.props.vm.removeListener('EXTENSION_SHAPE_REMOVED', this.handleShapeRemoved);
         this.props.vm.removeListener('PERIPHERAL_CONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.removeListener('PERIPHERAL_DISCONNECTED', this.handleStatusButtonUpdate);
         this.props.vm.removeListener('CREATE_UNSANDBOXED_EXTENSION_API', this.onExtensionAPI);
@@ -664,6 +745,20 @@ class Blocks extends React.Component {
         // @todo Later we should replace this to avoid all the warnings from redefining blocks.
         this.handleExtensionAdded(categoryInfo);
     }
+    handleShapeAdded (shapeInfo) {
+        if (!this.ScratchBlocks || !this.ScratchBlocks.BlockShapes) return;
+        if (shapeInfo && shapeInfo.name && shapeInfo.definition) {
+            this.ScratchBlocks.BlockShapes.register(shapeInfo.name, shapeInfo.definition);
+        }
+        updateAllBlocks(this.ScratchBlocks, this.props.vm, this.workspace);
+    }
+    handleShapeRemoved (shapeInfo) {
+        if (!this.ScratchBlocks || !this.ScratchBlocks.BlockShapes) return;
+        if (shapeInfo && shapeInfo.name) {
+            this.ScratchBlocks.BlockShapes.unregister(shapeInfo.name);
+        }
+        updateAllBlocks(this.ScratchBlocks, this.props.vm, this.workspace);
+    }
     handleCategorySelected (categoryId) {
         const extension = extensionData.find(ext => ext.extensionId === categoryId);
         if (extension && extension.launchPeripheralConnectionFlow) {
@@ -677,16 +772,21 @@ class Blocks extends React.Component {
     setBlocks (blocks) {
         this.blocks = blocks;
     }
-    handlePromptStart (message, defaultValue, callback, optTitle, optVarType) {
-        const p = {prompt: {callback, message, defaultValue}};
+    handlePromptStart (message, defaultValue, callback, optTitle, optVarType, optVariable) {
+        const showVariableOptions = optVarType !== this.ScratchBlocks.BROADCAST_MESSAGE_VARIABLE_TYPE;
+        const p = {prompt: {
+            callback,
+            message,
+            defaultValue,
+            variable: showVariableOptions ? optVariable || null : null
+        }};
         p.prompt.title = optTitle ? optTitle :
             this.ScratchBlocks.Msg.VARIABLE_MODAL_TITLE;
         p.prompt.varType = typeof optVarType === 'string' ?
             optVarType : this.ScratchBlocks.SCALAR_VARIABLE_TYPE;
-        p.prompt.showVariableOptions = // This flag means that we should show variable/list options about scope
-            optVarType !== this.ScratchBlocks.BROADCAST_MESSAGE_VARIABLE_TYPE &&
-            p.prompt.title !== this.ScratchBlocks.Msg.RENAME_VARIABLE_MODAL_TITLE &&
-            p.prompt.title !== this.ScratchBlocks.Msg.RENAME_LIST_MODAL_TITLE;
+        p.prompt.showVariableOptions = showVariableOptions;
+        p.prompt.showTypeAndColourOptions =
+            optVarType === this.ScratchBlocks.SCALAR_VARIABLE_TYPE;
         p.prompt.showCloudOption = (optVarType === this.ScratchBlocks.SCALAR_VARIABLE_TYPE) && this.props.canUseCloud;
         this.setState(p);
     }
@@ -713,10 +813,44 @@ class Blocks extends React.Component {
      * to the variable validation prompt callback used in scratch-blocks.
      */
     handlePromptCallback (input, variableOptions) {
-        this.state.prompt.callback(
-            input,
-            this.props.vm.runtime.getAllVarNamesOfType(this.state.prompt.varType),
-            variableOptions);
+        const prompt = this.state.prompt;
+        const editingVariable = Boolean(prompt.variable && variableOptions);
+        if (editingVariable) {
+            const errors = {
+                cloudLocal: this.props.intl.formatMessage(messages.VARIABLE_CLOUD_LOCAL_ERROR),
+                stageLocal: this.props.intl.formatMessage(messages.VARIABLE_STAGE_LOCAL_ERROR),
+                usedElsewhere: this.props.intl.formatMessage(messages.VARIABLE_USED_ELSEWHERE_ERROR),
+                globalConflict: this.props.intl.formatMessage(messages.VARIABLE_GLOBAL_CONFLICT_ERROR),
+                localConflict: this.props.intl.formatMessage(messages.VARIABLE_LOCAL_CONFLICT_ERROR)
+            };
+            if (!validateVariableEdit(
+                this.ScratchBlocks,
+                this.props.vm,
+                prompt.variable,
+                variableOptions,
+                errors,
+                input
+            )) return;
+        }
+        if (editingVariable) this.ScratchBlocks.Events.setGroup(true);
+        let accepted;
+        try {
+            accepted = prompt.callback(
+                input,
+                this.props.vm.runtime.getAllVarNamesOfType(prompt.varType),
+                variableOptions);
+            if (accepted && editingVariable) {
+                this.workspace.updateVariableById(
+                    prompt.variable.getId(),
+                    variableOptions.scope === 'local',
+                    variableOptions.isCloud,
+                    variableOptions.isCloud ? 'Any' : variableOptions.valueType,
+                    variableOptions.colour
+                );
+            }
+        } finally {
+            if (editingVariable) this.ScratchBlocks.Events.setGroup(false);
+        }
         this.handlePromptClose();
     }
     handlePromptClose () {
@@ -784,6 +918,11 @@ class Blocks extends React.Component {
             updateMetrics: updateMetricsProp,
             useCatBlocks,
             disableInspectBlock,
+            deselectMultiSelectionAfterAction,
+            swapMultiSelectModifiers,
+            inwardSelection,
+            extendableArrowsLeft,
+            hideExtendableArrowSeparator,
             workspaceMetrics,
             ...props
         } = this.props;
@@ -803,8 +942,10 @@ class Blocks extends React.Component {
                         showTableMessage={this.state.prompt.varType === this.ScratchBlocks.TABLE_VARIABLE_TYPE}
                         label={this.state.prompt.message}
                         showCloudOption={this.state.prompt.showCloudOption}
+                        showTypeAndColourOptions={this.state.prompt.showTypeAndColourOptions}
                         showVariableOptions={this.state.prompt.showVariableOptions}
                         title={this.state.prompt.title}
+                        variableOptions={this.state.prompt.variable}
                         vm={vm}
                         onCancel={this.handlePromptClose}
                         onOk={this.handlePromptCallback}
@@ -872,6 +1013,9 @@ Blocks.propTypes = {
     updateToolboxState: PropTypes.func,
     useCatBlocks: PropTypes.bool,
     disableInspectBlock: PropTypes.bool,
+    deselectMultiSelectionAfterAction: PropTypes.bool,
+    swapMultiSelectModifiers: PropTypes.bool,
+    inwardSelection: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired,
     workspaceMetrics: PropTypes.shape({
         targets: PropTypes.objectOf(PropTypes.object)
@@ -885,7 +1029,9 @@ Blocks.propTypes = {
         notchSize: PropTypes.number,
         fieldHeight: PropTypes.number
     }),
-    labelContrastThreshold: PropTypes.number
+    labelContrastThreshold: PropTypes.number,
+    extendableArrowsLeft: PropTypes.bool,
+    hideExtendableArrowSeparator: PropTypes.bool
 };
 
 Blocks.defaultOptions = {
@@ -929,7 +1075,14 @@ const mapStateToProps = state => ({
     labelContrastThreshold: state.scratchGui.preferences['label-contrast-threshold'],
     hiddenCategories: state.scratchGui.preferences['hidden-categories'],
     nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true),
-    disableInspectBlock: state.scratchGui.preferences['disable-inspect-block'] === true
+    disableInspectBlock: state.scratchGui.preferences['disable-inspect-block'] === true,
+    deselectMultiSelectionAfterAction:
+        state.scratchGui.preferences['deselect-block-selection-after-action'] === true,
+    swapMultiSelectModifiers: state.scratchGui.preferences['swap-multi-select-modifiers'] === true,
+    inwardSelection: state.scratchGui.preferences['inward-selection'] === true,
+    extendableArrowsLeft: state.scratchGui.preferences['extendable-arrows-left'] === true,
+    hideExtendableArrowSeparator:
+        state.scratchGui.preferences['hide-extendable-arrow-separator'] === true
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -193,9 +193,23 @@ const costumeUpload = function (fileData, fileType, vm, handleCostume, handleErr
         // is invalid
         addCostumeFromBuffer(new Uint8Array(fileData));
     } else {
-        // otherwise it's a bitmap
-        bitmapAdapter.importBitmap(fileData, fileType).then(addCostumeFromBuffer)
-            .catch(handleError);
+        // otherwise it's a bitmap (extra gross edition)
+        bitmapAdapter.importBitmap(fileData, fileType).then(async dataBuffer => {
+            const bitmap = await createImageBitmap(
+                new Blob([dataBuffer], {type: fileType})
+            );
+            const newWidth = bitmap.width / 2; // Halve bitmap size to adjust for unexpected doubling of uploaded images' sizes
+            const newHeight = bitmap.height / 2;
+
+            const canvas = new OffscreenCanvas(newWidth, newHeight); // Draw the bitmap on a new canvas of the new dimensions
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(bitmap, 0, 0, newWidth, newHeight);
+            bitmap.close();
+
+            const blob = await canvas.convertToBlob({type: fileType});
+            const resized = new Uint8Array(await blob.arrayBuffer());
+            addCostumeFromBuffer(resized);
+        }).catch(handleError);
     }
 };
 

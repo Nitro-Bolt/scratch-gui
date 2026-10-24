@@ -12,7 +12,8 @@ const FancyCheckbox = props => (
 );
 
 FancyCheckbox.propTypes = {
-    className: PropTypes.string
+    className: PropTypes.string,
+    disabled: PropTypes.bool
 };
 
 export default FancyCheckbox;

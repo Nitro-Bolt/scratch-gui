@@ -5,7 +5,15 @@ import styles from './color-picker.css';
 
 import paletteIcon from './icon--palette.svg';
 
-const ColorPicker = ({value, onChange, onClick, onCommit, label, showIcon, className, size, pickerDisabled}) => {
+const FancyColorPicker = ({
+    value,
+    onChange,
+    onCommit,
+    showIcon,
+    className,
+    rootClassName,
+    size
+}) => {
     const inputRef = useRef(null);
 
     useEffect(() => {
@@ -13,77 +21,50 @@ const ColorPicker = ({value, onChange, onClick, onCommit, label, showIcon, class
         if (!el || !onCommit) return;
         el.addEventListener('change', onCommit);
         return () => el.removeEventListener('change', onCommit);
-    }, []);
-    
-    useEffect(() => {
-        const el = inputRef.current;
-        if (!el || !onClick) return;
-        el.addEventListener('click', onClick);
-        return () => el.removeEventListener('click', onClick);
-    }, []);
+    }, [onCommit]);
+
+    const handleChange = event => {
+        onChange(event.target.value);
+    };
 
     return (
-        <div className={styles.colorPickerRoot}>
-            {label !== false && (
-                <div className={styles.label}>
-                    {typeof label === 'string' ? label : 'Select a color'}
-                </div>
+        <span className={`${styles.colorPickerWrapper}${rootClassName ? ` ${rootClassName}` : ''}`}>
+            <input
+                ref={inputRef}
+                type="color"
+                value={value}
+                draggable={false}
+                style={{backgroundColor: value, width: size, height: size}}
+                className={`${styles.colorPicker}${className ? ` ${className}` : ''}`}
+                // eslint-disable-next-line react/jsx-no-bind
+                onChange={handleChange}
+                aria-label="Custom color"
+            />
+            {showIcon && (
+                <img
+                    src={paletteIcon}
+                    className={styles.paletteIcon}
+                    draggable={false}
+                    aria-hidden="true"
+                />
             )}
-            <div className={styles.colorRow}>
-                <div className={styles.colorPickerWrapper}>
-                    {pickerDisabled ? (
-                        <div
-                            ref={inputRef}
-                            role="button"
-                            tabIndex={0}
-                            style={{backgroundColor: value, width: size, height: size}}
-                            className={`${styles.colorPicker}${className ? ` ${className}` : ''}`}
-                            aria-label="Custom color"
-                            onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && onClick && onClick(e)}
-                        />
-                    ) : (
-                        <input
-                            ref={inputRef}
-                            type="color"
-                            value={value}
-                            draggable={false}
-                            style={{backgroundColor: value, width: size, height: size}}
-                            className={`${styles.colorPicker}${className ? ` ${className}` : ''}`}
-                            onChange={e => onChange && onChange(e.target.value)}
-                            aria-label="Custom color"
-                        />
-                    )}
-                    {showIcon && (
-                        <img
-                            src={paletteIcon}
-                            className={styles.paletteIcon}
-                            draggable={false}
-                            aria-hidden="true"
-                        />
-                    )}
-                </div>
-            </div>
-        </div>
+        </span>
     );
 };
 
-ColorPicker.propTypes = {
+FancyColorPicker.propTypes = {
     value: PropTypes.string.isRequired,
-    onChange: PropTypes.func,
+    onChange: PropTypes.func.isRequired,
     onCommit: PropTypes.func,
-    onClick: PropTypes.func,
-    label: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
     showIcon: PropTypes.bool,
     className: PropTypes.string,
-    size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    pickerDisabled: PropTypes.bool
+    rootClassName: PropTypes.string,
+    size: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
-ColorPicker.defaultProps = {
-    label: true,
+FancyColorPicker.defaultProps = {
     showIcon: true,
-    size: 35,
-    pickerDisabled: false
+    size: 35
 };
 
-export default ColorPicker;
+export default FancyColorPicker;

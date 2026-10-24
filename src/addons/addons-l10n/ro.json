@@ -130,7 +130,5 @@
     "block-switching/sound_setvolumeto": "setează volumul",
     "blocks2image/error_blocks_not_added": "Adaugă câteva blocuri în spațiul de lucru!",
     "move-to-top-bottom/bottom": "mută în partea de jos",
-    "move-to-top-bottom/top": "mută în vârf",
-    "swap-local-global/edit-list-header": "Editează lista",
-    "swap-local-global/edit-variable-header": "Editează Variabila"
+    "move-to-top-bottom/top": "mută în vârf"
 }

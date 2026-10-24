@@ -165,16 +165,10 @@ export default async function ({ addon, console, msg }) {
         const STAGE_HEIGHT = 360;
         const STAGE_RATIO = STAGE_WIDTH / STAGE_HEIGHT;
 
-        // If both dimensions are smaller than or equal to corresponding stage dimension,
-        // double both dimensions
-        if (oldWidth <= STAGE_WIDTH && oldHeight <= STAGE_HEIGHT) {
-          return { width: oldWidth, height: oldHeight };
-        }
-
         // If neither dimension is larger than 2x corresponding stage dimension,
-        // this is an in-between image, return it as is
+        // this is an in-between image, return it at half the size (it likes to double)
         if (oldWidth <= STAGE_WIDTH && oldHeight <= STAGE_HEIGHT) {
-          return { width: oldWidth, height: oldHeight };
+          return { width: oldWidth / 2, height: oldHeight / 2 };
         }
 
         const imageRatio = oldWidth / oldHeight;

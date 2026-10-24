@@ -180,10 +180,6 @@ class TargetPane extends React.Component {
         if (group && topBlock) {
             const dx = Number(topBlock.x) - oldX;
             const dy = Number(topBlock.y) - oldY;
-            centered.filter(block => block.topLevel && block !== topBlock).forEach(block => {
-                block.x = Number(block.x) + dx;
-                block.y = Number(block.y) + dy;
-            });
             group = Object.assign({}, group, {x: group.x + dx, y: group.y + dy});
         }
         return this.props.vm.shareBlocksToTarget(centered, targetId, optFromTargetId, group);
@@ -323,6 +319,7 @@ TargetPane.propTypes = {
 };
 
 const mapStateToProps = state => ({
+    cameraExtensionLoaded: state.scratchGui.vm.extensionManager.isExtensionLoaded('camera'),
     editingTarget: state.scratchGui.targets.editingTarget,
     hoveredTarget: state.scratchGui.hoveredTarget,
     isFullScreen: state.scratchGui.mode.isFullScreen,

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Modal from '../../containers/modal.jsx';
 import RestorePoint from './restore-point.jsx';
+import FancyDropdown from '../nb-fancy-dropdown/dropdown.jsx';
 import styles from './restore-point-modal.css';
 import classNames from 'classnames';
 import {APP_NAME} from '../../lib/brand';
@@ -43,7 +44,7 @@ const INTERVAL_OPTIONS = [
     -1
 ];
 const IntervalSelector = props => (
-    <select
+    <FancyDropdown
         value={props.value}
         onChange={props.onChange}
     >
@@ -70,7 +71,7 @@ const IntervalSelector = props => (
                 {`every ${props.value}ms`}
             </option>
         )}
-    </select>
+    </FancyDropdown>
 );
 IntervalSelector.propTypes = {
     intl: intlShape,

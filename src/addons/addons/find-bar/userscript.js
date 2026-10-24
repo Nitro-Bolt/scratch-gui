@@ -305,11 +305,14 @@ export default async function ({ addon, msg, console }) {
 
       let vars = map.getVariablesOfType("");
       for (const row of vars) {
-        addBlock(
+        const item = addBlock(
           row.isLocal ? "var" : "VAR",
           row.isLocal ? msg("var-local", { name: row.name }) : msg("var-global", { name: row.name }),
           row
         );
+        if (row.colour) {
+          item.colours = ScratchBlocks.Colours.getBlockColours(row.colour);
+        }
       }
 
       let lists = map.getVariablesOfType("list");
@@ -506,6 +509,11 @@ export default async function ({ addon, msg, console }) {
       } else {
         const colorId = colorIds[proc.cls];
         item.className = `sa-block-color sa-block-color-${colorId}`;
+        if (proc.colours) {
+          item.style.setProperty("--sa-block-background-primary", proc.colours[0]);
+          item.style.setProperty("--sa-block-background-secondary", proc.colours[1]);
+          item.style.setProperty("--sa-block-background-tertiary", proc.colours[2]);
+        }
       }
       item.addEventListener("mousedown", (e) => {
         this.onItemClick(item);
@@ -791,7 +799,10 @@ export default async function ({ addon, msg, console }) {
 
   const _doBlockClick_ = Blockly.Gesture.prototype.doBlockClick_;
   Blockly.Gesture.prototype.doBlockClick_ = function () {
-    if (!addon.self.disabled && (this.mostRecentEvent_.button === 1 || this.mostRecentEvent_.shiftKey)) {
+    const modifiedShiftClick =
+      this.mostRecentEvent_.shiftKey &&
+      (this.mostRecentEvent_.ctrlKey || this.mostRecentEvent_.metaKey);
+    if (!addon.self.disabled && (this.mostRecentEvent_.button === 1 || modifiedShiftClick)) {
       // Wheel button...
       // Intercept clicks to allow jump to...?
       let block = this.startBlock_;

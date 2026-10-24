@@ -6,6 +6,7 @@ import Modal from '../../containers/modal.jsx';
 import styles from './custom-accent-modal.css';
 import Box from '../box/box.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
+import FancyColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 import FileInput from './file-input.jsx';
 import {gradientDataToCSS} from '../../lib/nb-gradient-to-css.js';
 
@@ -106,11 +107,9 @@ const CustomAccentModal = props => {
                                         id="nb.customAccent.primaryTitle"
                                     />
                                 </div>
-                                <input
-                                    style={{backgroundColor: props.primaryColor}}
-                                    type="color"
+                                <FancyColorPicker
                                     value={props.primaryColor}
-                                    className={styles.colorPicker}
+                                    showIcon={false}
                                     onChange={props.onChangePrimaryColor}
                                 />
                                 <p>
@@ -131,11 +130,9 @@ const CustomAccentModal = props => {
                                         id="nb.customAccent.secondaryTitle"
                                     />
                                 </div>
-                                <input
-                                    style={{backgroundColor: props.secondaryColor}}
-                                    type="color"
+                                <FancyColorPicker
                                     value={props.secondaryColor}
-                                    className={styles.colorPicker}
+                                    showIcon={false}
                                     onChange={props.onChangeSecondaryColor}
                                 />
                                 <p>
@@ -156,11 +153,9 @@ const CustomAccentModal = props => {
                                         id="nb.customAccent.tertiaryTitle"
                                     />
                                 </div>
-                                <input
-                                    style={{backgroundColor: props.tertiaryColor}}
-                                    type="color"
+                                <FancyColorPicker
                                     value={props.tertiaryColor}
-                                    className={styles.colorPicker}
+                                    showIcon={false}
                                     onChange={props.onChangeTertiaryColor}
                                 />
                                 <p>
@@ -221,13 +216,11 @@ const CustomAccentModal = props => {
                                         className={styles.card}
                                         key={index}
                                     >
-                                        <input
-                                            style={{backgroundColor: value.color}}
-                                            type="color"
+                                        <FancyColorPicker
                                             value={value.color}
-                                            className={styles.colorPicker}
+                                            showIcon={false}
                                             // eslint-disable-next-line react/jsx-no-bind
-                                            onChange={e => props.onChangeGradientColorColor(e, index)}
+                                            onChange={color => props.onChangeGradientColorColor(color, index)}
                                         />
                                         <input
                                             type="number"

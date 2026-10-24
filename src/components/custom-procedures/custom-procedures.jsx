@@ -3,6 +3,8 @@ import React, {useState, useEffect} from 'react';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
+import FancyDropdown from '../nb-fancy-dropdown/dropdown.jsx';
+import FancyColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 import {defineMessages, injectIntl, intlShape, FormattedMessage} from 'react-intl';
 
 import booleanInputIcon from './icon--boolean-input.svg';
@@ -79,14 +81,14 @@ const CustomProcedures = props => {
                         </div>
                         <select
                             className={styles.optionMenu}
-                            onClick={props.handlePropagation}
-                            onChange={props.handleInputMenuChange}
+                            onClick={props.onInputMenuClick}
+                            onChange={props.onInputMenuChange}
                         >
-                            <option value="stringornumber">number or text</option>
-                            <option value="boolean">boolean</option>
-                            <option value="object">object</option>
-                            <option value="array">array</option>
-                            <option value="color">color</option>
+                            <option value="stringornumber">{'number or text'}</option>
+                            <option value="boolean">{'boolean'}</option>
+                            <option value="object">{'object'}</option>
+                            <option value="array">{'array'}</option>
+                            <option value="color">{'color'}</option>
                         </select>
                     </div>
                     <div
@@ -160,104 +162,102 @@ const CustomProcedures = props => {
                         style={{backgroundColor: '#FF6680'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#FF6680"
+                        data-color="#FF6680"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
                     <span
                         style={{backgroundColor: '#4C97FF'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#4C97FF"
+                        data-color="#4C97FF"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
                     <span
                         style={{backgroundColor: '#9966FF'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#9966FF"
+                        data-color="#9966FF"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
                     <span
                         style={{backgroundColor: '#CF63CF'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#CF63CF"
+                        data-color="#CF63CF"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
                     <span
                         style={{backgroundColor: '#FFBF00'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#FFBF00"
+                        data-color="#FFBF00"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
                     <span
                         style={{backgroundColor: '#FFAB19'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#FFAB19"
+                        data-color="#FFAB19"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
                     <span
                         style={{backgroundColor: '#5CB1D6'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#5CB1D6"
+                        data-color="#5CB1D6"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
                     <span
                         style={{backgroundColor: '#59C059'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#59C059"
+                        data-color="#59C059"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
                     <span
                         style={{backgroundColor: '#FF8C1A'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#FF8C1A"
+                        data-color="#FF8C1A"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
                     <span
                         style={{backgroundColor: '#FF661A'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#FF661A"
+                        data-color="#FF661A"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
                     <span
                         style={{backgroundColor: '#66BD5C'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#66BD5C"
+                        data-color="#66BD5C"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
                     <span
                         style={{backgroundColor: '#5755D4'}}
                         className={styles.colorOption}
                         role="button"
-                        color="#5755D4"
+                        data-color="#5755D4"
                         draggable={false}
-                        onClick={props.setColor}
+                        onClick={props.onSetColor}
                     />
-                    <input
-                        style={{backgroundColor: props.colour}}
-                        type="color"
+                    <FancyColorPicker
                         value={props.colour}
-                        className={styles.colorPicker}
-                        onChange={props.setColor}
+                        rootClassName={styles.colorPicker}
+                        onChange={props.onSetColor}
                     />
                 </Box>
                 <div className={styles.checkboxRow}>
@@ -285,6 +285,38 @@ const CustomProcedures = props => {
                             id="gui.customProcedures.forAllSprites"
                         />
                     </label>
+                </div>
+                <div className={styles.outputRow}>
+                    <label>
+                        <FormattedMessage
+                            defaultMessage="Output:"
+                            description="Label for custom procedure output type menu"
+                            id="gui.customProcedures.output"
+                        />
+                    </label>
+                    <FancyDropdown
+                        value={props.outputMode}
+                        onChange={props.onOutputMenuChange}
+                    >
+                        <option value="auto">{'Auto'}</option>
+                        <option value="reporter">{'Reporter'}</option>
+                        <option value="boolean">{'Boolean'}</option>
+                        <option value="object">{'Object'}</option>
+                        <option value="array">{'Array'}</option>
+                    </FancyDropdown>
+                    {props.outputMode !== 'auto' && (
+                        <label>
+                            <FancyCheckbox
+                                checked={props.dual}
+                                onChange={props.onToggleDual}
+                            />
+                            <FormattedMessage
+                                defaultMessage="Dual block"
+                                description="Label for checkbox to make a custom procedure both a reporter and command"
+                                id="gui.customProcedures.dualBlock"
+                            />
+                        </label>
+                    )}
                 </div>
                 <Box className={styles.buttonRow}>
                     <button
@@ -315,19 +347,26 @@ const CustomProcedures = props => {
 
 CustomProcedures.propTypes = {
     componentRef: PropTypes.func.isRequired,
+    colour: PropTypes.string.isRequired,
     intl: intlShape,
     onAddInput: PropTypes.func.isRequired,
     onAddDropdown: PropTypes.func.isRequired,
     onAddBranch: PropTypes.func.isRequired,
     onAddLabel: PropTypes.func.isRequired,
-    handlePropagation: PropTypes.func.isRequired,
-    handleInputMenuChange: PropTypes.func.isRequired,
+    menuOption: PropTypes.string.isRequired,
+    onInputMenuClick: PropTypes.func.isRequired,
+    onInputMenuChange: PropTypes.func.isRequired,
+    onOutputMenuChange: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     onToggleWarp: PropTypes.func.isRequired,
     warp: PropTypes.bool.isRequired,
     onToggleGlobal: PropTypes.func.isRequired,
-    global: PropTypes.bool.isRequired
+    global: PropTypes.bool.isRequired,
+    onToggleDual: PropTypes.func.isRequired,
+    onSetColor: PropTypes.func.isRequired,
+    dual: PropTypes.bool.isRequired,
+    outputMode: PropTypes.oneOf(['auto', 'reporter', 'boolean', 'object', 'array']).isRequired
 };
 
 export default injectIntl(CustomProcedures);

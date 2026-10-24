@@ -31,6 +31,10 @@ class ListMonitor extends React.Component {
         };
     }
 
+    getListValue (value) {
+        return Array.isArray(value) ? value : [];
+    }
+
     handleActivate (index) {
         // Do nothing if activating the currently active item
         if (this.state.activeIndex === index) {
@@ -39,7 +43,7 @@ class ListMonitor extends React.Component {
 
         this.setState({
             activeIndex: index,
-            activeValue: safeStringify(this.props.value[index]),
+            activeValue: safeStringify(this.getListValue(this.props.value)[index]),
             inputDidChange: false
         });
     }
@@ -50,8 +54,10 @@ class ListMonitor extends React.Component {
             if (this.state.inputDidChange) {
                 const {vm, targetId, id: variableId} = this.props;
                 const newListValue = getVariableValue(vm, targetId, variableId);
-                newListValue[this.state.activeIndex] = this.state.activeValue;
-                setVariableValue(vm, targetId, variableId, newListValue);
+                if (Array.isArray(newListValue)) {
+                    newListValue[this.state.activeIndex] = this.state.activeValue;
+                    setVariableValue(vm, targetId, variableId, newListValue);
+                }
             }
 
             this.setState({
@@ -81,10 +87,11 @@ class ListMonitor extends React.Component {
         else if (e.key === 'ArrowDown') navigateDirection = 1;
         if (navigateDirection) {
             this.handleDeactivate(); // Submit in-progress edits
-            const newIndex = this.wrapListIndex(previouslyActiveIndex + navigateDirection, this.props.value.length);
+            const value = this.getListValue(this.props.value);
+            const newIndex = this.wrapListIndex(previouslyActiveIndex + navigateDirection, value.length);
             this.setState({
                 activeIndex: newIndex,
-                activeValue: safeStringify(this.props.value[newIndex]),
+                activeValue: safeStringify(value[newIndex]),
                 inputDidChange: false
             });
             e.preventDefault(); // Stop default tab behavior, handled by this state change
@@ -187,6 +194,7 @@ class ListMonitor extends React.Component {
                 activeIndex={this.state.activeIndex}
                 activeValue={this.state.activeValue}
                 height={this.state.height}
+                value={this.getListValue(props.value)}
                 width={this.state.width}
                 onActivate={props.editable ? this.handleActivate : null}
                 onAdd={props.editable ? this.handleAdd : null}

@@ -181,7 +181,7 @@ const compareArrays = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 let _firstAddBlockRan = false;
 
 const contextMenuCallbacks = [];
-const CONTEXT_MENU_ORDER = ['blocks2image', 'swap-local-global'];
+const CONTEXT_MENU_ORDER = ['blocks2image'];
 let createdAnyBlockContextMenus = false;
 
 const updateClasses = () => {
@@ -487,7 +487,7 @@ class Tab extends EventTargetShim {
         return true;
     }
 
-    addBlock (procedureCode, {args, displayName, callback}) {
+    addBlock (procedureCode, {args, defaults, displayName, callback, hidden}) {
         const procCodeArguments = parseArguments(procedureCode);
         if (args.length !== procCodeArguments.length) {
             throw new Error('Procedure code and argument list do not match');
@@ -510,6 +510,8 @@ class Tab extends EventTargetShim {
         vm.addAddonBlock({
             procedureCode,
             arguments: args,
+            argumentDefaults: defaults,
+            hidden,
             callback: wrappedCallback,
             // Ignored by VM but used by scratch-blocks traps
             displayName

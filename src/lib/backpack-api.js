@@ -1,4 +1,3 @@
-import xhr from 'xhr';
 import costumePayload from './backpack/costume-payload';
 import soundPayload from './backpack/sound-payload';
 import assetPayload from './backpack/asset-payload';
@@ -22,31 +21,32 @@ const includeFullUrls = (item, host) => Object.assign({}, item, {
     bodyUrl: `${host}/${item.body}`
 });
 
+const fetchResponse = (uri, options = {}) => fetch(uri, options).then(response => {
+    if (!response.ok) {
+        throw new Error(response.statusText || `Request failed with status ${response.status}`);
+    }
+    return response;
+});
+
 const getBackpackContents = ({
     host,
     username,
     token,
     limit,
     offset
-}) => new Promise((resolve, reject) => {
+}) => {
     if (host === LOCAL_API) {
-        return resolve(localBackpackAPI.getBackpackContents({
+        return Promise.resolve(localBackpackAPI.getBackpackContents({
             limit,
             offset
         }));
     }
-    xhr({
+    return fetchResponse(`${host}/${username}?limit=${limit}&offset=${offset}`, {
         method: 'GET',
-        uri: `${host}/${username}?limit=${limit}&offset=${offset}`,
-        headers: {'x-token': token},
-        json: true
-    }, (error, response) => {
-        if (error || response.statusCode !== 200) {
-            return reject(new Error(response.status));
-        }
-        return resolve(response.body.map(item => includeFullUrls(item, host)));
-    });
-});
+        headers: {'x-token': token}
+    }).then(response => response.json())
+        .then(items => items.map(item => includeFullUrls(item, host)));
+};
 
 const saveBackpackObject = ({
     host,
@@ -58,9 +58,9 @@ const saveBackpackObject = ({
     body, // Base64-encoded body of the object being saved
     thumbnail, // Base64-encoded JPEG thumbnail of the object being saved
     ...extra // Any other data that a payload may contain
-}) => new Promise((resolve, reject) => {
+}) => {
     if (host === LOCAL_API) {
-        return resolve(localBackpackAPI.saveBackpackObject({
+        return Promise.resolve(localBackpackAPI.saveBackpackObject({
             type,
             mime,
             name,
@@ -69,41 +69,33 @@ const saveBackpackObject = ({
             ...extra
         }));
     }
-    xhr({
+    return fetchResponse(`${host}/${username}`, {
         method: 'POST',
-        uri: `${host}/${username}`,
-        headers: {'x-token': token},
-        json: {type, mime, name, body, thumbnail, ...extra}
-    }, (error, response) => {
-        if (error || response.statusCode !== 200) {
-            return reject(new Error(response.status));
-        }
-        return resolve(includeFullUrls(response.body, host));
-    });
-});
+        headers: {
+            'content-type': 'application/json',
+            'x-token': token
+        },
+        body: JSON.stringify({type, mime, name, body, thumbnail, ...extra})
+    }).then(response => response.json())
+        .then(item => includeFullUrls(item, host));
+};
 
 const deleteBackpackObject = ({
     host,
     username,
     token,
     id
-}) => new Promise((resolve, reject) => {
+}) => {
     if (host === LOCAL_API) {
-        return resolve(localBackpackAPI.deleteBackpackObject({
+        return Promise.resolve(localBackpackAPI.deleteBackpackObject({
             id
         }));
     }
-    xhr({
+    return fetchResponse(`${host}/${username}/${id}`, {
         method: 'DELETE',
-        uri: `${host}/${username}/${id}`,
         headers: {'x-token': token}
-    }, (error, response) => {
-        if (error || response.statusCode !== 200) {
-            return reject(new Error(response.status));
-        }
-        return resolve(response.body);
-    });
-});
+    }).then(response => response.text());
+};
 
 const updateBackpackObject = options => new Promise((resolve, reject) => {
     const {host, id} = options;
@@ -138,14 +130,8 @@ const moveBackpackObjectToFolder = ({host, id, folderId, destinationId, insertAf
 
 // Two types of backpack items are not retreivable through storage
 // code, as json and sprite3 as arraybuffer zips.
-const fetchAs = (responseType, uri) => new Promise((resolve, reject) => {
-    xhr({uri, responseType}, (error, response) => {
-        if (error || response.statusCode !== 200) {
-            return reject(new Error(response.status));
-        }
-        return resolve(response.body);
-    });
-});
+const fetchAs = (responseType, uri) => fetchResponse(uri)
+    .then(response => (responseType === 'json' ? response.json() : response.arrayBuffer()));
 
 // These two helpers allow easy fetching of backpack code and sprite zips
 // Use the curried fetchAs here so the consumer does not worry about XHR responseTypes

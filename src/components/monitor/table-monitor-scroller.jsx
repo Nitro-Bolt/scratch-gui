@@ -191,6 +191,7 @@ class TableMonitorScroller extends React.Component {
         return (
             <div style={{position: 'relative', width: '100%', height: bodyHeight}}>
                 <MultiGrid
+                    categoryColor={this.props.categoryColor}
                     cellRenderer={this.cellRenderer}
                     columnCount={columnCount + 2}
                     columnWidth={({index}) => (index === 0 ? 32 : 78)}

@@ -35,10 +35,10 @@ const modes = {
     table: TableMonitor
 };
 
-const getCategoryColor = (theme, category) => {
+const getCategoryColor = (theme, category, color) => {
     const colors = theme.getStageBlockColors();
     return {
-        background: colors[categoryColorMap[category]].primary,
+        background: color || colors[categoryColorMap[category]].primary,
         text: colors.text
     };
 };
@@ -74,7 +74,7 @@ const MonitorComponent = props => (
                 data-opcode={props.opcode}
             >
                 {React.createElement(modes[props.mode], {
-                    categoryColor: getCategoryColor(props.theme, props.category),
+                    categoryColor: getCategoryColor(props.theme, props.category, props.color),
                     ...props
                 })}
             </Box>
@@ -151,6 +151,7 @@ const monitorModes = Object.keys(modes);
 
 MonitorComponent.propTypes = {
     category: PropTypes.oneOf(Object.keys(categoryColorMap)),
+    color: PropTypes.string,
     componentRef: PropTypes.func.isRequired,
     draggable: PropTypes.bool.isRequired,
     id: PropTypes.string.isRequired,

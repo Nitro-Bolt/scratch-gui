@@ -36,7 +36,7 @@ import {
 } from '../../lib/block-color-persistence.js';
 import {setHiddenCategories} from '../../reducers/hidden-categories';
 import dropdownCaret from '../menu-bar/dropdown-caret.svg';
-import ColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
+import FancyColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 import DeleteButton from '../delete-button/delete-button.jsx';
 import {BLOCK_SHAPE_PRESETS, getBlockShape} from '../../lib/nb-custom-block-shape';
 
@@ -192,21 +192,24 @@ const hexToRgb = hex => {
 
 const rgbToHex = ({r, g, b}) =>
     `#${[r, g, b]
-        .map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0'))
+        .map(v => Math.round(Math.max(0, Math.min(255, v)))
+            .toString(16)
+            .padStart(2, '0')
+        )
         .join('')}`;
 
 const mixTowardWhite = (hex, fraction) => {
     const {r, g, b} = hexToRgb(hex);
     return rgbToHex({
-        r: r + (255 - r) * fraction,
-        g: g + (255 - g) * fraction,
-        b: b + (255 - b) * fraction
+        r: r + ((255 - r) * fraction),
+        g: g + ((255 - g) * fraction),
+        b: b + ((255 - b) * fraction)
     });
 };
 
 const colorBrightness = hex => {
     const {r, g, b} = hexToRgb(hex);
-    return (299 * r + 587 * g + 114 * b) / 1000;
+    return ((299 * r) + (587 * g) + (114 * b)) / 1000;
 };
 
 const labelContrastDefault = 190;
@@ -377,7 +380,7 @@ CollapsibleSetting.propTypes = {
 };
 
 const LabelContrastPreview = ({baseColor, threshold}) => {
-    const currentThreshold = threshold === undefined || threshold === null ? labelContrastDefault : threshold;
+    const currentThreshold = typeof threshold === 'undefined' || threshold === null ? labelContrastDefault : threshold;
     return (
         <div className={styles.labelContrastPreview}>
             {labelContrastShades.map((fraction, index) => {
@@ -506,7 +509,7 @@ const EditorSettingsModal = props => {
                         <FormattedMessage
                         // eslint-disable-next-line max-len
                             defaultMessage="Sorry, the cloud variable server thinks your username may be unsafe. Please change it to something else or {resetIt}."
-                            id="tw.usernameModal.mustChange"
+                            id="nb.editorSettings.username.mustChange"
                             values={{
                                 resetIt: (
                                     <a
@@ -517,7 +520,7 @@ const EditorSettingsModal = props => {
                                         <FormattedMessage
                                             defaultMessage="reset it (recommended)"
                                             description="link to reset username"
-                                            id="tw.usernameModal.mustChange.resetIt"
+                                            id="nb.editorSettings.username.mustChange.resetIt"
                                         />
                                     </a>
                                 )
@@ -710,6 +713,52 @@ const EditorSettingsModal = props => {
                 />
                 <Section
                     title={<FormattedMessage
+                        id="nb.editorSettings.blockSelection"
+                        defaultMessage="Block selection"
+                    />}
+                >
+                    <BooleanSetting
+                        value={!!props.preferences['deselect-block-selection-after-action']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.deselectBlockSelectionAfterAction"
+                            defaultMessage="Deselect multi-selection after actions"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.deselectBlockSelectionAfterActionHelp"
+                            defaultMessage="Clears selected blocks after you act on them. When disabled, selections remain until you click elsewhere."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('deselect-block-selection-after-action', e.target.checked)}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['swap-multi-select-modifiers']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.swapMultiSelectModifiers"
+                            defaultMessage="Swap multi-selection controls"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.swapMultiSelectModifiersHelp"
+                            defaultMessage="Uses Ctrl for selecting whole scripts and Shift for selecting individual blocks."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('swap-multi-select-modifiers', e.target.checked)}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['inward-selection']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.inwardSelection"
+                            defaultMessage="Inward block selection"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.inwardSelectionHelp"
+                            defaultMessage="Requires blocks or scripts to be fully enclosed by the selection box. When disabled, touching them is enough."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('inward-selection', e.target.checked)}
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
                         id="nb.editorSettings.theme"
                         defaultMessage="Theme"
                     />}
@@ -786,10 +835,36 @@ const EditorSettingsModal = props => {
                         />}
                         help={<FormattedMessage
                             id="nb.editorSettings.vanillaPaletteHelp"
-                            defaultMessage="Hides NitroBolt-exclusive blocks (e.g. extended operators, switch, for-each-in-range, etc.) and hides the JSON and assets categories."
+                            defaultMessage="Hides NitroBolt-exclusive blocks and hides the JSON and assets categories."
                         />}
                         // eslint-disable-next-line react/jsx-no-bind
                         onChange={e => props.onSetPreference('hide-nb-blocks', e.target.checked)}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['extendable-arrows-left']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.extendableArrowsLeft"
+                            defaultMessage="Extendable arrows on left"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.extendableArrowsLeftHelp"
+                            defaultMessage="Moves the arrows of expandable blocks from the right side to the left side."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('extendable-arrows-left', e.target.checked)}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['hide-extendable-arrow-separator']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.hideExtendableArrowSeparator"
+                            defaultMessage="Hide extendable middle line"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.hideExtendableArrowSeparatorHelp"
+                            defaultMessage="Hides the middle line between arrows on extendables that accept arrays."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('hide-extendable-arrow-separator', e.target.checked)}
                     />
                     <CollapsibleSetting
                         label={<FormattedMessage
@@ -863,13 +938,12 @@ const EditorSettingsModal = props => {
                                             key={cat.colorId}
                                             className={classNames(styles.label, styles.categoryColorLabel)}
                                         >
-                                            <ColorPicker
+                                            <FancyColorPicker
                                                 value={value}
                                                 onChange={v => handleBlockColorPreview(cat.colorId, v)}
                                                 onCommit={handleBlockColorCommit(cat.colorId)}
                                                 className={styles.colorInput}
                                                 showIcon={false}
-                                                label={false}
                                                 size={'1.8rem'}
                                             />
                                             <span>{cat.label}</span>
