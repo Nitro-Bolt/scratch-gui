@@ -247,6 +247,7 @@ const StageHeaderComponent = function (props) {
                                     title={props.intl.formatMessage(messages.openDebuggerMessage, {
                                         shortcut: new KeybindClass(preferences["keybind-open-debugger"] ?? defaultKeybinds["open-debugger"]).toString()
                                     })}
+                                    tabIndex={0}
                                 >
                                     <img
                                         alt={props.intl.formatMessage(messages.openDebuggerMessage)}
