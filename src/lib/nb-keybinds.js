@@ -25,6 +25,8 @@ export const defaultKeybinds = {
     'open-editor-settings': {ctrl: true, key: ','},
     'open-extensions': {ctrl: true, shift: true, key: 'e'},
     'open-project': {ctrl: true, key: 'o'},
+    'open-project-settings': {disabled: true},
+    'open-source-control': {ctrl: true, shift: true, key: 'g'},
     'new-project': {ctrl: true, shift: true, key: 'n'},
     'new-window': {ctrl: true, alt: true, key: 'n'},
     'package-project': {ctrl: true, key: 'Enter'},

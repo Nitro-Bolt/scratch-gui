@@ -28,7 +28,9 @@ import {
     closeBackdropLibrary,
     closeTelemetryModal,
     openExtensionLibrary,
-    openEditorSettingsModal
+    openEditorSettingsModal,
+    openSettingsModal,
+    openGitModal
 } from '../reducers/modals';
 
 import FontLoaderHOC from '../lib/font-loader-hoc.jsx';
@@ -212,6 +214,8 @@ const mapDispatchToProps = dispatch => ({
     onExtensionButtonClick: () => dispatch(openExtensionLibrary()),
     onEditorSettings: () => dispatch(openEditorSettingsModal()),
     onOpenDebugger: () => dispatch(openDebugger()),
+    onOpenProjectSettings: () => dispatch(openSettingsModal()),
+    onOpenGitModal: () => dispatch(openGitModal()),
     onActivateTab: tab => dispatch(activateTab(tab)),
     onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
     onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),

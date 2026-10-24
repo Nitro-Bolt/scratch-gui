@@ -260,6 +260,16 @@ const GUIComponent = props => {
     );
 
     registerKeybind(
+        props.preferences['keybind-open-project-settings'] ?? defaultKeybinds['open-open-project-settings'],
+        props.onOpenProjectSettings
+    );
+
+    registerKeybind(
+        props.preferences['keybind-open-source-control'] ?? defaultKeybinds['open-source-control'],
+        props.onOpenGitModal
+    );
+
+    registerKeybind(
         props.preferences['keybind-create-comment'] ?? defaultKeybinds['create-comment'],
         () => {
         const ws = window.Blockly.getMainWorkspace();

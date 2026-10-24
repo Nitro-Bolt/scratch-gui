@@ -1493,6 +1493,24 @@ const EditorSettingsModal = props => {
                         preferences={props.preferences}
                         shortcutId="open-extensions"
                     />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Open source control"
+                            id="nb.editorSettings.keymap.openSourceControl"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="open-source-control"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Open project settings"
+                            id="nb.editorSettings.keymap.openProjectSettings"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="open-project-settings"
+                    />
                 </Section>
                 <Section
                     title={<FormattedMessage
