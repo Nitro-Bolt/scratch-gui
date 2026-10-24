@@ -82,6 +82,10 @@
     color: $text-primary;
 }
 
+.tab-list:has(.tab:focus-visible) .is-selected {
+    border: 1px solid $looks-secondary !important;
+}
+
 .tab {
     flex-grow: 1;
     height: 80%;
