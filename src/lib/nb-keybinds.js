@@ -28,12 +28,12 @@ export const defaultKeybinds = {
     'new-project': {ctrl: true, shift: true, key: 'n'},
     'new-window': {ctrl: true, alt: true, key: 'n'},
     'package-project': {ctrl: true, key: 'Enter'},
-    'pause-project': {ctrl: true, shift: true, key: ' '},
+    'pause-project': {disabled: true},
     'project-full-screen': {alt: true, key: 'Enter'},
     'save': {ctrl: true, key: 's'},
     'start-project': {ctrl: true, key: ' '},
-    'step-project': {ctrl: true, shift: true, alt: true, key: ' '},
-    'stop-project': {ctrl: true, alt: true, key: ' '},
+    'step-project': {disabled: true},
+    'stop-project': {disabled: true},
     'toggle-sprite-visibility': {ctrl: true, key: 'h'}
 };
 
