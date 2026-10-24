@@ -43,6 +43,7 @@ class PaintEditorWrapper extends React.Component {
             this.props.customStageSize !== nextProps.customStageSize ||
             this.props.nudgeMultiplier !== nextProps.nudgeMultiplier ||
             this.props.canvasSizeMultiplier !== nextProps.canvasSizeMultiplier ||
+            this.props.pixelUploadSize !== nextProps.pixelUploadSize ||
             this.props.noSwapButton !== nextProps.noSwapButton ||
             this.props.noCutButton !== nextProps.noCutButton ||
             this.state.fonts !== nextState.fonts ||
@@ -134,6 +135,7 @@ class PaintEditorWrapper extends React.Component {
                     height={this.props.customStageSize.height}
                     nudgeMultiplier={this.props.nudgeMultiplier}
                     canvasSizeMultiplier={this.props.canvasSizeMultiplier}
+                    pixelUploadSize={this.props.pixelUploadSize}
                     noSwapButton={this.props.noSwapButton}
                     noCutButton={this.props.noCutButton}
                 />
@@ -162,6 +164,7 @@ PaintEditorWrapper.propTypes = {
     imageId: PropTypes.string.isRequired,
     nudgeMultiplier: PropTypes.number,
     canvasSizeMultiplier: PropTypes.number,
+    pixelUploadSize: PropTypes.bool,
     noSwapButton: PropTypes.bool,
     noCutButton: PropTypes.bool,
     theme: PropTypes.instanceOf(Theme),
@@ -185,6 +188,7 @@ const mapStateToProps = (state, {selectedCostumeIndex}) => {
         name: costume && costume.name,
         nudgeMultiplier: state.scratchGui.preferences['paint-nudge-multiplier'],
         canvasSizeMultiplier: state.scratchGui.preferences['paint-canvas-size-multiplier'],
+        pixelUploadSize: state.scratchGui.preferences['paint-pixel-upload-size'],
         noSwapButton: state.scratchGui.preferences['paint-no-swap-button'],
         noCutButton: state.scratchGui.preferences['paint-no-cut-button'],
         rotationCenterX: costume && costume.rotationCenterX,
