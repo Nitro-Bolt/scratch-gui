@@ -1638,6 +1638,26 @@ const EditorSettingsModal = props => {
                             shortcut={props.preferences['keybind-create-group'] ?? defaultKeyboardShortcuts['create-group']}
                         />
                     </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="Zoom in"
+                            id="nb.editorSettings.keymap.blockZoomIn"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-block-zoom-in', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-block-zoom-in'] ?? defaultKeyboardShortcuts['block-zoom-in']}
+                        />
+                    </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="Zoom out"
+                            id="nb.editorSettings.keymap.blockZoomOut"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-block-zoom-out', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-block-zoom-out'] ?? defaultKeyboardShortcuts['block-zoom-out']}
+                        />
+                    </Box>
                 </Section>
             </Box>
         }

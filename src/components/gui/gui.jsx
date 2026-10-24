@@ -326,6 +326,20 @@ const GUIComponent = props => {
         }, true);
     });
 
+    registerKeyboardShortcut(
+        props.preferences['keybind-block-zoom-in'] ?? defaultKeyboardShortcuts['block-zoom-in'],
+        () => {
+            Blockly.getMainWorkspace().zoomCenter(1);
+        }
+    );
+
+    registerKeyboardShortcut(
+        props.preferences['keybind-block-zoom-out'] ?? defaultKeyboardShortcuts['block-zoom-out'],
+        () => {
+            Blockly.getMainWorkspace().zoomCenter(-1);
+        }
+    );
+
     const [resizingStage, setResizingStage] = useState(false);
     const [stageSize, setStageSize] = useState(480);
 

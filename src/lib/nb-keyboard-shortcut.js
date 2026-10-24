@@ -14,6 +14,8 @@ import {useCallback, useEffect} from 'react';
  * @type {{[key: string]: KeyboardShortcut}}
  */
 export const defaultKeyboardShortcuts = {
+    'block-zoom-in': {ctrl: true, key: '='},
+    'block-zoom-out': {ctrl: true, key: '-'},
     'change-sprite-name': {key: 'F2'},
     'create-comment': {ctrl: true, key: '/'},
     'create-group': {ctrl: true, key: 'g'},
