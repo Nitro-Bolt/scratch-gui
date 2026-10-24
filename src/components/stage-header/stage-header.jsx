@@ -24,7 +24,7 @@ import debuggerIcon from './icon--debugger.svg';
 import styles from './stage-header.css';
 
 import FullscreenAPI from '../../lib/tw-fullscreen-api';
-import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeybinds, registerKeybind} from '../../lib/nb-keybinds.js';
 import { KeyboardShortcutClass } from '../nb-editor-settings-modal/key-input.jsx';
 
 const messages = defineMessages({
@@ -100,8 +100,8 @@ const StageHeaderComponent = function (props) {
 
     const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen || isEmbedded, isPlayerOnly);
 
-    registerKeyboardShortcut(
-        preferences['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen'],
+    registerKeybind(
+        preferences['keybind-project-full-screen'] ?? defaultKeybinds['project-full-screen'],
         () => (isFullScreen ? onSetStageUnFullScreen() : onSetStageFullScreen())
     );
 
@@ -135,7 +135,7 @@ const StageHeaderComponent = function (props) {
                         draggable={false}
                         src={unFullScreenIcon}
                         title={props.intl.formatMessage(messages.fullscreenControl, {
-                            shortcut: new KeyboardShortcutClass(preferences["keybind-project-full-screen"] ?? defaultKeyboardShortcuts["project-full-screen"]).toString()
+                            shortcut: new KeyboardShortcutClass(preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]).toString()
                         })}
                     />
                 </Button>
@@ -152,7 +152,7 @@ const StageHeaderComponent = function (props) {
                         draggable={false}
                         src={fullScreenIcon}
                         title={props.intl.formatMessage(messages.fullscreenControl, {
-                            shortcut: new KeyboardShortcutClass(preferences["keybind-project-full-screen"] ?? defaultKeyboardShortcuts["project-full-screen"]).toString()
+                            shortcut: new KeyboardShortcutClass(preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]).toString()
                         })}
                     />
                 </Button>
@@ -245,7 +245,7 @@ const StageHeaderComponent = function (props) {
                                     className={classNames(styles.stageButton, styles.debuggerButton)}
                                     onClick={onOpenDebugger}
                                     title={props.intl.formatMessage(messages.openDebuggerMessage, {
-                                        shortcut: new KeyboardShortcutClass(preferences["keybind-open-debugger"] ?? defaultKeyboardShortcuts["open-debugger"]).toString()
+                                        shortcut: new KeyboardShortcutClass(preferences["keybind-open-debugger"] ?? defaultKeybinds["open-debugger"]).toString()
                                     })}
                                 >
                                     <img
@@ -272,7 +272,7 @@ const StageHeaderComponent = function (props) {
                                     draggable={false}
                                     src={fullScreenIcon}
                                     title={props.intl.formatMessage(messages.fullscreenControl, {
-                                        shortcut: new KeyboardShortcutClass(preferences["keybind-project-full-screen"] ?? defaultKeyboardShortcuts["project-full-screen"]).toString()
+                                        shortcut: new KeyboardShortcutClass(preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]).toString()
                                     })}
                                 />
                             </Button>

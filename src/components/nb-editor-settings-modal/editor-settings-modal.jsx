@@ -24,7 +24,7 @@ import {setUsername, setUsernameInvalid} from '../../reducers/tw.js';
 import isScratchDesktop from '../../lib/isScratchDesktop.js';
 import {generateRandomUsername} from '../../lib/tw-username.js';
 import KeyInput from './key-input.jsx';
-import {defaultKeyboardShortcuts} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeybinds} from '../../lib/nb-keybinds.js';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme, detectTheme} from '../../lib/themes/themePersistance.js';
 import {GUI_DARK, GUI_LIGHT, Theme, BLOCKS_CUSTOM} from '../../lib/themes/index.js';
@@ -1437,7 +1437,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-open-backpack', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-open-backpack'] ?? defaultKeyboardShortcuts['open-backpack']}
+                            shortcut={props.preferences['keybind-open-backpack'] ?? defaultKeybinds['open-backpack']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1447,7 +1447,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-open-debugger', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-open-debugger'] ?? defaultKeyboardShortcuts['open-debugger']}
+                            shortcut={props.preferences['keybind-open-debugger'] ?? defaultKeybinds['open-debugger']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1457,7 +1457,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-open-editor-settings', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings']}
+                            shortcut={props.preferences['keybind-open-editor-settings'] ?? defaultKeybinds['open-editor-settings']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1467,7 +1467,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-open-extensions', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-open-extensions'] ?? defaultKeyboardShortcuts['open-extensions']}
+                            shortcut={props.preferences['keybind-open-extensions'] ?? defaultKeybinds['open-extensions']}
                         />
                     </Box>
                 </Section>
@@ -1484,7 +1484,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-new-project', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-new-project'] ?? defaultKeyboardShortcuts['new-project']}
+                            shortcut={props.preferences['keybind-new-project'] ?? defaultKeybinds['new-project']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1494,7 +1494,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-new-window', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-new-window'] ?? defaultKeyboardShortcuts['new-window']}
+                            shortcut={props.preferences['keybind-new-window'] ?? defaultKeybinds['new-window']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1504,7 +1504,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-open-project', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-open-project'] ?? defaultKeyboardShortcuts['open-project']}
+                            shortcut={props.preferences['keybind-open-project'] ?? defaultKeybinds['open-project']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1514,7 +1514,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-save', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-save'] ?? defaultKeyboardShortcuts['save']}
+                            shortcut={props.preferences['keybind-save'] ?? defaultKeybinds['save']}
                         />
                     </Box>
                 </Section>
@@ -1531,7 +1531,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-start-project', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-start-project'] ?? defaultKeyboardShortcuts['start-project']}
+                            shortcut={props.preferences['keybind-start-project'] ?? defaultKeybinds['start-project']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1541,7 +1541,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-pause-project', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-pause-project'] ?? defaultKeyboardShortcuts['pause-project']}
+                            shortcut={props.preferences['keybind-pause-project'] ?? defaultKeybinds['pause-project']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1551,7 +1551,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-step-project', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-step-project'] ?? defaultKeyboardShortcuts['step-project']}
+                            shortcut={props.preferences['keybind-step-project'] ?? defaultKeybinds['step-project']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1561,7 +1561,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-stop-project', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project']}
+                            shortcut={props.preferences['keybind-stop-project'] ?? defaultKeybinds['stop-project']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1571,7 +1571,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-project-full-screen', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen']}
+                            shortcut={props.preferences['keybind-project-full-screen'] ?? defaultKeybinds['project-full-screen']}
                         />
                     </Box>
                 </Section>
@@ -1588,7 +1588,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-change-sprite-name', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-change-sprite-name'] ?? defaultKeyboardShortcuts['change-sprite-name']}
+                            shortcut={props.preferences['keybind-change-sprite-name'] ?? defaultKeybinds['change-sprite-name']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1598,7 +1598,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-toggle-sprite-visibility', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-toggle-sprite-visibility'] ?? defaultKeyboardShortcuts['toggle-sprite-visibility']}
+                            shortcut={props.preferences['keybind-toggle-sprite-visibility'] ?? defaultKeybinds['toggle-sprite-visibility']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1608,7 +1608,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-hide-stage', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-hide-stage'] ?? defaultKeyboardShortcuts['hide-stage']}
+                            shortcut={props.preferences['keybind-hide-stage'] ?? defaultKeybinds['hide-stage']}
                         />
                     </Box>
                 </Section>
@@ -1625,7 +1625,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-create-comment', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-create-comment'] ?? defaultKeyboardShortcuts['create-comment']}
+                            shortcut={props.preferences['keybind-create-comment'] ?? defaultKeybinds['create-comment']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1635,7 +1635,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-create-group', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-create-group'] ?? defaultKeyboardShortcuts['create-group']}
+                            shortcut={props.preferences['keybind-create-group'] ?? defaultKeybinds['create-group']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1645,7 +1645,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-block-zoom-in', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-block-zoom-in'] ?? defaultKeyboardShortcuts['block-zoom-in']}
+                            shortcut={props.preferences['keybind-block-zoom-in'] ?? defaultKeybinds['block-zoom-in']}
                         />
                     </Box>
                     <Box className={styles.keySetting}>
@@ -1655,7 +1655,7 @@ const EditorSettingsModal = props => {
                         />
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-block-zoom-out', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-block-zoom-out'] ?? defaultKeyboardShortcuts['block-zoom-out']}
+                            shortcut={props.preferences['keybind-block-zoom-out'] ?? defaultKeybinds['block-zoom-out']}
                         />
                     </Box>
                 </Section>

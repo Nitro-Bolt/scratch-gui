@@ -1,7 +1,7 @@
 /* eslint-disable valid-jsdoc */
 
 /**
- * @typedef {Object} KeyboardShortcut
+ * @typedef {Object} Keybind
  * @property {string} key
  * @property {boolean?} ctrl
  * @property {boolean?} alt
@@ -11,9 +11,9 @@
 import {useCallback, useEffect} from 'react';
 
 /**
- * @type {{[key: string]: KeyboardShortcut}}
+ * @type {{[key: string]: Keybind}}
  */
-export const defaultKeyboardShortcuts = {
+export const defaultKeybinds = {
     'block-zoom-in': {ctrl: true, key: '='},
     'block-zoom-out': {ctrl: true, key: '-'},
     'change-sprite-name': {key: 'F2'},
@@ -37,10 +37,10 @@ export const defaultKeyboardShortcuts = {
 };
 
 /**
- * @param {KeyboardShortcut} shortcut The shortcut required to run the callback
+ * @param {Keybind} shortcut The shortcut required to run the callback
  * @param {((event: KeyboardEvent) => {})} callback What happens when key is pressed
  */
-export const registerKeyboardShortcut = (shortcut, callback) => {
+export const registerKeybind = (shortcut, callback) => {
     const handleKeyboardEvent = useCallback((
         /**
          * @type {KeyboardEvent}

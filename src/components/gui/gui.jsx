@@ -61,7 +61,7 @@ import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
 import assetsIcon from '!../../lib/tw-recolor/build!./icon--assets.svg';
 import variablesIcon from '!../../lib/tw-recolor/build!./icon--variables.svg';
 
-import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeybinds, registerKeybind} from '../../lib/nb-keybinds.js';
 
 const messages = defineMessages({
     addExtension: {
@@ -220,7 +220,7 @@ const GUIComponent = props => {
     });
 
     for (let i = 0; i < 10; i++) {
-        registerKeyboardShortcut({
+        registerKeybind({
             key: i,
             ctrl: true
         }, () => {
@@ -228,23 +228,23 @@ const GUIComponent = props => {
         });
     }
 
-    registerKeyboardShortcut(
-        props.preferences['keybind-open-debugger'] ?? defaultKeyboardShortcuts['open-debugger'],
+    registerKeybind(
+        props.preferences['keybind-open-debugger'] ?? defaultKeybinds['open-debugger'],
         onOpenDebugger
     );
 
-    registerKeyboardShortcut(
-        props.preferences['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings'],
+    registerKeybind(
+        props.preferences['keybind-open-editor-settings'] ?? defaultKeybinds['open-editor-settings'],
         onEditorSettings
     );
 
-    registerKeyboardShortcut(
-        props.preferences['keybind-open-extensions'] ?? defaultKeyboardShortcuts['open-extensions'],
+    registerKeybind(
+        props.preferences['keybind-open-extensions'] ?? defaultKeybinds['open-extensions'],
         onExtensionButtonClick
     );
 
-    registerKeyboardShortcut(
-        props.preferences['keybind-create-comment'] ?? defaultKeyboardShortcuts['create-comment'],
+    registerKeybind(
+        props.preferences['keybind-create-comment'] ?? defaultKeybinds['create-comment'],
         () => {
         const ws = window.Blockly.getMainWorkspace();
         const goog = window.Blockly.goog;
@@ -303,8 +303,8 @@ const GUIComponent = props => {
         addWsComment();
     });
 
-    registerKeyboardShortcut(
-        props.preferences['keybind-create-group'] ?? defaultKeyboardShortcuts['create-group'],
+    registerKeybind(
+        props.preferences['keybind-create-group'] ?? defaultKeybinds['create-group'],
         () => {
         const ws = window.Blockly.getMainWorkspace();
         const goog = window.Blockly.goog;
@@ -326,15 +326,15 @@ const GUIComponent = props => {
         }, true);
     });
 
-    registerKeyboardShortcut(
-        props.preferences['keybind-block-zoom-in'] ?? defaultKeyboardShortcuts['block-zoom-in'],
+    registerKeybind(
+        props.preferences['keybind-block-zoom-in'] ?? defaultKeybinds['block-zoom-in'],
         () => {
             Blockly.getMainWorkspace().zoomCenter(1);
         }
     );
 
-    registerKeyboardShortcut(
-        props.preferences['keybind-block-zoom-out'] ?? defaultKeyboardShortcuts['block-zoom-out'],
+    registerKeybind(
+        props.preferences['keybind-block-zoom-out'] ?? defaultKeybinds['block-zoom-out'],
         () => {
             Blockly.getMainWorkspace().zoomCenter(-1);
         }
@@ -343,8 +343,8 @@ const GUIComponent = props => {
     const [resizingStage, setResizingStage] = useState(false);
     const [stageSize, setStageSize] = useState(480);
 
-    registerKeyboardShortcut(
-        props.preferences['keybind-hide-stage'] ?? defaultKeyboardShortcuts['hide-stage'],
+    registerKeybind(
+        props.preferences['keybind-hide-stage'] ?? defaultKeybinds['hide-stage'],
         () => setStageSize(stageSize ? 0 : 480)
     );
 

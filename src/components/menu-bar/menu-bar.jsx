@@ -112,7 +112,7 @@ import sharedMessages from '../../lib/shared-messages';
 import SeeInsideButton from './tw-see-inside.jsx';
 import {isScratchDesktop, notScratchDesktop} from '../../lib/isScratchDesktop.js';
 import {APP_NAME} from '../../lib/brand.js';
-import { defaultKeyboardShortcuts, registerKeyboardShortcut } from '../../lib/nb-keyboard-shortcut.js';
+import { defaultKeybinds, registerKeybind } from '../../lib/nb-keybinds.js';
 
 const ariaMessages = defineMessages({
     tutorials: {
@@ -215,10 +215,10 @@ MenuItemLink.propTypes = {
 };
 
 const MenuBarKeybindWrapper = props => {
-    registerKeyboardShortcut(props.preferences['keybind-new-project'] ?? defaultKeyboardShortcuts['new-project'], props.onClickNew);
-    registerKeyboardShortcut(props.preferences['keybind-new-window'] ?? defaultKeyboardShortcuts['new-window'], isScratchDesktop() ? props.onClickNewWindow : () => {});
-    registerKeyboardShortcut(props.preferences['keybind-save'] ?? defaultKeyboardShortcuts['save'], props.onClickSave);
-    registerKeyboardShortcut(props.preferences['keybind-open-project'] ?? defaultKeyboardShortcuts['open-project'], props.onStartSelectingFileUpload);
+    registerKeybind(props.preferences['keybind-new-project'] ?? defaultKeybinds['new-project'], props.onClickNew);
+    registerKeybind(props.preferences['keybind-new-window'] ?? defaultKeybinds['new-window'], isScratchDesktop() ? props.onClickNewWindow : () => {});
+    registerKeybind(props.preferences['keybind-save'] ?? defaultKeybinds['save'], props.onClickSave);
+    registerKeybind(props.preferences['keybind-open-project'] ?? defaultKeybinds['open-project'], props.onStartSelectingFileUpload);
 
     return props.children;
 }
