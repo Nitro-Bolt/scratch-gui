@@ -71,7 +71,7 @@ const messages = defineMessages({
     openDebuggerMessage: {
         defaultMessage: 'Open debugger ({shortcut})',
         description: 'Button to open the debugger panel',
-        id: 'nb.openDebugger'
+        id: 'gui.stageHeader.openDebugger'
     }
 });
 
