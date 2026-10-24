@@ -158,22 +158,22 @@
 }
 
 [dir="ltr"] .left-hidden-offset {
-    width: calc(100% - $space * 18) !important;
+    max-width: calc(100% - $space * 18) !important;
     margin-left: calc($space * 18) !important;
 }
 
 [dir="ltr"] .left-hidden-offset.debugger-enabled {
-    width: calc(100% - $space * 22.5 + 1px) !important;
+    max-width: calc(100% - $space * 22.5 + 1px) !important;
     margin-left: calc($space * 22.5 + 1px) !important;
 }
 
 [dir="rtl"] .left-hidden-offset {
-    width: calc(100% - $space * 18) !important;
+    max-width: calc(100% - $space * 18) !important;
     margin-right: calc($space * 18) !important;
 }
 
 [dir="rtl"] .left-hidden-offset.debugger-enabled {
-    width: calc(100% - $space * 22.5 + 1px) !important;
+    max-width: calc(100% - $space * 22.5 + 1px) !important;
     margin-right: calc($space * 22.5 + 1px) !important;
 }
 
