@@ -25,6 +25,8 @@ import DragConstants from '../lib/drag-constants';
 import downloadBlob from '../lib/download-blob';
 import SharedAudioContext from '../lib/audio/shared-audio-context.js';
 import getAssetType from '../lib/nb-asset-type.js';
+import getBackpackData from '../lib/backpack/get-data';
+import log from '../lib/log';
 
 import {connect} from 'react-redux';
 
@@ -236,11 +238,13 @@ class SoundTab extends React.Component {
             const storage = this.props.vm.runtime.storage;
             const targetId = this.props.vm.editingTarget.id;
             if (type === 'sound') {
-                soundUpload(payload.bodyData, payload.mime, storage, sound => {
-                    sound.name = payload.name;
-                    this.props.vm.addSound(sound, targetId)
-                        .then(this.handleNewSound);
-                });
+                getBackpackData(payload)
+                    .then(data => soundUpload(data, payload.mime, storage, sound => {
+                        sound.name = payload.name;
+                        this.props.vm.addSound(sound, targetId)
+                            .then(this.handleNewSound);
+                    }, error => log.error(error)))
+                    .catch(error => log.error(error));
             } else {
                 this.props.onActivateAssetsTab();
                 this.props.vm.addAsset({

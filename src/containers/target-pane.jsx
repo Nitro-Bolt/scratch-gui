@@ -257,6 +257,14 @@ class TargetPane extends React.Component {
                     md5: dragInfo.payload.body,
                     name: dragInfo.payload.name
                 }, targetId);
+            } else if (dragInfo.dragType === DragConstants.BACKPACK_ASSET) {
+                this.props.vm.addAsset({
+                    md5: dragInfo.payload.body,
+                    lastModified: dragInfo.payload.lastModified,
+                    contentType: dragInfo.payload.mime,
+                    dataFormat: dragInfo.payload.dataFormat,
+                    name: dragInfo.payload.name
+                }, targetId);
             } else if (dragInfo.dragType === DragConstants.BACKPACK_CODE) {
                 fetchCode(dragInfo.payload.bodyUrl)
                     .then(blocks => this.shareBlocks(blocks, targetId))

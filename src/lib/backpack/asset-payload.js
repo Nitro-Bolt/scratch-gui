@@ -4,15 +4,17 @@ import getCostumeUrl from '../get-costume-url';
 
 const assetPayload = assetObject => {
     const assetDataUrl = assetObject.asset.encodeDataURI();
+    const dataSeparator = assetDataUrl.indexOf(',');
     const assetType = getAssetType(assetObject, true);
+    const contentType = assetObject.contentType || assetObject.asset.assetType.contentType;
     const payload = {
         type: 'asset',
         name: assetObject.name,
-        mime: assetObject.contentType,
+        mime: contentType,
         dataFormat: assetObject.dataFormat,
-        contentType: assetObject.contentType,
+        contentType,
         lastModified: assetObject.lastModified,
-        body: assetDataUrl.replace(`data:${assetObject.contentType};base64,`, ''),
+        body: dataSeparator === -1 ? '' : assetDataUrl.slice(dataSeparator + 1),
 
         // Thumbnail will be filled in below
         thumbnail: ''

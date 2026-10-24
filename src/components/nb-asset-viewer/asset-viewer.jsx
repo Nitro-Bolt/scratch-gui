@@ -91,6 +91,7 @@ const AssetViewerComponent = props => (
                     style={{maxWidth: '95%', maxHeight: '67%'}}
                 >
                     <Editor
+                        key={props.editorKey}
                         language={props.textLanguage || 'plaintext'}
                         theme={props.monacoTheme || 'vs'}
                         value={props.textContent}
@@ -200,6 +201,7 @@ AssetViewerComponent.propTypes = {
     monacoTheme: PropTypes.string,
     canUndo: PropTypes.bool,
     canRedo: PropTypes.bool,
+    editorKey: PropTypes.string.isRequired,
     onUndo: PropTypes.func,
     onRedo: PropTypes.func,
     onChangeText: PropTypes.func,
