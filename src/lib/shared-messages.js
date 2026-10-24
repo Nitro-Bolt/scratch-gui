@@ -27,8 +27,8 @@ export default defineMessages({
         description: 'Confirmation that user wants to overwrite the current project contents'
     },
     loadFromComputerTitle: {
-        id: 'gui.sharedMessages.loadFromComputerTitle',
-        defaultMessage: 'Load from your computer',
+        id: 'nb.sharedMessages.loadFromComputerTitle',
+        defaultMessage: 'Open project',
         description: 'Title for uploading a project from your computer'
     }
 });

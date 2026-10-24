@@ -41,9 +41,9 @@ const TWSaveStatus = ({
                         />
                     ) : (
                         <FormattedMessage
-                            defaultMessage="Save to your computer"
+                            defaultMessage="Save project"
                             description="Menu bar item for downloading a project to your computer"
-                            id="gui.menuBar.downloadToComputer"
+                            id="nb.menuBar.downloadToComputer"
                         />
                     )}
                 </ButtonComponent>

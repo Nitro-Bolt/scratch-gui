@@ -467,9 +467,9 @@ class MenuBar extends React.Component {
         );
         const newProjectMessage = (
             <FormattedMessage
-                defaultMessage="New"
+                defaultMessage="New project"
                 description="Menu bar item for creating a new project"
-                id="gui.menuBar.new"
+                id="nb.menuBar.new"
             />
         );
         const remixButton = (
@@ -686,9 +686,9 @@ class MenuBar extends React.Component {
                                                                 />
                                                             ) : (
                                                                 <FormattedMessage
-                                                                    defaultMessage="Save to your computer"
+                                                                    defaultMessage="Save project"
                                                                     description="Menu bar item for downloading a project to your computer" // eslint-disable-line max-len
-                                                                    id="gui.menuBar.downloadToComputer"
+                                                                    id="nb.menuBar.downloadToComputer"
                                                                 />
                                                             )}
                                                         </MenuItem>
