@@ -1442,6 +1442,16 @@ const EditorSettingsModal = props => {
                     </Box>
                     <Box className={styles.keySetting}>
                         <FormattedMessage
+                            defaultMessage="Open debugger"
+                            id="nb.editorSettings.keymap.openDebugger"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-open-debugger', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-open-debugger'] ?? defaultKeyboardShortcuts['open-debugger']}
+                        />
+                    </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
                             defaultMessage="Open editor settings"
                             id="nb.editorSettings.keymap.openEditorSettings"
                         />
