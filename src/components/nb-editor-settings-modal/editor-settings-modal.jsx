@@ -1500,8 +1500,8 @@ const EditorSettingsModal = props => {
                 </Section>
                 <Section
                     title={<FormattedMessage
-                        id="nb.editorSettings.keymap.spriteSettings"
-                        defaultMessage="Sprite Settings"
+                        id="nb.editorSettings.keymap.spritePane"
+                        defaultMessage="Sprite Pane"
                     />}
                 >
                     <Box className={styles.keySetting}>
@@ -1522,6 +1522,16 @@ const EditorSettingsModal = props => {
                         <KeyInput
                             onChange={shortcut => props.onSetPreference('keybind-toggle-sprite-visibility', shortcut.toJSON())}
                             shortcut={props.preferences['keybind-toggle-sprite-visibility'] ?? defaultKeyboardShortcuts['toggle-sprite-visibility']}
+                        />
+                    </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="Toggle stage and sprite pane visibility"
+                            id="nb.editorSettings.keymap.stageAndSpritePaneVisibility"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-hide-stage', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-hide-stage'] ?? defaultKeyboardShortcuts['hide-stage']}
                         />
                     </Box>
                 </Section>

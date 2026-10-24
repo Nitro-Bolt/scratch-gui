@@ -329,6 +329,11 @@ const GUIComponent = props => {
     const [resizingStage, setResizingStage] = useState(false);
     const [stageSize, setStageSize] = useState(480);
 
+    registerKeyboardShortcut(
+        props.preferences['keybind-hide-stage'] ?? defaultKeyboardShortcuts['hide-stage'],
+        () => setStageSize(stageSize ? 0 : 480)
+    );
+
     return (<MediaQuery minWidth={unconstrainedWidth}>{() => {
 
         const alwaysEnabledModals = (
