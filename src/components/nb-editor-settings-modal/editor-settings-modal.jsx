@@ -1525,6 +1525,33 @@ const EditorSettingsModal = props => {
                         />
                     </Box>
                 </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.keymap.blockEditor"
+                        defaultMessage="Block Editor"
+                    />}
+                >
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="Create comment"
+                            id="nb.editorSettings.keymap.createComment"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-create-comment', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-create-comment'] ?? defaultKeyboardShortcuts['create-comment']}
+                        />
+                    </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="Create group"
+                            id="nb.editorSettings.keymap.createGroup"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-create-group', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-create-group'] ?? defaultKeyboardShortcuts['create-group']}
+                        />
+                    </Box>
+                </Section>
             </Box>
         }
     ];

@@ -25,6 +25,7 @@ import styles from './stage-header.css';
 
 import FullscreenAPI from '../../lib/tw-fullscreen-api';
 import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import { KeyboardShortcutClass } from '../nb-editor-settings-modal/key-input.jsx';
 
 const messages = defineMessages({
     largeStageSizeMessage: {
@@ -58,9 +59,9 @@ const messages = defineMessages({
         id: 'gui.stageHeader.stageSizeUnFull'
     },
     fullscreenControl: {
-        defaultMessage: 'Full Screen Control',
+        defaultMessage: 'Toggle full screen ({shortcut})',
         description: 'Button to enter/exit full screen mode',
-        id: 'gui.stageHeader.fullscreenControl'
+        id: 'nb.gui.stageHeader.fullscreenControl'
     },
     openSettingsMessage: {
         defaultMessage: 'Open advanced settings',
@@ -68,9 +69,9 @@ const messages = defineMessages({
         id: 'tw.openAdvanced'
     },
     openDebuggerMessage: {
-        defaultMessage: 'Open debugger',
+        defaultMessage: 'Open debugger ({shortcut})',
         description: 'Button to open the debugger panel',
-        id: 'nb.openDebugger'
+        id: 'gui.stageHeader.openDebugger'
     }
 });
 
@@ -133,7 +134,9 @@ const StageHeaderComponent = function (props) {
                         className={styles.stageButtonIcon}
                         draggable={false}
                         src={unFullScreenIcon}
-                        title={props.intl.formatMessage(messages.fullscreenControl)}
+                        title={props.intl.formatMessage(messages.fullscreenControl, {
+                            shortcut: new KeyboardShortcutClass(preferences["keybind-project-full-screen"] ?? defaultKeyboardShortcuts["project-full-screen"]).toString()
+                        })}
                     />
                 </Button>
             </div>
@@ -148,7 +151,9 @@ const StageHeaderComponent = function (props) {
                         className={styles.stageButtonIcon}
                         draggable={false}
                         src={fullScreenIcon}
-                        title={props.intl.formatMessage(messages.fullscreenControl)}
+                        title={props.intl.formatMessage(messages.fullscreenControl, {
+                            shortcut: new KeyboardShortcutClass(preferences["keybind-project-full-screen"] ?? defaultKeyboardShortcuts["project-full-screen"]).toString()
+                        })}
                     />
                 </Button>
             </div>
@@ -239,6 +244,9 @@ const StageHeaderComponent = function (props) {
                                 <Button
                                     className={classNames(styles.stageButton, styles.debuggerButton)}
                                     onClick={onOpenDebugger}
+                                    title={props.intl.formatMessage(messages.openDebuggerMessage, {
+                                        shortcut: new KeyboardShortcutClass(preferences["keybind-open-debugger"] ?? defaultKeyboardShortcuts["open-debugger"]).toString()
+                                    })}
                                 >
                                     <img
                                         alt={props.intl.formatMessage(messages.openDebuggerMessage)}
@@ -263,7 +271,9 @@ const StageHeaderComponent = function (props) {
                                     className={styles.stageButtonIcon}
                                     draggable={false}
                                     src={fullScreenIcon}
-                                    title={props.intl.formatMessage(messages.fullscreenControl)}
+                                    title={props.intl.formatMessage(messages.fullscreenControl, {
+                                        shortcut: new KeyboardShortcutClass(preferences["keybind-project-full-screen"] ?? defaultKeyboardShortcuts["project-full-screen"]).toString()
+                                    })}
                                 />
                             </Button>
                         </div>

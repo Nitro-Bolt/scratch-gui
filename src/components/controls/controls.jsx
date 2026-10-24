@@ -12,11 +12,12 @@ import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.js
 
 import styles from './controls.css';
 import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import { KeyboardShortcutClass } from '../nb-editor-settings-modal/key-input.jsx';
 
 const messages = defineMessages({
     goTitle: {
-        id: 'gui.controls.go',
-        defaultMessage: 'Go',
+        id: 'nb.gui.controls.go',
+        defaultMessage: 'Go ({shortcut})',
         description: 'Green flag button title'
     },
     pauseTitle: {
@@ -30,8 +31,8 @@ const messages = defineMessages({
         description: 'Step button title'
     },
     stopTitle: {
-        id: 'gui.controls.stop',
-        defaultMessage: 'Stop',
+        id: 'nb.gui.controls.stop',
+        defaultMessage: 'Stop ({shortcut})',
         description: 'Stop button title'
     }
 });
@@ -77,7 +78,9 @@ const Controls = function (props) {
             >
                 <GreenFlag
                     active={active}
-                    title={intl.formatMessage(messages.goTitle)}
+                    title={intl.formatMessage(messages.goTitle, {
+                        shortcut: new KeyboardShortcutClass(preferences["keybind-start-project"] ?? defaultKeyboardShortcuts["start-project"]).toString()
+                    })}
                     onClick={onGreenFlagClick}
                 />
                 {preferences['hide-pause'] !== true &&
@@ -97,7 +100,9 @@ const Controls = function (props) {
                 }
                 <StopAll
                     active={active}
-                    title={intl.formatMessage(messages.stopTitle)}
+                    title={intl.formatMessage(messages.stopTitle, {
+                        shortcut: new KeyboardShortcutClass(preferences["keybind-stop-project"] ?? defaultKeyboardShortcuts["stop-project"]).toString()
+                    })}
                     onClick={onStopAllClick}
                 />
                 {turbo ? (

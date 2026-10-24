@@ -31,7 +31,7 @@ const ButtonComponent = ({
     );
 
     return (
-        <span
+        <button
             className={classNames(
                 styles.outlinedButton,
                 className
@@ -42,7 +42,7 @@ const ButtonComponent = ({
         >
             {icon}
             <div className={styles.content}>{children}</div>
-        </span>
+        </button>
     );
 };
 

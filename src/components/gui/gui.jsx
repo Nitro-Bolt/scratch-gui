@@ -148,6 +148,7 @@ const GUIComponent = props => {
         onEditorSettings,
         onExtensionButtonClick,
         onOpenCustomExtensionModal,
+        onOpenDebugger,
         onProjectTelemetryEvent,
         onRequestCloseBackdropLibrary,
         onRequestCloseCostumeLibrary,
@@ -210,6 +211,14 @@ const GUIComponent = props => {
         Math.max(0, customStageSize.width - FIXED_WIDTH)
     );
 
+    // shh
+    window.addEventListener("mousemove", (e) => {
+        window.mouseCoords = {
+            x: e.clientX,
+            y: e.clientY
+        };
+    });
+
     for (let i = 0; i < 10; i++) {
         registerKeyboardShortcut({
             key: i,
@@ -218,6 +227,11 @@ const GUIComponent = props => {
             if (i > 0 && i <= 5) props.onActivateTab(parseInt(i, 10) - 1);
         });
     }
+
+    registerKeyboardShortcut(
+        props.preferences['keybind-open-debugger'] ?? defaultKeyboardShortcuts['open-debugger'],
+        onOpenDebugger
+    );
 
     registerKeyboardShortcut(
         props.preferences['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings'],
@@ -229,10 +243,87 @@ const GUIComponent = props => {
         onExtensionButtonClick
     );
 
-    registerKeyboardShortcut({
-        key: 'Escape'
-    }, event => {
-        event.target?.blur?.();
+    registerKeyboardShortcut(
+        props.preferences['keybind-create-comment'] ?? defaultKeyboardShortcuts['create-comment'],
+        () => {
+        const ws = window.Blockly.getMainWorkspace();
+        const goog = window.Blockly.goog;
+        const Blockly = window.ScratchBlocks;
+        // Helper function to create and position a comment correctly based on the
+        // location of the mouse event.
+        var addWsComment = function() {
+            // Disable events while this comment is getting created
+            // so that we can fire a single create event for this comment
+            // at the end (instead of CommentCreate followed by CommentMove,
+            // which results in unexpected undo behavior).
+            var disabled = false;
+            if (Blockly.Events.isEnabled()) {
+            Blockly.Events.disable();
+            disabled = true;
+            }
+            var comment = new Blockly.WorkspaceCommentSvg(
+                ws, '', Blockly.WorkspaceCommentSvg.DEFAULT_SIZE,
+                Blockly.WorkspaceCommentSvg.DEFAULT_SIZE, false);
+
+            var injectionDiv = ws.getInjectionDiv();
+            // Bounding rect coordinates are in client coordinates, meaning that they
+            // are in pixels relative to the upper left corner of the visible browser
+            // window.  These coordinates change when you scroll the browser window.
+            var boundingRect = injectionDiv.getBoundingClientRect();
+
+            // The client coordinates offset by the injection div's upper left corner.
+            var clientOffsetPixels = new goog.math.Coordinate(
+                window.mouseCoords.x - boundingRect.left - (135 / 2), window.mouseCoords.y - boundingRect.top - (21 / 2));
+
+            // The offset in pixels between the main workspace's origin and the upper
+            // left corner of the injection div.
+            var mainOffsetPixels = ws.getOriginOffsetInPixels();
+
+            // The position of the new comment in pixels relative to the origin of the
+            // main workspace.
+            var finalOffsetPixels = goog.math.Coordinate.difference(clientOffsetPixels,
+                mainOffsetPixels);
+
+            // The position of the new comment in main workspace coordinates.
+            var finalOffsetMainWs = finalOffsetPixels.scale(1 / ws.scale);
+
+            var commentX = finalOffsetMainWs.x;
+            var commentY = finalOffsetMainWs.y;
+            comment.moveBy(commentX, commentY);
+            if (ws.rendered) {
+            comment.initSvg();
+            comment.render(false);
+            comment.select();
+            }
+            if (disabled) {
+            Blockly.Events.enable();
+            }
+            Blockly.WorkspaceComment.fireCreateEvent(comment);
+        };
+        addWsComment();
+    });
+
+    registerKeyboardShortcut(
+        props.preferences['keybind-create-group'] ?? defaultKeyboardShortcuts['create-group'],
+        () => {
+        const ws = window.Blockly.getMainWorkspace();
+        const goog = window.Blockly.goog;
+        const Blockly = window.ScratchBlocks;
+
+        let rect = ws.getInjectionDiv().getBoundingClientRect();
+        let point = new goog.math.Coordinate(
+            window.mouseCoords.x - rect.left - (240 / 2),
+            window.mouseCoords.y - rect.top - (21 / 2)
+        );
+        let position = goog.math.Coordinate.difference(
+            point, ws.getOriginOffsetInPixels()).scale(1 / ws.scale);
+        Blockly.Group.fromJSON(ws, {
+            title: 'Group',
+            x: position.x,
+            y: position.y,
+            width: 360,
+            height: 240
+        }, true);
     });
 
     const [resizingStage, setResizingStage] = useState(false);
@@ -680,6 +771,7 @@ GUIComponent.propTypes = {
     onCloseAccountNav: PropTypes.func,
     onExtensionButtonClick: PropTypes.func,
     onOpenCustomExtensionModal: PropTypes.func,
+    onOpenDebugger: PropTypes.func,
     onLogOut: PropTypes.func,
     onOpenRegistration: PropTypes.func,
     onRequestCloseBackdropLibrary: PropTypes.func,
