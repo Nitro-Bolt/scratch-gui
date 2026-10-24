@@ -219,14 +219,30 @@ const GUIComponent = props => {
         };
     });
 
-    for (let i = 0; i < 10; i++) {
-        registerKeybind({
-            key: i,
-            ctrl: true
-        }, () => {
-            if (i > 0 && i <= 5) props.onActivateTab(parseInt(i, 10) - 1);
-        });
-    }
+    registerKeybind(
+        props.preferences['keybind-tab-code'] ?? defaultKeybinds['tab-code'],
+        () => props.onActivateTab(0)
+    );
+
+    registerKeybind(
+        props.preferences['keybind-tab-costumes'] ?? defaultKeybinds['tab-costumes'],
+        () => props.onActivateTab(1)
+    );
+
+    registerKeybind(
+        props.preferences['keybind-tab-sounds'] ?? defaultKeybinds['tab-sounds'],
+        () => props.onActivateTab(2)
+    );
+
+    registerKeybind(
+        props.preferences['keybind-tab-assets'] ?? defaultKeybinds['tab-assets'],
+        () => props.onActivateTab(3)
+    );
+
+    registerKeybind(
+        props.preferences['keybind-tab-variables'] ?? defaultKeybinds['tab-variables'],
+        () => props.onActivateTab(4)
+    );
 
     registerKeybind(
         props.preferences['keybind-open-debugger'] ?? defaultKeybinds['open-debugger'],

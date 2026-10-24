@@ -1633,6 +1633,58 @@ const EditorSettingsModal = props => {
                 </Section>
                 <Section
                     title={<FormattedMessage
+                        id="nb.editorSettings.keymap.tabs"
+                        defaultMessage="Tabs"
+                    />}
+                >
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Code tab"
+                            id="nb.editorSettings.keymap.codeTab"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="tab-code"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Costumes tab"
+                            id="nb.editorSettings.keymap.costumesTab"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="tab-costumes"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Sounds tab"
+                            id="nb.editorSettings.keymap.soundsTab"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="tab-sounds"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Assets tab"
+                            id="nb.editorSettings.keymap.assetsTab"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="tab-assets"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Variables tab"
+                            id="nb.editorSettings.keymap.variablesTab"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="tab-variables"
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
                         id="nb.editorSettings.keymap.blockEditor"
                         defaultMessage="Block Editor"
                     />}

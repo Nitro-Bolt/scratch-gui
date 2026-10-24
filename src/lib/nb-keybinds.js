@@ -34,6 +34,11 @@ export const defaultKeybinds = {
     'start-project': {ctrl: true, key: ' '},
     'step-project': {disabled: true},
     'stop-project': {disabled: true},
+    'tab-code': {ctrl: true, key: '1'},
+    'tab-costumes': {ctrl: true, key: '2'},
+    'tab-sounds': {ctrl: true, key: '3'},
+    'tab-assets': {ctrl: true, key: '4'},
+    'tab-variables': {ctrl: true, key: '5'},
     'toggle-sprite-visibility': {ctrl: true, key: 'h'}
 };
 
