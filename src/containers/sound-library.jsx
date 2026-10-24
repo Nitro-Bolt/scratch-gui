@@ -4,7 +4,6 @@ import React from 'react';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import VM from 'scratch-vm';
 import AudioEngine from 'scratch-audio';
-import SharedAudioContext from '../lib/audio/shared-audio-context';
 
 import LibraryComponent from '../components/library/library.jsx';
 
@@ -44,6 +43,7 @@ class SoundLibrary extends React.PureComponent {
             'handleItemSelected',
             'handleItemMouseEnter',
             'handleItemMouseLeave',
+            'handleLibraryData',
             'onStop',
             'setStopHandler'
         ]);
@@ -53,6 +53,7 @@ class SoundLibrary extends React.PureComponent {
          * @type {AudioEngine}
          */
         this.audioEngine = null;
+        this.mounted = false;
         /**
          * A promise for the sound queued to play as soon as it loads and
          * decodes.
@@ -70,22 +71,28 @@ class SoundLibrary extends React.PureComponent {
         };
     }
     componentDidMount () {
+        this.mounted = true;
         const soundLibrary = getSoundLibrary();
         if (soundLibrary.then) {
-            soundLibrary.then(data => this.setState({
-                data: getSoundLibraryThumbnailData(data, this.props.isRtl)
-            }));
+            soundLibrary.then(this.handleLibraryData);
         } else {
-            this.setState({
-                data: getSoundLibraryThumbnailData(soundLibrary, this.props.isRtl)
-            });
+            this.handleLibraryData(soundLibrary);
         }
 
-        this.audioEngine = new AudioEngine(new SharedAudioContext());
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.audioEngine = new AudioEngine(new AudioContext());
         this.playingSoundPromise = null;
     }
     componentWillUnmount () {
+        this.mounted = false;
         this.stopPlayingSound();
+        this.audioEngine.audioContext.close();
+    }
+    handleLibraryData (data) {
+        if (!this.mounted) return;
+        this.setState({
+            data: getSoundLibraryThumbnailData(data, this.props.isRtl)
+        });
     }
     onStop () {
         if (this.playingSoundPromise !== null) {

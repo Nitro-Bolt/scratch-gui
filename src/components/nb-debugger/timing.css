@@ -1,0 +1,112 @@
+@import "../../css/colors.css";
+
+.container {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem;
+    border-bottom: 1px solid $ui-black-transparent;
+}
+
+.controls label {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 0.8rem;
+}
+
+.controls button {
+    padding: 0.25rem 0.5rem;
+    border: 0;
+    border-radius: 4px;
+    background: $menu-bar-background;
+    color: $menu-bar-foreground;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.controls button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.notice {
+    padding: 0.35rem;
+    border-bottom: 1px solid $ui-black-transparent;
+    text-align: center;
+    font-size: 0.75rem;
+}
+
+.table-container {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+    font-size: 0.8rem;
+}
+
+.table th,
+.table td {
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid $ui-black-transparent;
+}
+
+.table th {
+    position: sticky;
+    top: 0;
+    background: $menu-bar-background;
+    color: $menu-bar-foreground;
+    user-select: none;
+}
+
+.sort-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-weight: inherit;
+    cursor: pointer;
+}
+
+.label {
+    max-width: 16rem;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.source-button {
+    max-width: 100%;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.empty {
+    margin: auto;
+    opacity: 0.5;
+    font-size: 0.9rem;
+    font-style: italic;
+}
