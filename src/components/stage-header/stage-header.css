@@ -85,17 +85,6 @@
     outline: none;
 }
 
-.debugger-button:focus::before {
-    content: "";
-    position: absolute;
-    top: -1px;
-    right: -1px;
-    bottom: -1px;
-    left: -1px;
-    border: 1px solid $looks-secondary;
-    border-radius: 0.25rem;
-}
-
 .log-count {
     display: block;
     position: absolute;
