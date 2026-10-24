@@ -1479,6 +1479,26 @@ const EditorSettingsModal = props => {
                     </Box>
                     <Box className={styles.keySetting}>
                         <FormattedMessage
+                            defaultMessage="Pause project"
+                            id="nb.editorSettings.keymap.pauseProject"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-pause-project', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-pause-project'] ?? defaultKeyboardShortcuts['pause-project']}
+                        />
+                    </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
+                            defaultMessage="Step through project"
+                            id="nb.editorSettings.keymap.stepProject"
+                        />
+                        <KeyInput
+                            onChange={shortcut => props.onSetPreference('keybind-step-project', shortcut.toJSON())}
+                            shortcut={props.preferences['keybind-step-project'] ?? defaultKeyboardShortcuts['step-project']}
+                        />
+                    </Box>
+                    <Box className={styles.keySetting}>
+                        <FormattedMessage
                             defaultMessage="Stop project"
                             id="nb.editorSettings.keymap.stopProject"
                         />

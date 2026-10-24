@@ -63,6 +63,16 @@ const Controls = function (props) {
     );
 
     registerKeyboardShortcut(
+        preferences['keybind-pause-project'] ?? defaultKeyboardShortcuts['pause-project'],
+        onPauseClick
+    );
+
+    registerKeyboardShortcut(
+        preferences['keybind-step-project'] ?? defaultKeyboardShortcuts['step-project'],
+        onStepClick
+    );
+
+    registerKeyboardShortcut(
         preferences['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project'],
         onStopAllClick
     );

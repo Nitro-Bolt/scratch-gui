@@ -23,8 +23,10 @@ export const defaultKeyboardShortcuts = {
     'open-editor-settings': {ctrl: true, key: ','},
     'open-extensions': {ctrl: true, shift: true, key: 'e'},
     'project-full-screen': {alt: true, key: 'Enter'},
-    'start-project': {ctrl: true, key: 'Enter'},
-    'stop-project': {ctrl: true, shift: true, key: 'Enter'},
+    'start-project': {ctrl: true, key: ' '},
+    'pause-project': {ctrl: true, shift: true, key: ' '},
+    'step-project': {ctrl: true, shift: true, alt: true, key: ' '},
+    'stop-project': {ctrl: true, alt: true, key: ' '},
     'toggle-sprite-visibility': {ctrl: true, key: 'h'}
 };
 
