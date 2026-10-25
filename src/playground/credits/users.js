@@ -55,8 +55,9 @@ const team = [
         username: 'insanetaco2000'
     },
     {
-        userID: '139575624',
-        username: 'breakfast_for_dinner'
+        userID: '129226914',
+        username: 'raynepaws',
+        github: true
     },
     {
         userID: '60627927',
