@@ -94,6 +94,10 @@ const translators = [
         github: true
     },
     {
+        username: 'MTUnixic',
+        github: true
+    },
+    {
         username: 'NishiOwO',
         github: true
     }
