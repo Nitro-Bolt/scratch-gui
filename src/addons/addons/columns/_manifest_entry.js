@@ -10,8 +10,8 @@ const manifest = {
       "link": "https://scratch.mit.edu/TheColaber"
     },
     {
-      "name": "breakfast_for_dinner",
-      "link": "https://scratch.mit.edu/breakfast_for_dinner"
+      "name": "raynepaws",
+      "link": "https://github.com/raynepaws"
     }
   ],
   "tags": [
