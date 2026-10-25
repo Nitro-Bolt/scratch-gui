@@ -23,8 +23,8 @@ const manifest = {
       "link": "https://scratch.mit.edu/users/RedGuy7/"
     },
     {
-      "name": "breakfast_for_dinner",
-      "link": "https://scratch.mit.edu/users/breakfast_for_dinner/"
+      "name": "raynepaws",
+      "link": "https://github.com/raynepaws"
     }
   ]
 };
