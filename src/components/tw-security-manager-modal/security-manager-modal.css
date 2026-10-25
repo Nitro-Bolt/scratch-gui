@@ -31,11 +31,6 @@
     font-size: 0.85rem;
 }
 .deny-button {
-    background-color: rgb(255, 92, 92);
-    color: white;
+    background-color: $looks-secondary;
     margin-right: 8px;
-}
-.allow-button {
-    background-color: #24cd11;
-    color: black;
 }

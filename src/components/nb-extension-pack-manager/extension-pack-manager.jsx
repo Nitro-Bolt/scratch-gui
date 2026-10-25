@@ -102,7 +102,7 @@ class ExtensionPackManager extends React.Component {
                             </a>
                             , or ask your favorite extension gallery to support the{' '}
                             <a
-                                href="https://docs.nitrobolt.org/website/packs"
+                                href="https://docs.nitrobolt.org/extensions/packs"
                                 rel="noreferrer"
                                 target="_blank"
                             >

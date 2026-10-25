@@ -1,16 +1,15 @@
 @import "../../css/colors.css";
+@import "../../css/units.css";
 
 .code {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    min-width: 100%;
-    height: 5rem;
-    min-height: 3rem;
-    border: 1px solid $ui-black-transparent;
-    border-radius: 0.25rem;
-    padding: 0.25rem;
-    font-size: 0.875rem;
     font-family: monospace;
-    margin: 0.5rem 0;
+    height: 125px;
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    padding: $space;
+    border-radius: $space;
+    border: 1px solid $ui-black-transparent;
+    background-color: $input-background;
+    color: inherit;
 }
