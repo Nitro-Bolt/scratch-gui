@@ -3,7 +3,7 @@
 @import "../../css/default-colors.css";
 
 .modal-content {
-    max-width: 750px;
+    width: 750px;
 }
 
 .body {

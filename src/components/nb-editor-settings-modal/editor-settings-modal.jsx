@@ -795,6 +795,19 @@ const EditorSettingsModal = props => {
                         // eslint-disable-next-line react/jsx-no-bind
                         onChange={() => props.onChangeTheme(props.theme.set('gui', props.theme.gui === GUI_DARK ? GUI_LIGHT : GUI_DARK))}
                     />
+                    <BooleanSetting
+                        value={props.preferences['experimental-modal-overlay']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.experimentalModalOverlay"
+                            defaultMessage="Alternative modal overlay color"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.experimentalModalOverlayHelp"
+                            defaultMessage="Changes the modal overlay color to make modals pop more in dark mode and be easier on the eyes in light mode."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={() => props.onSetPreference('experimental-modal-overlay', !props.preferences['experimental-modal-overlay'])}
+                    />
                     <Setting
                         help={<FormattedMessage
                             id="nb.editorSettings.labelContrastThresholdHelp"
