@@ -8,6 +8,8 @@
     background: $assets-background;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 0.85rem;
+    overflow: auto;
+    width: 100%;
 }
 
 [dir="ltr"] .wrapper {
@@ -24,7 +26,6 @@
     display: flex;
     flex-grow: 1;
     flex-shrink: 1;
-    overflow: visible;
 }
 
 [dir="ltr"] .detail-area {
