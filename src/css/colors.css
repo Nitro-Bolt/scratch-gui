@@ -5,7 +5,6 @@ $ui-secondary: var(--ui-secondary);
 $ui-tertiary: var(--ui-tertiary);
 
 $ui-modal-overlay: var(--ui-modal-overlay);
-$ui-modal-overlay-new: var(--ui-modal-overlay-new);
 $ui-modal-background: var(--ui-modal-background);
 $ui-modal-foreground: var(--ui-modal-foreground);
 $ui-modal-header-background: var(--ui-modal-header-background);

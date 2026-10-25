@@ -2,7 +2,7 @@
 @import "../../css/filters.css";
 
 .modal-content {
-    width: 600px;
+    max-width: 600px;
     margin-top: 50px;
 }
 

@@ -11,13 +11,6 @@
     z-index: $z-index-modal;
     background-color: $ui-modal-overlay;
     color: $ui-modal-foreground;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-overlay:has(> .experimental-overlay) {
-    background-color: $ui-modal-overlay-new;
 }
 
 .modal-content * {
@@ -25,22 +18,15 @@
 }
 
 .modal-content {
-    margin: 100px;
+    margin: 100px auto;
     outline: none;
-    border: 4px solid $ui-black-transparent;
+    border: 4px solid $ui-white-transparent;
     padding: 0;
     border-radius: $space;
     user-select: none;
-    background: $ui-white;
-    position: relative;
 
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-.modal-content.dark {
-    border-color: $ui-white-transparent;
+    overflow: hidden;
 }
 
 .modal-content.full-screen {
@@ -78,9 +64,6 @@ $sides: 20rem;
     flex-wrap: nowrap;
     justify-content: flex-start;
     height: $library-header-height;
-    position: sticky;
-    top: 0;
-    z-index: 10;
 
     box-sizing: border-box;
     width: 100%;

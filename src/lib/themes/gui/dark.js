@@ -6,7 +6,6 @@ const guiColors = {
     'ui-tertiary': '#2e2e2e',
 
     'ui-modal-overlay': '#333333aa',
-    'ui-modal-overlay-new': '#000000aa',
     'ui-modal-background': '#111111',
     'ui-modal-foreground': '#eeeeee',
     'ui-modal-header-background': '#333333',
