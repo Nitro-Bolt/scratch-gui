@@ -9,11 +9,15 @@ const shuffle = list => {
 };
 
 const fromHardcoded = ({github, userID = '0', username}) => {
+    let image = `https://trampoline.turbowarp.org/avatars/${userID}`;
+    if (github) {
+        image = userID === '0' ? `https://github.com/${username}.png` : `https://avatars.githubusercontent.com/u/${userID}`;
+    }
     const result = {
-        image: github ? `https://avatars.githubusercontent.com/u/${userID}` : `https://trampoline.turbowarp.org/avatars/${userID}`,
+        image,
         text: username
     };
-    if (username && userID !== '0') {
+    if (username && (github || userID !== '0')) {
         result.href = github ? `https://github.com/${username}/` : `https://scratch.mit.edu/users/${username}/`;
     }
     return result;
@@ -31,8 +35,8 @@ const team = [
         username: 'CST1229'
     },
     {
-        userID: '128887584',
-        username: 'FurryR'
+        username: 'thecolorbluu',
+        github: true
     },
     {
         userID: '161761456',
@@ -41,10 +45,6 @@ const team = [
     {
         userID: '138703180',
         username: 'ddededodediamante'
-    },
-    {
-        userID: '150145748',
-        username: 'Penthusiast'
     },
     {
         userID: '54392956',
@@ -58,14 +58,44 @@ const team = [
         userID: '129226914',
         username: 'raynepaws',
         github: true
-    },
+    }
+].map(fromHardcoded);
+
+const nbContributors = [
     {
         userID: '60627927',
         username: 'jwklongYT'
     },
     {
-        userID: '53190566',
-        username: 'Code_Magician'
+        userID: '70826668',
+        username: 'autofirejm'
+    },
+    {
+        username: 'NishiOwO',
+        github: true
+    }
+].map(fromHardcoded);
+
+const translators = [
+    {
+        userID: '138703180',
+        username: 'ddededodediamante'
+    },
+    {
+        userID: '136530550',
+        username: 'vuie68'
+    },
+    {
+        username: 'tallypaws',
+        github: true,
+    },
+    {
+        username: 'lemonlemonadelime',
+        github: true
+    },
+    {
+        username: 'NishiOwO',
+        github: true
     }
 ].map(fromHardcoded);
 
@@ -431,6 +461,8 @@ const docs = [
 
 export default {
     team: shuffle(team),
+    nbContributors: shuffle(nbContributors),
+    translators: shuffle(translators),
     contributors: shuffle(contributors),
     addonDevelopers: shuffle(addonDevelopers),
     extensionDevelopers: shuffle(extensionDevelopers),
