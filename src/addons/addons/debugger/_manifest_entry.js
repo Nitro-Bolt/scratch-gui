@@ -103,6 +103,8 @@ const manifest = {
       "description": "Replaces the percentage column with a ratio of each block’s total time to the smallest block’s total time."
     }
   ],
-  "tags": []
+  "tags": [
+    "new"
+  ]
 };
 export default manifest;
