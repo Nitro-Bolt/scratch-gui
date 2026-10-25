@@ -90,12 +90,15 @@ export default async function ({ addon, msg, console }) {
       "motion",
       "looks",
       "sound",
+      "assets",
       "events",
       "control",
       "sensing",
       "operators",
       "variables",
       "lists",
+      "tables",
+      "json",
       "myBlocks",
     ];
     const extensionsNodes = [];
