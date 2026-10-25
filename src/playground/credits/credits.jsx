@@ -100,7 +100,15 @@ const Credits = () => (
             <UserList users={UserData.team} />
         </section>
         <section>
-            <h2>Turbowarp Contributors</h2>
+            <h2>NitroBolt Contributors</h2>
+            <UserList users={UserData.nbContributors} />
+        </section>
+        <section>
+            <h2>NitroBolt Translators</h2>
+            <UserList users={UserData.translators} />
+        </section>
+        <section>
+            <h2>TurboWarp Contributors</h2>
             <UserList users={UserData.contributors} />
         </section>
         <section>
