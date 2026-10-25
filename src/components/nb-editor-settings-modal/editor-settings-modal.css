@@ -4,7 +4,7 @@
 @import "../../css/default-colors.css";
 
 .modal-content {
-    width: 900px;
+    max-width: 900px;
     margin-top: 50px;
 }
 
