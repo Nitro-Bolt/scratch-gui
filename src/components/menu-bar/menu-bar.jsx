@@ -559,6 +559,7 @@ class MenuBar extends React.Component {
                             onRequestClose={this.props.onRequestCloseSettings}
                             onRequestOpen={this.props.onClickSettings}
                             settingsMenuOpen={this.props.settingsMenuOpen}
+                            preferences={this.props.preferences}
                         />)}
                         {(this.props.canManageFiles) && (
                             <MenuLabel
