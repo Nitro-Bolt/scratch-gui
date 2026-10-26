@@ -97,6 +97,7 @@ const canDiscardIndividually = change => {
 const GitModal = props => {
     const [available, setAvailable] = useState(null);
     const [repoPath, setRepoPath] = useState(props.projectPath || '');
+    const [repoName, setRepoName] = useState('');
     const [status, setStatus] = useState(null);
     const [branches, setBranches] = useState([]);
     const [remotes, setRemotes] = useState([]);
@@ -163,6 +164,7 @@ const GitModal = props => {
                 clearRepositoryState();
                 return;
             }
+            setRepoName(currentName => result.data.repositoryName || currentName);
             setStatus(result.data);
             if (fetchRemotes) {
                 const fetchResult = await window.Git.fetch(path);
@@ -275,13 +277,14 @@ const GitModal = props => {
     };
     const chooseFolder = () => run(async () => {
         const result = await window.EditorPreload.showOpenDirectoryPicker();
-        if (!result || !result.path) return;
+        if (!result || !result.id) return;
+        setRepoName(result.name);
         clearRepositoryState();
         setLoading(true);
         try {
-            const next = await window.Git.status(result.path);
+            const next = await window.Git.status(result.id);
             if (failed(next)) return;
-            const selectedRepoPath = next.data.repositoryRoot || result.path;
+            const selectedRepoPath = next.data.repositoryRoot || result.id;
             setRepoPath(selectedRepoPath);
             if (next.data.isRepository) {
                 let paused = false;
@@ -826,7 +829,7 @@ const GitModal = props => {
             </div>
             {repoPath && <div className={styles.selectedPath}>
                 <strong>Selected folder</strong>
-                <span>{repoPath}</span>
+                <span>{repoName || 'Selected folder'}</span>
             </div>}
             <p>{repoPath ?
                 'Initialize this folder to begin tracking its project files and assets.' :
