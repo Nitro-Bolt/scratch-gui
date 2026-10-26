@@ -34,6 +34,7 @@ const CustomAccentModal = props => {
     return (
         <Modal
             className={styles.modalContent}
+            modernClassName={styles.modern}
             onRequestClose={props.onClose}
             contentLabel={props.intl.formatMessage(messages.title)}
             id="customAccentModal"

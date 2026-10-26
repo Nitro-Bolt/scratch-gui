@@ -20,6 +20,7 @@ const ModalComponent = props => (
         className={classNames(styles.modalContent, props.className, {
             [styles.fullScreen]: props.fullScreen,
             [styles.modern]: !props.preferences['legacy-modals'],
+            [props.modernClassName]: !props.preferences['legacy-modals'],
             [styles.dark]: props.theme.gui === GUI_DARK
         })}
         style={{
@@ -116,6 +117,7 @@ ModalComponent.propTypes = {
     isRtl: PropTypes.bool,
     onHelp: PropTypes.func,
     onRequestClose: PropTypes.func,
+    modernClassName: PropTypes.string,
     preferences: PropTypes.object,
     theme: PropTypes.object
 };

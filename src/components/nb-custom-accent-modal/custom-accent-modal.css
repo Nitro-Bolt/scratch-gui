@@ -3,9 +3,12 @@
 
 .modal-content {
     width: 550px;
-    height: 565px;
     margin-top: 50px;
     background: $ui-white;
+}
+
+.modal-content.modern {
+    height: 565px;
 }
 
 .body {

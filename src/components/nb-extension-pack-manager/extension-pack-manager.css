@@ -5,8 +5,11 @@
 .modal-content {
     width: calc(100% - 2rem);
     max-width: 640px;
-    height: 630px;
     margin: 40px auto;
+}
+
+.modal-content.modern {
+    height: 630px;
 }
 
 .body {

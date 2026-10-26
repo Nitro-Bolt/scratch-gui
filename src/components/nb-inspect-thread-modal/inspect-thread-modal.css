@@ -3,8 +3,11 @@
 
 .modal-content {
     width: 640px;
-    height: 263px   ;
     margin-top: 50px;
+}
+
+.modal-content.modern {
+    height: 263px;
 }
 
 .body {
