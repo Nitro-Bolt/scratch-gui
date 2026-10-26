@@ -2,8 +2,11 @@
 
 .modal-content {
     width: 550px;
-    height: 430px;
     margin-top: 50px;
+}
+
+.modal-content.modern {
+    height: 430px;
 }
 
 .body {

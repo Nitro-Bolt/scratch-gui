@@ -57,6 +57,7 @@ class ExtensionPackManager extends React.Component {
         return (
             <Modal
                 className={styles.modalContent}
+                modernClassName={styles.modern}
                 contentLabel="Manage Extension Galleries"
                 id="extensionPackManager"
                 onRequestClose={this.props.onClose}

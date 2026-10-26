@@ -235,6 +235,7 @@ const InspectBlockModal = props => {
     return (
         <Modal
             className={styles.modalContent}
+            modernClassName={styles.modern}
             onRequestClose={props.onClose}
             contentLabel="Inspect Block"
             id="inspectBlockModal"
