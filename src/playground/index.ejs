@@ -5,6 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="google" value="notranslate">
     <meta name="description" content="<%= htmlWebpackPlugin.options.APP_NAME %> is a TurboWarp mod with many changes that builds upon and enhances TurboWarp with many useful features." />
+    <script id="discord:component-embed" type="application/json">
+        {
+          "component": {
+            "type": 17,
+            "accent_color": 16733990,
+            "components": [
+              {
+                "type": 9,
+                "components": [
+                  {
+                    "type": 10,
+                    "content": "# <:NitroBolt:1336847224147284050> <%= htmlWebpackPlugin.options.APP_NAME %>\nA TurboWarp mod with many changes that builds upon and enhances TurboWarp with many useful features."
+                  }
+                ],
+                "accessory": {
+                  "type": 11,
+                  "media": {
+                    "url": "https://nitrobolt.org/images/512.png"
+                  }
+                }
+              },
+              {
+                "type": 1,
+                "components": [
+                  {
+                    "type": 2,
+                    "style": 5,
+                    "label": "Website",
+                    "url": "https://nitrobolt.org/"
+                  },
+                  {
+                    "type": 2,
+                    "style": 5,
+                    "label": "Docs",
+                    "url": "https://docs.nitrobolt.org/"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+    </script>
     <title><%= htmlWebpackPlugin.options.title %></title>
     <link rel="apple-touch-icon" href="<%= htmlWebpackPlugin.options.root %>images/apple-touch-icon.png">
     <% if (htmlWebpackPlugin.options.root === "/" || htmlWebpackPlugin.options.root === "") { %>
