@@ -5,7 +5,7 @@ import VM from 'scratch-vm';
 
 import {formatBytes} from '../lib/tw-bytes-utils.js';
 import getCostumeUrl from '../lib/get-costume-url';
-import getAssetType from '../lib/nb-asset-type.js';
+import getAssetType, {getPreviewContentType} from '../lib/nb-asset-type.js';
 
 import {connect} from 'react-redux';
 
@@ -56,7 +56,7 @@ class AssetViewer extends React.Component {
         if (
             assetSelectionChanged ||
             prevProps.assetId !== this.props.assetId ||
-            prevProps.contentType !== this.props.contentType ||
+            prevProps.dataFormat !== this.props.dataFormat ||
             prevProps.mediaType !== this.props.mediaType
         ) {
             this.initialContent = '';
@@ -115,9 +115,8 @@ class AssetViewer extends React.Component {
     updateBlobURL () {
         this.revokeBlobURL();
 
-        const supportsBlobPreview = this.props.mediaType === 'video' ||
-            this.props.mediaType === 'sound' ||
-            this.props.mediaType === 'image';
+        const safeContentType = getPreviewContentType(this.props.dataFormat);
+        const supportsBlobPreview = Boolean(safeContentType);
 
         if (!supportsBlobPreview) {
             this.setState({blobURL: null});
@@ -130,7 +129,7 @@ class AssetViewer extends React.Component {
             return;
         }
 
-        const blob = new Blob([assetObject.asset.data], {type: this.props.contentType});
+        const blob = new Blob([assetObject.asset.data], {type: safeContentType});
         this.setState({blobURL: URL.createObjectURL(blob)});
     }
 
@@ -299,7 +298,7 @@ AssetViewer.propTypes = {
     size: PropTypes.string.isRequired,
     assetId: PropTypes.string.isRequired,
     assetIndex: PropTypes.number.isRequired,
-    contentType: PropTypes.string,
+    dataFormat: PropTypes.string.isRequired,
     mediaType: PropTypes.string,
     isTextEditable: PropTypes.bool,
     textLanguage: PropTypes.string,
@@ -328,7 +327,7 @@ const mapStateToProps = (state, {selectedAssetIndex}) => {
         size: formatBytes(assetObject.asset.data.byteLength),
         assetIndex: index,
         assetId: assetObject.asset.assetId,
-        contentType: assetObject.contentType || assetObject.asset.assetType.contentType,
+        dataFormat: assetObject.dataFormat || '',
         mediaType: assetType.displayable ? assetType.type : null,
         isTextEditable: assetType.editable === true,
         textLanguage: assetType.language || 'plaintext'

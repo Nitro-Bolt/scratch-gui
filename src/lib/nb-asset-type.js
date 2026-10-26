@@ -30,6 +30,32 @@ const languageAliases = {
     cs: 'csharp'
 };
 
+const previewContentTypes = {
+    // SVG is intentionally excluded because navigating to a same-origin SVG blob can execute scripts.
+    apng: 'image/apng',
+    bmp: 'image/bmp',
+    gif: 'image/gif',
+    heif: 'image/heif',
+    ico: 'image/x-icon',
+    jpeg: 'image/jpeg',
+    jpg: 'image/jpeg',
+    png: 'image/png',
+    tiff: 'image/tiff',
+    webp: 'image/webp',
+    mp4: 'video/mp4',
+    m4v: 'video/x-m4v',
+    mov: 'video/quicktime',
+    webm: 'video/webm',
+    aac: 'audio/aac',
+    flac: 'audio/flac',
+    mp3: 'audio/mpeg',
+    ogg: 'audio/ogg',
+    opus: 'audio/ogg',
+    wav: 'audio/wav'
+};
+
+const getPreviewContentType = dataFormat => previewContentTypes[(dataFormat || '').toLowerCase()] || null;
+
 export default (asset, pngIcon = false) => {
     const format = (asset.dataFormat || '').toLowerCase();
     const language = languageAliases[format] || format || 'plaintext';
@@ -116,3 +142,5 @@ export default (asset, pngIcon = false) => {
         displayable: false
     };
 };
+
+export {getPreviewContentType};
