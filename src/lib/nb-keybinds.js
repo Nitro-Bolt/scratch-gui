@@ -30,8 +30,20 @@ export const defaultKeybinds = {
     'new-project': {ctrl: true, shift: true, key: 'n'},
     'new-window': {ctrl: true, alt: true, key: 'n'},
     'package-project': {ctrl: true, key: 'Enter'},
+    'paint-select': {key: 's'},
+    'paint-reshape': {key: 'a'},
+    'paint-brush': {key: 'b'},
+    'paint-pen': {key: 'p'},
+    'paint-eraser': {key: 'e'},
+    'paint-fill': {key: 'f'},
+    'paint-text': {key: 't'},
+    'paint-line': {key: 'l'},
+    'paint-oval': {key: 'c'},
+    'paint-effect': {key: 'z'},
+    'paint-polygon': {key: 'r'},
     'pause-project': {disabled: true},
     'project-full-screen': {key: 'F11'},
+    'redo': {ctrl: true, shift: true, key: 'z'},
     'save': {ctrl: true, key: 's'},
     'start-project': {ctrl: true, key: ' '},
     'step-project': {disabled: true},
@@ -41,7 +53,8 @@ export const defaultKeybinds = {
     'tab-sounds': {ctrl: true, key: '3'},
     'tab-assets': {ctrl: true, key: '4'},
     'tab-variables': {ctrl: true, key: '5'},
-    'toggle-sprite-visibility': {ctrl: true, key: 'h'}
+    'toggle-sprite-visibility': {ctrl: true, key: 'h'},
+    'undo': {ctrl: true, key: 'z'}
 };
 
 /**

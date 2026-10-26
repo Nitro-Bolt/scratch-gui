@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 import {Theme} from '../lib/themes/index.js';
 import PaintGradientModal from '../components/nb-paint-gradient-modal/paint-gradient-modal.jsx';
 import {requestEffectParams, cancelEffectParams} from '../lib/nb-effect-params';
+import { defaultKeybinds, registerKeybind } from '../lib/nb-keybinds.js';
 
 class PaintEditorWrapper extends React.Component {
     constructor (props) {
@@ -46,7 +47,8 @@ class PaintEditorWrapper extends React.Component {
             this.props.noSwapButton !== nextProps.noSwapButton ||
             this.props.noCutButton !== nextProps.noCutButton ||
             this.state.fonts !== nextState.fonts ||
-            this.state.customGradient !== nextState.customGradient;
+            this.state.customGradient !== nextState.customGradient ||
+            this.props.preferences !== nextProps.preferences;
     }
     componentWillUnmount () {
         this.props.vm.runtime.fontManager.off('change', this.handleUpdateFonts);
@@ -136,6 +138,9 @@ class PaintEditorWrapper extends React.Component {
                     canvasSizeMultiplier={this.props.canvasSizeMultiplier}
                     noSwapButton={this.props.noSwapButton}
                     noCutButton={this.props.noCutButton}
+                    preferences={this.props.preferences}
+                    defaultKeybinds={defaultKeybinds}
+                    registerKeybind={registerKeybind}
                 />
                 {this.state.customGradient && (
                     <PaintGradientModal
@@ -194,6 +199,7 @@ const mapStateToProps = (state, {selectedCostumeIndex}) => {
         rtl: state.locales.isRtl,
         selectedCostumeIndex: index,
         theme: state.scratchGui.theme.theme,
+        preferences: state.scratchGui.preferences,
         vm: state.scratchGui.vm,
         zoomLevelId: targetId
     };

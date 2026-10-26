@@ -1656,6 +1656,31 @@ const EditorSettingsModal = props => {
                 </Section>
                 <Section
                     title={<FormattedMessage
+                        id="nb.editorSettings.keymap.utils"
+                        defaultMessage="Utilities"
+                    />}
+                >
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Undo"
+                            id="nb.editorSettings.keymap.undo"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="undo"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Redo"
+                            id="nb.editorSettings.keymap.redo"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="redo"
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
                         id="nb.editorSettings.keymap.tabs"
                         defaultMessage="Tabs"
                     />}
@@ -1747,6 +1772,112 @@ const EditorSettingsModal = props => {
                         onSetPreference={props.onSetPreference}
                         preferences={props.preferences}
                         shortcutId="block-zoom-out"
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.keymap.costumeEditor"
+                        defaultMessage="Paint"
+                    />}
+                >
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Select"
+                            id="nb.editorSettings.keymap.paintSelect"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-select"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Reshape"
+                            id="nb.editorSettings.keymap.paintReshape"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-reshape"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Brush"
+                            id="nb.editorSettings.keymap.paintBrush"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-brush"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Pen"
+                            id="nb.editorSettings.keymap.paintPen"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-pen"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Eraser"
+                            id="nb.editorSettings.keymap.paintEraser"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-eraser"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Fill"
+                            id="nb.editorSettings.keymap.paintFill"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-fill"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Text"
+                            id="nb.editorSettings.keymap.paintText"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-text"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Line"
+                            id="nb.editorSettings.keymap.paintLine"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-line"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Oval"
+                            id="nb.editorSettings.keymap.paintOval"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-oval"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Effect"
+                            id="nb.editorSettings.keymap.paintEffect"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-effect"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Polygon/Rect"
+                            id="nb.editorSettings.keymap.paintPolygon"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-polygon"
                     />
                 </Section>
             </Box>
