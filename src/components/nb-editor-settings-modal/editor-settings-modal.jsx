@@ -21,7 +21,7 @@ import {connect} from 'react-redux';
 import helpIcon from './help-icon.svg';
 import {APP_NAME} from '../../lib/brand.js';
 import {setUsername, setUsernameInvalid} from '../../reducers/tw.js';
-import isScratchDesktop from '../../lib/isScratchDesktop.js';
+import isScratchDesktop, { notScratchDesktop } from '../../lib/isScratchDesktop.js';
 import {generateRandomUsername} from '../../lib/tw-username.js';
 import KeyInput from './key-input.jsx';
 import {defaultKeybinds} from '../../lib/nb-keybinds.js';
@@ -1531,6 +1531,10 @@ const EditorSettingsModal = props => {
                         name={<FormattedMessage
                             defaultMessage="New project"
                             id="nb.editorSettings.keymap.newProject"
+                        />}
+                        help={notScratchDesktop() && <FormattedMessage
+                            defaultMessage="For security reasons, Ctrl+N cannot be used in browsers."
+                            id="nb.editorSettings.keymap.newProjectHelp"
                         />}
                         onSetPreference={props.onSetPreference}
                         preferences={props.preferences}
