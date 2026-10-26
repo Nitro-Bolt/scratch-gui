@@ -35,6 +35,7 @@ const team = [
         username: 'CST1229'
     },
     {
+        userId: '146147126',
         username: 'thecolorbluu',
         github: true
     },
@@ -71,6 +72,7 @@ const nbContributors = [
         username: 'autofirejm'
     },
     {
+        userId: '89888985',
         username: 'NishiOwO',
         github: true
     }
@@ -86,18 +88,22 @@ const translators = [
         username: 'vuie68'
     },
     {
+        userId: '113806118',
         username: 'tallypaws',
         github: true,
     },
     {
+        userId: '315653474',
         username: 'lemonlemonadelime',
         github: true
     },
     {
+        userId: '167682424',
         username: 'MTUnixic',
         github: true
     },
     {
+        userId: '89888985',
         username: 'NishiOwO',
         github: true
     }
