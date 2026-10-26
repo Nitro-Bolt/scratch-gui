@@ -1487,11 +1487,20 @@ const EditorSettingsModal = props => {
                     <KeybindSetting
                         name={<FormattedMessage
                             defaultMessage="Open extension catalog"
-                            id="nb.editorSettings.keymap.openExtentions"
+                            id="nb.editorSettings.keymap.openExtensions"
                         />}
                         onSetPreference={props.onSetPreference}
                         preferences={props.preferences}
                         shortcutId="open-extensions"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Open extension manager"
+                            id="nb.editorSettings.keymap.openExtensionManager"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="open-extension-manager"
                     />
                     <KeybindSetting
                         name={<FormattedMessage

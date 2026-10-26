@@ -856,7 +856,10 @@ class MenuBar extends React.Component {
                                     )}</CloudVariablesToggler>
                                 </MenuSection>
                                 <MenuSection>
-                                    <MenuItem onClick={this.props.onClickExtensionManagerModal}>
+                                    <MenuItem
+                                        onClick={this.props.onClickExtensionManagerModal}
+                                        keybind={this.props.preferences['keybind-open-extension-manager'] ?? defaultKeybinds['open-extension-manager']}
+                                    >
                                         <FormattedMessage
                                             defaultMessage="Extension Manager"
                                             description="Menu bar item for the extension manager"

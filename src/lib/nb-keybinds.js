@@ -23,6 +23,7 @@ export const defaultKeybinds = {
     'open-backpack': {ctrl: true, shift: true, key: 'b'},
     'open-debugger': {ctrl: true, shift: true, key: 'd'},
     'open-editor-settings': {ctrl: true, key: ','},
+    'open-extension-manager': {ctrl: true, alt: true, key: 'e'},
     'open-extensions': {ctrl: true, shift: true, key: 'e'},
     'open-project': {ctrl: true, key: 'o'},
     'open-project-settings': {disabled: true},

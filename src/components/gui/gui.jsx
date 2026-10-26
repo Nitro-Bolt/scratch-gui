@@ -260,6 +260,11 @@ const GUIComponent = props => {
     );
 
     registerKeybind(
+        props.preferences['keybind-open-extension-manager'] ?? defaultKeybinds['open-extension-manager'],
+        props.onOpenExtensionManager
+    );
+
+    registerKeybind(
         props.preferences['keybind-open-project-settings'] ?? defaultKeybinds['open-open-project-settings'],
         props.onOpenProjectSettings
     );

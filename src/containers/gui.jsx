@@ -30,7 +30,8 @@ import {
     openExtensionLibrary,
     openEditorSettingsModal,
     openSettingsModal,
-    openGitModal
+    openGitModal,
+    openExtensionManagerModal
 } from '../reducers/modals';
 
 import FontLoaderHOC from '../lib/font-loader-hoc.jsx';
@@ -216,6 +217,7 @@ const mapDispatchToProps = dispatch => ({
     onOpenDebugger: () => dispatch(openDebugger()),
     onOpenProjectSettings: () => dispatch(openSettingsModal()),
     onOpenGitModal: () => dispatch(openGitModal()),
+    onOpenExtensionManager: () => dispatch(openExtensionManagerModal()),
     onActivateTab: tab => dispatch(activateTab(tab)),
     onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
     onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
