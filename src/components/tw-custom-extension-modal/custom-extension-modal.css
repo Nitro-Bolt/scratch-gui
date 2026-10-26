@@ -1,7 +1,8 @@
 @import "../../css/colors.css";
 
 .modal-content {
-    max-width: 550px;
+    width: 550px;
+    height: 430px;
     margin-top: 50px;
 }
 
