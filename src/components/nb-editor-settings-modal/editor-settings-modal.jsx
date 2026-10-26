@@ -1879,6 +1879,28 @@ const EditorSettingsModal = props => {
                         preferences={props.preferences}
                         shortcutId="paint-polygon"
                     />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Eyedropper"
+                            id="nb.editorSettings.keymap.eyedropper"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-eyedropper"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Eyedropper (Hold)"
+                            id="nb.editorSettings.keymap.eyedropperHold"
+                        />}
+                        help={<FormattedMessage
+                            defaultMessage="Hold the keybind to access the eyedropper, release to return to the previously used tool."
+                            id="nb.editorSettings.keymap.eyedropperHoldHelp"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-eyedropper-hold"
+                    />
                 </Section>
             </Box>
         }

@@ -35,6 +35,8 @@ export const defaultKeybinds = {
     'paint-brush': {key: 'b'},
     'paint-pen': {key: 'p'},
     'paint-eraser': {key: 'e'},
+    'paint-eyedropper': {key: 'i'},
+    'paint-eyedropper-hold': {alt: true},
     'paint-fill': {key: 'f'},
     'paint-text': {key: 't'},
     'paint-line': {key: 'l'},
