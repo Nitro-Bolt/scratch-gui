@@ -50,11 +50,14 @@ Modal.propTypes = {
     id: PropTypes.string.isRequired,
     isRtl: PropTypes.bool,
     onRequestClose: PropTypes.func,
-    onRequestOpen: PropTypes.func
+    onRequestOpen: PropTypes.func,
+    preferences: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-    isRtl: state.locales.isRtl
+    isRtl: state.locales.isRtl,
+    preferences: state.scratchGui.preferences,
+    theme: state.scratchGui.theme.theme
 });
 
 export default connect(

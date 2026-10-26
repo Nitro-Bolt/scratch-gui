@@ -3,6 +3,7 @@ $ui-secondary-default: var(--ui-secondary-default);
 $ui-tertiary-default: var(--ui-tertiary-default);
 
 $ui-modal-overlay-default: var(--ui-modal-overlay-default);
+$ui-modal-overlay-modern-default: var(--ui-modal-overlay-modern-default);
 $ui-modal-background-default: var(--ui-modal-background-default);
 $ui-modal-foreground-default: var(--ui-modal-foreground-default);
 $ui-modal-header-background-default: var(--ui-modal-header-background-default);
