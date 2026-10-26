@@ -2,12 +2,16 @@
 @import "../../css/units.css";
 
 .modal-content {
-    max-width: 550px;
+    width: 550px;
     margin-top: 50px;
+    background: $ui-white;
+}
+
+.modal-content.modern {
+    height: 565px;
 }
 
 .body {
-    background: $ui-white;
     padding: 1.5rem 2.25rem;
     max-height: calc(100vh - 100px - 3.125rem);
     overflow: auto;

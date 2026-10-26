@@ -80,6 +80,7 @@ const InspectThreadModal = props => {
     return (
         <Modal
             className={styles.modalContent}
+            modernClassName={styles.modern}
             onRequestClose={props.onClose}
             contentLabel="Inspect Thread"
             id="inspectThreadModal"

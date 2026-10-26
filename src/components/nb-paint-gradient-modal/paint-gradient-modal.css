@@ -2,8 +2,12 @@
 @import "../../css/units.css";
 
 .modal-content {
-    max-width: 550px;
+    width: 550px;
     margin-top: 50px;
+}
+
+.modal-content.modern {
+    height: 515px;
 }
 
 .body {

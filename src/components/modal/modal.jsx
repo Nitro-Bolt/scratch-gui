@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactModal from 'react-modal';
 import {FormattedMessage} from 'react-intl';
+import { GUI_DARK } from '../../lib/themes/index.js';
 
 import Box from '../box/box.jsx';
 import Button from '../button/button.jsx';
@@ -17,8 +18,16 @@ const ModalComponent = props => (
     <ReactModal
         isOpen
         className={classNames(styles.modalContent, props.className, {
-            [styles.fullScreen]: props.fullScreen
+            [styles.fullScreen]: props.fullScreen,
+            [styles.modern]: !props.preferences['legacy-modals'],
+            [props.modernClassName]: !props.preferences['legacy-modals'],
+            [styles.dark]: props.theme.gui === GUI_DARK
         })}
+        style={{
+            overlay: {
+                backdropFilter: `blur(${Number(props.preferences['modal-overlay-blur'] ?? 0)}px)`
+            }
+        }}
         contentLabel={props.contentLabel}
         overlayClassName={styles.modalOverlay}
         onRequestClose={props.onRequestClose}
@@ -107,7 +116,10 @@ ModalComponent.propTypes = {
     headerImage: PropTypes.string,
     isRtl: PropTypes.bool,
     onHelp: PropTypes.func,
-    onRequestClose: PropTypes.func
+    onRequestClose: PropTypes.func,
+    modernClassName: PropTypes.string,
+    preferences: PropTypes.object,
+    theme: PropTypes.object
 };
 
 export default ModalComponent;

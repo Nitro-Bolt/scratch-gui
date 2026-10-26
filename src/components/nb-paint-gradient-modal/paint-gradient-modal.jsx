@@ -22,6 +22,7 @@ const PaintGradientModal = props => {
     return (
         <Modal
             className={styles.modalContent}
+            modernClassName={styles.modern}
             contentLabel="Custom Gradient"
             onRequestClose={props.onCancel}
         >

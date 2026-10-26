@@ -8,6 +8,10 @@
     margin: 40px auto;
 }
 
+.modal-content.modern {
+    height: 630px;
+}
+
 .body {
     padding: 1.5rem 2.25rem 2rem;
     max-height: calc(100vh - 130px);

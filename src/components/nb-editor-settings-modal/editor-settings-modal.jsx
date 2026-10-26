@@ -719,6 +719,49 @@ const EditorSettingsModal = props => {
                         props.onSetPreference('stage-left', e.target.checked);
                     }}
                 />
+                <BooleanSetting
+                    value={props.preferences['legacy-modals']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.legacyModals"
+                        defaultMessage="Legacy modal style"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.legacyModalsHelp"
+                        defaultMessage="Uses TurboWarp's modal style instead of the modern style."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={() => props.onSetPreference('legacy-modals', !props.preferences['legacy-modals'])}
+                />
+                <Setting
+                    primary={(
+                        <div className={classNames(styles.label, styles.customStageSize)}>
+                            <FormattedMessage
+                                defaultMessage="Modal overlay blur:"
+                                id="nb.editorSettings.modalOverlayBlur"
+                            />
+                            <BufferedInput
+                                value={String(props.preferences['modal-overlay-blur'] ?? 0)}
+                                // eslint-disable-next-line react/jsx-no-bind
+                                onSubmit={value => {
+                                    const num = Number(value);
+                                    if (Number.isFinite(num)) {
+                                        props.onSetPreference('modal-overlay-blur', Math.min(Math.max(0, num), 15));
+                                    }
+                                }}
+                                type="number"
+                                min="0"
+                                max="15"
+                                spellCheck="false"
+                            />
+                        </div>
+                    )}
+                    help={
+                        <FormattedMessage
+                            id="nb.editorSettings.modalOverlayBlurHelp"
+                            defaultMessage="The intensity, in pixels, of the blur effect on the UI behind modals."
+                        />
+                    }
+                />
                 <Section
                     title={<FormattedMessage
                         id="nb.editorSettings.blockSelection"

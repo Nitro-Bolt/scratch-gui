@@ -19,6 +19,7 @@ const messages = defineMessages({
 const CustomExtensionModal = props => (
     <Modal
         className={styles.modalContent}
+        modernClassName={styles.modern}
         onRequestClose={props.onClose}
         contentLabel={props.intl.formatMessage(messages.title)}
         id="customExtensionModal"
