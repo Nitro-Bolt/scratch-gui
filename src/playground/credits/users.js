@@ -93,6 +93,20 @@ const translators = [
         github: true,
     },
     {
+        userId: '79430721',
+        username: 'Aness6040',
+        github: true
+    },
+    {
+        userId: '105373666',
+        username: 'rttyg46305Unj',
+        github: true
+    },
+    {
+        username: 'IFirstTeaLover',
+        github: true
+    },
+    {
         userId: '315653474',
         username: 'lemonlemonadelime',
         github: true
