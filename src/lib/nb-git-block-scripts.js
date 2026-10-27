@@ -1,3 +1,5 @@
+const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+
 const inputBlockIds = input => {
     if (!Array.isArray(input)) return [];
     return [input[1], input[2]].filter(value => typeof value === 'string');
@@ -7,7 +9,7 @@ const scriptBlockIds = (blocks, rootId) => {
     const ids = [];
     const visited = [];
     const visit = id => {
-        if (!id || visited.includes(id) || !blocks[id]) return;
+        if (!id || visited.includes(id) || !hasOwn(blocks, id)) return;
         visited.push(id);
         ids.push(id);
         const block = blocks[id];
