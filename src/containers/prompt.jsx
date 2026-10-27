@@ -55,7 +55,7 @@ class Prompt extends React.Component {
         this.setState({inputValue: e.target.value});
     }
     handleScopeOptionSelection (e) {
-        this.setState({globalSelected: (e.target.value === 'global')});
+        this.setState({globalSelected: (e.target.checked)});
     }
     handleTypeSelection (e) {
         this.setState({valueType: e.target.value});
