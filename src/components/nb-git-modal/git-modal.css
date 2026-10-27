@@ -326,15 +326,23 @@
 
 .commit-main-button {
     flex: 1;
+    border-right: 0;
     border-radius: .35rem 0 0 .35rem;
 }
 
 .commit-menu-button {
+    display: grid;
     width: 2.6rem;
-    border-left-color: rgba(255, 255, 255, .35);
+    place-items: center;
+    border-left-color: $ui-white-transparent;
     border-radius: 0 .35rem .35rem 0;
     padding-right: 0;
     padding-left: 0;
+}
+
+.commit-menu-button img {
+    display: block;
+    pointer-events: none;
 }
 
 .commit-main-button:disabled,
@@ -342,6 +350,18 @@
 .commit-menu button:disabled {
     opacity: .5;
     cursor: default;
+}
+
+.commit-main-button:hover:not(:disabled),
+.commit-menu-button:hover:not(:disabled) {
+    background: $looks-secondary-dark;
+}
+
+.commit-main-button:focus-visible,
+.commit-menu-button:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 3px solid $looks-transparent;
 }
 
 .commit-menu {
@@ -368,6 +388,10 @@
     font: inherit;
     text-align: left;
     cursor: pointer;
+}
+
+.commit-menu .commit-remote-action {
+    border-top: 1px solid $ui-black-transparent;
 }
 
 .commit-menu button:hover:not(:disabled),

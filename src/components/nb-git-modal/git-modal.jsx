@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
+import dropdownCaret from '../menu-bar/dropdown-caret.svg';
 import FancyDropdown from '../nb-fancy-dropdown/dropdown.jsx';
 import ProjectDiff from './project-diff.jsx';
 import log from '../../lib/log';
@@ -807,7 +808,13 @@ const GitModal = props => {
                         disabled={busy}
                         onClick={toggleCommitMenu}
                         ref={commitMenuButton}
-                    >{'\u25BE'}</button>
+                    ><img
+                        alt=""
+                        draggable={false}
+                        height={5}
+                        src={dropdownCaret}
+                        width={8}
+                    /></button>
                     {commitMenuOpen && <div
                         className={styles.commitMenu}
                         onKeyDown={handleCommitMenuKeyDown}
@@ -824,6 +831,7 @@ const GitModal = props => {
                             role="menuitem"
                         >{format(messages.commitAmend)}</button>
                         <button
+                            className={styles.commitRemoteAction}
                             disabled={!safeStatus.staged.length || !message.trim() || !selectedRemoteExists}
                             onClick={() => commit('push')}
                             role="menuitem"
