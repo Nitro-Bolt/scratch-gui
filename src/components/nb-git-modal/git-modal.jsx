@@ -16,21 +16,111 @@ import styles from './git-modal.css';
 const messages = defineMessages({
     title: {defaultMessage: 'Source Control', id: 'nb.git.title'},
     desktopOnly: {defaultMessage: 'Git is only available in NitroBolt Desktop.', id: 'nb.git.desktopOnly'},
-    gitMissing: {defaultMessage: 'Git is not installed or could not be found.', id: 'nb.git.missing'}
+    gitMissing: {defaultMessage: 'Git is not installed or could not be found.', id: 'nb.git.missing'},
+    general: {defaultMessage: 'General', id: 'nb.git.general'},
+    branches: {defaultMessage: 'Branches', id: 'nb.git.branches'},
+    remotes: {defaultMessage: 'Remotes', id: 'nb.git.remotes'},
+    history: {defaultMessage: 'History', id: 'nb.git.history'},
+    controls: {defaultMessage: 'Merging & Controls', id: 'nb.git.controls'},
+    changes: {defaultMessage: 'Changes', id: 'nb.git.changes'},
+    readme: {defaultMessage: 'README', id: 'nb.git.readme'},
+    gitOperationFailed: {defaultMessage: 'Git operation failed.', id: 'nb.git.operationFailed'},
+    dismissError: {defaultMessage: 'Dismiss error', id: 'nb.git.dismissError'},
+    unstageAll: {defaultMessage: 'Unstage all', id: 'nb.git.unstageAll'},
+    stageAll: {defaultMessage: 'Stage all', id: 'nb.git.stageAll'},
+    discardAll: {defaultMessage: 'Discard all changes', id: 'nb.git.discardAll'},
+    confirmDiscardAll: {defaultMessage: 'Click again to confirm discard all', id: 'nb.git.confirmDiscardAll'},
+    confirm: {defaultMessage: 'Click again to confirm', id: 'nb.git.confirm'},
+    confirmButton: {defaultMessage: 'Confirm', id: 'nb.git.confirmButton'},
+    undoChange: {defaultMessage: 'Undo change', id: 'nb.git.undoChange'},
+    discardManaged: {
+        defaultMessage: 'Use Discard all to remove this project change safely',
+        id: 'nb.git.discardManaged'
+    },
+    unstage: {defaultMessage: 'Unstage', id: 'nb.git.unstage'},
+    stage: {defaultMessage: 'Stage', id: 'nb.git.stage'},
+    staged: {defaultMessage: 'Staged', id: 'nb.git.staged'},
+    conflicts: {defaultMessage: 'Conflicts', id: 'nb.git.conflicts'},
+    workingTreeClean: {defaultMessage: 'Working tree clean', id: 'nb.git.workingTreeClean'},
+    changedFiles: {
+        defaultMessage: '{count, plural, one {# changed file} other {# changed files}}',
+        id: 'nb.git.changedFiles'
+    },
+    commitMessage: {defaultMessage: 'Commit message', id: 'nb.git.commitMessage'},
+    commit: {defaultMessage: 'Commit', id: 'nb.git.commit'},
+    moreCommitActions: {defaultMessage: 'More commit actions', id: 'nb.git.moreCommitActions'},
+    commitAmend: {defaultMessage: 'Commit (Amend)', id: 'nb.git.commitAmend'},
+    commitPush: {defaultMessage: 'Commit & Push', id: 'nb.git.commitPush'},
+    commitSync: {defaultMessage: 'Commit & Sync', id: 'nb.git.commitSync'},
+    enterCommitMessage: {defaultMessage: 'Enter a commit message.', id: 'nb.git.enterCommitMessage'},
+    newBranch: {defaultMessage: 'New branch', id: 'nb.git.newBranch'},
+    branchPlaceholder: {defaultMessage: 'feature/name', id: 'nb.git.branchPlaceholder'},
+    create: {defaultMessage: 'Create', id: 'nb.git.create'},
+    local: {defaultMessage: 'Local', id: 'nb.git.local'},
+    remote: {defaultMessage: 'Remote', id: 'nb.git.remote'},
+    noLocalBranches: {defaultMessage: 'No local branches', id: 'nb.git.noLocalBranches'},
+    noRemoteBranches: {defaultMessage: 'No remote branches', id: 'nb.git.noRemoteBranches'},
+    save: {defaultMessage: 'Save', id: 'nb.git.save'},
+    cancel: {defaultMessage: 'Cancel', id: 'nb.git.cancel'},
+    current: {defaultMessage: 'current', id: 'nb.git.current'},
+    rename: {defaultMessage: 'Rename', id: 'nb.git.rename'},
+    delete: {defaultMessage: 'Delete', id: 'nb.git.delete'},
+    enterBranchName: {defaultMessage: 'Enter a branch name.', id: 'nb.git.enterBranchName'},
+    addRemote: {defaultMessage: 'Add remote', id: 'nb.git.addRemote'},
+    remove: {defaultMessage: 'Remove', id: 'nb.git.remove'},
+    enterRemote: {defaultMessage: 'Enter a remote name and URL.', id: 'nb.git.enterRemote'},
+    revertCommit: {defaultMessage: 'Revert to this commit', id: 'nb.git.revertCommit'},
+    mergeBranch: {defaultMessage: 'Merge branch', id: 'nb.git.mergeBranch'},
+    chooseSource: {defaultMessage: 'Choose source branch…', id: 'nb.git.chooseSource'},
+    intoBranch: {defaultMessage: 'Into branch', id: 'nb.git.intoBranch'},
+    chooseDestination: {defaultMessage: 'Choose destination branch…', id: 'nb.git.chooseDestination'},
+    merge: {defaultMessage: 'Merge', id: 'nb.git.merge'},
+    remoteSync: {defaultMessage: 'Remote sync', id: 'nb.git.remoteSync'},
+    noRemotes: {defaultMessage: 'No remotes', id: 'nb.git.noRemotes'},
+    pull: {defaultMessage: 'Pull', id: 'nb.git.pull'},
+    push: {defaultMessage: 'Push', id: 'nb.git.push'},
+    saveReadme: {defaultMessage: 'Save README.md', id: 'nb.git.saveReadme'},
+    selectChangedFile: {defaultMessage: 'Select a changed file', id: 'nb.git.selectChangedFile'},
+    diffHint: {defaultMessage: 'Its diff will open here.', id: 'nb.git.diffHint'},
+    branch: {defaultMessage: 'Branch', id: 'nb.git.branch'},
+    detachedHead: {defaultMessage: 'Detached HEAD', id: 'nb.git.detachedHead'},
+    commitLabel: {defaultMessage: 'Commit', id: 'nb.git.commitLabel'},
+    noCommits: {defaultMessage: 'No commits', id: 'nb.git.noCommits'},
+    refresh: {defaultMessage: 'Refresh', id: 'nb.git.refresh'},
+    setupSourceControl: {defaultMessage: 'Set up source control', id: 'nb.git.setupSourceControl'},
+    gitSourceControl: {defaultMessage: 'Git source control', id: 'nb.git.gitSourceControl'},
+    checkingFolder: {defaultMessage: 'Checking the selected folder…', id: 'nb.git.checkingFolder'},
+    notRepository: {defaultMessage: 'This folder is not a Git repository yet.', id: 'nb.git.notRepository'},
+    sourceControlDescription: {
+        defaultMessage: 'Track your NitroBolt project, review changes, and work with branches.',
+        id: 'nb.git.sourceControlDescription'
+    },
+    selectedFolder: {defaultMessage: 'Selected folder', id: 'nb.git.selectedFolder'},
+    initializeDescription: {
+        defaultMessage: 'Initialize this folder to begin tracking its project files and assets.',
+        id: 'nb.git.initializeDescription'
+    },
+    chooseDescription: {
+        defaultMessage: 'Choose a project folder that already contains a repository, or select a folder to initialize.',
+        id: 'nb.git.chooseDescription'
+    },
+    initializeRepository: {defaultMessage: 'Initialize Repository', id: 'nb.git.initializeRepository'},
+    chooseAnotherFolder: {defaultMessage: 'Choose another folder', id: 'nb.git.chooseAnotherFolder'},
+    chooseFolder: {defaultMessage: 'Choose folder', id: 'nb.git.chooseFolder'}
 });
 const navigation = [
     {
         id: 'general',
-        label: 'General',
+        message: messages.general,
         views: [
-            {id: 'branches', label: 'Branches'},
-            {id: 'remotes', label: 'Remotes'},
-            {id: 'history', label: 'History'},
-            {id: 'controls', label: 'Merging & Controls'}
+            {id: 'branches', message: messages.branches},
+            {id: 'remotes', message: messages.remotes},
+            {id: 'history', message: messages.history},
+            {id: 'controls', message: messages.controls}
         ]
     },
-    {id: 'changes', label: 'Changes'},
-    {id: 'readme', label: 'README'}
+    {id: 'changes', message: messages.changes},
+    {id: 'readme', message: messages.readme}
 ];
 const badgeClass = {'U': 'statusU', 'M': 'statusM', 'D': 'statusD', '!': 'statusConflict'};
 const Badge = ({value}) => (
@@ -82,7 +172,7 @@ ReadmeEditor.propTypes = {
     value: PropTypes.string.isRequired
 };
 
-const gitErrorMessage = result => (result && result.error) || 'Git operation failed.';
+const gitErrorMessage = result => result && result.error;
 const managedProjectFile = filePath => {
     const normalized = filePath.replace(/\\/g, '/');
     return normalized === 'project.json' || /(^|\/)(target|blocks)\.json$/.test(normalized) ||
@@ -103,13 +193,16 @@ const GitModal = props => {
     const [remotes, setRemotes] = useState([]);
     const [history, setHistory] = useState([]);
     const [view, setView] = useState('changes');
+    const [generalView, setGeneralView] = useState('branches');
     const [diff, setDiff] = useState(null);
     const [selected, setSelected] = useState(null);
     const [discardPath, setDiscardPath] = useState(null);
     const [discardAllPending, setDiscardAllPending] = useState(false);
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
+    const [operationError, setOperationError] = useState('');
     const [message, setMessage] = useState('');
+    const [commitMenuOpen, setCommitMenuOpen] = useState(false);
     const [branchName, setBranchName] = useState('');
     const [renamingBranch, setRenamingBranch] = useState(null);
     const [renamedBranch, setRenamedBranch] = useState('');
@@ -124,12 +217,19 @@ const GitModal = props => {
     const actionRunning = React.useRef(false);
     const diffRequest = React.useRef(0);
     const refreshRequest = React.useRef(0);
+    const commitMenu = React.useRef(null);
+    const commitMenuButton = React.useRef(null);
     const repository = Boolean(status && status.isRepository);
     const repositoryRevision = repository ? `${repoPath}:${status.commit || 'unborn'}` : null;
+    const safeStatus = status || {branch: '', commit: null, staged: []};
 
+    const format = (descriptor, values) => props.intl.formatMessage(descriptor, values);
+    const errorMessage = result => gitErrorMessage(result) || format(messages.gitOperationFailed);
     const failed = result => {
         if (result && result.success) return false;
-        log.error(gitErrorMessage(result));
+        const nextError = errorMessage(result);
+        setOperationError(nextError);
+        log.error(nextError);
         return true;
     };
     const clearDiff = () => {
@@ -208,6 +308,25 @@ const GitModal = props => {
         }
     };
     useEffect(() => {
+        if (!commitMenuOpen) return () => null;
+        const closeMenu = event => {
+            if (event.type === 'keydown' && event.key !== 'Escape') return;
+            if (event.type === 'mousedown' && commitMenu.current && commitMenu.current.contains(event.target)) return;
+            setCommitMenuOpen(false);
+        };
+        document.addEventListener('mousedown', closeMenu);
+        document.addEventListener('keydown', closeMenu);
+        return () => {
+            document.removeEventListener('mousedown', closeMenu);
+            document.removeEventListener('keydown', closeMenu);
+        };
+    }, [commitMenuOpen]);
+    useEffect(() => {
+        if (!commitMenuOpen || !commitMenu.current) return;
+        const firstAction = commitMenu.current.querySelector('[role="menuitem"]:not(:disabled)');
+        if (firstAction) firstAction.focus();
+    }, [commitMenuOpen]);
+    useEffect(() => {
         if (!window.Git) {
             setAvailable(false);
             setLoading(false);
@@ -247,10 +366,15 @@ const GitModal = props => {
     const run = action => {
         if (actionRunning.current) return Promise.resolve();
         actionRunning.current = true;
+        setOperationError('');
         setBusy(true);
         return Promise.resolve()
             .then(action)
-            .catch(log.error)
+            .catch(nextError => {
+                const nextMessage = nextError && nextError.message ? nextError.message : String(nextError);
+                setOperationError(nextMessage);
+                log.error(nextError);
+            })
             .then(() => {
                 actionRunning.current = false;
                 setBusy(false);
@@ -258,7 +382,7 @@ const GitModal = props => {
     };
     const reloadProject = async (path = repoPath) => {
         const result = await window.Git.readProject(path);
-        if (!result || !result.success) throw new Error(gitErrorMessage(result));
+        if (!result || !result.success) throw new Error(errorMessage(result));
         props.onSetProjectPath(null);
         props.onClearFileHandle();
         clearDiff();
@@ -332,7 +456,7 @@ const GitModal = props => {
             await pauseGitProjectSync();
             paused = true;
             const result = await window.Git.discard(repoPath, change.path, change.originalPath);
-            if (!result || !result.success) throw new Error(gitErrorMessage(result));
+            if (!result || !result.success) throw new Error(errorMessage(result));
             clearDiff();
             setDiscardPath(null);
             if (result.tracked) await reloadProject();
@@ -354,7 +478,7 @@ const GitModal = props => {
             const files = [...(status.untracked || []), ...(status.unstaged || [])];
             for (const change of files) {
                 const result = await window.Git.discard(repoPath, change.path, change.originalPath);
-                if (!result || !result.success) throw new Error(gitErrorMessage(result));
+                if (!result || !result.success) throw new Error(errorMessage(result));
                 restoredTrackedFile = restoredTrackedFile || result.tracked;
             }
             clearDiff();
@@ -382,11 +506,71 @@ const GitModal = props => {
         }
         setDiff(result.data);
     });
-    const commit = () => run(async () => {
-        if (!message.trim()) throw new Error('Enter a commit message.');
-        const result = await window.Git.commit(repoPath, message.trim());
-        if (!failed(result)) {
-            setMessage('');
+    const toggleCommitMenu = async () => {
+        const opening = !commitMenuOpen;
+        setCommitMenuOpen(opening);
+        if (!opening || message.trim() || !status || !status.commit) return;
+        try {
+            const result = await window.Git.commitMessage(repoPath);
+            if (failed(result)) return;
+            setMessage(result.message.trim());
+        } catch (nextError) {
+            const nextMessage = nextError && nextError.message ? nextError.message : String(nextError);
+            setOperationError(nextMessage);
+            log.error(nextError);
+        }
+    };
+    const handleCommitMenuKeyDown = event => {
+        if (!commitMenu.current) return;
+        const actions = Array.from(commitMenu.current.querySelectorAll('[role="menuitem"]:not(:disabled)'));
+        if (!actions.length) return;
+        const currentIndex = actions.indexOf(document.activeElement);
+        let nextIndex;
+        if (event.key === 'ArrowDown') nextIndex = (currentIndex + 1) % actions.length;
+        else if (event.key === 'ArrowUp') nextIndex = (currentIndex - 1 + actions.length) % actions.length;
+        else if (event.key === 'Home') nextIndex = 0;
+        else if (event.key === 'End') nextIndex = actions.length - 1;
+        else if (event.key === 'Escape') {
+            setCommitMenuOpen(false);
+            commitMenuButton.current.focus();
+            event.preventDefault();
+            return;
+        } else if (event.key === 'Tab') {
+            setCommitMenuOpen(false);
+            return;
+        } else return;
+        actions[nextIndex].focus();
+        event.preventDefault();
+    };
+    const commit = (action = 'commit') => run(async () => {
+        if (!message.trim()) throw new Error(format(messages.enterCommitMessage));
+        const restoreMenuFocus = commitMenuOpen;
+        setCommitMenuOpen(false);
+        if (restoreMenuFocus) setTimeout(() => commitMenuButton.current && commitMenuButton.current.focus(), 0);
+        const result = await window.Git.commit(repoPath, message.trim(), action === 'amend');
+        if (failed(result)) return;
+        setMessage('');
+        try {
+            if (action === 'push') {
+                const pushResult = await window.Git.push(repoPath, remote, safeStatus.branch);
+                if (failed(pushResult)) return;
+            } else if (action === 'sync') {
+                let paused = false;
+                try {
+                    await pauseGitProjectSync();
+                    paused = true;
+                    const fetchResult = await window.Git.fetch(repoPath, remote);
+                    if (failed(fetchResult)) return;
+                    const pullResult = await window.Git.pull(repoPath, remote, safeStatus.branch);
+                    if (failed(pullResult)) return;
+                    await reloadProject();
+                    const pushResult = await window.Git.push(repoPath, remote, safeStatus.branch);
+                    if (failed(pushResult)) return;
+                } finally {
+                    if (paused) resumeGitProjectSync();
+                }
+            }
+        } finally {
             await refresh();
         }
     });
@@ -405,7 +589,7 @@ const GitModal = props => {
         }
     });
     const createBranch = () => run(async () => {
-        if (!branchName.trim()) throw new Error('Enter a branch name.');
+        if (!branchName.trim()) throw new Error(format(messages.enterBranchName));
         const result = await window.Git.createBranch(repoPath, branchName.trim());
         if (!failed(result)) {
             setBranchName('');
@@ -429,7 +613,7 @@ const GitModal = props => {
         }
     });
     const addRemote = () => run(async () => {
-        if (!remoteName.trim() || !remoteUrl.trim()) throw new Error('Enter a remote name and URL.');
+        if (!remoteName.trim() || !remoteUrl.trim()) throw new Error(format(messages.enterRemote));
         const result = await window.Git.addRemote(repoPath, remoteName.trim(), remoteUrl.trim());
         if (!failed(result)) {
             setRemoteUrl('');
@@ -456,7 +640,6 @@ const GitModal = props => {
             if (paused) resumeGitProjectSync();
         }
     });
-    const safeStatus = status || {branch: '', commit: null, staged: []};
     const syncRemote = method => run(async () => {
         let paused = false;
         try {
@@ -541,30 +724,36 @@ const GitModal = props => {
     const selectedRemoteExists = remotes.some(item => item.name === remote);
 
     /* eslint-disable indent, react/jsx-no-bind, react/jsx-no-literals */
-    const filesPane = (<div className={styles.fileGroups}>{['Staged', 'Conflicts', 'Changes'].map(group => {
-        const files = changes.filter(item => item.group === group);
+    const fileGroups = [
+        {id: 'Staged', message: messages.staged},
+        {id: 'Conflicts', message: messages.conflicts},
+        {id: 'Changes', message: messages.changes}
+    ];
+    const filesPane = (<div className={styles.fileGroups}>{fileGroups.map(group => {
+        const files = changes.filter(item => item.group === group.id);
         return files.length ? <section
             className={styles.fileGroup}
-            key={group}
+            key={group.id}
         >
-            <div className={styles.groupHeading}><span>{group}</span><span className={styles.groupCount}>{files.length}
-                {group === 'Staged' && <button
-                    title="Unstage all"
-                    onClick={() => mutate('reset', [])}
-                >−</button>}
-                {group === 'Changes' && <button
-                    title="Stage all"
-                    onClick={() => mutate('add', [])}
-                >+</button>}
-                {group === 'Changes' && <button
-                    title={discardAllPending ? 'Click again to confirm discard all' : 'Discard all changes'}
-                    onClick={discardAllChanges}
-                >{discardAllPending ? '!' : '↶'}</button>}
-            </span></div>
+            <div className={styles.groupHeading}><span>{format(group.message)}</span>
+                <span className={styles.groupCount}>{files.length}
+                    {group.id === 'Staged' && <button
+                        title={format(messages.unstageAll)}
+                        onClick={() => mutate('reset', [])}
+                    >−</button>}
+                    {group.id === 'Changes' && <button
+                        title={format(messages.stageAll)}
+                        onClick={() => mutate('add', [])}
+                    >+</button>}
+                    {group.id === 'Changes' && <button
+                        title={format(discardAllPending ? messages.confirmDiscardAll : messages.discardAll)}
+                        onClick={discardAllChanges}
+                    >{discardAllPending ? '!' : '↶'}</button>}
+                </span></div>
             {files.map(item => (<div
                 className={`${styles.fileItem} ${selected === `${item.staged ? 's' : 'w'}:${item.path}` ?
                     styles.fileItemActive : ''}`}
-                key={`${group}:${item.path}`}
+                key={`${group.id}:${item.path}`}
             >
                 <button
                     className={styles.fileSelect}
@@ -576,54 +765,98 @@ const GitModal = props => {
                 {!item.staged && <button
                     className={styles.inlineAction}
                     disabled={busy || !canDiscardIndividually(item)}
-                    title={canDiscardIndividually(item) ?
-                        (discardPath === item.path ? 'Click again to confirm' : 'Undo change') :
-                        'Use Discard all to remove this project change safely'}
+                    title={format(canDiscardIndividually(item) ?
+                        (discardPath === item.path ? messages.confirm : messages.undoChange) :
+                        messages.discardManaged)}
                     onClick={() => discardChange(item)}
                 >{discardPath === item.path ? '!' : '↶'}</button>}
                 <button
                     className={styles.inlineAction}
-                    title={item.staged ? 'Unstage' : 'Stage'}
+                    title={format(item.staged ? messages.unstage : messages.stage)}
                     onClick={() => mutate(item.staged ? 'reset' : 'add',
                         [item.path, item.originalPath].filter(Boolean))}
                 >{item.staged ? '−' : '+'}</button>
             </div>))}</section> : null;
-    })}{!changes.length && <div className={styles.emptyState}>Working tree clean</div>}</div>);
+    })}{!changes.length && <div className={styles.emptyState}>{format(messages.workingTreeClean)}</div>}</div>);
 
     const header = (title, subtitle) => (<div className={styles.paneHeader}><div><h3>{title}</h3>
         {subtitle && <p>{subtitle}</p>}</div></div>);
     let context;
     if (view === 'changes') {
-        context = (<>{header('Changes', `${changes.length} changed file${changes.length === 1 ? '' : 's'}`)}
+        context = (<>{header(format(messages.changes), format(messages.changedFiles, {count: changes.length}))}
             <div className={styles.commitBox}><textarea
                 className={styles.commitInput}
                 value={message}
                 onChange={event => setMessage(event.target.value)}
-                placeholder="Commit message"
+                placeholder={format(messages.commitMessage)}
             />
-                <button
-                    className={styles.primaryButton}
-                    disabled={busy || !safeStatus.staged.length}
-                    onClick={commit}
-                >Commit</button>
+                <div
+                    className={styles.commitActions}
+                    ref={commitMenu}
+                >
+                    <button
+                        className={styles.commitMainButton}
+                        disabled={busy || !safeStatus.staged.length || !message.trim()}
+                        onClick={() => commit()}
+                    >{format(messages.commit)}</button>
+                    <button
+                        aria-expanded={commitMenuOpen}
+                        aria-haspopup="menu"
+                        aria-label={format(messages.moreCommitActions)}
+                        className={styles.commitMenuButton}
+                        disabled={busy}
+                        onClick={toggleCommitMenu}
+                        ref={commitMenuButton}
+                    >{'\u25BE'}</button>
+                    {commitMenuOpen && <div
+                        className={styles.commitMenu}
+                        onKeyDown={handleCommitMenuKeyDown}
+                        role="menu"
+                    >
+                        <button
+                            disabled={!safeStatus.staged.length || !message.trim()}
+                            onClick={() => commit('commit')}
+                            role="menuitem"
+                        >{format(messages.commit)}</button>
+                        <button
+                            disabled={!safeStatus.commit || !message.trim()}
+                            onClick={() => commit('amend')}
+                            role="menuitem"
+                        >{format(messages.commitAmend)}</button>
+                        <button
+                            disabled={!safeStatus.staged.length || !message.trim() || !selectedRemoteExists}
+                            onClick={() => commit('push')}
+                            role="menuitem"
+                        >{format(messages.commitPush)}</button>
+                        <button
+                            disabled={!safeStatus.staged.length || !message.trim() || !selectedRemoteExists}
+                            onClick={() => commit('sync')}
+                            role="menuitem"
+                        >{format(messages.commitSync)}</button>
+                    </div>}
+                </div>
             </div>{filesPane}</>);
     } else if (view === 'branches') {
-        context = (<>{header('Branches')}<div className={styles.formCard}><label>New branch</label>
+        context = (<>{header(format(messages.branches))}<div className={styles.formCard}>
+            <label>{format(messages.newBranch)}</label>
             <div className={styles.inputRow}><input
                 value={branchName}
                 onChange={event => setBranchName(event.target.value)}
-                placeholder="feature/name"
+                placeholder={format(messages.branchPlaceholder)}
             /><button
                 className={styles.primaryButton}
                 disabled={busy || !branchName.trim()}
                 onClick={createBranch}
-            >Create</button></div></div>
-            {[['Local', local], ['Remote', remoteBranches]].map(([label, items]) => (<div
+            >{format(messages.create)}</button></div></div>
+            {[
+                [messages.local, messages.noLocalBranches, local],
+                [messages.remote, messages.noRemoteBranches, remoteBranches]
+            ].map(([label, emptyLabel, items]) => (<div
                 className={styles.listSection}
-                key={label}
-            ><h4>{label}</h4>
+                key={label.id}
+            ><h4>{format(label)}</h4>
                 <div className={styles.branchList}>
-                    {!items.length && <div className={styles.emptyList}>No {label.toLowerCase()} branches</div>}
+                    {!items.length && <div className={styles.emptyList}>{format(emptyLabel)}</div>}
                     {items.map(item => (<div
                         className={styles.branchRow}
                         key={item.ref}
@@ -636,32 +869,32 @@ const GitModal = props => {
                             <button
                                 disabled={!renamedBranch.trim()}
                                 onClick={renameBranch}
-                            >Save</button>
-                            <button onClick={() => setRenamingBranch(null)}>Cancel</button>
+                            >{format(messages.save)}</button>
+                            <button onClick={() => setRenamingBranch(null)}>{format(messages.cancel)}</button>
                         </> : <>
                             <button
                                 className={styles.listItem}
                                 onClick={() => !item.isCurrent && switchBranch(item.ref)}
-                            ><span>{item.name}</span>{item.isCurrent && <em>current</em>}</button>
+                            ><span>{item.name}</span>{item.isCurrent && <em>{format(messages.current)}</em>}</button>
                             {!item.isRemote && <button
                                 onClick={() => {
                                 setRenamingBranch(item);
                                 setRenamedBranch(item.name);
                             }}
-                            >Rename</button>}
+                            >{format(messages.rename)}</button>}
                             <button
                                 disabled={item.isCurrent}
                                 onClick={() => {
                                 if (deleteBranchRef === item.ref) deleteBranch(item);
                                 else setDeleteBranchRef(item.ref);
                             }}
-                            >{deleteBranchRef === item.ref ? 'Confirm' : 'Delete'}</button>
+                            >{format(deleteBranchRef === item.ref ? messages.confirmButton : messages.delete)}</button>
                         </>}
                     </div>))}
                 </div></div>))}</>);
     } else if (view === 'remotes') {
-        context = (<>{header('Remotes')}<div className={styles.formCard}>
-            <label>Add remote</label><input
+        context = (<>{header(format(messages.remotes))}<div className={styles.formCard}>
+            <label>{format(messages.addRemote)}</label><input
                 value={remoteName}
                 onChange={event => setRemoteName(event.target.value)}
                 placeholder="origin"
@@ -674,18 +907,18 @@ const GitModal = props => {
             <button
                 className={styles.primaryButton}
                 onClick={addRemote}
-            >Add remote</button></div>
+            >{format(messages.addRemote)}</button></div>
             <div className={styles.listSection}>{remotes.map(item => (
                 <div
                     className={styles.remoteItem}
                     key={item.name}
                 >
                     <div><strong>{item.name}</strong><span>{item.fetch || item.push}</span></div>
-                    <button onClick={() => removeRemote(item.name)}>Remove</button>
+                    <button onClick={() => removeRemote(item.name)}>{format(messages.remove)}</button>
                 </div>
             ))}</div></>);
     } else if (view === 'history') {
-        context = (<>{header('History')}<div className={styles.historyList}>{history.map(item =>
+        context = (<>{header(format(messages.history))}<div className={styles.historyList}>{history.map(item =>
             (<div
                 className={styles.commitItem}
                 key={item.hash}
@@ -695,25 +928,25 @@ const GitModal = props => {
                 {item.shortHash !== safeStatus.commit && <button
                     className={styles.revertButton}
                     onClick={() => revertToCommit(item.hash)}
-                >Revert to this commit</button>}</div></div>))}</div></>);
+                >{format(messages.revertCommit)}</button>}</div></div>))}</div></>);
     } else if (view === 'controls') {
-        context = (<>{header('Merging & Controls')}<div className={styles.formCard}>
-            <label>Merge branch</label><FancyDropdown
+        context = (<>{header(format(messages.controls))}<div className={styles.formCard}>
+            <label>{format(messages.mergeBranch)}</label><FancyDropdown
                 className={styles.selectWrapper}
                 value={mergeBranch}
                 onChange={event => setMergeBranch(event.target.value)}
             >
-                <option value="">Choose source branch…</option>{branches.map(item =>
+                <option value="">{format(messages.chooseSource)}</option>{branches.map(item =>
                     (<option
                         value={item.ref}
                         key={item.ref}
                     >{item.name}</option>))}</FancyDropdown>
-            <label>Into branch</label><FancyDropdown
+            <label>{format(messages.intoBranch)}</label><FancyDropdown
                 className={styles.selectWrapper}
                 value={mergeTarget}
                 onChange={event => setMergeTarget(event.target.value)}
             >
-                <option value="">Choose destination branch…</option>
+                <option value="">{format(messages.chooseDestination)}</option>
                 {local.filter(item => item.ref !== mergeBranch).map(item => (
                     <option
                         value={item.ref}
@@ -725,28 +958,28 @@ const GitModal = props => {
                 className={styles.primaryButton}
                 disabled={!mergeBranch || !mergeTarget || mergeBranch === mergeTarget}
                 onClick={merge}
-            >Merge</button></div><div className={styles.formCard}>
-                <label>Remote sync</label><FancyDropdown
+            >{format(messages.merge)}</button></div><div className={styles.formCard}>
+                <label>{format(messages.remoteSync)}</label><FancyDropdown
                     className={styles.selectWrapper}
                     value={remote}
                     onChange={event => setRemote(event.target.value)}
                 >
-                    {!remotes.length && <option value="">No remotes</option>}
+                    {!remotes.length && <option value="">{format(messages.noRemotes)}</option>}
                     {remotes.map(item => <option key={item.name}>{item.name}</option>)}
                 </FancyDropdown>
                 <div className={styles.inputRow}>
                     <button
                         disabled={busy || !selectedRemoteExists}
                         onClick={() => syncRemote('pull')}
-                    >Pull</button>
+                    >{format(messages.pull)}</button>
                     <button
                         disabled={busy || !selectedRemoteExists}
                         onClick={() => syncRemote('push')}
-                    >Push</button>
+                    >{format(messages.push)}</button>
                 </div>
             </div></>);
     } else {
-        context = (<>{header('README')}<div className={styles.readmeEditor}><ReadmeEditor
+        context = (<>{header(format(messages.readme))}<div className={styles.readmeEditor}><ReadmeEditor
             dark={props.dark}
             value={readme}
             onChange={setReadme}
@@ -754,7 +987,7 @@ const GitModal = props => {
             <button
                 className={styles.primaryButton}
                 onClick={saveReadme}
-            >Save README.md</button></div></>);
+            >{format(messages.saveReadme)}</button></div></>);
     }
 
     const showDetail = view === 'changes';
@@ -763,11 +996,23 @@ const GitModal = props => {
         diff={diff}
         onClose={clearDiff}
         onShowScript={showScript}
-    />) :
-    <div className={styles.detailEmpty}><h2>Select a changed file</h2><p>Its diff will open here.</p></div>;
+    />) : (
+        <div className={styles.detailEmpty}><h2>{format(messages.selectChangedFile)}</h2>
+            <p>{format(messages.diffHint)}</p></div>
+    );
 
     const unavailable = !window.Git || available === false;
     const showWorkspace = Boolean(repoPath && repository);
+    const errorNotice = operationError && <div
+        className={styles.errorNotice}
+        role="alert"
+    >
+        <span>{operationError}</span>
+        <button
+            aria-label={format(messages.dismissError)}
+            onClick={() => setOperationError('')}
+        >×</button>
+    </div>;
     let modalBody;
     if (unavailable) {
         const messageId = window.Git ? messages.gitMissing : messages.desktopOnly;
@@ -784,9 +1029,9 @@ const GitModal = props => {
                     >
                         <button
                             className={selectedGroup ? styles.navActive : ''}
-                            onClick={() => setView(group.views ? group.views[0].id : group.id)}
+                            onClick={() => setView(group.views ? generalView : group.id)}
                         >
-                            <span>{group.label}</span>
+                            <span>{format(group.message)}</span>
                             {group.id === 'changes' && changes.length > 0 && <em>{changes.length}</em>}
                         </button>
                         {group.views && <div
@@ -796,54 +1041,58 @@ const GitModal = props => {
                                 {group.views.map(item => (<button
                                     className={view === item.id ? styles.subNavActive : ''}
                                     key={item.id}
-                                    onClick={() => setView(item.id)}
-                                >{item.label}</button>))}
+                                    onClick={() => {
+                                    setGeneralView(item.id);
+                                    setView(item.id);
+                                }}
+                                >{format(item.message)}</button>))}
                             </div>
                         </div>}
                     </div>);
                 })}</nav>
                 <div className={styles.sidebarFooter}>
                     <div className={styles.repositoryDetails}>
-                        <div><span>Branch</span><strong>{safeStatus.branch || 'Detached HEAD'}</strong></div>
-                        <div><span>Commit</span><strong>{safeStatus.commit || 'No commits'}</strong></div>
+                        <div><span>{format(messages.branch)}</span>
+                            <strong>{safeStatus.branch || format(messages.detachedHead)}</strong></div>
+                        <div><span>{format(messages.commitLabel)}</span>
+                            <strong>{safeStatus.commit || format(messages.noCommits)}</strong></div>
                     </div>
                     <button
                         className={styles.refreshButton}
                         disabled={busy}
                         onClick={() => refresh(repoPath, true)}
-                    >Refresh</button>
+                    >{format(messages.refresh)}</button>
                 </div>
             </aside>
             <section className={`${styles.contextPane} ${showDetail ? '' : styles.contextWide}`}>
+                {errorNotice}
                 {status && context}
             </section>
             {showDetail && <section className={styles.detailPane}>{status && detail}</section>}
         </>);
     } else {
         modalBody = (<div className={styles.compactChooser}>
+            {errorNotice}
             <div className={styles.compactHeading}>
-                <strong>{repoPath ? 'Set up source control' : 'Git source control'}</strong>
-                <span>{loading ? 'Checking the selected folder...' : repoPath ?
-                    'This folder is not a Git repository yet.' :
-                    'Track your NitroBolt project, review changes, and work with branches.'}</span>
+                <strong>{format(repoPath ? messages.setupSourceControl : messages.gitSourceControl)}</strong>
+                <span>{format(loading ? messages.checkingFolder : repoPath ?
+                    messages.notRepository : messages.sourceControlDescription)}</span>
             </div>
             {repoPath && <div className={styles.selectedPath}>
-                <strong>Selected folder</strong>
-                <span>{repoName || 'Selected folder'}</span>
+                <strong>{format(messages.selectedFolder)}</strong>
+                <span>{repoName || format(messages.selectedFolder)}</span>
             </div>}
-            <p>{repoPath ?
-                'Initialize this folder to begin tracking its project files and assets.' :
-                'Choose a project folder that already contains a repository, or select a folder to initialize.'}</p>
+            <p>{format(repoPath ? messages.initializeDescription : messages.chooseDescription)}</p>
             {repoPath && !loading && <button
                 className={styles.refreshButton}
                 disabled={busy}
                 onClick={init}
-            >Initialize Repository</button>}
+            >{format(messages.initializeRepository)}</button>}
             <button
                 className={styles.pathButton}
                 disabled={busy}
                 onClick={chooseFolder}
-            >{repoPath ? 'Choose another folder' : 'Choose folder'}</button>
+            >{format(repoPath ? messages.chooseAnotherFolder : messages.chooseFolder)}</button>
         </div>);
     }
     /* eslint-enable indent, react/jsx-no-bind, react/jsx-no-literals */

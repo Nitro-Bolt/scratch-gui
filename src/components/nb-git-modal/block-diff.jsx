@@ -1,9 +1,21 @@
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo, useRef} from 'react';
+import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
 import LazyScratchBlocks from '../../lib/tw-lazy-scratch-blocks';
 import {getProjectScripts} from '../../lib/nb-git-block-scripts';
 import styles from './block-diff.css';
+
+const messages = defineMessages({
+    noXml: {defaultMessage: 'No block XML is available for this revision.', id: 'nb.git.diff.noBlockXml'},
+    renderError: {defaultMessage: 'Unable to render block XML: {error}', id: 'nb.git.diff.blockRenderError'},
+    position: {defaultMessage: 'Position: {x}, {y}', id: 'nb.git.diff.position'},
+    goToScript: {defaultMessage: 'Go to script', id: 'nb.git.diff.goToScript'},
+    noScript: {defaultMessage: 'No script', id: 'nb.git.diff.noScript'},
+    before: {defaultMessage: 'Before', id: 'nb.git.diff.before'},
+    after: {defaultMessage: 'After', id: 'nb.git.diff.after'},
+    noChangedScripts: {defaultMessage: 'No changed scripts.', id: 'nb.git.diff.noChangedScripts'}
+});
 
 const scriptChanged = row => !row.before || !row.after || row.before.signature !== row.after.signature ||
     row.before.x !== row.after.x || row.before.y !== row.after.y;
@@ -52,7 +64,7 @@ const changedBlockIds = (before, after) => {
     };
 };
 
-const RenderedScript = ({highlightedBlockIds, highlightType, onShowScript, script}) => {
+const RenderedScript = ({highlightedBlockIds, highlightType, messages: labels, onShowScript, script}) => {
     const element = useRef(null);
     const handleShowScript = () => onShowScript(script);
     useEffect(() => {
@@ -62,7 +74,7 @@ const RenderedScript = ({highlightedBlockIds, highlightType, onShowScript, scrip
         let cancelled = false;
         element.current.replaceChildren();
         if (!script.source) {
-            element.current.textContent = 'No block XML is available for this revision.';
+            element.current.textContent = labels.noXml;
             return;
         }
         LazyScratchBlocks.load().then(() => {
@@ -96,7 +108,7 @@ const RenderedScript = ({highlightedBlockIds, highlightType, onShowScript, scrip
         })
             .catch(error => {
                 if (element.current && !cancelled) {
-                    element.current.textContent = `Unable to render block XML: ${error.message}`;
+                    element.current.textContent = labels.renderError(error.message);
                 }
             });
         return () => {
@@ -104,25 +116,32 @@ const RenderedScript = ({highlightedBlockIds, highlightType, onShowScript, scrip
             if (resizeObserver) resizeObserver.disconnect();
             if (workspace) workspace.dispose();
         };
-    }, [script]);
+    }, [labels, script]);
     return script ? (
         <div className={styles.script}>
             <div className={styles.scriptHeader}>
-                <span>{`Position: ${script.x}, ${script.y}`}</span>
+                <span>{labels.position(script.x, script.y)}</span>
                 {/* eslint-disable-next-line react/jsx-no-bind */}
-                {onShowScript && script.teleportable && <button onClick={handleShowScript}>{'Go to script'}</button>}
+                {onShowScript && script.teleportable && <button onClick={handleShowScript}>{labels.goToScript}</button>}
             </div>
             <div
                 className={styles.blocks}
                 ref={element}
             />
         </div>
-    ) : <div className={styles.missing}>{'No script'}</div>;
+    ) : <div className={styles.missing}>{labels.noScript}</div>;
 };
 
 RenderedScript.propTypes = {
     highlightedBlockIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     highlightType: PropTypes.oneOf(['added', 'removed']).isRequired,
+    messages: PropTypes.shape({
+        goToScript: PropTypes.string.isRequired,
+        noScript: PropTypes.string.isRequired,
+        noXml: PropTypes.string.isRequired,
+        position: PropTypes.func.isRequired,
+        renderError: PropTypes.func.isRequired
+    }).isRequired,
     onShowScript: PropTypes.func,
     script: PropTypes.shape({
         source: PropTypes.string,
@@ -132,7 +151,7 @@ RenderedScript.propTypes = {
     })
 };
 
-const BlockDiff = ({afterProject, beforeProject, onShowScript}) => {
+const BlockDiff = ({afterProject, beforeProject, intl, onShowScript}) => {
     const rows = useMemo(() => {
         const before = getProjectScripts(beforeProject);
         const after = getProjectScripts(afterProject);
@@ -150,10 +169,17 @@ const BlockDiff = ({afterProject, beforeProject, onShowScript}) => {
         remainingAfter.forEach(script => result.push({before: null, after: script}));
         return result.filter(scriptChanged);
     }, [afterProject, beforeProject]);
+    const labels = useMemo(() => ({
+        goToScript: intl.formatMessage(messages.goToScript),
+        noScript: intl.formatMessage(messages.noScript),
+        noXml: intl.formatMessage(messages.noXml),
+        position: (x, y) => intl.formatMessage(messages.position, {x, y}),
+        renderError: error => intl.formatMessage(messages.renderError, {error})
+    }), [intl]);
     return (
         <div className={styles.diff}>
-            <div className={styles.heading}>{'Before'}</div>
-            <div className={styles.heading}>{'After'}</div>
+            <div className={styles.heading}>{intl.formatMessage(messages.before)}</div>
+            <div className={styles.heading}>{intl.formatMessage(messages.after)}</div>
             {rows.map(row => {
                 const changed = changedBlockIds(row.before, row.after);
                 return (
@@ -162,6 +188,7 @@ const BlockDiff = ({afterProject, beforeProject, onShowScript}) => {
                             <RenderedScript
                                 highlightType="removed"
                                 highlightedBlockIds={[...changed.before]}
+                                messages={labels}
                                 script={row.before}
                             />
                         </div>
@@ -169,6 +196,7 @@ const BlockDiff = ({afterProject, beforeProject, onShowScript}) => {
                             <RenderedScript
                                 highlightType="added"
                                 highlightedBlockIds={[...changed.after]}
+                                messages={labels}
                                 script={row.after}
                                 onShowScript={onShowScript}
                             />
@@ -176,7 +204,9 @@ const BlockDiff = ({afterProject, beforeProject, onShowScript}) => {
                     </React.Fragment>
                 );
             })}
-            {rows.length === 0 && <div className={styles.empty}>{'No changed scripts.'}</div>}
+            {rows.length === 0 && <div className={styles.empty}>
+                {intl.formatMessage(messages.noChangedScripts)}
+            </div>}
         </div>
     );
 };
@@ -184,7 +214,8 @@ const BlockDiff = ({afterProject, beforeProject, onShowScript}) => {
 BlockDiff.propTypes = {
     afterProject: PropTypes.object,
     beforeProject: PropTypes.object,
+    intl: intlShape.isRequired,
     onShowScript: PropTypes.func.isRequired
 };
 
-export default BlockDiff;
+export default injectIntl(BlockDiff);

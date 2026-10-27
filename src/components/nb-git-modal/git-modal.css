@@ -308,6 +308,99 @@
     background: $ui-white;
 }
 
+.commit-actions {
+    position: relative;
+    display: flex;
+}
+
+.commit-main-button,
+.commit-menu-button {
+    border: 1px solid $looks-secondary;
+    padding: .65rem .8rem;
+    background: $looks-secondary;
+    color: white;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.commit-main-button {
+    flex: 1;
+    border-radius: .35rem 0 0 .35rem;
+}
+
+.commit-menu-button {
+    width: 2.6rem;
+    border-left-color: rgba(255, 255, 255, .35);
+    border-radius: 0 .35rem .35rem 0;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.commit-main-button:disabled,
+.commit-menu-button:disabled,
+.commit-menu button:disabled {
+    opacity: .5;
+    cursor: default;
+}
+
+.commit-menu {
+    position: absolute;
+    z-index: 4;
+    top: calc(100% + .25rem);
+    right: 0;
+    display: flex;
+    width: 100%;
+    min-width: 12rem;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid $ui-black-transparent;
+    border-radius: .35rem;
+    background: $ui-white;
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .2);
+}
+
+.commit-menu button {
+    border: 0;
+    padding: .65rem .8rem;
+    background: transparent;
+    color: $text-primary;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.commit-menu button:hover:not(:disabled),
+.commit-menu button:focus-visible {
+    background: $looks-light-transparent;
+}
+
+.error-notice {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: .75rem;
+    margin: .75rem;
+    border: 1px solid $error-primary;
+    border-radius: .35rem;
+    padding: .65rem .75rem;
+    background: $error-transparent;
+    color: $text-primary;
+    line-height: 1.4;
+}
+
+.error-notice button {
+    flex: none;
+    border: 0;
+    padding: 0 .15rem;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
 .form-card label {
     font-size: .8rem;
     font-weight: bold;

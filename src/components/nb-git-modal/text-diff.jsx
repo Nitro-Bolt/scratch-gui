@@ -1,9 +1,14 @@
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo, useRef} from 'react';
+import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import {SequenceMatcher} from 'difflib';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 import styles from './text-diff.css';
+
+const messages = defineMessages({
+    noChanges: {defaultMessage: 'No textual changes.', id: 'nb.git.diff.noTextChanges'}
+});
 
 const normalizedSource = source => (typeof source === 'string' ? source.replace(/\r\n/g, '\n') : '');
 
@@ -28,7 +33,7 @@ const languageForPath = filePath => {
     })[extension] || 'plaintext';
 };
 
-const TextDiff = ({after, before, dark, path}) => {
+const TextDiff = ({after, before, dark, intl, path}) => {
     const editorElement = useRef(null);
     const comparison = useMemo(() => {
         const original = normalizedSource(before);
@@ -72,7 +77,7 @@ const TextDiff = ({after, before, dark, path}) => {
         };
     }, [comparison, dark, path]);
 
-    if (!comparison.changed) return <div className={styles.empty}>{'No textual changes.'}</div>;
+    if (!comparison.changed) return <div className={styles.empty}>{intl.formatMessage(messages.noChanges)}</div>;
     return (
         <div className={styles.diff}>
             <div
@@ -87,7 +92,8 @@ TextDiff.propTypes = {
     after: PropTypes.string,
     before: PropTypes.string,
     dark: PropTypes.bool,
+    intl: intlShape.isRequired,
     path: PropTypes.string.isRequired
 };
 
-export default TextDiff;
+export default injectIntl(TextDiff);
