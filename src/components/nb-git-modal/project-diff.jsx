@@ -1,11 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
 import BlockDiff from './block-diff.jsx';
 import TextDiff from './text-diff.jsx';
 import styles from './project-diff.css';
 
-const ProjectDiff = ({dark, diff, onClose, onShowScript}) => (
+const messages = defineMessages({
+    close: {defaultMessage: 'Close Diff', id: 'nb.git.diff.close'},
+    binaryChanged: {
+        defaultMessage: 'Binary asset changed. Git stores this file without noisy text diffs.',
+        id: 'nb.git.diff.binaryChanged'
+    }
+});
+
+const ProjectDiff = ({dark, diff, intl, onClose, onShowScript}) => (
     <div className={styles.viewer}>
         <div className={styles.toolbar}>
             <span className={styles.path}>
@@ -14,7 +23,7 @@ const ProjectDiff = ({dark, diff, onClose, onShowScript}) => (
             <button
                 className={styles.close}
                 onClick={onClose}
-            >{'Close Diff'}</button>
+            >{intl.formatMessage(messages.close)}</button>
         </div>
         {diff.kind === 'blocks' && <BlockDiff
             beforeProject={diff.beforeProject}
@@ -29,7 +38,7 @@ const ProjectDiff = ({dark, diff, onClose, onShowScript}) => (
         />}
         {diff.kind === 'asset' && (
             <div className={styles.assetDiff}>
-                {'Binary asset changed. Git stores this file without noisy text diffs.'}
+                {intl.formatMessage(messages.binaryChanged)}
             </div>
         )}
     </div>
@@ -46,8 +55,9 @@ ProjectDiff.propTypes = {
         originalPath: PropTypes.string,
         path: PropTypes.string.isRequired
     }).isRequired,
+    intl: intlShape.isRequired,
     onClose: PropTypes.func.isRequired,
     onShowScript: PropTypes.func.isRequired
 };
 
-export default ProjectDiff;
+export default injectIntl(ProjectDiff);
