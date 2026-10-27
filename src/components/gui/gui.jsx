@@ -194,6 +194,8 @@ const GUIComponent = props => {
         enabled: !props.preferences['disable-compiler']
     }), []);
 
+    if (typeof props.preferences['modal-open-animation'] === "undefined") props.onSetPreference('modal-open-animation', true);
+
 
     const tabClassNames = {
         tabs: styles.tabs,

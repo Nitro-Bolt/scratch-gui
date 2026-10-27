@@ -47,6 +47,7 @@ import '../lib/block-color-persistence';
 import {setIsScratchDesktop} from '../lib/isScratchDesktop.js';
 import TWFullScreenResizerHOC from '../lib/tw-fullscreen-resizer-hoc.jsx';
 import TWThemeManagerHOC from './tw-theme-manager-hoc.jsx';
+import { setPreference } from '../reducers/preferences.js';
 
 const {RequestMetadata, setMetadata, unsetMetadata} = storage.scratchFetch;
 
@@ -141,6 +142,7 @@ GUI.propTypes = {
     loadingStateVisible: PropTypes.bool,
     onProjectLoaded: PropTypes.func,
     onSeeCommunity: PropTypes.func,
+    onSetPreference: PropTypes.func,
     onStorageInit: PropTypes.func,
     onUpdateProjectId: PropTypes.func,
     onVmInit: PropTypes.func,
@@ -217,7 +219,8 @@ const mapDispatchToProps = dispatch => ({
     onActivateVariablesTab: () => dispatch(activateTab(VARIABLES_TAB_INDEX)),
     onRequestCloseBackdropLibrary: () => dispatch(closeBackdropLibrary()),
     onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
-    onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal())
+    onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal()),
+    onSetPreference: (key, value) => dispatch(setPreference(key, value))
 });
 
 const ConnectedGUI = injectIntl(connect(
