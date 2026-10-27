@@ -759,6 +759,19 @@ const EditorSettingsModal = props => {
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={() => props.onSetPreference('legacy-modals', !props.preferences['legacy-modals'])}
                 />
+                <BooleanSetting
+                    value={props.preferences['modal-open-animation']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.modalOpenAnimation"
+                        defaultMessage="Modal opening animation"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.modalOpenAnimationHelp"
+                        defaultMessage="Makes modals fade into view instead of being a sharp cut."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={() => props.onSetPreference('modal-open-animation', !props.preferences['modal-open-animation'])}
+                />
                 <Setting
                     primary={(
                         <div className={classNames(styles.label, styles.customStageSize)}>

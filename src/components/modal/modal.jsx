@@ -21,6 +21,7 @@ const ModalComponent = props => (
             [styles.fullScreen]: props.fullScreen,
             [styles.modern]: !props.preferences['legacy-modals'],
             [props.modernClassName]: !props.preferences['legacy-modals'],
+            [styles.openAnimation]: props.preferences['modal-open-animation'],
             [styles.dark]: props.theme.gui === GUI_DARK
         })}
         style={{
