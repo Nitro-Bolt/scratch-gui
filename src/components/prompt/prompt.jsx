@@ -12,6 +12,7 @@ import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
 import styles from './prompt.css';
 import {SCRATCH_MAX_CLOUD_VARIABLES} from '../../lib/tw-cloud-limits.js';
 import isScratchDesktop from '../../lib/isScratchDesktop.js';
+import FancyTextInput from '../nb-fancy-text-input/text-input.jsx';
 
 
 const messages = defineMessages({
@@ -84,10 +85,9 @@ const PromptComponent = props => (
             <Box className={styles.label}>
                 {props.label}
             </Box>
-            <Box>
-                <input
+            <Box className={styles.variableNameTextInput}>
+                <FancyTextInput
                     autoFocus
-                    className={styles.variableNameTextInput}
                     defaultValue={props.defaultValue}
                     name={props.label}
                     onChange={props.onChange}
@@ -97,51 +97,6 @@ const PromptComponent = props => (
             </Box>
             {props.showVariableOptions ?
                 <div>
-                    {props.isStage ?
-                        <div className={styles.infoMessage}>
-                            {props.showTableMessage ? (
-                                <FormattedMessage
-                                    {...messages.tableAvailableToAllSpritesMessage}
-                                />
-                            ) : (props.showListMessage ? (
-                                <FormattedMessage
-                                    {...messages.listAvailableToAllSpritesMessage}
-                                />
-                            ) : (
-                                <FormattedMessage
-                                    {...messages.availableToAllSpritesMessage}
-                                />
-                            ))}
-                        </div> :
-                        <Box className={styles.optionsRow}>
-                            <label>
-                                <input
-                                    checked={props.globalSelected}
-                                    name="variableScopeOption"
-                                    type="radio"
-                                    value="global"
-                                    onChange={props.onScopeOptionSelection}
-                                />
-                                <FormattedMessage
-                                    {...messages.forAllSpritesMessage}
-                                />
-                            </label>
-                            <label
-                                className={classNames({[styles.disabledLabel]: props.cloudSelected})}
-                            >
-                                <input
-                                    checked={!props.globalSelected}
-                                    disabled={props.cloudSelected}
-                                    name="variableScopeOption"
-                                    type="radio"
-                                    value="local"
-                                    onChange={props.onScopeOptionSelection}
-                                />
-                                <FormattedMessage
-                                    {...messages.forThisSpriteMessage}
-                                />
-                            </label>
-                        </Box>}
                     {props.showTypeAndColourOptions ? (
                         <Box className={styles.optionsRow}>
                             <label>
@@ -176,6 +131,31 @@ const PromptComponent = props => (
                             </label>
                         </Box>
                     ) : null}
+                    {props.isStage && (props.showListMessage || props.showTableMessage) ?
+                        <div className={styles.infoMessage}>
+                            {props.showTableMessage ? (
+                                <FormattedMessage
+                                    {...messages.tableAvailableToAllSpritesMessage}
+                                />
+                            ) : (props.showListMessage ? (
+                                <FormattedMessage
+                                    {...messages.listAvailableToAllSpritesMessage}
+                                />
+                            ) : null)}
+                        </div> :
+                        <Box className={styles.scopeOption}>
+                            <label>
+                                <FancyCheckbox
+                                    checked={props.globalSelected || props.cloudSelected || props.isStage}
+                                    disabled={props.cloudSelected || props.isStage}
+                                    onChange={props.onScopeOptionSelection}
+                                />
+                                <FormattedMessage
+                                    {...messages.forAllSpritesMessage}
+                                />
+                            </label>
+                        </Box>
+                    }
                     {props.showCloudOption ?
                         <Box className={classNames(styles.cloudOption)}>
                             <label
@@ -213,23 +193,31 @@ const PromptComponent = props => (
                     {isScratchDesktop() ? (
                         <FormattedMessage
                             // eslint-disable-next-line max-len
-                            defaultMessage="In the desktop app, cloud variables sync between all desktop app windows on this computer. Upload the project to Scratch or use a tool like the {packager} for them to sync globally."
+                            defaultMessage="In the desktop app, cloud variables sync between all desktop app windows on this computer. Use the {packager} for them to sync with the cloud."
                             description="Appears when creating a cloud variable in the desktop app"
                             values={{
                                 packager: <Packager />
                             }}
-                            id="tw.desktopCloud"
+                            id="nb.desktopCloud"
                         />
                     ) : (
                         <FormattedMessage
-                            /* eslint-disable-next-line max-len */
-                            defaultMessage="Although you can create cloud variables, they won't work unless this project is uploaded to Scratch or converted using a tool like the {packager}."
+                            defaultMessage="Although you can create cloud variables, they won't work until this project is {packaged}."
                             // eslint-disable-next-line max-len
-                            description="Reminder that cloud variables may not work when the editor is open. {packager} is replaced with a link to open the TurboWarp Packager, always English."
+                            description="Reminder that cloud variables will not work when the editor is open. {packaged} is replaced with a link to open the NitroBolt Packager with the word 'packaged'."
                             values={{
-                                packager: <Packager />
+                                packaged: <a
+                                    href="https://packager.nitrobolt.org"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                ><FormattedMessage
+                                    defaultMessage="packaged"
+                                    // eslint-disable-next-line max-len
+                                    description="The link within the warning that cloud variables will not work with the editor open. 'Although you can create cloud variables, they won't work until this project is ____'."
+                                    id="nb.cantUseCloud.packaged"
+                                /></a>
                             }}
-                            id="tw.cantUseCloud"
+                            id="nb.cantUseCloud"
                         />
                     )}
                 </Box>

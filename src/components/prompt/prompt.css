@@ -26,14 +26,6 @@
 
 .variable-name-text-input {
     margin-bottom: 1.5rem;
-    width: 100%;
-    border: 1px solid $ui-black-transparent;
-    border-radius: 5px;
-    padding: 0 1rem;
-    height: 3rem;
-    color: $text-primary-transparent;
-    background-color: $input-background;
-    font-size: .875rem;
 }
 
 .info-message {
@@ -107,23 +99,31 @@
     margin-right: 0.5rem;
 }
 
-.cloud-option {
-    display: flex;
+.scope-option {
     border-top: 1px dashed $ui-black-transparent;
+}
+
+.cloud-option,
+:has(> .scope-option):not(:has(> .cloud-option)) > .scope-option {
+    padding-bottom: 1rem;
+}
+
+.cloud-option, .scope-option {
+    display: flex;
     overflow: visible;
-    padding: 1rem 0;
+    padding-top: 1rem;
     text-align: center;
     width: 100%;
     margin: 0 auto;
 }
 
-.cloud-option label {
+.cloud-option label, .scope-option label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.cloud-option input[type="checkbox"] {
+.cloud-option input[type="checkbox"], .scope-option input[type="checkbox"] {
     margin: 0;
 }
 
