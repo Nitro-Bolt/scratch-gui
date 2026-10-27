@@ -151,24 +151,22 @@ RenderedScript.propTypes = {
     })
 };
 
-const BlockDiff = ({afterProject, beforeProject, intl, onShowScript}) => {
+const BlockDiff = ({afterProject, beforeProject, intl, onShowScript, vm}) => {
     const rows = useMemo(() => {
-        const before = getProjectScripts(beforeProject);
-        const after = getProjectScripts(afterProject);
+        const before = getProjectScripts(beforeProject, vm);
+        const after = getProjectScripts(afterProject, vm);
         const remainingAfter = [...after];
         const result = before.map(script => {
             const matchingIndex = remainingAfter.findIndex(candidate => candidate.id === script.id);
-            const fallbackIndex = matchingIndex >= 0 ? matchingIndex :
-                remainingAfter.findIndex(candidate => candidate.matchKey === script.matchKey);
-            const matching = fallbackIndex >= 0 ? remainingAfter[fallbackIndex] : null;
+            const matching = matchingIndex >= 0 ? remainingAfter[matchingIndex] : null;
             if (matching) {
-                remainingAfter.splice(fallbackIndex, 1);
+                remainingAfter.splice(matchingIndex, 1);
             }
             return {before: script, after: matching};
         });
         remainingAfter.forEach(script => result.push({before: null, after: script}));
         return result.filter(scriptChanged);
-    }, [afterProject, beforeProject]);
+    }, [afterProject, beforeProject, vm]);
     const labels = useMemo(() => ({
         goToScript: intl.formatMessage(messages.goToScript),
         noScript: intl.formatMessage(messages.noScript),
@@ -215,7 +213,11 @@ BlockDiff.propTypes = {
     afterProject: PropTypes.object,
     beforeProject: PropTypes.object,
     intl: intlShape.isRequired,
-    onShowScript: PropTypes.func.isRequired
+    onShowScript: PropTypes.func.isRequired,
+    vm: PropTypes.shape({
+        serializedBlockToXML: PropTypes.func.isRequired,
+        serializedCommentToXML: PropTypes.func.isRequired
+    }).isRequired
 };
 
 export default injectIntl(BlockDiff);

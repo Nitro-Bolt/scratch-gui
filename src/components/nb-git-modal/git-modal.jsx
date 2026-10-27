@@ -1004,6 +1004,7 @@ const GitModal = props => {
         diff={diff}
         onClose={clearDiff}
         onShowScript={showScript}
+        vm={props.vm}
     />) : (
         <div className={styles.detailEmpty}><h2>{format(messages.selectChangedFile)}</h2>
             <p>{format(messages.diffHint)}</p></div>

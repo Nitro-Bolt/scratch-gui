@@ -2,29 +2,11 @@ import bindAll from 'lodash.bindall';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
-import JSZip from '@turbowarp/jszip';
 
 import log from '../lib/log';
 import {setProjectUnchanged} from '../reducers/project-changed';
 
 const SYNC_DEBOUNCE_MS = 750;
-
-/*
- * The regular SB3 exporter optimizes block IDs for archive size. That is
- * useful for downloads, but it intentionally assigns new IDs based on the
- * current reference counts. A Git save must preserve IDs so an unchanged
- * script remains unchanged in blocks.json and its XML can still be matched
- * to the serialized root.
- */
-const saveGitProjectArchive = vm => {
-    const zip = new JSZip();
-    zip.file('project.json', vm.toJSON(null, {allowOptimization: false}));
-    vm.serializeAssets().forEach(file => zip.file(file.fileName, file.fileContent));
-    return zip.generateAsync({
-        mimeType: 'application/x.scratch.sb3',
-        type: 'arraybuffer'
-    });
-};
 
 let activeManager = null;
 
@@ -138,22 +120,11 @@ class NBGitProjectManager extends React.Component {
     }
 
     async saveProject (projectPath) {
-        const workspaceXML = this.props.vm.runtime.targets.filter(target => target.isOriginal).map(target => ({
-            id: target.id,
-            isStage: target.isStage,
-            name: target.getName(),
-            scripts: target.blocks._scripts.map(id => {
-                const block = target.blocks.getBlock(id);
-                return {
-                    id,
-                    x: Number(block && block.x) || 0,
-                    y: Number(block && block.y) || 0,
-                    xml: target.blocks.blockToXML(id, target.comments)
-                };
-            }).filter(script => Boolean(script.xml))
-        }));
-        const archive = await saveGitProjectArchive(this.props.vm);
-        const result = await window.Git.syncProject(projectPath, archive, workspaceXML);
+        const files = this.props.vm.saveProjectSb3DontZip({
+            allowOptimization: false,
+            preserveTargetIds: true
+        });
+        const result = await window.Git.syncProject(projectPath, files);
         if (!result.success) throw new Error(result.error || 'Could not save the Git project');
     }
 
@@ -209,11 +180,7 @@ NBGitProjectManager.propTypes = {
     vm: PropTypes.shape({
         off: PropTypes.func.isRequired,
         on: PropTypes.func.isRequired,
-        runtime: PropTypes.shape({
-            targets: PropTypes.arrayOf(PropTypes.object).isRequired
-        }).isRequired,
-        serializeAssets: PropTypes.func.isRequired,
-        toJSON: PropTypes.func.isRequired
+        saveProjectSb3DontZip: PropTypes.func.isRequired
     }).isRequired
 };
 
