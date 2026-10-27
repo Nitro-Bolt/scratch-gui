@@ -14,7 +14,7 @@ const messages = defineMessages({
     }
 });
 
-const ProjectDiff = ({dark, diff, intl, onClose, onShowScript}) => (
+const ProjectDiff = ({dark, diff, intl, onClose, onShowScript, vm}) => (
     <div className={styles.viewer}>
         <div className={styles.toolbar}>
             <span className={styles.path}>
@@ -29,6 +29,7 @@ const ProjectDiff = ({dark, diff, intl, onClose, onShowScript}) => (
             beforeProject={diff.beforeProject}
             afterProject={diff.afterProject}
             onShowScript={onShowScript}
+            vm={vm}
         />}
         {diff.kind === 'text' && <TextDiff
             before={diff.before}
@@ -57,7 +58,11 @@ ProjectDiff.propTypes = {
     }).isRequired,
     intl: intlShape.isRequired,
     onClose: PropTypes.func.isRequired,
-    onShowScript: PropTypes.func.isRequired
+    onShowScript: PropTypes.func.isRequired,
+    vm: PropTypes.shape({
+        serializedBlockToXML: PropTypes.func.isRequired,
+        serializedCommentToXML: PropTypes.func.isRequired
+    }).isRequired
 };
 
 export default injectIntl(ProjectDiff);
