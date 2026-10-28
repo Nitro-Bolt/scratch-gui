@@ -559,6 +559,7 @@ const TWStateManager = function (WrappedComponent) {
         runtimeOptions: PropTypes.shape({
             miscLimits: PropTypes.bool,
             fencing: PropTypes.bool,
+            penTiling: PropTypes.bool,
             maxClones: PropTypes.number
         }),
         highQualityPen: PropTypes.bool,

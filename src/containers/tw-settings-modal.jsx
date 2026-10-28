@@ -25,6 +25,7 @@ class UsernameModal extends React.Component {
             'handleInterpolationChange',
             'handleInfiniteClonesChange',
             'handleRemoveFencingChange',
+            'handlePenTilingChange',
             'handleRemoveLimitsChange',
             'handleWarpTimerChange',
             'handleStageWidthChange',
@@ -59,6 +60,11 @@ class UsernameModal extends React.Component {
     handleRemoveFencingChange (e) {
         this.props.vm.setRuntimeOptions({
             fencing: !e.target.checked
+        });
+    }
+    handlePenTilingChange (e) {
+        this.props.vm.setRuntimeOptions({
+            penTiling: e.target.checked
         });
     }
     handleRemoveLimitsChange (e) {
@@ -102,6 +108,7 @@ class UsernameModal extends React.Component {
                 onInterpolationChange={this.handleInterpolationChange}
                 onInfiniteClonesChange={this.handleInfiniteClonesChange}
                 onRemoveFencingChange={this.handleRemoveFencingChange}
+                onPenTilingChange={this.handlePenTilingChange}
                 onRemoveLimitsChange={this.handleRemoveLimitsChange}
                 onWarpTimerChange={this.handleWarpTimerChange}
                 onStageWidthChange={this.handleStageWidthChange}
@@ -141,6 +148,7 @@ UsernameModal.propTypes = {
     infiniteClones: PropTypes.bool,
     removeFencing: PropTypes.bool,
     cameraExtensionLoaded: PropTypes.bool,
+    penTiling: PropTypes.bool,
     removeLimits: PropTypes.bool,
     warpTimer: PropTypes.bool,
     customStageSize: PropTypes.shape({
@@ -159,6 +167,7 @@ const mapStateToProps = state => ({
     infiniteClones: state.scratchGui.tw.runtimeOptions.maxClones === Infinity,
     removeFencing: !state.scratchGui.tw.runtimeOptions.fencing,
     cameraExtensionLoaded: state.scratchGui.vm.extensionManager.isExtensionLoaded('camera'),
+    penTiling: state.scratchGui.tw.runtimeOptions.penTiling,
     removeLimits: !state.scratchGui.tw.runtimeOptions.miscLimits,
     warpTimer: state.scratchGui.tw.compilerOptions.warpTimer,
     customStageSize: state.scratchGui.customStageSize,

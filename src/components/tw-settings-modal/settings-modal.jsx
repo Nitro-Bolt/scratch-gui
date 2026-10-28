@@ -259,6 +259,28 @@ const RemoveFencing = props => (
     />
 );
 
+const PenTiling = props => (
+    <BooleanSetting
+        {...props}
+        label={
+            <FormattedMessage
+                defaultMessage="Pen Tiling"
+                description="Pen Tiling setting"
+                id="tw.settingsModal.penTiling"
+            />
+        }
+        help={
+            <FormattedMessage
+                // eslint-disable-next-line max-len
+                defaultMessage="Allows the Pen extension to draw, stamp, and print beyond the stage using tiled textures. May increase memory usage and rendering cost."
+                description="Pen Tiling setting help"
+                id="tw.settingsModal.penTilingHelp"
+            />
+        }
+        slug="pen-tiling"
+    />
+);
+
 const RemoveMiscLimits = props => (
     <BooleanSetting
         {...props}
@@ -482,6 +504,12 @@ const SettingsModalComponent = props => (
                 value={props.removeFencing || props.cameraExtensionLoaded}
                 onChange={props.onRemoveFencingChange}
             />
+            {(props.removeFencing || props.cameraExtensionLoaded) && (
+                <PenTiling
+                    value={props.penTiling}
+                    onChange={props.onPenTilingChange}
+                />
+            )}
             <RemoveMiscLimits
                 value={props.removeLimits}
                 onChange={props.onRemoveLimitsChange}
@@ -527,6 +555,8 @@ SettingsModalComponent.propTypes = {
     removeFencing: PropTypes.bool,
     cameraExtensionLoaded: PropTypes.bool,
     onRemoveFencingChange: PropTypes.func,
+    penTiling: PropTypes.bool,
+    onPenTilingChange: PropTypes.func,
     removeLimits: PropTypes.bool,
     onRemoveLimitsChange: PropTypes.func,
     warpTimer: PropTypes.bool,
