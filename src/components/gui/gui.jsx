@@ -381,18 +381,6 @@ const GUIComponent = props => {
         () => setStageSize(stageSize ? 0 : 480)
     );
 
-    registerKeybind({
-        ctrl: true,
-        shift: true,
-        alt: true,
-        key: 'm'
-    },
-        () => !props.vm.extensionManager.isExtensionLoaded('lmsmcutils') &&
-            props.vm.extensionManager.loadExtensionURL("https://extensions.turbowarp.org/Lily/McUtils.js").then(() => {
-                setTimeout(() => window.Blockly.getMainWorkspace().toolbox_.setSelectedCategoryById("lmsmcutils"), 1);
-            })
-    );
-
     return (<MediaQuery minWidth={unconstrainedWidth}>{() => {
 
         const alwaysEnabledModals = (
