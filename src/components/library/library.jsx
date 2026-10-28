@@ -15,6 +15,7 @@ import RemovedTrademarks from '../tw-removed-trademarks/removed-trademarks.jsx';
 import {APP_NAME} from '../../lib/brand.js';
 
 import styles from './library.css';
+import { connect } from 'react-redux';
 
 const messages = defineMessages({
     filterPlaceholder: {
@@ -259,7 +260,10 @@ class LibraryComponent extends React.Component {
         const filteredData = this.state.canDisplay && this.props.data && this.getFilteredData();
         return (
             <Modal
-                fullScreen
+                className={classNames({
+                    [styles.modalContent]: !this.props.isFullScreen
+                })}
+                fullScreen={this.props.isFullScreen}
                 contentLabel={this.props.title}
                 id={this.props.id}
                 onRequestClose={this.handleClose}
@@ -413,7 +417,8 @@ LibraryComponent.propTypes = {
     showPlayButton: PropTypes.bool,
     tags: PropTypes.arrayOf(PropTypes.shape(TagButton.propTypes)),
     title: PropTypes.string.isRequired,
-    removedTrademarks: PropTypes.bool
+    removedTrademarks: PropTypes.bool,
+    isFullScreen: PropTypes.bool,
 };
 
 LibraryComponent.defaultProps = {
@@ -422,4 +427,10 @@ LibraryComponent.defaultProps = {
     showPlayButton: false
 };
 
-export default injectIntl(LibraryComponent);
+const mapStateToProps = state => ({
+    isFullScreen: state.scratchGui.preferences['full-screen-catalog-modals']
+});
+
+export default injectIntl(connect(
+    mapStateToProps
+)(LibraryComponent));

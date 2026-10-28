@@ -745,6 +745,19 @@ const EditorSettingsModal = props => {
                     // eslint-disable-next-line react/jsx-no-bind
                     onChange={() => props.onSetPreference('modal-open-animation', !props.preferences['modal-open-animation'])}
                 />
+                <BooleanSetting
+                    value={props.preferences['full-screen-catalog-modals']}
+                    label={<FormattedMessage
+                        id="nb.editorSettings.fullScreenCatalogModals"
+                        defaultMessage="Full screen catalog modals"
+                    />}
+                    help={<FormattedMessage
+                        id="nb.editorSettings.fullScreenCatalogModalsHelp"
+                        defaultMessage="Makes modals like the extension catalog full screen."
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={() => props.onSetPreference('full-screen-catalog-modals', !props.preferences['full-screen-catalog-modals'])}
+                />
                 <Setting
                     primary={(
                         <div className={classNames(styles.label, styles.customStageSize)}>

@@ -1,6 +1,12 @@
 @import "../../css/units.css";
 @import "../../css/colors.css";
 
+.modal-content {
+    width: 1300px;
+    max-width: calc(100vw - 4rem);
+    height: 80vh;
+}
+
 .library-scroll-grid {
     display: flex;
     justify-content: flex-start;
