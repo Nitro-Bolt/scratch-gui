@@ -67,6 +67,10 @@ const messages = defineMessages({
         id: 'nb.editorSettings.displaySection',
         defaultMessage: 'Display'
     },
+    code: {
+        id: 'nb.editorSettings.codeSection',
+        defaultMessage: 'Code'
+    },
     sound: {
         id: 'nb.editorSettings.soundSection',
         defaultMessage: 'Sound'
@@ -669,19 +673,6 @@ const EditorSettingsModal = props => {
                         // eslint-disable-next-line react/jsx-no-bind
                         onChange={e => props.onSetPreference('disable-compiler', e.target.checked)}
                     />
-                    <BooleanSetting
-                        value={!!props.preferences['disable-inspect-block']}
-                        label={<FormattedMessage
-                            id="nb.editorSettings.disableInspectBlock"
-                            defaultMessage="Disable block inspector"
-                        />}
-                        help={<FormattedMessage
-                            id="nb.editorSettings.disableInspectBlockHelp"
-                            defaultMessage="Removes the Inspect Block item from the right-click context menu on blocks."
-                        />}
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onChange={e => props.onSetPreference('disable-inspect-block', e.target.checked)}
-                    />
                 </Section>
             </Box>
         },
@@ -716,151 +707,6 @@ const EditorSettingsModal = props => {
         {
             title: messages.display,
             content: <Box>
-                <BooleanSetting
-                    value={!!props.preferences['compact-tabs']}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.compactTabs"
-                        defaultMessage="Compact tabs"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.compactTabsHelp"
-                        defaultMessage="Removes the text from tabs, leaving just the icon."
-                    />}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => {
-                        props.onSetPreference('compact-tabs', e.target.checked);
-                    }}
-                />
-                <BooleanSetting
-                    value={!!props.preferences['stage-left']}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.stageLeft"
-                        defaultMessage="Stage on left"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.stageLeftHelp"
-                        defaultMessage="Swaps the stage and the block palette."
-                    />}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onChange={e => {
-                        props.onSetPreference('stage-left', e.target.checked);
-                    }}
-                />
-                <BooleanSetting
-                    value={props.preferences['legacy-modals']}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.legacyModals"
-                        defaultMessage="Legacy modal style"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.legacyModalsHelp"
-                        defaultMessage="Uses TurboWarp's modal style instead of the modern style."
-                    />}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onChange={() => props.onSetPreference('legacy-modals', !props.preferences['legacy-modals'])}
-                />
-                <BooleanSetting
-                    value={props.preferences['modal-open-animation']}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.modalOpenAnimation"
-                        defaultMessage="Modal opening animation"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.modalOpenAnimationHelp"
-                        defaultMessage="Makes modals fade into view instead of being a sharp cut."
-                    />}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onChange={() => props.onSetPreference('modal-open-animation', !props.preferences['modal-open-animation'])}
-                />
-                <BooleanSetting
-                    value={props.preferences['full-screen-catalog-modals']}
-                    label={<FormattedMessage
-                        id="nb.editorSettings.fullScreenCatalogModals"
-                        defaultMessage="Full screen catalog modals"
-                    />}
-                    help={<FormattedMessage
-                        id="nb.editorSettings.fullScreenCatalogModalsHelp"
-                        defaultMessage="Makes modals like the extension catalog full screen."
-                    />}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onChange={() => props.onSetPreference('full-screen-catalog-modals', !props.preferences['full-screen-catalog-modals'])}
-                />
-                <Setting
-                    primary={(
-                        <div className={classNames(styles.label, styles.customStageSize)}>
-                            <FormattedMessage
-                                defaultMessage="Modal overlay blur:"
-                                id="nb.editorSettings.modalOverlayBlur"
-                            />
-                            <BufferedInput
-                                value={String(props.preferences['modal-overlay-blur'] ?? 0)}
-                                // eslint-disable-next-line react/jsx-no-bind
-                                onSubmit={value => {
-                                    const num = Number(value);
-                                    if (Number.isFinite(num)) {
-                                        props.onSetPreference('modal-overlay-blur', Math.min(Math.max(0, num), 15));
-                                    }
-                                }}
-                                type="number"
-                                min="0"
-                                max="15"
-                                spellCheck="false"
-                            />
-                        </div>
-                    )}
-                    help={
-                        <FormattedMessage
-                            id="nb.editorSettings.modalOverlayBlurHelp"
-                            defaultMessage="The intensity, in pixels, of the blur effect on the UI behind modals."
-                        />
-                    }
-                />
-                <Section
-                    title={<FormattedMessage
-                        id="nb.editorSettings.blockSelection"
-                        defaultMessage="Block selection"
-                    />}
-                >
-                    <BooleanSetting
-                        value={!!props.preferences['deselect-block-selection-after-action']}
-                        label={<FormattedMessage
-                            id="nb.editorSettings.deselectBlockSelectionAfterAction"
-                            defaultMessage="Deselect multi-selection after actions"
-                        />}
-                        help={<FormattedMessage
-                            id="nb.editorSettings.deselectBlockSelectionAfterActionHelp"
-                            defaultMessage="Clears selected blocks after you act on them. When disabled, selections remain until you click elsewhere."
-                        />}
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onChange={e => props.onSetPreference('deselect-block-selection-after-action', e.target.checked)}
-                    />
-                    <BooleanSetting
-                        value={!!props.preferences['swap-multi-select-modifiers']}
-                        label={<FormattedMessage
-                            id="nb.editorSettings.swapMultiSelectModifiers"
-                            defaultMessage="Swap multi-selection controls"
-                        />}
-                        help={<FormattedMessage
-                            id="nb.editorSettings.swapMultiSelectModifiersHelp"
-                            defaultMessage="Uses Ctrl for selecting whole scripts and Shift for selecting individual blocks."
-                        />}
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onChange={e => props.onSetPreference('swap-multi-select-modifiers', e.target.checked)}
-                    />
-                    <BooleanSetting
-                        value={!!props.preferences['inward-selection']}
-                        label={<FormattedMessage
-                            id="nb.editorSettings.inwardSelection"
-                            defaultMessage="Inward block selection"
-                        />}
-                        help={<FormattedMessage
-                            id="nb.editorSettings.inwardSelectionHelp"
-                            defaultMessage="Requires blocks or scripts to be fully enclosed by the selection box. When disabled, touching them is enough."
-                        />}
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onChange={e => props.onSetPreference('inward-selection', e.target.checked)}
-                    />
-                </Section>
                 <Section
                     title={<FormattedMessage
                         id="nb.editorSettings.theme"
@@ -927,6 +773,225 @@ const EditorSettingsModal = props => {
                 </Section>
                 <Section
                     title={<FormattedMessage
+                        id="nb.editorSettings.layout"
+                        defaultMessage="Layout"
+                    />}
+                >
+                    <BooleanSetting
+                        value={!!props.preferences['compact-tabs']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.compactTabs"
+                            defaultMessage="Compact tabs"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.compactTabsHelp"
+                            defaultMessage="Removes the text from tabs, leaving just the icon."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => {
+                            props.onSetPreference('compact-tabs', e.target.checked);
+                        }}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['stage-left']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.stageLeft"
+                            defaultMessage="Stage on left"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.stageLeftHelp"
+                            defaultMessage="Swaps the stage and the block palette."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => {
+                            props.onSetPreference('stage-left', e.target.checked);
+                        }}
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.modals"
+                        defaultMessage="Modals"
+                    />}
+                >
+                    <BooleanSetting
+                        value={props.preferences['legacy-modals']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.legacyModals"
+                            defaultMessage="Legacy modal style"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.legacyModalsHelp"
+                            defaultMessage="Uses TurboWarp's modal style instead of the modern style."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={() => props.onSetPreference('legacy-modals', !props.preferences['legacy-modals'])}
+                    />
+                    <BooleanSetting
+                        value={props.preferences['modal-open-animation']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.modalOpenAnimation"
+                            defaultMessage="Modal opening animation"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.modalOpenAnimationHelp"
+                            defaultMessage="Makes modals fade into view instead of being a sharp cut."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={() => props.onSetPreference('modal-open-animation', !props.preferences['modal-open-animation'])}
+                    />
+                    <BooleanSetting
+                        value={props.preferences['full-screen-catalog-modals']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.fullScreenCatalogModals"
+                            defaultMessage="Full screen catalog modals"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.fullScreenCatalogModalsHelp"
+                            defaultMessage="Makes modals like the extension catalog full screen."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={() => props.onSetPreference('full-screen-catalog-modals', !props.preferences['full-screen-catalog-modals'])}
+                    />
+                    <Setting
+                        primary={(
+                            <div className={classNames(styles.label, styles.customStageSize)}>
+                                <FormattedMessage
+                                    defaultMessage="Modal overlay blur:"
+                                    id="nb.editorSettings.modalOverlayBlur"
+                                />
+                                <BufferedInput
+                                    value={String(props.preferences['modal-overlay-blur'] ?? 0)}
+                                    // eslint-disable-next-line react/jsx-no-bind
+                                    onSubmit={value => {
+                                        const num = Number(value);
+                                        if (Number.isFinite(num)) {
+                                            props.onSetPreference('modal-overlay-blur', Math.min(Math.max(0, num), 15));
+                                        }
+                                    }}
+                                    type="number"
+                                    min="0"
+                                    max="15"
+                                    spellCheck="false"
+                                />
+                            </div>
+                        )}
+                        help={
+                            <FormattedMessage
+                                id="nb.editorSettings.modalOverlayBlurHelp"
+                                defaultMessage="The intensity, in pixels, of the blur effect on the UI behind modals."
+                            />
+                        }
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.dangerZone"
+                        defaultMessage="Danger Zone"
+                    />}
+                >
+                    <BooleanSetting
+                        value={!!props.preferences['hide-backpack']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.hideBackpack"
+                            defaultMessage="Hide backpack"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.hideBackpackHelp"
+                            defaultMessage="Removes the backpack from the bottom of the screen."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => {
+                            props.onSetPreference('hide-backpack', e.target.checked);
+                            // resizes block palette and stuff
+                            requestAnimationFrame(() => dispatchEvent(new Event('resize')));
+                        }}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['hide-pause']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.hidePause"
+                            defaultMessage="Hide pause button"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.hidePauseHelp"
+                            defaultMessage="Removes the pause button from the project controls."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('hide-pause', e.target.checked)}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['hide-feedback']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.hideFeedback"
+                            defaultMessage="Hide feedback button"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.hideFeedbackHelp"
+                            defaultMessage="Removes the feedback button from the top of the screen."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('hide-feedback', e.target.checked)}
+                    />
+                    <CollapsibleSetting
+                        label={<FormattedMessage
+                            id="nb.editorSettings.visibleTabs"
+                            defaultMessage="Visible tabs"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.visibleTabsHelp"
+                            defaultMessage="Choose which tabs to show in the editor. Hidden tabs can still be accessed via keyboard shortcuts."
+                        />}
+                    >
+                        <div><div className={styles.categoryGrid}>
+                            {editorTabs.map(tab => {
+                                const isHidden = hiddenTabs.includes(tab.index);
+                                const visibleCount = editorTabs.filter(t =>
+                                    !hiddenTabs.includes(t.index)
+                                ).length;
+
+                                return (
+                                    <label
+                                        key={tab.index}
+                                        className={styles.label}
+                                    >
+                                        <FancyCheckbox
+                                            className={styles.checkbox}
+                                            checked={!isHidden}
+                                            disabled={!isHidden && visibleCount < 3}
+                                            // eslint-disable-next-line react/jsx-no-bind
+                                            onChange={() => {
+                                                const next = hiddenTabs.includes(tab.index) ?
+                                                    hiddenTabs.filter(i => i !== tab.index) :
+                                                    [...hiddenTabs, tab.index];
+                                                props.onSetPreference('hidden-tabs', next);
+                                            }}
+                                        />
+                                        {tab.label}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                        <button
+                            className={styles.button}
+                            onClick={handleResetTabsVisibility}
+                            style={{marginTop: '8px'}}
+                        >
+                            <FormattedMessage
+                                id="nb.editorSettings.resetTabsVisibility"
+                                defaultMessage="Reset to defaults"
+                            />
+                        </button>
+                        </div>
+                    </CollapsibleSetting>
+                </Section>
+            </Box>
+        },
+        {
+            title: messages.code,
+            content: <Box>
+                <Section
+                    title={<FormattedMessage
                         id="nb.editorSettings.toolbox"
                         defaultMessage="Toolbox"
                     />}
@@ -943,32 +1008,6 @@ const EditorSettingsModal = props => {
                         />}
                         // eslint-disable-next-line react/jsx-no-bind
                         onChange={e => props.onSetPreference('hide-nb-blocks', e.target.checked)}
-                    />
-                    <BooleanSetting
-                        value={!!props.preferences['extendable-arrows-left']}
-                        label={<FormattedMessage
-                            id="nb.editorSettings.extendableArrowsLeft"
-                            defaultMessage="Extendable arrows on left"
-                        />}
-                        help={<FormattedMessage
-                            id="nb.editorSettings.extendableArrowsLeftHelp"
-                            defaultMessage="Moves the arrows of expandable blocks from the right side to the left side."
-                        />}
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onChange={e => props.onSetPreference('extendable-arrows-left', e.target.checked)}
-                    />
-                    <BooleanSetting
-                        value={!!props.preferences['hide-extendable-arrow-separator']}
-                        label={<FormattedMessage
-                            id="nb.editorSettings.hideExtendableArrowSeparator"
-                            defaultMessage="Hide extendable middle line"
-                        />}
-                        help={<FormattedMessage
-                            id="nb.editorSettings.hideExtendableArrowSeparatorHelp"
-                            defaultMessage="Hides the middle line between arrows on extendables that accept arrays."
-                        />}
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onChange={e => props.onSetPreference('hide-extendable-arrow-separator', e.target.checked)}
                     />
                     <CollapsibleSetting
                         label={<FormattedMessage
@@ -1023,6 +1062,52 @@ const EditorSettingsModal = props => {
                         </button>
                         </div>
                     </CollapsibleSetting>
+                </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.blocks"
+                        defaultMessage="Blocks"
+                    />}
+                >
+                    <BooleanSetting
+                        value={!!props.preferences['extendable-arrows-left']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.extendableArrowsLeft"
+                            defaultMessage="Extendable arrows on left"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.extendableArrowsLeftHelp"
+                            defaultMessage="Moves the arrows of expandable blocks from the right side to the left side."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('extendable-arrows-left', e.target.checked)}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['hide-extendable-arrow-separator']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.hideExtendableArrowSeparator"
+                            defaultMessage="Hide extendable middle line"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.hideExtendableArrowSeparatorHelp"
+                            defaultMessage="Hides the middle line between arrows on extendables that accept arrays."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('hide-extendable-arrow-separator', e.target.checked)}
+                    />
+                    <BooleanSetting
+                        value={!!props.preferences['disable-inspect-block']}
+                        label={<FormattedMessage
+                            id="nb.editorSettings.disableInspectBlock"
+                            defaultMessage="Disable block inspector"
+                        />}
+                        help={<FormattedMessage
+                            id="nb.editorSettings.disableInspectBlockHelp"
+                            defaultMessage="Removes the Inspect Block item from the right-click context menu on blocks."
+                        />}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onChange={e => props.onSetPreference('disable-inspect-block', e.target.checked)}
+                    />
                     <CollapsibleSetting
                         label={<FormattedMessage
                             id="nb.editorSettings.blockColors"
@@ -1243,104 +1328,49 @@ const EditorSettingsModal = props => {
                 </Section>
                 <Section
                     title={<FormattedMessage
-                        id="nb.editorSettings.dangerZone"
-                        defaultMessage="Danger Zone"
+                        id="nb.editorSettings.blockSelection"
+                        defaultMessage="Block selection"
                     />}
                 >
                     <BooleanSetting
-                        value={!!props.preferences['hide-backpack']}
+                        value={!!props.preferences['deselect-block-selection-after-action']}
                         label={<FormattedMessage
-                            id="nb.editorSettings.hideBackpack"
-                            defaultMessage="Hide backpack"
+                            id="nb.editorSettings.deselectBlockSelectionAfterAction"
+                            defaultMessage="Deselect multi-selection after actions"
                         />}
                         help={<FormattedMessage
-                            id="nb.editorSettings.hideBackpackHelp"
-                            defaultMessage="Removes the backpack from the bottom of the screen."
+                            id="nb.editorSettings.deselectBlockSelectionAfterActionHelp"
+                            defaultMessage="Clears selected blocks after you act on them. When disabled, selections remain until you click elsewhere."
                         />}
                         // eslint-disable-next-line react/jsx-no-bind
-                        onChange={e => {
-                            props.onSetPreference('hide-backpack', e.target.checked);
-                            // resizes block palette and stuff
-                            requestAnimationFrame(() => dispatchEvent(new Event('resize')));
-                        }}
+                        onChange={e => props.onSetPreference('deselect-block-selection-after-action', e.target.checked)}
                     />
                     <BooleanSetting
-                        value={!!props.preferences['hide-pause']}
+                        value={!!props.preferences['swap-multi-select-modifiers']}
                         label={<FormattedMessage
-                            id="nb.editorSettings.hidePause"
-                            defaultMessage="Hide pause button"
+                            id="nb.editorSettings.swapMultiSelectModifiers"
+                            defaultMessage="Swap multi-selection controls"
                         />}
                         help={<FormattedMessage
-                            id="nb.editorSettings.hidePauseHelp"
-                            defaultMessage="Removes the pause button from the project controls."
+                            id="nb.editorSettings.swapMultiSelectModifiersHelp"
+                            defaultMessage="Uses Ctrl for selecting whole scripts and Shift for selecting individual blocks."
                         />}
                         // eslint-disable-next-line react/jsx-no-bind
-                        onChange={e => props.onSetPreference('hide-pause', e.target.checked)}
+                        onChange={e => props.onSetPreference('swap-multi-select-modifiers', e.target.checked)}
                     />
                     <BooleanSetting
-                        value={!!props.preferences['hide-feedback']}
+                        value={!!props.preferences['inward-selection']}
                         label={<FormattedMessage
-                            id="nb.editorSettings.hideFeedback"
-                            defaultMessage="Hide feedback button"
+                            id="nb.editorSettings.inwardSelection"
+                            defaultMessage="Inward block selection"
                         />}
                         help={<FormattedMessage
-                            id="nb.editorSettings.hideFeedbackHelp"
-                            defaultMessage="Removes the feedback button from the top of the screen."
+                            id="nb.editorSettings.inwardSelectionHelp"
+                            defaultMessage="Requires blocks or scripts to be fully enclosed by the selection box. When disabled, touching them is enough."
                         />}
                         // eslint-disable-next-line react/jsx-no-bind
-                        onChange={e => props.onSetPreference('hide-feedback', e.target.checked)}
+                        onChange={e => props.onSetPreference('inward-selection', e.target.checked)}
                     />
-                    <CollapsibleSetting
-                        label={<FormattedMessage
-                            id="nb.editorSettings.visibleTabs"
-                            defaultMessage="Visible tabs"
-                        />}
-                        help={<FormattedMessage
-                            id="nb.editorSettings.visibleTabsHelp"
-                            defaultMessage="Choose which tabs to show in the editor. Hidden tabs can still be accessed via keyboard shortcuts."
-                        />}
-                    >
-                        <div><div className={styles.categoryGrid}>
-                            {editorTabs.map(tab => {
-                                const isHidden = hiddenTabs.includes(tab.index);
-                                const visibleCount = editorTabs.filter(t =>
-                                    !hiddenTabs.includes(t.index)
-                                ).length;
-
-                                return (
-                                    <label
-                                        key={tab.index}
-                                        className={styles.label}
-                                    >
-                                        <FancyCheckbox
-                                            className={styles.checkbox}
-                                            checked={!isHidden}
-                                            disabled={!isHidden && visibleCount < 3}
-                                            // eslint-disable-next-line react/jsx-no-bind
-                                            onChange={() => {
-                                                const next = hiddenTabs.includes(tab.index) ?
-                                                    hiddenTabs.filter(i => i !== tab.index) :
-                                                    [...hiddenTabs, tab.index];
-                                                props.onSetPreference('hidden-tabs', next);
-                                            }}
-                                        />
-                                        {tab.label}
-                                    </label>
-                                );
-                            })}
-                        </div>
-                        <button
-                            className={styles.button}
-                            onClick={handleResetTabsVisibility}
-                            style={{marginTop: '8px'}}
-                        >
-                            <FormattedMessage
-                                id="nb.editorSettings.resetTabsVisibility"
-                                defaultMessage="Reset to defaults"
-                            />
-                        </button>
-                        </div>
-                    </CollapsibleSetting>
                 </Section>
             </Box>
         },
