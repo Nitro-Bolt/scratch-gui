@@ -1542,7 +1542,7 @@ const EditorSettingsModal = props => {
                 />
             </Box>
         },
-        {
+        ...(isScratchDesktop() ? [{
             title: messages.versionControl,
             content: <Box>
                 <Setting
@@ -1568,8 +1568,23 @@ const EditorSettingsModal = props => {
                         id="nb.editorSettings.versionControl.defaultBranchHelp"
                     />}
                 />
+                <BooleanSetting
+                    value={!!props.preferences['git-fill-previous-commit-message']}
+                    label={<FormattedMessage
+                        defaultMessage="Fill in the previous commit message"
+                        id="nb.editorSettings.versionControl.fillPreviousCommitMessage"
+                    />}
+                    help={<FormattedMessage
+                        defaultMessage="When the commit message is empty, opening the commit actions menu fills it with the previous commit message."
+                        id="nb.editorSettings.versionControl.fillPreviousCommitMessageHelp"
+                    />}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onChange={e => {
+                        props.onSetPreference('git-fill-previous-commit-message', e.target.checked);
+                    }}
+                />
             </Box>
-        },
+        }] : []),
         {
             title: messages.keymap,
             content: <Box>

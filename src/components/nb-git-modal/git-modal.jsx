@@ -510,7 +510,8 @@ const GitModal = props => {
     const toggleCommitMenu = async () => {
         const opening = !commitMenuOpen;
         setCommitMenuOpen(opening);
-        if (!opening || message.trim() || !status || !status.commit) return;
+        if (!opening || !props.preferences['git-fill-previous-commit-message'] ||
+            message.trim() || !status || !status.commit) return;
         try {
             const result = await window.Git.commitMessage(repoPath);
             if (failed(result)) return;
