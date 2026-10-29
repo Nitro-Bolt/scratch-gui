@@ -29,6 +29,7 @@ class UsernameModal extends React.Component {
             'handleWarpTimerChange',
             'handleStageWidthChange',
             'handleStageHeightChange',
+            'handleDisableErrorCatchingChange',
             'handleDisableCompilerChange',
             'handleStoreProjectOptions'
         ]);
@@ -76,6 +77,11 @@ class UsernameModal extends React.Component {
             enabled: !e.target.checked
         });
     }
+    handleDisableErrorCatchingChange (e) {
+        this.props.vm.setCompilerOptions({
+            catchErrors: !e.target.checked
+        });
+    }
     handleStageWidthChange (value) {
         this.props.vm.setStageSize(value, this.props.customStageSize.height);
     }
@@ -106,6 +112,7 @@ class UsernameModal extends React.Component {
                 onWarpTimerChange={this.handleWarpTimerChange}
                 onStageWidthChange={this.handleStageWidthChange}
                 onStageHeightChange={this.handleStageHeightChange}
+                onDisableErrorCatchingChange={this.handleDisableErrorCatchingChange}
                 onDisableCompilerChange={this.handleDisableCompilerChange}
                 stageWidth={this.props.customStageSize.width}
                 stageHeight={this.props.customStageSize.height}
@@ -143,6 +150,7 @@ UsernameModal.propTypes = {
     cameraExtensionLoaded: PropTypes.bool,
     removeLimits: PropTypes.bool,
     warpTimer: PropTypes.bool,
+    disableErrorCatching: PropTypes.bool,
     customStageSize: PropTypes.shape({
         width: PropTypes.number,
         height: PropTypes.number
@@ -162,6 +170,7 @@ const mapStateToProps = state => ({
     removeLimits: !state.scratchGui.tw.runtimeOptions.miscLimits,
     warpTimer: state.scratchGui.tw.compilerOptions.warpTimer,
     customStageSize: state.scratchGui.customStageSize,
+    disableErrorCatching: !state.scratchGui.tw.compilerOptions.catchErrors,
     disableCompiler: !state.scratchGui.tw.compilerOptions.enabled
 });
 

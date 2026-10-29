@@ -338,6 +338,12 @@ const TWStateManager = function (WrappedComponent) {
                 });
             }
 
+            if (urlParams.has('noerrorcatching')) {
+                this.props.vm.setCompilerOptions({
+                    catchErrors: false
+                });
+            }
+
             if (urlParams.has('clones')) {
                 const clones = +urlParams.get('clones');
                 if (Number.isNaN(clones) || clones < 0) {
@@ -449,6 +455,12 @@ const TWStateManager = function (WrappedComponent) {
                     searchParams.delete('nocompile');
                 }
 
+                if (compilerOptions.catchErrors) {
+                    searchParams.delete('noerrorcatching');
+                } else {
+                    searchParams.set('noerrorcatching', '');
+                }
+
                 if (this.props.isPlayerOnly) {
                     if (compilerOptions.warpTimer) {
                         searchParams.set('stuck', '');
@@ -554,6 +566,7 @@ const TWStateManager = function (WrappedComponent) {
         projectId: PropTypes.string,
         compilerOptions: PropTypes.shape({
             enabled: PropTypes.bool,
+            catchErrors: PropTypes.bool,
             warpTimer: PropTypes.bool
         }),
         runtimeOptions: PropTypes.shape({

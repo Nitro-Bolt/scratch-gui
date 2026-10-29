@@ -327,6 +327,28 @@ const DisableCompiler = props => (
     />
 );
 
+const DisableErrorCatching = props => (
+    <BooleanSetting
+        {...props}
+        label={
+            <FormattedMessage
+                defaultMessage="Disable Error Catching"
+                description="Disable Error Catching setting"
+                id="tw.settingsModal.disableErrorCatching"
+            />
+        }
+        help={
+            <FormattedMessage
+                // eslint-disable-next-line max-len
+                defaultMessage="Disables the error handling added by the compiler and interpreter. Errors will be uncaught instead of stopping the script and displaying an error bubble. This is intended for debugging and compatibility testing."
+                description="Disable Error Catching help"
+                id="tw.settingsModal.disableErrorCatchingHelp"
+            />
+        }
+        slug="disable-error-catching"
+    />
+);
+
 const CustomStageSize = ({
     customStageSizeEnabled,
     stageWidth,
@@ -498,6 +520,10 @@ const SettingsModalComponent = props => (
                     {...props}
                 />
             )}
+            <DisableErrorCatching
+                value={props.disableErrorCatching}
+                onChange={props.onDisableErrorCatchingChange}
+            />
             <DisableCompiler
                 value={props.disableCompiler}
                 onChange={props.onDisableCompilerChange}
@@ -531,6 +557,8 @@ SettingsModalComponent.propTypes = {
     onRemoveLimitsChange: PropTypes.func,
     warpTimer: PropTypes.bool,
     onWarpTimerChange: PropTypes.func,
+    disableErrorCatching: PropTypes.bool,
+    onDisableErrorCatchingChange: PropTypes.func,
     disableCompiler: PropTypes.bool,
     onDisableCompilerChange: PropTypes.func
 };
