@@ -67,6 +67,7 @@
 .blocks :global(.blocklyFlyout) {
     border-right: 1px solid $ui-black-transparent;
     box-sizing: content-box;
+    backdrop-filter: blur(var(--flyout-blur));
 }
 
 [dir="rtl"] .blocks :global(.blocklyFlyout) {

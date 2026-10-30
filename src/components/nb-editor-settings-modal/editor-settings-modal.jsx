@@ -1035,6 +1035,36 @@ const EditorSettingsModal = props => {
                         </button>
                         </div>
                     </CollapsibleSetting>
+                    <Setting
+                        primary={(
+                            <div className={classNames(styles.label, styles.customStageSize)}>
+                                <FormattedMessage
+                                    defaultMessage="Toolbox backdrop blur:"
+                                    id="nb.editorSettings.blockFlyoutBlur"
+                                />
+                                <BufferedInput
+                                    value={String(props.preferences['block-flyout-blur'] ?? 0)}
+                                    // eslint-disable-next-line react/jsx-no-bind
+                                    onSubmit={value => {
+                                        const num = Number(value);
+                                        if (Number.isFinite(num)) {
+                                            props.onSetPreference('block-flyout-blur', Math.min(Math.max(0, num), 15));
+                                        }
+                                    }}
+                                    type="number"
+                                    min="0"
+                                    max="15"
+                                    spellCheck="false"
+                                />
+                            </div>
+                        )}
+                        help={
+                            <FormattedMessage
+                                id="nb.editorSettings.blockFlyoutBlurHelp"
+                                defaultMessage="The intensity, in pixels, of the blur effect behind the toolbox."
+                            />
+                        }
+                    />
                 </Section>
                 <Section
                     title={<FormattedMessage
