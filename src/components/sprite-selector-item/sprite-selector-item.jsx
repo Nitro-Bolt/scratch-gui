@@ -148,7 +148,7 @@ const SpriteSelectorItem = props => (
                         <FormattedMessage
                             defaultMessage="Duplicate"
                             description="Menu item to duplicate in the right click menu"
-                            id="nb.gui.spriteSelectorItem.contextMenuDuplicate"
+                            id="nb.spriteSelectorItem.contextMenuDuplicate"
                         />
                     </MenuItem>
                 ) : null}
