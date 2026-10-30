@@ -2,6 +2,7 @@ import React from 'react';
 import {ContextMenu, MenuItem, SubMenu} from 'react-contextmenu';
 import classNames from 'classnames';
 
+import dropdownCaret from './dropdown-caret.svg';
 import styles from './context-menu.css';
 
 const StyledContextMenu = props => (
@@ -17,6 +18,21 @@ const StyledMenuItem = props => (
         attributes={{className: styles.menuItem}}
     />
 );
+
+const StyledSubMenu = props => (
+    <SubMenu
+        {...props}
+        title={<div className={styles.subMenu}>
+            {props.title}
+            <img
+                src={dropdownCaret}
+                draggable={false}
+                width={8}
+                height={5}
+            />
+        </div>}
+    />
+)
 
 const subMenuProps = {
     attributes: {
@@ -53,6 +69,6 @@ export {
     UnborderedDangerousMenuItem,
     StyledContextMenu as ContextMenu,
     StyledMenuItem as MenuItem,
-    SubMenu,
+    StyledSubMenu as SubMenu,
     subMenuProps
 };

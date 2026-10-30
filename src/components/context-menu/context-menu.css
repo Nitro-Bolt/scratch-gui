@@ -37,6 +37,16 @@
     background: $ui-tertiary;
 }
 
+.sub-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sub-menu > img {
+    transform: rotate(-90deg) translateY(0.4rem);
+}
+
 .sub-menu-context {
     opacity: 0;
     pointer-events: none;
