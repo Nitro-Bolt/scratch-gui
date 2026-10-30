@@ -1,4 +1,5 @@
 @import "../../css/colors.css";
+@import "../../css/filters.css";
 @import "../../css/units.css";
 @import "../../css/z-index.css";
 
@@ -44,6 +45,7 @@
 }
 
 .sub-menu > img {
+    filter: $filter-icon-black;
     transform: rotate(-90deg) translateY(0.4rem);
 }
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
-import dropdownCaret from '../menu-bar/dropdown-caret.svg';
+import dropdownCaret from '../dropdown-caret.svg';
 
 import styles from './inspect-block-modal.css';
 

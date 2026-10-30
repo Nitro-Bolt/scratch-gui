@@ -2,7 +2,7 @@ import React from 'react';
 import {ContextMenu, MenuItem, SubMenu} from 'react-contextmenu';
 import classNames from 'classnames';
 
-import dropdownCaret from './dropdown-caret.svg';
+import dropdownCaret from '../dropdown-caret.svg';
 import styles from './context-menu.css';
 
 const StyledContextMenu = props => (

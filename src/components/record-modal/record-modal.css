@@ -86,7 +86,7 @@
 .button-row button {
     padding: 0.75rem 1rem;
     border-radius: 0.25rem;
-    background: white;
+    background: $input-background;
     border: 1px solid $ui-black-transparent;
     font-weight: 600;
     font-size: 0.85rem;
