@@ -146,18 +146,18 @@ const SpriteSelectorItem = props => (
                 {props.onDuplicateButtonClick ? (
                     <MenuItem onClick={props.onDuplicateButtonClick}>
                         <FormattedMessage
-                            defaultMessage="duplicate"
+                            defaultMessage="Duplicate"
                             description="Menu item to duplicate in the right click menu"
-                            id="gui.spriteSelectorItem.contextMenuDuplicate"
+                            id="nb.gui.spriteSelectorItem.contextMenuDuplicate"
                         />
                     </MenuItem>
                 ) : null}
                 {props.onExportButtonClick ? (
                     <MenuItem onClick={props.onExportButtonClick}>
                         <FormattedMessage
-                            defaultMessage="export"
+                            defaultMessage="Export"
                             description="Menu item to export the selected item"
-                            id="gui.spriteSelectorItem.contextMenuExport"
+                            id="nb.spriteSelectorItem.contextMenuExport"
                         />
                     </MenuItem>
                 ) : null }
@@ -167,9 +167,9 @@ const SpriteSelectorItem = props => (
                         hoverDelay={150}
                         title={(
                             <FormattedMessage
-                                defaultMessage="export as bitmap"
+                                defaultMessage="Export as Bitmap"
                                 description="Menu item to bitmap export the selected item"
-                                id="gui.spriteSelectorItem.contextMenuExportBitmap"
+                                id="nb.spriteSelectorItem.contextMenuExportBitmap"
                             />
                         )}
                     >
@@ -192,16 +192,16 @@ const SpriteSelectorItem = props => (
                 {props.onRenameButtonClick ? (
                     <MenuItem onClick={props.onRenameButtonClick}>
                         <FormattedMessage
-                            defaultMessage="rename"
+                            defaultMessage="Rename"
                             description="Menu item to rename an item"
-                            id="tw.spriteSelectorItem.rename"
+                            id="nb.spriteSelectorItem.rename"
                         />
                     </MenuItem>
                 ) : null}
                 {props.onColorButtonClick ? (
                     <MenuItem onClick={props.onColorButtonClick}>
                         <FormattedMessage
-                            defaultMessage="change color"
+                            defaultMessage="Change Color"
                             description="Menu item to change a folder color"
                             id="gui.folders.changeColor"
                         />
@@ -210,25 +210,25 @@ const SpriteSelectorItem = props => (
                 {props.onMoveToTopButtonClick ? (
                     <MenuItem onClick={props.onMoveToTopButtonClick}>
                         <FormattedMessage
-                            defaultMessage="move to top"
+                            defaultMessage="Move to Top"
                             description="Menu item to move an item to the top of the list"
-                            id="tw.spriteSelectorItem.contextMenuMoveToTop"
+                            id="nb.spriteSelectorItem.contextMenuMoveToTop"
                         />
                     </MenuItem>
                 ) : null}
                 {props.onMoveToBottomButtonClick ? (
                     <MenuItem onClick={props.onMoveToBottomButtonClick}>
                         <FormattedMessage
-                            defaultMessage="move to bottom"
+                            defaultMessage="Move to Bottom"
                             description="Menu item to move an item to the bottom of the list"
-                            id="tw.spriteSelectorItem.contextMenuMoveToBottom"
+                            id="nb.spriteSelectorItem.contextMenuMoveToBottom"
                         />
                     </MenuItem>
                 ) : null}
                 {props.onCreateFolder ? (
                     <MenuItem onClick={props.onCreateFolder}>
                         <FormattedMessage
-                            defaultMessage="create folder"
+                            defaultMessage="Create Folder"
                             description="Menu item to create a folder"
                             id="gui.folders.create"
                         />
@@ -240,7 +240,7 @@ const SpriteSelectorItem = props => (
                         onSelect={props.onFolderChange}
                     >
                         <FormattedMessage
-                            defaultMessage="remove from folder"
+                            defaultMessage="Remove from Folder"
                             description="Menu item to remove an item from its folder"
                             id="gui.folders.removeItem"
                         />
@@ -252,7 +252,7 @@ const SpriteSelectorItem = props => (
                         hoverDelay={150}
                         title={(
                             <FormattedMessage
-                                defaultMessage="add to folder..."
+                                defaultMessage="Add to Folder..."
                                 description="Submenu for moving an item into a folder"
                                 id="gui.folders.addItem"
                             />
@@ -272,16 +272,16 @@ const SpriteSelectorItem = props => (
                 {props.onDeleteButtonClick ? (
                     <DangerousMenuItem onClick={props.onDeleteButtonClick}>
                         <FormattedMessage
-                            defaultMessage="delete"
+                            defaultMessage="Delete"
                             description="Menu item to delete in the right click menu"
-                            id="gui.spriteSelectorItem.contextMenuDelete"
+                            id="nb.spriteSelectorItem.contextMenuDelete"
                         />
                     </DangerousMenuItem>
                 ) : null }
                 {props.onDeleteContentsButtonClick ? (
                     <UnborderedDangerousMenuItem onClick={props.onDeleteContentsButtonClick}>
                         <FormattedMessage
-                            defaultMessage="delete with contents"
+                            defaultMessage="Delete with Contents"
                             description="Menu item to delete a folder and everything inside it"
                             id="gui.folders.deleteContents"
                         />

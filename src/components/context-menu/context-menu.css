@@ -3,24 +3,24 @@
 @import "../../css/z-index.css";
 
 .context-menu {
-    min-width: 130px;
+    min-width: 11rem;
     margin: 2px 0 0; /* To keep the menu below the cursor comfortably */
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-align: left;
     background-color: $ui-white;
     border: 1px solid $ui-black-transparent;
-    border-radius: calc($space / 2);
+    border-radius: 0.35rem;
     box-shadow: 0px 0px 5px 1px $shadow;
     pointer-events: none;
-    transition: opacity 0.2s ease;
     z-index: $z-index-context-menu;
 }
 
 .menu-item {
-    padding: 8px 12px;
-    white-space: nowrap;
+    border: 0;
+    padding: 0.425rem 1rem;
+    color: $text-primary;
+    font: inherit;
     cursor: pointer;
-    transition: 0.1s ease;
 }
 
 .menu-item:first-child {
@@ -34,8 +34,7 @@
 }
 
 .menu-item:hover {
-    background: $looks-secondary;
-    color: white;
+    background: $ui-tertiary;
 }
 
 .sub-menu-context {
@@ -53,5 +52,5 @@
 }
 
 .menu-item-danger:hover {
-    background: $error-primary;
+    background: $error-transparent;
 }
