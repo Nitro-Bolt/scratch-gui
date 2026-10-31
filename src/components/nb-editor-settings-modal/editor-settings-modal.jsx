@@ -21,10 +21,10 @@ import {connect} from 'react-redux';
 import helpIcon from './help-icon.svg';
 import {APP_NAME} from '../../lib/brand.js';
 import {setUsername, setUsernameInvalid} from '../../reducers/tw.js';
-import isScratchDesktop from '../../lib/isScratchDesktop.js';
+import isScratchDesktop, { notScratchDesktop } from '../../lib/isScratchDesktop.js';
 import {generateRandomUsername} from '../../lib/tw-username.js';
 import KeyInput from './key-input.jsx';
-import {defaultKeyboardShortcuts} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeybinds} from '../../lib/nb-keybinds.js';
 import {setTheme} from '../../reducers/theme.js';
 import {persistTheme, detectTheme} from '../../lib/themes/themePersistance.js';
 import {GUI_DARK, GUI_LIGHT, Theme, BLOCKS_CUSTOM} from '../../lib/themes/index.js';
@@ -427,6 +427,33 @@ LabelContrastPreview.propTypes = {
     baseColor: PropTypes.string.isRequired,
     threshold: PropTypes.number
 };
+
+const KeybindSetting = ({
+    name,
+    help,
+    onSetPreference,
+    preferences,
+    shortcutId
+}) => {
+    return (
+        <Box className={styles.keySetting}>
+            <div>
+                {name}
+                {help && <>
+                    <br />
+                    <sub>
+                        {help}
+                    </sub>
+                </>}
+            </div>
+            <KeyInput
+                onChange={shortcut => onSetPreference(`keybind-${shortcutId}`, !shortcut.disabled ? shortcut.toJSON() : {disabled: true})}
+                shortcut={preferences[`keybind-${shortcutId}`] ?? defaultKeybinds[shortcutId]}
+                shortcutId={shortcutId}
+            />
+        </Box>
+    );
+}
 
 const EditorSettingsModal = props => {
     const [selectedSectionIndex, setSelectedSectionIndex] = useState(props.activeTab ?? 0);
@@ -1607,36 +1634,125 @@ const EditorSettingsModal = props => {
                         defaultMessage="Popups"
                     />}
                 >
-                    <Box className={styles.keySetting}>
-                        <FormattedMessage
+                    <KeybindSetting
+                        name={<FormattedMessage
                             defaultMessage="Open backpack"
                             id="nb.editorSettings.keymap.openBackpack"
-                        />
-                        <KeyInput
-                            onChange={shortcut => props.onSetPreference('keybind-open-backpack', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-open-backpack'] ?? defaultKeyboardShortcuts['open-backpack']}
-                        />
-                    </Box>
-                    <Box className={styles.keySetting}>
-                        <FormattedMessage
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="open-backpack"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Open debugger"
+                            id="nb.editorSettings.keymap.openDebugger"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="open-debugger"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
                             defaultMessage="Open editor settings"
                             id="nb.editorSettings.keymap.openEditorSettings"
-                        />
-                        <KeyInput
-                            onChange={shortcut => props.onSetPreference('keybind-open-editor-settings', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-open-editor-settings'] ?? defaultKeyboardShortcuts['open-editor-settings']}
-                        />
-                    </Box>
-                    <Box className={styles.keySetting}>
-                        <FormattedMessage
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="open-editor-settings"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
                             defaultMessage="Open extension catalog"
-                            id="nb.editorSettings.keymap.openExtentions"
-                        />
-                        <KeyInput
-                            onChange={shortcut => props.onSetPreference('keybind-open-extensions', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-open-extensions'] ?? defaultKeyboardShortcuts['open-extensions']}
-                        />
-                    </Box>
+                            id="nb.editorSettings.keymap.openExtensions"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="open-extensions"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Open extension manager"
+                            id="nb.editorSettings.keymap.openExtensionManager"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="open-extension-manager"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Open source control"
+                            id="nb.editorSettings.keymap.openSourceControl"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="open-source-control"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Open project settings"
+                            id="nb.editorSettings.keymap.openProjectSettings"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="open-project-settings"
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.keymap.file"
+                        defaultMessage="File"
+                    />}
+                >
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="New project"
+                            id="nb.editorSettings.keymap.newProject"
+                        />}
+                        help={notScratchDesktop() && <FormattedMessage
+                            defaultMessage="For security reasons, Ctrl+N cannot be used in browsers."
+                            id="nb.editorSettings.keymap.newProjectHelp"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="new-project"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="New window"
+                            id="nb.editorSettings.keymap.newWindow"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="new-window"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Open project"
+                            id="nb.editorSettings.keymap.openProject"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="open-project"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Save project"
+                            id="nb.editorSettings.keymap.save"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="save"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Package project"
+                            id="nb.editorSettings.keymap.packageProject"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="package-project"
+                    />
                 </Section>
                 <Section
                     title={<FormattedMessage
@@ -1644,63 +1760,337 @@ const EditorSettingsModal = props => {
                         defaultMessage="Project Controls"
                     />}
                 >
-                    <Box className={styles.keySetting}>
-                        <FormattedMessage
+                    <KeybindSetting
+                        name={<FormattedMessage
                             defaultMessage="Start project"
                             id="nb.editorSettings.keymap.startProject"
-                        />
-                        <KeyInput
-                            onChange={shortcut => props.onSetPreference('keybind-start-project', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-start-project'] ?? defaultKeyboardShortcuts['start-project']}
-                        />
-                    </Box>
-                    <Box className={styles.keySetting}>
-                        <FormattedMessage
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="start-project"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Pause project"
+                            id="nb.editorSettings.keymap.pauseProject"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="pause-project"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Step through project"
+                            id="nb.editorSettings.keymap.stepProject"
+                        />}
+                        help={<FormattedMessage
+                            defaultMessage="Only available with the compiler disabled."
+                            id="nb.editorSettings.keymap.stepProjectHelp"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="step-project"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
                             defaultMessage="Stop project"
                             id="nb.editorSettings.keymap.stopProject"
-                        />
-                        <KeyInput
-                            onChange={shortcut => props.onSetPreference('keybind-stop-project', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project']}
-                        />
-                    </Box>
-                    <Box className={styles.keySetting}>
-                        <FormattedMessage
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="stop-project"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
                             defaultMessage="Toggle project full screen"
                             id="nb.editorSettings.keymap.projectFullScreen"
-                        />
-                        <KeyInput
-                            onChange={shortcut => props.onSetPreference('keybind-project-full-screen', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen']}
-                        />
-                    </Box>
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="project-full-screen"
+                    />
                 </Section>
                 <Section
                     title={<FormattedMessage
-                        id="nb.editorSettings.keymap.spriteSettings"
-                        defaultMessage="Sprite Settings"
+                        id="nb.editorSettings.keymap.spritePane"
+                        defaultMessage="Sprite Pane"
                     />}
                 >
-                    <Box className={styles.keySetting}>
-                        <FormattedMessage
+                    <KeybindSetting
+                        name={<FormattedMessage
                             defaultMessage="Change sprite name"
                             id="nb.editorSettings.keymap.changeSpriteName"
-                        />
-                        <KeyInput
-                            onChange={shortcut => props.onSetPreference('keybind-change-sprite-name', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-change-sprite-name'] ?? defaultKeyboardShortcuts['change-sprite-name']}
-                        />
-                    </Box>
-                    <Box className={styles.keySetting}>
-                        <FormattedMessage
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="change-sprite-name"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
                             defaultMessage="Toggle sprite visibility"
                             id="nb.editorSettings.keymap.spriteVisibility"
-                        />
-                        <KeyInput
-                            onChange={shortcut => props.onSetPreference('keybind-toggle-sprite-visibility', shortcut.toJSON())}
-                            shortcut={props.preferences['keybind-toggle-sprite-visibility'] ?? defaultKeyboardShortcuts['toggle-sprite-visibility']}
-                        />
-                    </Box>
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="toggle-sprite-visibility"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Toggle stage and sprite pane visibility"
+                            id="nb.editorSettings.keymap.stageAndSpritePaneVisibility"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="hide-stage"
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.keymap.utils"
+                        defaultMessage="Utilities"
+                    />}
+                >
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Undo"
+                            id="nb.editorSettings.keymap.undo"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="undo"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Redo"
+                            id="nb.editorSettings.keymap.redo"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="redo"
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.keymap.tabs"
+                        defaultMessage="Tabs"
+                    />}
+                >
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Code tab"
+                            id="nb.editorSettings.keymap.codeTab"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="tab-code"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Costumes tab"
+                            id="nb.editorSettings.keymap.costumesTab"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="tab-costumes"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Sounds tab"
+                            id="nb.editorSettings.keymap.soundsTab"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="tab-sounds"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Assets tab"
+                            id="nb.editorSettings.keymap.assetsTab"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="tab-assets"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Variables tab"
+                            id="nb.editorSettings.keymap.variablesTab"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="tab-variables"
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.keymap.blockEditor"
+                        defaultMessage="Block Editor"
+                    />}
+                >
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Create comment"
+                            id="nb.editorSettings.keymap.createComment"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="create-comment"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Create group"
+                            id="nb.editorSettings.keymap.createGroup"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="create-group"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Zoom in"
+                            id="nb.editorSettings.keymap.blockZoomIn"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="block-zoom-in"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Zoom out"
+                            id="nb.editorSettings.keymap.blockZoomOut"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="block-zoom-out"
+                    />
+                </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.keymap.costumeEditor"
+                        defaultMessage="Paint"
+                    />}
+                >
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Select"
+                            id="nb.editorSettings.keymap.paintSelect"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-select"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Reshape"
+                            id="nb.editorSettings.keymap.paintReshape"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-reshape"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Brush"
+                            id="nb.editorSettings.keymap.paintBrush"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-brush"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Pen"
+                            id="nb.editorSettings.keymap.paintPen"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-pen"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Eraser"
+                            id="nb.editorSettings.keymap.paintEraser"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-eraser"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Fill"
+                            id="nb.editorSettings.keymap.paintFill"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-fill"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Text"
+                            id="nb.editorSettings.keymap.paintText"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-text"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Line"
+                            id="nb.editorSettings.keymap.paintLine"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-line"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Oval"
+                            id="nb.editorSettings.keymap.paintOval"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-oval"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Effect"
+                            id="nb.editorSettings.keymap.paintEffect"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-effect"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Polygon/Rect"
+                            id="nb.editorSettings.keymap.paintPolygon"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-polygon"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Eyedropper"
+                            id="nb.editorSettings.keymap.eyedropper"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-eyedropper"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Eyedropper (Hold)"
+                            id="nb.editorSettings.keymap.eyedropperHold"
+                        />}
+                        help={<FormattedMessage
+                            defaultMessage="Hold the keybind to access the eyedropper, release to return to the previously used tool."
+                            id="nb.editorSettings.keymap.eyedropperHoldHelp"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-eyedropper-hold"
+                    />
                 </Section>
             </Box>
         }

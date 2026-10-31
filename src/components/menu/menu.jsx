@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import styles from './menu.css';
+import { KeybindClass } from '../nb-editor-settings-modal/key-input.jsx';
 
 const MenuComponent = ({
     className = '',
@@ -63,6 +64,7 @@ const MenuItem = ({
     children,
     className,
     expanded = false,
+    keybind,
     onClick
 }) => (
     <li
@@ -74,7 +76,14 @@ const MenuItem = ({
         )}
         onClick={onClick}
     >
-        {children}
+        {(keybind && !keybind.disabled) ?
+            <>
+                <div>{children}</div>
+                <div
+                    className={styles.keybind}
+                >{new KeybindClass(keybind).toString()}</div>
+            </>
+        : children}
     </li>
 );
 
@@ -82,6 +91,7 @@ MenuItem.propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,
     expanded: PropTypes.bool,
+    keybind: PropTypes.object,
     onClick: PropTypes.func
 };
 

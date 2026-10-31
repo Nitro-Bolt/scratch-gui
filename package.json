@@ -169,6 +169,9 @@
       "core-js",
       "es5-ext",
       "scratch-l10n"
-    ]
+    ],
+    "overrides": {
+      "scratch-paint": "link:../scratch-paint"
+    }
   }
 }

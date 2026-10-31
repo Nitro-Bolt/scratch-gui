@@ -24,7 +24,8 @@ import debuggerIcon from './icon--debugger.svg';
 import styles from './stage-header.css';
 
 import FullscreenAPI from '../../lib/tw-fullscreen-api';
-import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeybinds, registerKeybind} from '../../lib/nb-keybinds.js';
+import { KeybindClass } from '../nb-editor-settings-modal/key-input.jsx';
 
 const messages = defineMessages({
     largeStageSizeMessage: {
@@ -58,9 +59,9 @@ const messages = defineMessages({
         id: 'gui.stageHeader.stageSizeUnFull'
     },
     fullscreenControl: {
-        defaultMessage: 'Full Screen Control',
+        defaultMessage: 'Toggle full screen ({shortcut})',
         description: 'Button to enter/exit full screen mode',
-        id: 'gui.stageHeader.fullscreenControl'
+        id: 'nb.gui.stageHeader.fullscreenControl'
     },
     openSettingsMessage: {
         defaultMessage: 'Open advanced settings',
@@ -68,9 +69,9 @@ const messages = defineMessages({
         id: 'tw.openAdvanced'
     },
     openDebuggerMessage: {
-        defaultMessage: 'Open debugger',
+        defaultMessage: 'Open debugger ({shortcut})',
         description: 'Button to open the debugger panel',
-        id: 'nb.openDebugger'
+        id: 'gui.stageHeader.openDebugger'
     }
 });
 
@@ -99,8 +100,8 @@ const StageHeaderComponent = function (props) {
 
     const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen || isEmbedded, isPlayerOnly);
 
-    registerKeyboardShortcut(
-        preferences['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen'],
+    registerKeybind(
+        preferences['keybind-project-full-screen'] ?? defaultKeybinds['project-full-screen'],
         () => (isFullScreen ? onSetStageUnFullScreen() : onSetStageFullScreen())
     );
 
@@ -133,7 +134,9 @@ const StageHeaderComponent = function (props) {
                         className={styles.stageButtonIcon}
                         draggable={false}
                         src={unFullScreenIcon}
-                        title={props.intl.formatMessage(messages.fullscreenControl)}
+                        title={props.intl.formatMessage(messages.fullscreenControl, {
+                            shortcut: new KeybindClass(preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]).toString()
+                        })}
                     />
                 </Button>
             </div>
@@ -148,7 +151,9 @@ const StageHeaderComponent = function (props) {
                         className={styles.stageButtonIcon}
                         draggable={false}
                         src={fullScreenIcon}
-                        title={props.intl.formatMessage(messages.fullscreenControl)}
+                        title={props.intl.formatMessage(messages.fullscreenControl, {
+                            shortcut: new KeybindClass(preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]).toString()
+                        })}
                     />
                 </Button>
             </div>
@@ -239,6 +244,9 @@ const StageHeaderComponent = function (props) {
                                 <Button
                                     className={classNames(styles.stageButton, styles.debuggerButton)}
                                     onClick={onOpenDebugger}
+                                    title={props.intl.formatMessage(messages.openDebuggerMessage, {
+                                        shortcut: new KeybindClass(preferences["keybind-open-debugger"] ?? defaultKeybinds["open-debugger"]).toString()
+                                    })}
                                     tabIndex={0}
                                 >
                                     <img
@@ -264,7 +272,9 @@ const StageHeaderComponent = function (props) {
                                     className={styles.stageButtonIcon}
                                     draggable={false}
                                     src={fullScreenIcon}
-                                    title={props.intl.formatMessage(messages.fullscreenControl)}
+                                    title={props.intl.formatMessage(messages.fullscreenControl, {
+                                        shortcut: new KeybindClass(preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]).toString()
+                                    })}
                                 />
                             </Button>
                         </div>

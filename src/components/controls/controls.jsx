@@ -11,27 +11,28 @@ import TurboMode from '../turbo-mode/turbo-mode.jsx';
 import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.jsx';
 
 import styles from './controls.css';
-import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeybinds, registerKeybind} from '../../lib/nb-keybinds.js';
+import { KeybindClass } from '../nb-editor-settings-modal/key-input.jsx';
 
 const messages = defineMessages({
     goTitle: {
-        id: 'gui.controls.go',
-        defaultMessage: 'Go',
+        id: 'nb.gui.controls.go',
+        defaultMessage: 'Go ({shortcut})',
         description: 'Green flag button title'
     },
     pauseTitle: {
-        id: 'gui.controls.pause',
-        defaultMessage: 'Pause',
+        id: 'nb.gui.controls.pause',
+        defaultMessage: 'Pause ({shortcut})',
         description: 'Pause button title'
     },
     stepTitle: {
-        id: 'gui.controls.step',
-        defaultMessage: 'Step',
+        id: 'nb.gui.controls.step',
+        defaultMessage: 'Step ({shortcut})',
         description: 'Step button title'
     },
     stopTitle: {
-        id: 'gui.controls.stop',
-        defaultMessage: 'Stop',
+        id: 'nb.gui.controls.stop',
+        defaultMessage: 'Stop ({shortcut})',
         description: 'Stop button title'
     }
 });
@@ -56,13 +57,23 @@ const Controls = function (props) {
         ...componentProps
     } = props;
 
-    registerKeyboardShortcut(
-        preferences['keybind-start-project'] ?? defaultKeyboardShortcuts['start-project'],
+    registerKeybind(
+        preferences['keybind-start-project'] ?? defaultKeybinds['start-project'],
         onGreenFlagClick
     );
 
-    registerKeyboardShortcut(
-        preferences['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project'],
+    registerKeybind(
+        preferences['keybind-pause-project'] ?? defaultKeybinds['pause-project'],
+        onPauseClick
+    );
+
+    registerKeybind(
+        preferences['keybind-step-project'] ?? defaultKeybinds['step-project'],
+        onStepClick
+    );
+
+    registerKeybind(
+        preferences['keybind-stop-project'] ?? defaultKeybinds['stop-project'],
         onStopAllClick
     );
 
@@ -77,19 +88,25 @@ const Controls = function (props) {
             >
                 <GreenFlag
                     active={active}
-                    title={intl.formatMessage(messages.goTitle)}
+                    title={intl.formatMessage(messages.goTitle, {
+                        shortcut: new KeybindClass(preferences["keybind-start-project"] ?? defaultKeybinds["start-project"]).toString()
+                    })}
                     onClick={onGreenFlagClick}
                 />
                 {preferences['hide-pause'] !== true &&
                     <>
                         <Pause
                             paused={paused}
-                            title={intl.formatMessage(messages.pauseTitle)}
+                            title={intl.formatMessage(messages.pauseTitle, {
+                                shortcut: new KeybindClass(preferences["keybind-pause-project"] ?? defaultKeybinds["pause-project"]).toString()
+                            })}
                             onClick={onPauseClick}
                         />
                         {paused && !compilerEnabled &&
                             <Step
-                                title={intl.formatMessage(messages.stepTitle)}
+                                title={intl.formatMessage(messages.stepTitle, {
+                                    shortcut: new KeybindClass(preferences["keybind-step-project"] ?? defaultKeybinds["step-project"]).toString()
+                                })}
                                 onClick={onStepClick}
                             />
                         }
@@ -97,7 +114,9 @@ const Controls = function (props) {
                 }
                 <StopAll
                     active={active}
-                    title={intl.formatMessage(messages.stopTitle)}
+                    title={intl.formatMessage(messages.stopTitle, {
+                        shortcut: new KeybindClass(preferences["keybind-stop-project"] ?? defaultKeybinds["stop-project"]).toString()
+                    })}
                     onClick={onStopAllClick}
                 />
                 {turbo ? (
