@@ -8,81 +8,6 @@
     overflow: hidden;
 }
 
-.compact-modal-content {
-    width: min(430px, 90vw);
-    margin-top: 50px;
-    padding: 0;
-    overflow: hidden;
-}
-
-.compact-shell {
-    position: relative;
-    min-height: 0;
-    padding: 1.25rem;
-    background: $ui-white;
-    color: $text-primary;
-    font-family: inherit;
-    font-size: .875rem;
-}
-
-.compact-chooser {
-    display: flex;
-    flex-direction: column;
-    gap: .75rem;
-}
-
-.compact-heading {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    gap: .25rem;
-}
-
-.compact-heading strong {
-    font-size: 1rem;
-}
-
-.compact-heading span,
-.compact-chooser p {
-    color: $text-primary-transparent;
-    line-height: 1.45;
-}
-
-.compact-chooser p {
-    margin: 0;
-}
-
-.selected-path {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    gap: .25rem;
-    border: 1px solid $ui-black-transparent;
-    border-radius: .35rem;
-    padding: .65rem;
-    background: $ui-modal-background;
-}
-
-.selected-path strong {
-    font-size: .75rem;
-}
-
-.selected-path span {
-    overflow: hidden;
-    color: $text-primary-transparent;
-    font-size: .75rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.compact-chooser .path-button {
-    justify-content: center;
-    border: 1px solid $ui-black-transparent;
-    border-radius: .35rem;
-    padding: .65rem .8rem;
-    font-weight: bold;
-}
-
 .shell {
     position: relative;
     display: grid;
@@ -229,19 +154,6 @@
     color: white;
     font: inherit;
     font-weight: bold;
-    cursor: pointer;
-}
-
-.path-button {
-    display: flex;
-    min-width: 0;
-    align-items: center;
-    gap: .4rem;
-    border: 0;
-    padding: .35rem;
-    background: transparent;
-    color: $text-primary;
-    font: inherit;
     cursor: pointer;
 }
 
@@ -624,7 +536,6 @@
 }
 
 .empty-state,
-.full-notice,
 .detail-empty {
     display: flex;
     align-items: center;
@@ -635,13 +546,6 @@
 
 .empty-state {
     padding: 2rem 1rem;
-}
-
-.full-notice {
-    grid-column: 1 / -1;
-    flex-direction: column;
-    gap: .75rem;
-    padding: 2rem;
 }
 
 .list-section,

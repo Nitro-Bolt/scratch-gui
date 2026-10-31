@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import log from '../lib/log';
 import {setProjectUnchanged} from '../reducers/project-changed';
 
-const SYNC_DEBOUNCE_MS = 750;
+const SYNC_DEBOUNCE_MS = 2000;
 
 let activeManager = null;
 
@@ -70,6 +70,7 @@ class NBGitProjectManager extends React.Component {
     handleProjectChanged () {
         if (!this.props.projectPath || typeof window === 'undefined' || !window.Git) return;
         this.generation++;
+        this.clearTimeout();
         this.queueSync();
     }
 

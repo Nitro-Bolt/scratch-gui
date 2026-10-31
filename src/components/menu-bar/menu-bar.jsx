@@ -19,7 +19,7 @@ import SaveStatus from './save-status.jsx';
 import ProjectWatcher from '../../containers/project-watcher.jsx';
 import MenuBarMenu from './menu-bar-menu.jsx';
 import MenuLabel from './tw-menu-label.jsx';
-import {MenuItem, MenuSection} from '../menu/menu.jsx';
+import {MenuItem, MenuSection, Submenu} from '../menu/menu.jsx';
 import ProjectTitleInput from './project-title-input.jsx';
 import AuthorInfo from './author-info.jsx';
 import SB3Downloader from '../../containers/sb3-downloader.jsx';
@@ -27,6 +27,7 @@ import DeletionRestorer from '../../containers/deletion-restorer.jsx';
 import TurboMode from '../../containers/turbo-mode.jsx';
 import MenuBarHOC from '../../containers/menu-bar-hoc.jsx';
 import SettingsMenu from './settings-menu.jsx';
+import settingsMenuStyles from './settings-menu.css';
 
 import FramerateChanger from '../../containers/tw-framerate-changer.jsx';
 import CloudVariablesToggler from '../../containers/tw-cloud-toggler.jsx';
@@ -68,6 +69,11 @@ import {
     openFileMenu,
     closeFileMenu,
     fileMenuOpen,
+    gitMenuOpen,
+    openGitMenu,
+    closeGitMenu,
+    gitBranchMenuOpen,
+    openGitBranchMenu,
     openEditMenu,
     closeEditMenu,
     editMenuOpen,
@@ -85,8 +91,11 @@ import {
     closeErrorsMenu
 } from '../../reducers/menus';
 import {setFileHandle, setGitProjectPath} from '../../reducers/tw.js';
+import {markGitProjectLoaded, pauseGitProjectSync, resumeGitProjectSync}
+    from '../../containers/nb-git-project-manager.jsx';
 
 import collectMetadata from '../../lib/collect-metadata';
+import log from '../../lib/log';
 
 import styles from './menu-bar.css';
 
@@ -101,6 +110,7 @@ import editIcon from './icon--edit.svg';
 import addonsIcon from './addons.svg';
 import errorIcon from './tw-error.svg';
 import gitIcon from './nb-git.svg';
+import checkIcon from './check.svg';
 
 import ninetiesLogo from './nineties_logo.svg';
 import catLogo from './cat_logo.svg';
@@ -216,6 +226,12 @@ MenuItemLink.propTypes = {
 class MenuBar extends React.Component {
     constructor (props) {
         super(props);
+        this.state = {
+            gitAvailable: null,
+            gitBranches: [],
+            gitBusy: false
+        };
+        this.gitRefreshRequest = 0;
         bindAll(this, [
             'handleClickSeeInside',
             'handleClickNew',
@@ -231,15 +247,158 @@ class MenuBar extends React.Component {
             'handleSetMode',
             'handleKeyPress',
             'handleRestoreOption',
+            'handleOpenGitMenu',
+            'handleOpenGitModal',
+            'handleInitializeGitProject',
+            'handleRefreshGit',
+            'handleSwitchGitBranch',
+            'refreshGitMenu',
             'getSaveToComputerHandler',
             'restoreOptionMessage'
         ]);
     }
     componentDidMount () {
+        this.mounted = true;
         document.addEventListener('keydown', this.handleKeyPress);
+        this.refreshGitMenu();
+    }
+    componentDidUpdate (prevProps) {
+        if (prevProps.gitProjectPath !== this.props.gitProjectPath) {
+            this.refreshGitMenu(false, true);
+        }
     }
     componentWillUnmount () {
+        this.mounted = false;
         document.removeEventListener('keydown', this.handleKeyPress);
+    }
+    async refreshGitMenu (fetchRemotes = false, clearBranches = false) {
+        if (!isScratchDesktop() || typeof window === 'undefined' || !window.Git) return;
+        const request = ++this.gitRefreshRequest;
+        this.setState(clearBranches ? {gitBusy: true, gitBranches: []} : {gitBusy: true});
+        try {
+            const gitAvailable = await window.Git.isAvailable();
+            if (!this.mounted || request !== this.gitRefreshRequest) return;
+            if (!gitAvailable) {
+                this.setState({gitAvailable: false, gitBranches: []});
+                return;
+            }
+            this.setState({gitAvailable: true});
+            if (!this.props.gitProjectPath) {
+                this.setState({gitBranches: []});
+                return;
+            }
+            const statusResult = await window.Git.status(this.props.gitProjectPath);
+            if (!statusResult || !statusResult.success || !statusResult.data.isRepository) {
+                throw new Error(statusResult && statusResult.error ? statusResult.error :
+                    'Could not refresh the Git repository');
+            }
+            if (fetchRemotes) {
+                const fetchResult = await window.Git.fetch(this.props.gitProjectPath);
+                if (!fetchResult || !fetchResult.success) {
+                    log.error(fetchResult && fetchResult.error ? fetchResult.error :
+                        'Could not fetch Git remotes');
+                }
+            }
+            const results = await Promise.all([
+                window.Git.listBranches(this.props.gitProjectPath),
+                window.Git.remotes(this.props.gitProjectPath),
+                window.Git.log(this.props.gitProjectPath, 50)
+            ]);
+            if (!this.mounted || request !== this.gitRefreshRequest) return;
+            if (!results[0] || !results[0].success) {
+                throw new Error(results[0] && results[0].error ? results[0].error : 'Could not list Git branches');
+            }
+            if (!results[1] || !results[1].success) {
+                log.error(results[1] && results[1].error ? results[1].error : 'Could not list Git remotes');
+            }
+            if (!results[2] || !results[2].success) {
+                log.error(results[2] && results[2].error ? results[2].error : 'Could not read Git history');
+            }
+            this.setState({gitBranches: results[0].branches});
+        } catch (error) {
+            if (this.mounted && request === this.gitRefreshRequest) {
+                log.error(error);
+            }
+        } finally {
+            if (this.mounted && request === this.gitRefreshRequest) this.setState({gitBusy: false});
+        }
+    }
+    handleOpenGitMenu () {
+        this.props.onClickGit();
+        this.refreshGitMenu();
+    }
+    handleOpenGitModal () {
+        this.props.onClickGitModal();
+    }
+    handleInitializeGitProject () {
+        this.props.onRequestCloseGit();
+        this.props.onInitializeGitProject();
+    }
+    handleRefreshGit () {
+        this.refreshGitMenu(true);
+    }
+    handleSwitchGitBranch (branch) {
+        return async () => {
+            if (branch.isCurrent || this.state.gitBusy || !this.props.gitProjectPath) return;
+            this.setState({gitBusy: true});
+            this.props.onRequestCloseGit();
+            let paused = false;
+            let switched = false;
+            let projectLoadStarted = false;
+            const previousBranch = this.state.gitBranches.find(item => item.isCurrent);
+            try {
+                await pauseGitProjectSync();
+                paused = true;
+                const switchResult = await window.Git.switchBranch(this.props.gitProjectPath, branch.ref);
+                if (!switchResult || !switchResult.success) {
+                    throw new Error(switchResult && switchResult.error ? switchResult.error :
+                        'Could not switch Git branch');
+                }
+                switched = true;
+                const projectResult = await window.Git.readProject(this.props.gitProjectPath);
+                if (!projectResult || !projectResult.success) {
+                    throw new Error(projectResult && projectResult.error ? projectResult.error :
+                        'Could not load Git project');
+                }
+                this.props.onClearFileHandle();
+                projectLoadStarted = true;
+                this.props.vm.quit();
+                await this.props.vm.loadProject(projectResult.data);
+                if (this.props.vm.renderer) this.props.vm.renderer.draw();
+                markGitProjectLoaded();
+                await this.refreshGitMenu();
+            } catch (error) {
+                log.error(error);
+                if (switched && previousBranch) {
+                    try {
+                        const rollbackResult = await window.Git.switchBranch(
+                            this.props.gitProjectPath,
+                            previousBranch.ref
+                        );
+                        if (!rollbackResult || !rollbackResult.success) {
+                            throw new Error(rollbackResult && rollbackResult.error ? rollbackResult.error :
+                                'Could not restore the previous Git branch');
+                        }
+                        if (projectLoadStarted) {
+                            const previousProject = await window.Git.readProject(this.props.gitProjectPath);
+                            if (!previousProject || !previousProject.success) {
+                                throw new Error(previousProject && previousProject.error ? previousProject.error :
+                                    'Could not restore the previous Git project');
+                            }
+                            this.props.vm.quit();
+                            await this.props.vm.loadProject(previousProject.data);
+                            if (this.props.vm.renderer) this.props.vm.renderer.draw();
+                            markGitProjectLoaded();
+                        }
+                    } catch (rollbackError) {
+                        log.error(rollbackError);
+                    }
+                }
+            } finally {
+                if (paused) resumeGitProjectSync();
+                if (this.mounted) this.setState({gitBusy: false});
+            }
+        };
     }
     handleClickNew () {
         // if the project is dirty, and user owns the project, we will autosave.
@@ -636,7 +795,13 @@ class MenuBar extends React.Component {
                                             {this.props.intl.formatMessage(sharedMessages.loadFromComputerTitle)}
                                         </MenuItem>
                                         {this.props.onStartSelectingGitProject && (
-                                            <MenuItem onClick={this.props.onStartSelectingGitProject}>
+                                            <MenuItem
+                                                className={classNames({
+                                                    [styles.disabled]: this.state.gitAvailable !== true
+                                                })}
+                                                onClick={this.state.gitAvailable ?
+                                                    this.props.onStartSelectingGitProject : null}
+                                            >
                                                 <FormattedMessage
                                                     defaultMessage="Load Git project folder"
                                                     description="Loads a NitroBolt Git project folder"
@@ -727,9 +892,10 @@ class MenuBar extends React.Component {
                             </MenuLabel>
                         )}
                         {isScratchDesktop() && this.props.onClickGitModal && (
-                            <div
-                                className={classNames(styles.menuBarItem, styles.hoverable)}
-                                onClick={this.props.onClickGitModal}
+                            <MenuLabel
+                                open={this.props.gitMenuOpen}
+                                onOpen={this.handleOpenGitMenu}
+                                onClose={this.props.onRequestCloseGit}
                             >
                                 <img
                                     src={gitIcon}
@@ -744,7 +910,116 @@ class MenuBar extends React.Component {
                                         id="nb.menuBar.git"
                                     />
                                 </span>
-                            </div>
+                                <img
+                                    src={dropdownCaret}
+                                    draggable={false}
+                                    width={8}
+                                    height={5}
+                                />
+                                <MenuBarMenu
+                                    className={classNames(styles.menuBarMenu)}
+                                    open={this.props.gitMenuOpen}
+                                    place={this.props.isRtl ? 'left' : 'right'}
+                                >
+                                    {this.state.gitAvailable === false && <MenuItem
+                                        className={styles.disabled}
+                                    >
+                                        <FormattedMessage
+                                            defaultMessage="Git is not installed"
+                                            description="Disabled Git menu item shown when Git is unavailable"
+                                            id="nb.menuBar.gitUnavailable"
+                                        />
+                                    </MenuItem>}
+                                    {this.state.gitAvailable === null && <MenuItem
+                                        className={styles.disabled}
+                                    >
+                                        <FormattedMessage
+                                            defaultMessage="Checking for Git..."
+                                            description="Disabled Git menu item shown while checking for Git"
+                                            id="nb.menuBar.gitChecking"
+                                        />
+                                    </MenuItem>}
+                                    {this.state.gitAvailable && !this.props.gitProjectPath && <MenuItem
+                                        onClick={this.handleInitializeGitProject}
+                                    >
+                                        <FormattedMessage
+                                            defaultMessage="Initialize current project"
+                                            description="Initializes source control for the current project"
+                                            id="nb.menuBar.gitInitialize"
+                                        />
+                                    </MenuItem>}
+                                    {this.state.gitAvailable && this.props.gitProjectPath && <React.Fragment>
+                                        <MenuItem onClick={this.handleOpenGitModal}>
+                                            <FormattedMessage
+                                                defaultMessage="Open Source Control"
+                                                description="Opens the full Git source control menu"
+                                                id="nb.menuBar.gitOpenSourceControl"
+                                            />
+                                        </MenuItem>
+                                        <MenuItem expanded={this.props.gitBranchMenuOpen}>
+                                            <div
+                                                className={settingsMenuStyles.option}
+                                                onClick={this.props.onClickGitBranch}
+                                            >
+                                                <span className={settingsMenuStyles.submenuLabel}>
+                                                    <FormattedMessage
+                                                        defaultMessage="Switch branch"
+                                                        description="Git submenu for switching branches"
+                                                        id="nb.menuBar.gitSwitchBranch"
+                                                    />
+                                                </span>
+                                                <img
+                                                    className={settingsMenuStyles.expandCaret}
+                                                    src={dropdownCaret}
+                                                    draggable={false}
+                                                    width={8}
+                                                    height={5}
+                                                />
+                                            </div>
+                                            <Submenu
+                                                className={settingsMenuStyles.scrollableSubmenu}
+                                                place={this.props.isRtl ? 'left' : 'right'}
+                                            >
+                                                {this.state.gitBranches.length ? this.state.gitBranches.map(branch => (
+                                                    <MenuItem
+                                                        className={classNames(settingsMenuStyles.submenuMenuItem, {
+                                                            [styles.disabled]: this.state.gitBusy
+                                                        })}
+                                                        key={branch.ref}
+                                                        onClick={this.handleSwitchGitBranch(branch)}
+                                                    >
+                                                        <img
+                                                            className={classNames(settingsMenuStyles.check, {
+                                                                [settingsMenuStyles.selected]: branch.isCurrent
+                                                            })}
+                                                            src={checkIcon}
+                                                            draggable={false}
+                                                        />
+                                                        {branch.name}
+                                                    </MenuItem>
+                                                )) : <MenuItem className={styles.disabled}>
+                                                    <FormattedMessage
+                                                        defaultMessage="No branches available"
+                                                        description="Shown when no Git branches are available"
+                                                        id="nb.menuBar.gitNoBranches"
+                                                    />
+                                                </MenuItem>}
+                                            </Submenu>
+                                        </MenuItem>
+                                        <MenuSection>
+                                            <MenuItem
+                                                className={classNames({[styles.disabled]: this.state.gitBusy})}
+                                                onClick={this.state.gitBusy ? null : this.handleRefreshGit}
+                                            >
+                                                <FormattedMessage
+                                                    defaultMessage="Refresh"
+                                                    id="nb.git.refresh"
+                                                />
+                                            </MenuItem>
+                                        </MenuSection>
+                                    </React.Fragment>}
+                                </MenuBarMenu>
+                            </MenuLabel>
                         )}
                         <MenuLabel
                             open={this.props.editMenuOpen}
@@ -1092,6 +1367,9 @@ MenuBar.propTypes = {
     enableCommunity: PropTypes.bool,
     feedbackVisible: PropTypes.bool,
     fileMenuOpen: PropTypes.bool,
+    gitMenuOpen: PropTypes.bool,
+    gitBranchMenuOpen: PropTypes.bool,
+    gitProjectPath: PropTypes.string,
     handleSaveProject: PropTypes.func,
     intl: intlShape,
     isPlayerOnly: PropTypes.bool,
@@ -1134,6 +1412,10 @@ MenuBar.propTypes = {
     onClickExtensionManagerModal: PropTypes.func,
     onClickSettingsModal: PropTypes.func,
     onClickGitModal: PropTypes.func,
+    onClickGit: PropTypes.func,
+    onClickGitBranch: PropTypes.func,
+    onClearFileHandle: PropTypes.func,
+    onInitializeGitProject: PropTypes.func,
     onLogOut: PropTypes.func,
     onOpenRegistration: PropTypes.func,
     onOpenTipLibrary: PropTypes.func,
@@ -1142,6 +1424,7 @@ MenuBar.propTypes = {
     onRequestCloseAccount: PropTypes.func,
     onRequestCloseEdit: PropTypes.func,
     onRequestCloseFile: PropTypes.func,
+    onRequestCloseGit: PropTypes.func,
     onRequestCloseLogin: PropTypes.func,
     onRequestCloseMode: PropTypes.func,
     onRequestCloseSettings: PropTypes.func,
@@ -1180,6 +1463,9 @@ const mapStateToProps = (state, ownProps) => {
         accountMenuOpen: accountMenuOpen(state),
         currentLocale: state.locales.locale,
         fileMenuOpen: fileMenuOpen(state),
+        gitMenuOpen: gitMenuOpen(state),
+        gitBranchMenuOpen: gitBranchMenuOpen(state),
+        gitProjectPath: state.scratchGui.tw.gitProjectPath,
         editMenuOpen: editMenuOpen(state),
         errors: state.scratchGui.tw.compileErrors,
         errorsMenuOpen: errorsMenuOpen(state),
@@ -1213,6 +1499,9 @@ const mapDispatchToProps = dispatch => ({
     onRequestCloseAccount: () => dispatch(closeAccountMenu()),
     onClickFile: () => dispatch(openFileMenu()),
     onRequestCloseFile: () => dispatch(closeFileMenu()),
+    onClickGit: () => dispatch(openGitMenu()),
+    onClickGitBranch: () => dispatch(openGitBranchMenu()),
+    onRequestCloseGit: () => dispatch(closeGitMenu()),
     onClickEdit: () => dispatch(openEditMenu()),
     onRequestCloseEdit: () => dispatch(closeEditMenu()),
     onClickErrors: () => dispatch(openErrorsMenu()),
@@ -1226,9 +1515,10 @@ const mapDispatchToProps = dispatch => ({
     onClickRestorePoints: () => dispatch(openRestorePointModal()),
     onClickSettings: () => dispatch(openSettingsMenu()),
     onClickGitModal: () => {
-        dispatch(closeEditMenu());
+        dispatch(closeGitMenu());
         dispatch(openGitModal());
     },
+    onClearFileHandle: () => dispatch(setFileHandle(null)),
     onClickExtensionManagerModal: () => {
         dispatch(closeEditMenu());
         dispatch(openExtensionManagerModal());

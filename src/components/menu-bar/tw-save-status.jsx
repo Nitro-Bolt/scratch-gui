@@ -13,12 +13,13 @@ import downloadIcon from './icon--download.svg';
 const TWSaveStatus = ({
     alertsList,
     fileHandle,
+    gitProjectPath,
     projectChanged,
     showSaveFilePicker
 }) => (
     filterInlineAlerts(alertsList).length > 0 ? (
         <InlineMessages />
-    ) : projectChanged && (
+    ) : !gitProjectPath && projectChanged && (
         <SB3Downloader
             showSaveFilePicker={showSaveFilePicker}
         >
@@ -56,6 +57,7 @@ TWSaveStatus.propTypes = {
     fileHandle: PropTypes.shape({
         name: PropTypes.string
     }),
+    gitProjectPath: PropTypes.string,
     projectChanged: PropTypes.bool,
     showSaveFilePicker: PropTypes.func
 };
@@ -63,6 +65,7 @@ TWSaveStatus.propTypes = {
 const mapStateToProps = state => ({
     alertsList: state.scratchGui.alerts.alertsList,
     fileHandle: state.scratchGui.tw.fileHandle,
+    gitProjectPath: state.scratchGui.tw.gitProjectPath,
     projectChanged: state.scratchGui.projectChanged
 });
 

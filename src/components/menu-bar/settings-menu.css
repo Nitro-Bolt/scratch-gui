@@ -49,15 +49,15 @@
 
 /* Extra padding to deal with scrollbar overlapping options in Firefox */
 
-[dir="ltr"] .language-menu-item {
+[dir="ltr"] .submenu-menu-item {
     padding-right: 1rem;
 }
 
-[dir="rtl"] .language-menu-item {
+[dir="rtl"] .submenu-menu-item {
     padding-left: 1rem;
 }
 
-.language-submenu > ul {
+.scrollable-submenu > ul {
     max-height: calc(100vh - 5rem); /* Fallback if dvh not supported */
     max-height: calc(100dvh - 5rem);
 }

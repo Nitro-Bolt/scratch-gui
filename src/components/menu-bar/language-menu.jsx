@@ -87,7 +87,7 @@ class LanguageMenu extends React.PureComponent {
                     />
                 </div>
                 <Submenu
-                    className={styles.languageSubmenu}
+                    className={styles.scrollableSubmenu}
                     place={this.props.isRtl ? 'left' : 'right'}
                 >
                     {
@@ -95,7 +95,7 @@ class LanguageMenu extends React.PureComponent {
                             .map(locale => (
                                 <MenuItem
                                     key={locale}
-                                    className={styles.languageMenuItem}
+                                    className={styles.submenuMenuItem}
                                     // eslint-disable-next-line react/jsx-no-bind
                                     onClick={() => this.props.onChangeLanguage(locale)}
                                 >
