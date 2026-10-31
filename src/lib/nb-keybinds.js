@@ -103,3 +103,5 @@ export const registerKeybind = (shortcut, callback) => {
         });
     }, [handleKeyboardEvent]);
 };
+
+export const keybindTooltip = (message, keybind) => `${message}${(keybind && !keybind.disabled) ? ` (${keybind})` : ""}`;

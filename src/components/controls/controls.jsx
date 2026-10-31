@@ -11,28 +11,28 @@ import TurboMode from '../turbo-mode/turbo-mode.jsx';
 import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.jsx';
 
 import styles from './controls.css';
-import {defaultKeybinds, registerKeybind} from '../../lib/nb-keybinds.js';
+import {defaultKeybinds, keybindTooltip, registerKeybind} from '../../lib/nb-keybinds.js';
 import { KeybindClass } from '../nb-editor-settings-modal/key-input.jsx';
 
 const messages = defineMessages({
     goTitle: {
         id: 'nb.gui.controls.go',
-        defaultMessage: 'Go ({shortcut})',
+        defaultMessage: 'Go',
         description: 'Green flag button title'
     },
     pauseTitle: {
         id: 'nb.gui.controls.pause',
-        defaultMessage: 'Pause ({shortcut})',
+        defaultMessage: 'Pause',
         description: 'Pause button title'
     },
     stepTitle: {
         id: 'nb.gui.controls.step',
-        defaultMessage: 'Step ({shortcut})',
+        defaultMessage: 'Step',
         description: 'Step button title'
     },
     stopTitle: {
         id: 'nb.gui.controls.stop',
-        defaultMessage: 'Stop ({shortcut})',
+        defaultMessage: 'Stop',
         description: 'Stop button title'
     }
 });
@@ -88,25 +88,28 @@ const Controls = function (props) {
             >
                 <GreenFlag
                     active={active}
-                    title={intl.formatMessage(messages.goTitle, {
-                        shortcut: new KeybindClass(preferences["keybind-start-project"] ?? defaultKeybinds["start-project"]).toString()
-                    })}
+                    title={keybindTooltip(
+                        intl.formatMessage(messages.goTitle),
+                        new KeybindClass(preferences["keybind-start-project"] ?? defaultKeybinds["start-project"]).toString())
+                    }
                     onClick={onGreenFlagClick}
                 />
                 {preferences['hide-pause'] !== true &&
                     <>
                         <Pause
                             paused={paused}
-                            title={intl.formatMessage(messages.pauseTitle, {
-                                shortcut: new KeybindClass(preferences["keybind-pause-project"] ?? defaultKeybinds["pause-project"]).toString()
-                            })}
+                            title={keybindTooltip(
+                                intl.formatMessage(messages.pauseTitle),
+                                new KeybindClass(preferences["keybind-pause-project"] ?? defaultKeybinds["pause-project"]).toString())
+                            }
                             onClick={onPauseClick}
                         />
                         {paused && !compilerEnabled &&
                             <Step
-                                title={intl.formatMessage(messages.stepTitle, {
-                                    shortcut: new KeybindClass(preferences["keybind-step-project"] ?? defaultKeybinds["step-project"]).toString()
-                                })}
+                                title={keybindTooltip(
+                                    intl.formatMessage(messages.stepTitle),
+                                    new KeybindClass(preferences["keybind-step-project"] ?? defaultKeybinds["step-project"]).toString())
+                                }
                                 onClick={onStepClick}
                             />
                         }
@@ -114,9 +117,10 @@ const Controls = function (props) {
                 }
                 <StopAll
                     active={active}
-                    title={intl.formatMessage(messages.stopTitle, {
-                        shortcut: new KeybindClass(preferences["keybind-stop-project"] ?? defaultKeybinds["stop-project"]).toString()
-                    })}
+                    title={keybindTooltip(
+                        intl.formatMessage(messages.stopTitle),
+                        new KeybindClass(preferences["keybind-stop-project"] ?? defaultKeybinds["stop-project"]).toString())
+                    }
                     onClick={onStopAllClick}
                 />
                 {turbo ? (
