@@ -29,6 +29,7 @@ export const defaultKeybinds = {
     'open-project-settings': {disabled: true},
     'open-source-control': {ctrl: true, shift: true, key: 'g'},
     'new-project': {ctrl: true, shift: true, key: 'n'},
+    'new-sprite-folder': {ctrl: true, alt: true, key: 'g'},
     'new-window': {ctrl: true, alt: true, key: 'n'},
     'package-project': {ctrl: true, key: 'Enter'},
     'paint-select': {key: 's'},

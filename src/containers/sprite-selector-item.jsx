@@ -269,6 +269,7 @@ class SpriteSelectorItem extends React.PureComponent {
                 componentRef={this.setRef}
                 contextMenuId={`${this.props.dragType || 'item'}-${id}`}
                 costumeURL={this.getCostumeData()}
+                itemType={this.props.dragType}
                 preventContextMenu={this.dragRecognizer.gestureInProgress()}
                 onClick={this.handleClick}
                 onColorButtonClick={onColorButtonClick ? this.handleColor : null}
@@ -350,6 +351,7 @@ const mapStateToProps = (state, {id}) => ({
     dragging: state.scratchGui.assetDrag.dragging,
     receivedBlocks: state.scratchGui.hoveredTarget.receivedBlocks &&
         state.scratchGui.hoveredTarget.sprite === id,
+    preferences: state.scratchGui.preferences,
     vm: state.scratchGui.vm
 });
 const mapDispatchToProps = dispatch => ({

@@ -1827,6 +1827,15 @@ const EditorSettingsModal = props => {
                     />
                     <KeybindSetting
                         name={<FormattedMessage
+                            defaultMessage="New sprite folder"
+                            id="nb.editorSettings.keymap.newSpriteFolder"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="new-sprite-folder"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
                             defaultMessage="Toggle sprite visibility"
                             id="nb.editorSettings.keymap.spriteVisibility"
                         />}
