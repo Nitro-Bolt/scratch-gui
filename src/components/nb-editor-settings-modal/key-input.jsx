@@ -8,11 +8,6 @@ import resetIcon from './reset.svg';
 import styles from './key-input.css';
 
 export class KeybindClass {
-    ctrl;
-    shift;
-    alt;
-    key;
-
     constructor (object) {
         this.ctrl = object.ctrl;
         this.shift = object.shift;
