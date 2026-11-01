@@ -8,6 +8,7 @@ const BlocksComponent = props => {
     const {
         containerRef,
         dragOver,
+        flyoutBlur,
         ...componentProps
     } = props;
     return (
@@ -16,12 +17,16 @@ const BlocksComponent = props => {
                 [styles.dragOver]: dragOver
             })}
             {...componentProps}
+            style={{
+                "--flyout-blur": `${flyoutBlur ?? 0}px`
+            }}
             componentRef={containerRef}
         />
     );
 };
 BlocksComponent.propTypes = {
     containerRef: PropTypes.func,
-    dragOver: PropTypes.bool
+    dragOver: PropTypes.bool,
+    flyoutBlur: PropTypes.number
 };
 export default BlocksComponent;

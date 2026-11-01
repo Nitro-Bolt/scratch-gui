@@ -16,8 +16,6 @@ import styles from './git-modal.css';
 
 const messages = defineMessages({
     title: {defaultMessage: 'Source Control', id: 'nb.git.title'},
-    desktopOnly: {defaultMessage: 'Git is only available in NitroBolt Desktop.', id: 'nb.git.desktopOnly'},
-    gitMissing: {defaultMessage: 'Git is not installed or could not be found.', id: 'nb.git.missing'},
     general: {defaultMessage: 'General', id: 'nb.git.general'},
     branches: {defaultMessage: 'Branches', id: 'nb.git.branches'},
     remotes: {defaultMessage: 'Remotes', id: 'nb.git.remotes'},
@@ -87,27 +85,7 @@ const messages = defineMessages({
     detachedHead: {defaultMessage: 'Detached HEAD', id: 'nb.git.detachedHead'},
     commitLabel: {defaultMessage: 'Commit', id: 'nb.git.commitLabel'},
     noCommits: {defaultMessage: 'No commits', id: 'nb.git.noCommits'},
-    refresh: {defaultMessage: 'Refresh', id: 'nb.git.refresh'},
-    setupSourceControl: {defaultMessage: 'Set up source control', id: 'nb.git.setupSourceControl'},
-    gitSourceControl: {defaultMessage: 'Git source control', id: 'nb.git.gitSourceControl'},
-    checkingFolder: {defaultMessage: 'Checking the selected folder…', id: 'nb.git.checkingFolder'},
-    notRepository: {defaultMessage: 'This folder is not a Git repository yet.', id: 'nb.git.notRepository'},
-    sourceControlDescription: {
-        defaultMessage: 'Track your NitroBolt project, review changes, and work with branches.',
-        id: 'nb.git.sourceControlDescription'
-    },
-    selectedFolder: {defaultMessage: 'Selected folder', id: 'nb.git.selectedFolder'},
-    initializeDescription: {
-        defaultMessage: 'Initialize this folder to begin tracking its project files and assets.',
-        id: 'nb.git.initializeDescription'
-    },
-    chooseDescription: {
-        defaultMessage: 'Choose a project folder that already contains a repository, or select a folder to initialize.',
-        id: 'nb.git.chooseDescription'
-    },
-    initializeRepository: {defaultMessage: 'Initialize Repository', id: 'nb.git.initializeRepository'},
-    chooseAnotherFolder: {defaultMessage: 'Choose another folder', id: 'nb.git.chooseAnotherFolder'},
-    chooseFolder: {defaultMessage: 'Choose folder', id: 'nb.git.chooseFolder'}
+    refresh: {defaultMessage: 'Refresh', id: 'nb.git.refresh'}
 });
 const navigation = [
     {
@@ -186,9 +164,7 @@ const canDiscardIndividually = change => {
 };
 
 const GitModal = props => {
-    const [available, setAvailable] = useState(null);
-    const [repoPath, setRepoPath] = useState(props.projectPath || '');
-    const [repoName, setRepoName] = useState('');
+    const repoPath = props.projectPath;
     const [status, setStatus] = useState(null);
     const [branches, setBranches] = useState([]);
     const [remotes, setRemotes] = useState([]);
@@ -199,7 +175,6 @@ const GitModal = props => {
     const [selected, setSelected] = useState(null);
     const [discardPath, setDiscardPath] = useState(null);
     const [discardAllPending, setDiscardAllPending] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
     const [operationError, setOperationError] = useState('');
     const [message, setMessage] = useState('');
@@ -220,8 +195,7 @@ const GitModal = props => {
     const refreshRequest = React.useRef(0);
     const commitMenu = React.useRef(null);
     const commitMenuButton = React.useRef(null);
-    const repository = Boolean(status && status.isRepository);
-    const repositoryRevision = repository ? `${repoPath}:${status.commit || 'unborn'}` : null;
+    const repositoryRevision = status && status.isRepository ? `${repoPath}:${status.commit || 'unborn'}` : null;
     const safeStatus = status || {branch: '', commit: null, staged: []};
 
     const format = (descriptor, values) => props.intl.formatMessage(descriptor, values);
@@ -238,34 +212,23 @@ const GitModal = props => {
         setDiff(null);
         setSelected(null);
     };
-    const clearRepositoryState = () => {
-        refreshRequest.current++;
-        setStatus(null);
-        setBranches([]);
-        setRemotes([]);
-        setHistory([]);
-        clearDiff();
-        setDiscardPath(null);
-        setDiscardAllPending(false);
-        setReadmeRevision(null);
-        setLoading(false);
-    };
     const refresh = async (path = repoPath, fetchRemotes = false) => {
         const request = ++refreshRequest.current;
-        if (!path || !window.Git) {
-            setLoading(false);
-            return;
-        }
-        setLoading(true);
+        if (!path) return;
         try {
             const result = await window.Git.status(path);
             if (request !== refreshRequest.current) return;
             if (failed(result)) return;
             if (!result.data.isRepository) {
-                clearRepositoryState();
+                setStatus(null);
+                setBranches([]);
+                setRemotes([]);
+                setHistory([]);
+                clearDiff();
+                setReadmeRevision(null);
+                setOperationError(format(messages.gitOperationFailed));
                 return;
             }
-            setRepoName(currentName => result.data.repositoryName || currentName);
             setStatus(result.data);
             if (fetchRemotes) {
                 const fetchResult = await window.Git.fetch(path);
@@ -304,8 +267,6 @@ const GitModal = props => {
             else setHistory(results[2].commits.filter(commit => commit.hash));
         } catch (e) {
             if (request === refreshRequest.current) log.error(e);
-        } finally {
-            if (request === refreshRequest.current) setLoading(false);
         }
     };
     useEffect(() => {
@@ -328,26 +289,8 @@ const GitModal = props => {
         if (firstAction) firstAction.focus();
     }, [commitMenuOpen]);
     useEffect(() => {
-        if (!window.Git) {
-            setAvailable(false);
-            setLoading(false);
-            return;
-        }
-        window.Git.isAvailable()
-            .then(value => {
-                setAvailable(value);
-                if (value && repoPath) refresh(repoPath, true);
-                else setLoading(false);
-            })
-            .catch(error => {
-                log.error(error);
-                setAvailable(false);
-                setLoading(false);
-            });
-    }, []);
-    useEffect(() => {
-        if (props.projectPath) setRepoPath(props.projectPath);
-    }, [props.projectPath]);
+        refresh(repoPath, true);
+    }, [repoPath]);
     useEffect(() => {
         let cancelled = false;
         if (view === 'readme' && repositoryRevision && readmeRevision !== repositoryRevision) {
@@ -400,48 +343,6 @@ const GitModal = props => {
         props.onSetProjectPath(path);
         markGitProjectLoaded();
     };
-    const chooseFolder = () => run(async () => {
-        const result = await window.EditorPreload.showOpenDirectoryPicker();
-        if (!result || !result.id) return;
-        setRepoName(result.name);
-        clearRepositoryState();
-        setLoading(true);
-        try {
-            const next = await window.Git.status(result.id);
-            if (failed(next)) return;
-            const selectedRepoPath = next.data.repositoryRoot || result.id;
-            setRepoPath(selectedRepoPath);
-            if (next.data.isRepository) {
-                let paused = false;
-                try {
-                    await pauseGitProjectSync();
-                    paused = true;
-                    await reloadProject(selectedRepoPath);
-                } finally {
-                    if (paused) resumeGitProjectSync();
-                }
-            } else {
-                props.onSetProjectPath(null);
-            }
-            await refresh(selectedRepoPath, true);
-        } finally {
-            setLoading(false);
-        }
-    });
-    const init = () => run(async () => {
-        const result = await window.Git.init(repoPath, props.preferences['git-default-branch'] || 'master');
-        if (failed(result)) return;
-        try {
-            await requestGitProjectSync(repoPath);
-            props.onSetProjectPath(repoPath);
-            const addResult = await window.Git.add(repoPath, []);
-            if (failed(addResult)) return;
-            const commitResult = await window.Git.commit(repoPath, 'Initial commit');
-            if (failed(commitResult)) return;
-        } finally {
-            await refresh();
-        }
-    });
     const mutate = (method, files) => run(async () => {
         if (method === 'add') await requestGitProjectSync(repoPath);
         const result = await window.Git[method](repoPath, files);
@@ -1011,8 +912,6 @@ const GitModal = props => {
             <p>{format(messages.diffHint)}</p></div>
     );
 
-    const unavailable = !window.Git || available === false;
-    const showWorkspace = Boolean(repoPath && repository);
     const errorNotice = operationError && <div
         className={styles.errorNotice}
         role="alert"
@@ -1023,14 +922,9 @@ const GitModal = props => {
             onClick={() => setOperationError('')}
         >×</button>
     </div>;
-    let modalBody;
-    if (unavailable) {
-        const messageId = window.Git ? messages.gitMissing : messages.desktopOnly;
-        modalBody = <div className={styles.fullNotice}>{props.intl.formatMessage(messageId)}</div>;
-    } else if (showWorkspace) {
-        modalBody = (<>
-            <aside className={styles.sidebar}>
-                <nav>{navigation.map(group => {
+    const modalBody = (<>
+        <aside className={styles.sidebar}>
+            <nav>{navigation.map(group => {
                     const selectedGroup = group.views ?
                         group.views.some(item => item.id === view) : group.id === view;
                     return (<div
@@ -1060,59 +954,34 @@ const GitModal = props => {
                         </div>}
                     </div>);
                 })}</nav>
-                <div className={styles.sidebarFooter}>
-                    <div className={styles.repositoryDetails}>
-                        <div><span>{format(messages.branch)}</span>
-                            <strong>{safeStatus.branch || format(messages.detachedHead)}</strong></div>
-                        <div><span>{format(messages.commitLabel)}</span>
-                            <strong>{safeStatus.commit || format(messages.noCommits)}</strong></div>
-                    </div>
-                    <button
-                        className={styles.refreshButton}
-                        disabled={busy}
-                        onClick={() => refresh(repoPath, true)}
-                    >{format(messages.refresh)}</button>
+            <div className={styles.sidebarFooter}>
+                <div className={styles.repositoryDetails}>
+                    <div><span>{format(messages.branch)}</span>
+                        <strong>{safeStatus.branch || format(messages.detachedHead)}</strong></div>
+                    <div><span>{format(messages.commitLabel)}</span>
+                        <strong>{safeStatus.commit || format(messages.noCommits)}</strong></div>
                 </div>
-            </aside>
-            <section className={`${styles.contextPane} ${showDetail ? '' : styles.contextWide}`}>
-                {errorNotice}
-                {status && context}
-            </section>
-            {showDetail && <section className={styles.detailPane}>{status && detail}</section>}
-        </>);
-    } else {
-        modalBody = (<div className={styles.compactChooser}>
-            {errorNotice}
-            <div className={styles.compactHeading}>
-                <strong>{format(repoPath ? messages.setupSourceControl : messages.gitSourceControl)}</strong>
-                <span>{format(loading ? messages.checkingFolder : repoPath ?
-                    messages.notRepository : messages.sourceControlDescription)}</span>
+                <button
+                    className={styles.refreshButton}
+                    disabled={busy}
+                    onClick={() => refresh(repoPath, true)}
+                >{format(messages.refresh)}</button>
             </div>
-            {repoPath && <div className={styles.selectedPath}>
-                <strong>{format(messages.selectedFolder)}</strong>
-                <span>{repoName || format(messages.selectedFolder)}</span>
-            </div>}
-            <p>{format(repoPath ? messages.initializeDescription : messages.chooseDescription)}</p>
-            {repoPath && !loading && <button
-                className={styles.refreshButton}
-                disabled={busy}
-                onClick={init}
-            >{format(messages.initializeRepository)}</button>}
-            <button
-                className={styles.pathButton}
-                disabled={busy}
-                onClick={chooseFolder}
-            >{format(repoPath ? messages.chooseAnotherFolder : messages.chooseFolder)}</button>
-        </div>);
-    }
+        </aside>
+        <section className={`${styles.contextPane} ${showDetail ? '' : styles.contextWide}`}>
+            {errorNotice}
+            {status && context}
+        </section>
+        {showDetail && <section className={styles.detailPane}>{status && detail}</section>}
+    </>);
     /* eslint-enable indent, react/jsx-no-bind, react/jsx-no-literals */
     return (<Modal
-        className={showWorkspace ? styles.modalContent : styles.compactModalContent}
+        className={styles.modalContent}
         onRequestClose={props.onClose}
         contentLabel={props.intl.formatMessage(messages.title)}
         id="gitModal"
     >
-        <Box className={showWorkspace ? styles.shell : styles.compactShell}>{modalBody}</Box>
+        <Box className={styles.shell}>{modalBody}</Box>
     </Modal>);
 };
 GitModal.propTypes = {dark: PropTypes.bool,

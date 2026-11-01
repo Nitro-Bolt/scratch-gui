@@ -88,57 +88,57 @@ const MonitorComponent = props => (
                 {props.draggable && props.onSetModeToDefault &&
                     <MenuItem onClick={props.onSetModeToDefault}>
                         <FormattedMessage
-                            defaultMessage="normal readout"
+                            defaultMessage="Normal Readout"
                             description="Menu item to switch to the default monitor"
-                            id="gui.monitor.contextMenu.default"
+                            id="nb.monitor.contextMenu.default"
                         />
                     </MenuItem>}
                 {props.draggable && props.onSetModeToLarge &&
                     <MenuItem onClick={props.onSetModeToLarge}>
                         <FormattedMessage
-                            defaultMessage="large readout"
+                            defaultMessage="Large Readout"
                             description="Menu item to switch to the large monitor"
-                            id="gui.monitor.contextMenu.large"
+                            id="nb.monitor.contextMenu.large"
                         />
                     </MenuItem>}
                 {props.draggable && props.onSetModeToSlider &&
                     <MenuItem onClick={props.onSetModeToSlider}>
                         <FormattedMessage
-                            defaultMessage="slider"
+                            defaultMessage="Slider"
                             description="Menu item to switch to the slider monitor"
-                            id="gui.monitor.contextMenu.slider"
+                            id="nb.monitor.contextMenu.slider"
                         />
                     </MenuItem>}
                 {props.draggable && props.onSliderPromptOpen && props.mode === 'slider' &&
                     <BorderedMenuItem onClick={props.onSliderPromptOpen}>
                         <FormattedMessage
-                            defaultMessage="change slider range"
+                            defaultMessage="Change Slider Range"
                             description="Menu item to change the slider range"
-                            id="gui.monitor.contextMenu.sliderRange"
+                            id="nb.monitor.contextMenu.sliderRange"
                         />
                     </BorderedMenuItem>}
                 {props.onImport &&
                     <MenuItem onClick={props.onImport}>
                         <FormattedMessage
-                            defaultMessage="import"
+                            defaultMessage="Import"
                             description="Menu item to import into table and list monitors"
-                            id="gui.monitor.contextMenu.import"
+                            id="nb.monitor.contextMenu.import"
                         />
                     </MenuItem>}
                 {props.onExport &&
                     <MenuItem onClick={props.onExport}>
                         <FormattedMessage
-                            defaultMessage="export"
+                            defaultMessage="Export"
                             description="Menu item to export from table and list monitors"
-                            id="gui.monitor.contextMenu.export"
+                            id="nb.monitor.contextMenu.export"
                         />
                     </MenuItem>}
                 {props.draggable && props.onHide &&
                     <BorderedMenuItem onClick={props.onHide}>
                         <FormattedMessage
-                            defaultMessage="hide"
+                            defaultMessage="Hide"
                             description="Menu item to hide the monitor"
-                            id="gui.monitor.contextMenu.hide"
+                            id="nb.monitor.contextMenu.hide"
                         />
                     </BorderedMenuItem>}
             </ContextMenu>

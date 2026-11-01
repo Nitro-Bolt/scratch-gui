@@ -7,9 +7,7 @@ const manifest = {
       "name": "pumpkinhasapatch"
     }
   ],
-  "tags": [
-    "new"
-  ],
+  "tags": [],
   "enabledByDefault": false,
   "settings": [
     {

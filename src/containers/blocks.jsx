@@ -1072,6 +1072,7 @@ const mapStateToProps = state => ({
     useCatBlocks: isTimeTravel2020(state),
     preferences: state.scratchGui.preferences,
     blockShape: state.scratchGui.preferences['block-shape'],
+    flyoutBlur: state.scratchGui.preferences['block-flyout-blur'],
     labelContrastThreshold: state.scratchGui.preferences['label-contrast-threshold'],
     hiddenCategories: state.scratchGui.preferences['hidden-categories'],
     nbBlocks: !(state.scratchGui.preferences['hide-nb-blocks'] === true),
