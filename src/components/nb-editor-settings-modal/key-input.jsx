@@ -47,15 +47,24 @@ class KeyInput extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
+            'handleListen',
             'handleChange',
             'handleClick',
             'handleDelete',
-            'handleReset'
+            'handleReset',
+            'handleBlur'
         ]);
         this.state = {
             listening: false,
             shortcut: props.shortcut ? new KeybindClass(props.shortcut) : {disabled: true}
         };
+    }
+
+    handleListen (e) {
+        e.preventDefault();
+        if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) return;
+        document.removeEventListener('keydown', this.handleListen);
+        this.handleChange(e);
     }
 
     handleChange (e) {
@@ -75,15 +84,8 @@ class KeyInput extends React.Component {
     }
 
     handleClick () {
-        const listener = e => {
-            e.preventDefault();
-            if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) return;
-            document.removeEventListener('keydown', listener);
-            this.handleChange(e);
-        };
-
         this.setState({listening: true});
-        document.addEventListener('keydown', listener);
+        document.addEventListener('keydown', this.handleListen);
     }
 
     handleDelete () {
@@ -98,12 +100,18 @@ class KeyInput extends React.Component {
         this.props.onChange(shortcut);
     }
 
+    handleBlur () {
+        this.setState({listening: false});
+        document.removeEventListener('keydown', this.handleListen);
+    }
+
     render () {
         return (
             <div>
                 <button
                     className={styles.container}
                     onClick={this.handleClick}
+                    onBlur={this.handleBlur}
                 >
                     {this.state.listening ? <FormattedMessage
                         defaultMessage="Listening..."
