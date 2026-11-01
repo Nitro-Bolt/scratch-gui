@@ -1,5 +1,6 @@
 @import "../../css/colors.css";
 @import "../../css/units.css";
+@import "../../css/filters.css";
 
 .wrapper {
     overflow-y: hidden;
@@ -47,5 +48,6 @@
 }
 
 .caret {
+    filter: $filter-icon-black;
     transition: transform 0.25s ease-out;
 }

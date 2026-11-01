@@ -27,6 +27,7 @@ export const initialState = {
     highQualityPen: false,
     compilerOptions: {
         enabled: true,
+        catchErrors: true,
         warpTimer: false
     },
     runtimeOptions: {

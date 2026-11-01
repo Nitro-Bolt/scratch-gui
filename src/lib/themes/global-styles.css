@@ -5,12 +5,37 @@
 
 :root {
     color-scheme: var(--color-scheme);
+    scrollbar-color: var(--text-primary-transparent) var(--ui-primary);
+}
+
+/* Chromium does not reliably recolor native scrollbar arrows after a live theme change. */
+:global(::-webkit-scrollbar-button:single-button) {
+    background-color: var(--text-primary);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: 7px 5px;
+}
+
+:global(::-webkit-scrollbar-button:single-button:vertical:decrement) {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 5'%3E%3Cpath d='M3.5 0 7 5H0z'/%3E%3C/svg%3E");
+}
+
+:global(::-webkit-scrollbar-button:single-button:vertical:increment) {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 5'%3E%3Cpath d='m0 0 3.5 5L7 0z'/%3E%3C/svg%3E");
+}
+
+:global(::-webkit-scrollbar-button:single-button:horizontal:decrement) {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 7'%3E%3Cpath d='m0 3.5 5 3.5V0z'/%3E%3C/svg%3E");
+}
+
+:global(::-webkit-scrollbar-button:single-button:horizontal:increment) {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 7'%3E%3Cpath d='M5 3.5 0 0v7z'/%3E%3C/svg%3E");
 }
 
 /* popover is used by gui and paint */
 /* some of these are duplicated over there too; !important makes sure these win */
 :global(.Popover) {
-    color-scheme: light !important;
+    color-scheme: var(--color-scheme) !important;
 }
 :global(.Popover-body) {
     color: $text-primary !important;

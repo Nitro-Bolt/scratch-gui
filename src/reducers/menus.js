@@ -5,6 +5,8 @@ const MENU_ABOUT = 'aboutMenu';
 const MENU_ACCOUNT = 'accountMenu';
 const MENU_EDIT = 'editMenu';
 const MENU_FILE = 'fileMenu';
+const MENU_GIT = 'gitMenu';
+const MENU_GIT_BRANCH = 'gitBranchMenu';
 const MENU_LANGUAGE = 'languageMenu';
 const MENU_LOGIN = 'loginMenu';
 const MENU_MODE = 'modeMenu';
@@ -58,9 +60,12 @@ const rootMenu = new Menu('root')
             .addChild(new Menu(MENU_BLOCKS_THEME))
     )
     .addChild(new Menu(MENU_FILE))
+    .addChild(
+        new Menu(MENU_GIT)
+            .addChild(new Menu(MENU_GIT_BRANCH))
+    )
     .addChild(new Menu(MENU_EDIT))
     .addChild(new Menu(MENU_MODE))
-    .addChild(new Menu(MENU_SETTINGS))
     .addChild(new Menu(MENU_LOGIN))
     .addChild(new Menu(MENU_ACCOUNT))
     .addChild(new Menu(MENU_ABOUT));
@@ -70,6 +75,8 @@ const initialState = {
     [MENU_ACCOUNT]: false,
     [MENU_EDIT]: false,
     [MENU_FILE]: false,
+    [MENU_GIT]: false,
+    [MENU_GIT_BRANCH]: false,
     [MENU_LANGUAGE]: false,
     [MENU_LOGIN]: false,
     [MENU_MODE]: false,
@@ -132,6 +139,13 @@ const openFileMenu = () => openMenu(MENU_FILE);
 const closeFileMenu = () => closeMenu(MENU_FILE);
 const fileMenuOpen = state => state.scratchGui.menus[MENU_FILE];
 
+const openGitMenu = () => openMenu(MENU_GIT);
+const closeGitMenu = () => closeMenu(MENU_GIT);
+const gitMenuOpen = state => state.scratchGui.menus[MENU_GIT];
+
+const openGitBranchMenu = () => openMenu(MENU_GIT_BRANCH);
+const gitBranchMenuOpen = state => state.scratchGui.menus[MENU_GIT_BRANCH];
+
 const openLanguageMenu = () => openMenu(MENU_LANGUAGE);
 const closeLanguageMenu = () => closeMenu(MENU_LANGUAGE);
 const languageMenuOpen = state => state.scratchGui.menus[MENU_LANGUAGE];
@@ -175,6 +189,11 @@ export {
     openFileMenu,
     closeFileMenu,
     fileMenuOpen,
+    openGitMenu,
+    closeGitMenu,
+    gitMenuOpen,
+    openGitBranchMenu,
+    gitBranchMenuOpen,
     openLanguageMenu,
     closeLanguageMenu,
     languageMenuOpen,

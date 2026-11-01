@@ -216,8 +216,8 @@
 }
 
 .multi-select-normal {
-    color: black !important;
-    background: white !important;
+    color: $text-primary !important;
+    background: $input-background !important;
 }
 
 .multi-select-delete:disabled {

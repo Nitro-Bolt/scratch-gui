@@ -1,5 +1,6 @@
 @import "../../css/colors.css";
 @import "../../css/units.css";
+@import "../../css/filters.css";
 
 .modal-content {
     width: 640px;
@@ -64,6 +65,7 @@
     width: 0.7rem;
     margin-left: 0.5rem;
     aspect-ratio: 1 / 1;
+    filter: $filter-icon-black;
     transform: rotate(-90deg);
 }
 

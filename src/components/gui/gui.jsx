@@ -158,6 +158,7 @@ const GUIComponent = props => {
         onShowPrivacyPolicy,
         onStartSelectingFileUpload,
         onStartSelectingGitProject,
+        onInitializeGitProject,
         onTelemetryModalCancel,
         onTelemetryModalOptIn,
         onTelemetryModalOptOut,
@@ -552,6 +553,7 @@ const GUIComponent = props => {
                     onShare={onShare}
                     onStartSelectingFileUpload={onStartSelectingFileUpload}
                     onStartSelectingGitProject={onStartSelectingGitProject}
+                    onInitializeGitProject={onInitializeGitProject}
                     onToggleLoginOpen={onToggleLoginOpen}
                 />
                 <Box className={styles.bodyWrapper}>
@@ -839,6 +841,7 @@ GUIComponent.propTypes = {
     onShowPrivacyPolicy: PropTypes.func,
     onStartSelectingFileUpload: PropTypes.func,
     onStartSelectingGitProject: PropTypes.func,
+    onInitializeGitProject: PropTypes.func,
     onTabSelect: PropTypes.func,
     onTelemetryModalCancel: PropTypes.func,
     onTelemetryModalOptIn: PropTypes.func,

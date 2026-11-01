@@ -31,7 +31,7 @@
     display: flex;
     align-items: center;
     padding: 0.25rem;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    border: 1px solid $ui-black-transparent;
     background: transparent
 }
 
@@ -46,7 +46,7 @@
 }
 
 .chart-button.selected {
-    background-color: rgba(0, 0, 0, 0.25);
+    background-color: $ui-black-transparent;
 }
 
 .chart-quantities {

@@ -35,7 +35,7 @@ import {
     saveBlockColors
 } from '../../lib/block-color-persistence.js';
 import {setHiddenCategories} from '../../reducers/hidden-categories';
-import dropdownCaret from '../menu-bar/dropdown-caret.svg';
+import dropdownCaret from '../dropdown-caret.svg';
 import FancyColorPicker from '../nb-fancy-color-picker/color-picker.jsx';
 import DeleteButton from '../delete-button/delete-button.jsx';
 import {BLOCK_SHAPE_PRESETS, getBlockShape} from '../../lib/nb-custom-block-shape';
@@ -326,14 +326,23 @@ BooleanSetting.propTypes = {
     label: PropTypes.node.isRequired
 };
 
+const SectionStateContext = React.createContext(null);
+
 const Section = ({title, children}) => {
-    const [expanded, setExpanded] = useState(true);
+    const {topicId, expandedSections, setExpandedSections} = React.useContext(SectionStateContext);
+    const stateKey = `${topicId}:${title.props.id}`;
+    const expanded = expandedSections[stateKey] ?? true;
+    const toggleExpanded = () => {
+        setExpandedSections(previous => ({
+            ...previous,
+            [stateKey]: !(previous[stateKey] ?? true)
+        }));
+    };
     return (
         <div className={styles.section}>
             <div
                 className={styles.sectionTitle}
-                // eslint-disable-next-line react/jsx-no-bind
-                onClick={() => setExpanded(e => !e)}
+                onClick={toggleExpanded}
             >
                 <span>{title}</span>
                 <button className={styles.sectionDropdownCaret}>
@@ -448,6 +457,7 @@ const KeybindSetting = ({
 
 const EditorSettingsModal = props => {
     const [selectedSectionIndex, setSelectedSectionIndex] = useState(props.activeTab ?? 0);
+    const [expandedSections, setExpandedSections] = useState({});
     const [windchimeOptOut, setWindchimeOptOut] = useState(localStorage.getItem('tw:windchime_opt_out') === 'true');
     const [dirty, setDirty] = useState(false);
     const [blockColors, setBlockColors] = useState(loadBlockColors);
@@ -1062,6 +1072,36 @@ const EditorSettingsModal = props => {
                         </button>
                         </div>
                     </CollapsibleSetting>
+                    <Setting
+                        primary={(
+                            <div className={classNames(styles.label, styles.customStageSize)}>
+                                <FormattedMessage
+                                    defaultMessage="Toolbox backdrop blur:"
+                                    id="nb.editorSettings.blockFlyoutBlur"
+                                />
+                                <BufferedInput
+                                    value={String(props.preferences['block-flyout-blur'] ?? 0)}
+                                    // eslint-disable-next-line react/jsx-no-bind
+                                    onSubmit={value => {
+                                        const num = Number(value);
+                                        if (Number.isFinite(num)) {
+                                            props.onSetPreference('block-flyout-blur', Math.min(Math.max(0, num), 15));
+                                        }
+                                    }}
+                                    type="number"
+                                    min="0"
+                                    max="15"
+                                    spellCheck="false"
+                                />
+                            </div>
+                        )}
+                        help={
+                            <FormattedMessage
+                                id="nb.editorSettings.blockFlyoutBlurHelp"
+                                defaultMessage="The intensity, in pixels, of the blur effect behind the toolbox."
+                            />
+                        }
+                    />
                 </Section>
                 <Section
                     title={<FormattedMessage
@@ -2101,20 +2141,30 @@ const EditorSettingsModal = props => {
                         </button>
                     )}
                 </div>
-                {sections[selectedSectionIndex].escaped ?
-                    <div
-                        className={classNames(
-                            styles.content,
-                            styles.escaped
-                        )}
-                    >
-                        {sections[selectedSectionIndex].content}
-                    </div> :
-                    <div className={styles.content}>
-                        <h1><FormattedMessage {...sections[selectedSectionIndex].title} /></h1>
-                        {sections[selectedSectionIndex].content}
-                    </div>
-                }
+                <SectionStateContext.Provider value={{
+                    topicId: sections[selectedSectionIndex].title.id,
+                    expandedSections,
+                    setExpandedSections
+                }}>
+                    {sections[selectedSectionIndex].escaped ?
+                        <div
+                            key={sections[selectedSectionIndex].title.id}
+                            className={classNames(
+                                styles.content,
+                                styles.escaped
+                            )}
+                        >
+                            {sections[selectedSectionIndex].content}
+                        </div> :
+                        <div
+                            key={sections[selectedSectionIndex].title.id}
+                            className={styles.content}
+                        >
+                            <h1><FormattedMessage {...sections[selectedSectionIndex].title} /></h1>
+                            {sections[selectedSectionIndex].content}
+                        </div>
+                    }
+                </SectionStateContext.Provider>
             </Box>
         </Modal>
     );
