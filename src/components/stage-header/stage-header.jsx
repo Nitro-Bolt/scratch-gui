@@ -61,7 +61,7 @@ const messages = defineMessages({
     fullscreenControl: {
         defaultMessage: 'Toggle full screen',
         description: 'Button to enter/exit full screen mode',
-        id: 'nb.gui.stageHeader.fullscreenControl'
+        id: 'gui.stageHeader.fullscreenControl'
     },
     openSettingsMessage: {
         defaultMessage: 'Open advanced settings',

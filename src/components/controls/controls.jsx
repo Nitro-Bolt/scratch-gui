@@ -15,22 +15,22 @@ import {defaultKeybinds, keybindTooltip, registerKeybind} from '../../lib/nb-key
 
 const messages = defineMessages({
     goTitle: {
-        id: 'nb.gui.controls.go',
+        id: 'gui.controls.go',
         defaultMessage: 'Go',
         description: 'Green flag button title'
     },
     pauseTitle: {
-        id: 'nb.gui.controls.pause',
+        id: 'gui.controls.pause',
         defaultMessage: 'Pause',
         description: 'Pause button title'
     },
     stepTitle: {
-        id: 'nb.gui.controls.step',
+        id: 'gui.controls.step',
         defaultMessage: 'Step',
         description: 'Step button title'
     },
     stopTitle: {
-        id: 'nb.gui.controls.stop',
+        id: 'gui.controls.stop',
         defaultMessage: 'Stop',
         description: 'Stop button title'
     }
