@@ -195,7 +195,10 @@ const StageHeaderComponent = function (props) {
                                 iconClassName: classNames(styles.stageButtonIcon, preferences['stage-left'] ?
                                     styles.stageLeft : null),
                                 isSelected: stageSize === 0,
-                                title: props.intl.formatMessage(messages.hiddenStageSizeMessage)
+                                title: keybindTooltip(
+                                    props.intl.formatMessage(messages.hiddenStageSizeMessage),
+                                    stageSize === 0 ? null : preferences['keybind-hide-stage']
+                                )
                             },
                             {
                                 handleClick: () => setStageSize(270),
@@ -211,7 +214,10 @@ const StageHeaderComponent = function (props) {
                                 iconClassName: classNames(styles.stageButtonIcon, preferences['stage-left'] ?
                                     styles.stageLeft : null),
                                 isSelected: stageSize > 430,
-                                title: props.intl.formatMessage(messages.fullStageSizeMessage)
+                                title: keybindTooltip(
+                                    props.intl.formatMessage(messages.fullStageSizeMessage),
+                                    stageSize === 0 ? preferences['keybind-hide-stage'] : null
+                                )
                             }
                         ]}
                     />
