@@ -136,7 +136,7 @@ const StageHeaderComponent = function (props) {
                         src={unFullScreenIcon}
                         title={keybindTooltip(
                             props.intl.formatMessage(messages.fullscreenControl),
-                            new KeybindClass(preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]).toString()
+                            preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]
                         )}
                     />
                 </Button>
@@ -154,7 +154,7 @@ const StageHeaderComponent = function (props) {
                         src={fullScreenIcon}
                         title={keybindTooltip(
                             props.intl.formatMessage(messages.fullscreenControl),
-                            new KeybindClass(preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]).toString()
+                            preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]
                         )}
                     />
                 </Button>
@@ -248,7 +248,7 @@ const StageHeaderComponent = function (props) {
                                     onClick={onOpenDebugger}
                                     title={keybindTooltip(
                                         props.intl.formatMessage(messages.openDebuggerMessage),
-                                        new KeybindClass(preferences["keybind-open-debugger"] ?? defaultKeybinds["open-debugger"]).toString()
+                                        preferences["keybind-open-debugger"] ?? defaultKeybinds["open-debugger"]
                                     )}
                                     tabIndex={0}
                                 >
@@ -277,7 +277,7 @@ const StageHeaderComponent = function (props) {
                                     src={fullScreenIcon}
                                     title={keybindTooltip(
                                         props.intl.formatMessage(messages.fullscreenControl),
-                                        new KeybindClass(preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]).toString()
+                                        preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]
                                     )}
                                 />
                             </Button>

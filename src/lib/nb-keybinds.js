@@ -9,6 +9,7 @@
  */
 
 import {useCallback, useEffect} from 'react';
+import { KeybindClass } from '../components/nb-editor-settings-modal/key-input.jsx';
 
 /**
  * @type {{[key: string]: Keybind}}
@@ -105,4 +106,4 @@ export const registerKeybind = (shortcut, callback) => {
     }, [handleKeyboardEvent]);
 };
 
-export const keybindTooltip = (message, keybind) => `${message}${(keybind && !keybind.disabled) ? ` (${keybind})` : ""}`;
+export const keybindTooltip = (message, keybind) => `${message}${(keybind && !keybind.disabled) ? ` (${new KeybindClass(keybind).toString()})` : ""}`;

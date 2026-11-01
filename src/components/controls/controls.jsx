@@ -12,7 +12,6 @@ import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.js
 
 import styles from './controls.css';
 import {defaultKeybinds, keybindTooltip, registerKeybind} from '../../lib/nb-keybinds.js';
-import { KeybindClass } from '../nb-editor-settings-modal/key-input.jsx';
 
 const messages = defineMessages({
     goTitle: {
@@ -90,8 +89,8 @@ const Controls = function (props) {
                     active={active}
                     title={keybindTooltip(
                         intl.formatMessage(messages.goTitle),
-                        new KeybindClass(preferences["keybind-start-project"] ?? defaultKeybinds["start-project"]).toString())
-                    }
+                        preferences["keybind-start-project"] ?? defaultKeybinds["start-project"]
+                    )}
                     onClick={onGreenFlagClick}
                 />
                 {preferences['hide-pause'] !== true &&
@@ -100,16 +99,16 @@ const Controls = function (props) {
                             paused={paused}
                             title={keybindTooltip(
                                 intl.formatMessage(messages.pauseTitle),
-                                new KeybindClass(preferences["keybind-pause-project"] ?? defaultKeybinds["pause-project"]).toString())
-                            }
+                                preferences["keybind-pause-project"] ?? defaultKeybinds["pause-project"]
+                            )}
                             onClick={onPauseClick}
                         />
                         {paused && !compilerEnabled &&
                             <Step
                                 title={keybindTooltip(
                                     intl.formatMessage(messages.stepTitle),
-                                    new KeybindClass(preferences["keybind-step-project"] ?? defaultKeybinds["step-project"]).toString())
-                                }
+                                    preferences["keybind-step-project"] ?? defaultKeybinds["step-project"]
+                                )}
                                 onClick={onStepClick}
                             />
                         }
@@ -119,8 +118,8 @@ const Controls = function (props) {
                     active={active}
                     title={keybindTooltip(
                         intl.formatMessage(messages.stopTitle),
-                        new KeybindClass(preferences["keybind-stop-project"] ?? defaultKeybinds["stop-project"]).toString())
-                    }
+                        preferences["keybind-stop-project"] ?? defaultKeybinds["stop-project"]
+                    )}
                     onClick={onStopAllClick}
                 />
                 {turbo ? (

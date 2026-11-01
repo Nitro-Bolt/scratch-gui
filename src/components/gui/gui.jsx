@@ -61,7 +61,7 @@ import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
 import assetsIcon from '!../../lib/tw-recolor/build!./icon--assets.svg';
 import variablesIcon from '!../../lib/tw-recolor/build!./icon--variables.svg';
 
-import {defaultKeybinds, registerKeybind} from '../../lib/nb-keybinds.js';
+import {defaultKeybinds, keybindTooltip, registerKeybind} from '../../lib/nb-keybinds.js';
 
 const messages = defineMessages({
     addExtension: {
@@ -690,7 +690,10 @@ const GUIComponent = props => {
                                     <Box className={styles.extensionButtonContainer}>
                                         <button
                                             className={styles.extensionButton}
-                                            title={intl.formatMessage(messages.addExtension)}
+                                            title={keybindTooltip(
+                                                intl.formatMessage(messages.addExtension),
+                                                props.preferences['keybind-open-extensions'] ?? defaultKeybinds['open-extensions']
+                                            )}
                                             onClick={onExtensionButtonClick}
                                         >
                                             <img
