@@ -144,7 +144,9 @@ const SpriteSelectorItem = props => (
         {hasContextMenu(props) ? (
             <ContextMenu id={props.contextMenuId}>
                 {props.onDuplicateButtonClick ? (
-                    <MenuItem onClick={props.onDuplicateButtonClick}>
+                    <MenuItem
+                        onClick={props.onDuplicateButtonClick}
+                    >
                         <FormattedMessage
                             defaultMessage="Duplicate"
                             description="Menu item to duplicate in the right click menu"
