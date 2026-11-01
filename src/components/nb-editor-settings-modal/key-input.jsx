@@ -28,6 +28,7 @@ export class KeybindClass {
             this.alt ? 'Alt' : false,
             this.key?.toUpperCase()
                 .replace('ENTER', 'Enter')
+                .replace('TAB', 'Tab')
                 .replace(' ', 'Space')
         ].filter(v => v).join('+');
     }
