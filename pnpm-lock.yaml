@@ -234,6 +234,9 @@ importers:
       babel-loader:
         specifier: 8.3.0
         version: 8.3.0(@babel/core@7.27.4)(webpack@4.47.0)
+      babel-plugin-react-intl:
+        specifier: 3.5.1
+        version: 3.5.1
       eslint:
         specifier: 8.55.0
         version: 8.55.0
@@ -393,8 +396,16 @@ packages:
     resolution: {integrity: sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==}
     engines: {node: '>=6.9.0'}
 
+  '@babel/helper-string-parser@7.29.11':
+    resolution: {integrity: sha512-snZbO7MEDOof+hvNa97EjEY7qD7h2kwvQr5AJC3ZhQudKW5dnej6k3kP9NQV88hJwaS8vDqRLFo9rivLEhle2g==}
+    engines: {node: '>=6.9.0'}
+
   '@babel/helper-validator-identifier@7.27.1':
     resolution: {integrity: sha512-D2hP9eA+Sqx1kBZgzxZh0y1trbuU+JoDkiEwqhQ36nodYqJwyEIhPSdMNd7lOm/4io72luTPWH20Yda0xOuUow==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/helper-validator-identifier@7.29.7':
+    resolution: {integrity: sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-validator-option@7.27.1':
@@ -859,6 +870,10 @@ packages:
     resolution: {integrity: sha512-ETyHEk2VHHvl9b9jZP5IHPavHYk57EhanlRRuae9XCpb/j5bDCbPPMOBfCWhnl/7EDJz0jEMCi/RhccCE8r1+Q==}
     engines: {node: '>=6.9.0'}
 
+  '@babel/types@7.29.11':
+    resolution: {integrity: sha512-WCsemW40Cpc6gouC1SrY6PBaZ+oLRlEVY9XBvZBI7il/HyUrb2nJ505wE1MHEFyDZNnrWDEuy4jL50WVHfTTSQ==}
+    engines: {node: '>=6.9.0'}
+
   '@eslint-community/eslint-utils@4.7.0':
     resolution: {integrity: sha512-dyybb3AcajC7uha6CvhdVRJqaKyn7w2YKqKyAN37NKYgZT36w+iRb0Dymmc5qEJ549c/S31cMMSFd75bteCpCw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -984,6 +999,18 @@ packages:
 
   '@turbowarp/startaudiocontext@1.0.0':
     resolution: {integrity: sha512-BJ7EVYVwuTH/Tr6tEaLaXA5TCi8qKxNWsxohNqxIEDzykN+FscgOALhEMUlNc6vgcmOi7yQFJ82Prx9bnY5DgA==}
+
+  '@types/babel__core@7.20.5':
+    resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
+
+  '@types/babel__generator@7.27.0':
+    resolution: {integrity: sha512-ufFd2Xi92OAVPYsy+P4n7/U7e68fex0+Ee8gSG9KX7eo084CWiQ4sdxktvdl0bOPupXtVJPY19zk6EwWqUQ8lg==}
+
+  '@types/babel__template@7.4.4':
+    resolution: {integrity: sha512-h/NUaSyG5EyxBIp8YRxo4RMe2/qQgvyowRwVMzhYhBCONbW8PUsg4lkFMrhgZhUe5z3L3MiLDuvyJ/CaPa2A8A==}
+
+  '@types/babel__traverse@7.28.0':
+    resolution: {integrity: sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q==}
 
   '@types/glob@7.2.0':
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
@@ -1352,6 +1379,10 @@ packages:
     resolution: {integrity: sha512-JVE78oRZPKFIeUqFGrSORNzQnrDwZR16oiWeGM8ZyjBn2XAT5OjP+wXx5ESuo33nUsFUEJYjtklnsKbxW5L+7g==}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+
+  babel-plugin-react-intl@3.5.1:
+    resolution: {integrity: sha512-1jlEJCSmLaJM4tjIKpu64UZ833COCHmwR77bFJDOye+zlwf80uR1b8p41l4tClx1QsrfI+qV6w/5AiPYQgaMUQ==}
+    deprecated: this package has been renamed to babel-plugin-formatjs
 
   babel-runtime@6.26.0:
     resolution: {integrity: sha512-ITKNuq2wKlW1fJg9sSW52eepoYgZBggvOAHC0u/CYu/qxQ9EVzThCgR69BnSXLHjy2f7SY5zaQ4yt7H9ZVxY2g==}
@@ -2915,6 +2946,10 @@ packages:
 
   intl-messageformat-parser@1.4.0:
     resolution: {integrity: sha512-/XkqFHKezO6UcF4Av2/Lzfrez18R0jyw7kRFhSeB/YRakdrgSc9QfFZUwNJI9swMwMoNPygK1ArC5wdFSjPw+A==}
+    deprecated: We've written a new parser that's 6x faster and is backwards compatible. Please use @formatjs/icu-messageformat-parser
+
+  intl-messageformat-parser@1.8.1:
+    resolution: {integrity: sha512-IMSCKVf0USrM/959vj3xac7s8f87sc+80Y/ipBzdKy4ifBv5Gsj2tZ41EAaURVg01QU71fYr77uA8Meh6kELbg==}
     deprecated: We've written a new parser that's 6x faster and is backwards compatible. Please use @formatjs/icu-messageformat-parser
 
   intl-messageformat@2.2.0:
@@ -5468,7 +5503,11 @@ snapshots:
 
   '@babel/helper-string-parser@7.27.1': {}
 
+  '@babel/helper-string-parser@7.29.11': {}
+
   '@babel/helper-validator-identifier@7.27.1': {}
+
+  '@babel/helper-validator-identifier@7.29.7': {}
 
   '@babel/helper-validator-option@7.27.1': {}
 
@@ -6050,6 +6089,11 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
+  '@babel/types@7.29.11':
+    dependencies:
+      '@babel/helper-string-parser': 7.29.11
+      '@babel/helper-validator-identifier': 7.29.7
+
   '@eslint-community/eslint-utils@4.7.0(eslint@8.55.0)':
     dependencies:
       eslint: 8.55.0
@@ -6187,6 +6231,27 @@ snapshots:
       transformation-matrix: 1.15.0
 
   '@turbowarp/startaudiocontext@1.0.0': {}
+
+  '@types/babel__core@7.20.5':
+    dependencies:
+      '@babel/parser': 7.27.5
+      '@babel/types': 7.27.6
+      '@types/babel__generator': 7.27.0
+      '@types/babel__template': 7.4.4
+      '@types/babel__traverse': 7.28.0
+
+  '@types/babel__generator@7.27.0':
+    dependencies:
+      '@babel/types': 7.27.6
+
+  '@types/babel__template@7.4.4':
+    dependencies:
+      '@babel/parser': 7.27.5
+      '@babel/types': 7.27.6
+
+  '@types/babel__traverse@7.28.0':
+    dependencies:
+      '@babel/types': 7.29.11
 
   '@types/glob@7.2.0':
     dependencies:
@@ -6627,6 +6692,16 @@ snapshots:
     dependencies:
       '@babel/core': 7.27.4
       '@babel/helper-define-polyfill-provider': 0.2.4(@babel/core@7.27.4)
+    transitivePeerDependencies:
+      - supports-color
+
+  babel-plugin-react-intl@3.5.1:
+    dependencies:
+      '@babel/core': 7.27.4
+      '@babel/helper-plugin-utils': 7.27.1
+      '@types/babel__core': 7.20.5
+      fs-extra: 8.1.0
+      intl-messageformat-parser: 1.8.1
     transitivePeerDependencies:
       - supports-color
 
@@ -8703,6 +8778,8 @@ snapshots:
   intl-format-cache@2.2.9: {}
 
   intl-messageformat-parser@1.4.0: {}
+
+  intl-messageformat-parser@1.8.1: {}
 
   intl-messageformat@2.2.0:
     dependencies:
