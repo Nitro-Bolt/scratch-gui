@@ -2076,6 +2076,24 @@ const EditorSettingsModal = props => {
                         preferences={props.preferences}
                         shortcutId="paint-polygon"
                     />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Group"
+                            id="nb.editorSettings.keymap.paintGroup"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-group"
+                    />
+                    <KeybindSetting
+                        name={<FormattedMessage
+                            defaultMessage="Ungroup"
+                            id="nb.editorSettings.keymap.paintUngroup"
+                        />}
+                        onSetPreference={props.onSetPreference}
+                        preferences={props.preferences}
+                        shortcutId="paint-ungroup"
+                    />
                 </Section>
             </Box>
         }

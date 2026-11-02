@@ -45,6 +45,8 @@ export const defaultKeybinds = {
     'paint-oval': {key: 'c'},
     'paint-effect': {key: 'z'},
     'paint-polygon': {key: 'r'},
+    'paint-group': {ctrl: true, key: 'g'},
+    'paint-ungroup': {ctrl: true, shift: true, key: 'g'},
     'pause-project': {disabled: true},
     'project-full-screen': {key: 'F11'},
     'redo': {ctrl: true, shift: true, key: 'z'},
