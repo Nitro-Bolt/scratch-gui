@@ -796,11 +796,8 @@ class MenuBar extends React.Component {
                                         </MenuItem>
                                         {this.props.onStartSelectingGitProject && (
                                             <MenuItem
-                                                className={classNames({
-                                                    [styles.disabled]: this.state.gitAvailable !== true
-                                                })}
-                                                onClick={this.state.gitAvailable ?
-                                                    this.props.onStartSelectingGitProject : null}
+                                                disabled={this.state.gitAvailable !== true}
+                                                onClick={this.props.onStartSelectingGitProject}
                                             >
                                                 <FormattedMessage
                                                     defaultMessage="Load Git project folder"

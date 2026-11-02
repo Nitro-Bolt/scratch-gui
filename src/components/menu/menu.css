@@ -41,6 +41,11 @@
     cursor: pointer;
 }
 
+.menu-item.disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
 .menu-section {
     border-top: 1px solid $ui-black-transparent;
 }

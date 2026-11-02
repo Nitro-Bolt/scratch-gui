@@ -62,17 +62,22 @@ Submenu.propTypes = {
 const MenuItem = ({
     children,
     className,
+    disabled = false,
     expanded = false,
     onClick
 }) => (
     <li
+        aria-disabled={disabled}
         className={classNames(
             styles.menuItem,
-            styles.hoverable,
-            className,
-            {[styles.expanded]: expanded}
+            {
+                [styles.hoverable]: !disabled,
+                [styles.disabled]: disabled,
+                [styles.expanded]: expanded
+            },
+            className
         )}
-        onClick={onClick}
+        onClick={disabled ? null : onClick}
     >
         {children}
     </li>
@@ -81,6 +86,7 @@ const MenuItem = ({
 MenuItem.propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,
+    disabled: PropTypes.bool,
     expanded: PropTypes.bool,
     onClick: PropTypes.func
 };
