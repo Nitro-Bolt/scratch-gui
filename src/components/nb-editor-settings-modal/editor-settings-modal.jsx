@@ -1812,8 +1812,8 @@ const EditorSettingsModal = props => {
                 </Section>
                 <Section
                     title={<FormattedMessage
-                        id="nb.editorSettings.keymap.spritePane"
-                        defaultMessage="Sprite Pane"
+                        id="nb.editorSettings.keymap.sprites"
+                        defaultMessage="Sprites"
                     />}
                 >
                     <KeybindSetting
@@ -1827,15 +1827,6 @@ const EditorSettingsModal = props => {
                     />
                     <KeybindSetting
                         name={<FormattedMessage
-                            defaultMessage="New sprite folder"
-                            id="nb.editorSettings.keymap.newSpriteFolder"
-                        />}
-                        onSetPreference={props.onSetPreference}
-                        preferences={props.preferences}
-                        shortcutId="new-sprite-folder"
-                    />
-                    <KeybindSetting
-                        name={<FormattedMessage
                             defaultMessage="Toggle sprite visibility"
                             id="nb.editorSettings.keymap.spriteVisibility"
                         />}
@@ -1843,6 +1834,13 @@ const EditorSettingsModal = props => {
                         preferences={props.preferences}
                         shortcutId="toggle-sprite-visibility"
                     />
+                </Section>
+                <Section
+                    title={<FormattedMessage
+                        id="nb.editorSettings.keymap.spritePane"
+                        defaultMessage="Sprite Pane"
+                    />}
+                >
                     <KeybindSetting
                         name={<FormattedMessage
                             defaultMessage="Toggle stage and sprite pane visibility"

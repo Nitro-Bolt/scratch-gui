@@ -269,7 +269,6 @@ class SpriteSelectorItem extends React.PureComponent {
                 componentRef={this.setRef}
                 contextMenuId={`${this.props.dragType || 'item'}-${id}`}
                 costumeURL={this.getCostumeData()}
-                itemType={this.props.dragType}
                 preventContextMenu={this.dragRecognizer.gestureInProgress()}
                 onClick={this.handleClick}
                 onColorButtonClick={onColorButtonClick ? this.handleColor : null}

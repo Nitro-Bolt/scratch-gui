@@ -76,232 +76,224 @@ const hasContextMenu = props => Boolean(props.onDuplicateButtonClick || props.on
     props.onMoveToBottomButtonClick || props.onCreateFolder || props.onColorButtonClick ||
     props.onRenameButtonClick || props.onFolderChange);
 
-const SpriteSelectorItem = props => {
-    registerKeybind(props.preferences['keybind-new-sprite-folder'] ?? defaultKeybinds['new-sprite-folder'], e => {
-        if (props.itemType === "SPRITE") props.onCreateFolder(e);
-    });
-    return (
-        <ContextMenuTrigger
-            attributes={{
-                className: classNames(props.className, styles.spriteSelectorItem, {
-                    [styles.isSelected]: props.selected
-                }),
-                ...(typeof props.name === 'string' ? {'data-searchable-name': props.name} : {}),
-                style: props.style,
-                onClick: props.onClick,
-                onDragOver: props.onNativeDragOver,
-                onDrop: props.onNativeDrop,
-                onMouseEnter: props.onMouseEnter,
-                onMouseLeave: props.onMouseLeave,
-                onMouseMove: props.onMouseMove,
-                onMouseDown: props.onMouseDown,
-                onTouchStart: props.onMouseDown
-            }}
-            disable={props.preventContextMenu}
-            id={props.contextMenuId}
-            ref={props.componentRef}
-        >
-            {typeof props.number === 'undefined' ? null : (
-                <div className={styles.number}>{props.number}</div>
-            )}
-            {props.costumeURL ? (
-                <div className={styles.spriteImageOuter}>
-                    <div className={styles.spriteImageInner}>
-                        <img
-                            alt=""
-                            className={styles.spriteImage}
-                            draggable={false}
-                            loading="lazy"
-                            src={props.costumeURL}
-                            style={props.iconFilter ? {filter: props.iconFilter} : null}
-                        />
-                    </div>
-                </div>
-            ) : null}
-            <div
-                className={styles.spriteInfo}
-                style={props.foregroundColor ? {color: props.foregroundColor} : null}
-            >
-                <div className={styles.spriteName}>{props.name}</div>
-                {props.details ? (
-                    <div className={styles.spriteDetails}>{props.details}</div>
-                ) : null}
-            </div>
-            {(props.selected && props.onDeleteButtonClick) ? (
-                <DeleteButton
-                    className={styles.deleteButton}
-                    onClick={props.onDeleteButtonClick}
-                />
-            ) : null }
-            {props.showSpritePropertiesButton ? (
-                <button
-                    className={styles.spritePropertiesButton}
-                    title="Open sprite properties"
-                    type="button"
-                    onClick={props.onToggleSpriteProperties}
-                >
+const SpriteSelectorItem = props => (
+    <ContextMenuTrigger
+        attributes={{
+            className: classNames(props.className, styles.spriteSelectorItem, {
+                [styles.isSelected]: props.selected
+            }),
+            ...(typeof props.name === 'string' ? {'data-searchable-name': props.name} : {}),
+            style: props.style,
+            onClick: props.onClick,
+            onDragOver: props.onNativeDragOver,
+            onDrop: props.onNativeDrop,
+            onMouseEnter: props.onMouseEnter,
+            onMouseLeave: props.onMouseLeave,
+            onMouseMove: props.onMouseMove,
+            onMouseDown: props.onMouseDown,
+            onTouchStart: props.onMouseDown
+        }}
+        disable={props.preventContextMenu}
+        id={props.contextMenuId}
+        ref={props.componentRef}
+    >
+        {typeof props.number === 'undefined' ? null : (
+            <div className={styles.number}>{props.number}</div>
+        )}
+        {props.costumeURL ? (
+            <div className={styles.spriteImageOuter}>
+                <div className={styles.spriteImageInner}>
                     <img
+                        alt=""
+                        className={styles.spriteImage}
                         draggable={false}
-                        src={spritePropertiesIcon}
+                        loading="lazy"
+                        src={props.costumeURL}
+                        style={props.iconFilter ? {filter: props.iconFilter} : null}
                     />
-                </button>
+                </div>
+            </div>
+        ) : null}
+        <div
+            className={styles.spriteInfo}
+            style={props.foregroundColor ? {color: props.foregroundColor} : null}
+        >
+            <div className={styles.spriteName}>{props.name}</div>
+            {props.details ? (
+                <div className={styles.spriteDetails}>{props.details}</div>
             ) : null}
-            {hasContextMenu(props) ? (
-                <ContextMenu id={props.contextMenuId}>
-                    {props.onDuplicateButtonClick ? (
-                        <MenuItem
-                            onClick={props.onDuplicateButtonClick}
-                        >
+        </div>
+        {(props.selected && props.onDeleteButtonClick) ? (
+            <DeleteButton
+                className={styles.deleteButton}
+                onClick={props.onDeleteButtonClick}
+            />
+        ) : null }
+        {props.showSpritePropertiesButton ? (
+            <button
+                className={styles.spritePropertiesButton}
+                title="Open sprite properties"
+                type="button"
+                onClick={props.onToggleSpriteProperties}
+            >
+                <img
+                    draggable={false}
+                    src={spritePropertiesIcon}
+                />
+            </button>
+        ) : null}
+        {hasContextMenu(props) ? (
+            <ContextMenu id={props.contextMenuId}>
+                {props.onDuplicateButtonClick ? (
+                    <MenuItem
+                        onClick={props.onDuplicateButtonClick}
+                    >
+                        <FormattedMessage
+                            defaultMessage="Duplicate"
+                            description="Menu item to duplicate in the right click menu"
+                            id="nb.spriteSelectorItem.contextMenuDuplicate"
+                        />
+                    </MenuItem>
+                ) : null}
+                {props.onExportButtonClick ? (
+                    <MenuItem onClick={props.onExportButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="Export"
+                            description="Menu item to export the selected item"
+                            id="nb.spriteSelectorItem.contextMenuExport"
+                        />
+                    </MenuItem>
+                ) : null }
+                {props.onExportBitmapButtonClick && !props.isBitmap ? (
+                    <SubMenu
+                        {...subMenuProps}
+                        hoverDelay={150}
+                        title={(
                             <FormattedMessage
-                                defaultMessage="Duplicate"
-                                description="Menu item to duplicate in the right click menu"
-                                id="nb.spriteSelectorItem.contextMenuDuplicate"
+                                defaultMessage="Export as Bitmap"
+                                description="Menu item to bitmap export the selected item"
+                                id="nb.spriteSelectorItem.contextMenuExportBitmap"
                             />
-                        </MenuItem>
-                    ) : null}
-                    {props.onExportButtonClick ? (
-                        <MenuItem onClick={props.onExportButtonClick}>
-                            <FormattedMessage
-                                defaultMessage="Export"
-                                description="Menu item to export the selected item"
-                                id="nb.spriteSelectorItem.contextMenuExport"
-                            />
-                        </MenuItem>
-                    ) : null }
-                    {props.onExportBitmapButtonClick && !props.isBitmap ? (
-                        <SubMenu
-                            {...subMenuProps}
-                            hoverDelay={150}
-                            title={(
+                        )}
+                    >
+                        {[1, 2, 4].map(scale => (
+                            <ExportScaleMenuItem
+                                key={scale}
+                                onSelect={props.onExportBitmapButtonClick}
+                                scale={scale}
+                            >
                                 <FormattedMessage
-                                    defaultMessage="Export as Bitmap"
-                                    description="Menu item to bitmap export the selected item"
-                                    id="nb.spriteSelectorItem.contextMenuExportBitmap"
+                                    defaultMessage="{scale}x"
+                                    description="Menu item to bitmap export the selected item at a specific scale"
+                                    id="tw.spriteSelectorItem.contextMenuExportBitmapScale"
+                                    values={{scale}}
                                 />
-                            )}
-                        >
-                            {[1, 2, 4].map(scale => (
-                                <ExportScaleMenuItem
-                                    key={scale}
-                                    onSelect={props.onExportBitmapButtonClick}
-                                    scale={scale}
-                                >
-                                    <FormattedMessage
-                                        defaultMessage="{scale}x"
-                                        description="Menu item to bitmap export the selected item at a specific scale"
-                                        id="tw.spriteSelectorItem.contextMenuExportBitmapScale"
-                                        values={{scale}}
-                                    />
-                                </ExportScaleMenuItem>
-                            ))}
-                        </SubMenu>
-                    ) : null }
-                    {props.onRenameButtonClick ? (
-                        <MenuItem onClick={props.onRenameButtonClick}>
+                            </ExportScaleMenuItem>
+                        ))}
+                    </SubMenu>
+                ) : null }
+                {props.onRenameButtonClick ? (
+                    <MenuItem onClick={props.onRenameButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="Rename"
+                            description="Menu item to rename an item"
+                            id="nb.spriteSelectorItem.rename"
+                        />
+                    </MenuItem>
+                ) : null}
+                {props.onColorButtonClick ? (
+                    <MenuItem onClick={props.onColorButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="Change Color"
+                            description="Menu item to change a folder color"
+                            id="gui.folders.changeColor"
+                        />
+                    </MenuItem>
+                ) : null}
+                {props.onMoveToTopButtonClick ? (
+                    <MenuItem onClick={props.onMoveToTopButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="Move to Top"
+                            description="Menu item to move an item to the top of the list"
+                            id="nb.spriteSelectorItem.contextMenuMoveToTop"
+                        />
+                    </MenuItem>
+                ) : null}
+                {props.onMoveToBottomButtonClick ? (
+                    <MenuItem onClick={props.onMoveToBottomButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="Move to Bottom"
+                            description="Menu item to move an item to the bottom of the list"
+                            id="nb.spriteSelectorItem.contextMenuMoveToBottom"
+                        />
+                    </MenuItem>
+                ) : null}
+                {props.onCreateFolder ? (
+                    <MenuItem onClick={props.onCreateFolder}>
+                        <FormattedMessage
+                            defaultMessage="Create Folder"
+                            description="Menu item to create a folder"
+                            id="gui.folders.create"
+                        />
+                    </MenuItem>
+                ) : null}
+                {props.folderId && props.canRemoveFromFolder ? (
+                    <FolderMenuItem
+                        folderId={null}
+                        onSelect={props.onFolderChange}
+                    >
+                        <FormattedMessage
+                            defaultMessage="Remove from Folder"
+                            description="Menu item to remove an item from its folder"
+                            id="gui.folders.removeItem"
+                        />
+                    </FolderMenuItem>
+                ) : null}
+                {props.folderOptions.some(folder => folder.id !== props.folderId) ? (
+                    <SubMenu
+                        {...subMenuProps}
+                        hoverDelay={150}
+                        title={(
                             <FormattedMessage
-                                defaultMessage="Rename"
-                                description="Menu item to rename an item"
-                                id="nb.spriteSelectorItem.rename"
+                                defaultMessage="Add to Folder..."
+                                description="Submenu for moving an item into a folder"
+                                id="gui.folders.addItem"
                             />
-                        </MenuItem>
-                    ) : null}
-                    {props.onColorButtonClick ? (
-                        <MenuItem onClick={props.onColorButtonClick}>
-                            <FormattedMessage
-                                defaultMessage="Change Color"
-                                description="Menu item to change a folder color"
-                                id="gui.folders.changeColor"
-                            />
-                        </MenuItem>
-                    ) : null}
-                    {props.onMoveToTopButtonClick ? (
-                        <MenuItem onClick={props.onMoveToTopButtonClick}>
-                            <FormattedMessage
-                                defaultMessage="Move to Top"
-                                description="Menu item to move an item to the top of the list"
-                                id="nb.spriteSelectorItem.contextMenuMoveToTop"
-                            />
-                        </MenuItem>
-                    ) : null}
-                    {props.onMoveToBottomButtonClick ? (
-                        <MenuItem onClick={props.onMoveToBottomButtonClick}>
-                            <FormattedMessage
-                                defaultMessage="Move to Bottom"
-                                description="Menu item to move an item to the bottom of the list"
-                                id="nb.spriteSelectorItem.contextMenuMoveToBottom"
-                            />
-                        </MenuItem>
-                    ) : null}
-                    {props.onCreateFolder ? (
-                        <MenuItem
-                            onClick={props.onCreateFolder}
-                            keybind={props.itemType === "SPRITE" ? props.preferences['keybind-new-sprite-folder'] ?? defaultKeybinds['new-sprite-folder'] : null}
-                        >
-                            <FormattedMessage
-                                defaultMessage="Create Folder"
-                                description="Menu item to create a folder"
-                                id="gui.folders.create"
-                            />
-                        </MenuItem>
-                    ) : null}
-                    {props.folderId && props.canRemoveFromFolder ? (
-                        <FolderMenuItem
-                            folderId={null}
-                            onSelect={props.onFolderChange}
-                        >
-                            <FormattedMessage
-                                defaultMessage="Remove from Folder"
-                                description="Menu item to remove an item from its folder"
-                                id="gui.folders.removeItem"
-                            />
-                        </FolderMenuItem>
-                    ) : null}
-                    {props.folderOptions.some(folder => folder.id !== props.folderId) ? (
-                        <SubMenu
-                            {...subMenuProps}
-                            hoverDelay={150}
-                            title={(
-                                <FormattedMessage
-                                    defaultMessage="Add to Folder..."
-                                    description="Submenu for moving an item into a folder"
-                                    id="gui.folders.addItem"
-                                />
-                            )}
-                        >
-                            {props.folderOptions.filter(folder => folder.id !== props.folderId).map(folder => (
-                                <FolderMenuItem
-                                    folderId={folder.id}
-                                    key={folder.id}
-                                    onSelect={props.onFolderChange}
-                                >
-                                    {getFolderLabel(folder, props.folderOptions)}
-                                </FolderMenuItem>
-                            ))}
-                        </SubMenu>
-                    ) : null}
-                    {props.onDeleteButtonClick ? (
-                        <DangerousMenuItem onClick={props.onDeleteButtonClick}>
-                            <FormattedMessage
-                                defaultMessage="Delete"
-                                description="Menu item to delete in the right click menu"
-                                id="nb.spriteSelectorItem.contextMenuDelete"
-                            />
-                        </DangerousMenuItem>
-                    ) : null }
-                    {props.onDeleteContentsButtonClick ? (
-                        <UnborderedDangerousMenuItem onClick={props.onDeleteContentsButtonClick}>
-                            <FormattedMessage
-                                defaultMessage="Delete with Contents"
-                                description="Menu item to delete a folder and everything inside it"
-                                id="gui.folders.deleteContents"
-                            />
-                        </UnborderedDangerousMenuItem>
-                    ) : null }
-                </ContextMenu>
-            ) : null}
-        </ContextMenuTrigger>
-    );
-};
+                        )}
+                    >
+                        {props.folderOptions.filter(folder => folder.id !== props.folderId).map(folder => (
+                            <FolderMenuItem
+                                folderId={folder.id}
+                                key={folder.id}
+                                onSelect={props.onFolderChange}
+                            >
+                                {getFolderLabel(folder, props.folderOptions)}
+                            </FolderMenuItem>
+                        ))}
+                    </SubMenu>
+                ) : null}
+                {props.onDeleteButtonClick ? (
+                    <DangerousMenuItem onClick={props.onDeleteButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="Delete"
+                            description="Menu item to delete in the right click menu"
+                            id="nb.spriteSelectorItem.contextMenuDelete"
+                        />
+                    </DangerousMenuItem>
+                ) : null }
+                {props.onDeleteContentsButtonClick ? (
+                    <UnborderedDangerousMenuItem onClick={props.onDeleteContentsButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="Delete with Contents"
+                            description="Menu item to delete a folder and everything inside it"
+                            id="gui.folders.deleteContents"
+                        />
+                    </UnborderedDangerousMenuItem>
+                ) : null }
+            </ContextMenu>
+        ) : null}
+    </ContextMenuTrigger>
+);
 
 SpriteSelectorItem.propTypes = {
     canRemoveFromFolder: PropTypes.bool,
@@ -328,7 +320,7 @@ SpriteSelectorItem.propTypes = {
     onExportBitmapButtonClick: PropTypes.func,
     isBitmap: PropTypes.bool,
     iconFilter: PropTypes.string,
-    itemType: PropTypes.oneOf(["SPRITE", "COSTUME", "SOUND", "ASSET", "FOLDER_SPRITE"]),
+    dragType: PropTypes.oneOf(["SPRITE", "COSTUME", "SOUND", "ASSET", "FOLDER_SPRITE"]),
     onRenameButtonClick: PropTypes.func,
     onMoveToTopButtonClick: PropTypes.func,
     onMoveToBottomButtonClick: PropTypes.func,
