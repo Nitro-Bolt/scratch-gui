@@ -8,7 +8,7 @@
     "editor-devtools/orphaned": "{count, plural, one {Fejlesztői eszközök: Törölni szeretnél 1 kódon kívüli értékadó blokkot?} other {Fejlesztői eszközök: Törölni szeretnél # kódon kívüli értékadó blokkot?} }",
     "editor-devtools/paste": "Beillesztés",
     "editor-devtools/replace": "Fejlesztői eszközök: Lecserélsz minden {name} változót ebben a szereplőben egy másik változóra, amit úgy hívnak:",
-    "editor-devtools/swap": "{var} cserélye a Szereplőben",
+    "editor-devtools/swap": "{var} cseréje a Szereplőben",
     "editor-devtools/unused-list": "{count, plural, one {Fejlesztői eszközök: Törölni szeretnél 1 nem használt helyi listát? Itt van:\n} other {Fejlesztői eszközök: Törölni szeretnél # nem használt heliy listát? Itt vannak:\n} }",
     "editor-devtools/unused-var": "{count, plural, one {Fejlesztői eszközök: Törölni szeretnél 1 nem használt helyi változót? Itt van:\n} other {Fejlesztői eszközök: Törölni szeretnél # nem használt helyi változót? Itt vannak:\n} }",
     "editor-devtools/var-not-exist": "Ez a változó nem létezik...",

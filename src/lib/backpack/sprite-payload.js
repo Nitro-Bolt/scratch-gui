@@ -2,7 +2,7 @@ import createThumbnail from './thumbnail';
 
 const spritePayload = (id, vm) => {
     const target = vm.runtime.getTargetById(id);
-    if (!target) return null;
+    if (!target) return Promise.reject(new Error(`Sprite ${id} does not exist`));
 
     return vm.exportSprite(
         id,

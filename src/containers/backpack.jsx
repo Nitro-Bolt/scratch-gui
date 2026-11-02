@@ -176,53 +176,54 @@ class Backpack extends React.Component {
         if (!payloader) return;
 
         // Creating the payload is async, so set loading before starting
-        this.setState({loading: true}, () => {
-            Promise.resolve()
-                .then(() => payloader(dragInfo.payload, this.props.vm))
-                .then(payload => {
-                    if (!payload) throw new Error('Could not serialize backpack item');
-                    // Force the asset to save to the asset server before storing in backpack
-                    // Ensures any asset present in the backpack is also on the asset server
-                    if (presaveAsset && !presaveAsset.clean && this.props.host !== LOCAL_API) {
-                        return storage.store(
-                            presaveAsset.assetType,
-                            presaveAsset.dataFormat,
-                            presaveAsset.data,
-                            presaveAsset.assetId
-                        ).then(() => payload);
-                    }
-                    return payload;
-                })
-                .then(payload => saveBackpackObject({
+        this.setState({loading: true}, async () => {
+            try {
+                const payload = await payloader(dragInfo.payload, this.props.vm);
+                if (!payload) throw new Error('Could not serialize backpack item');
+                // Force the asset to save to the asset server before storing in backpack
+                // Ensures any asset present in the backpack is also on the asset server
+                if (presaveAsset && !presaveAsset.clean && this.props.host !== LOCAL_API) {
+                    await storage.store(
+                        presaveAsset.assetType,
+                        presaveAsset.dataFormat,
+                        presaveAsset.data,
+                        presaveAsset.assetId
+                    );
+                }
+                const item = await saveBackpackObject({
                     host: this.props.host,
                     token: this.props.token,
                     username: this.props.username,
                     ...(this.props.host === LOCAL_API ? {folderId: null} : {}),
                     ...payload
-                }))
-                .then(item => {
-                    const contents = [item].concat(this.state.contents);
-                    if (this.props.host !== LOCAL_API || !destinationFolderId) {
-                        this.setState({loading: false, contents});
-                        return null;
-                    }
-                    return moveBackpackObjectToFolder({
+                });
+                const contents = [item].concat(this.state.contents);
+                if (this.props.host !== LOCAL_API || !destinationFolderId) {
+                    this.setState({loading: false, contents});
+                    return;
+                }
+                const {
+                    item: updatedItem,
+                    deletedFolderId,
+                    deletedFolderIds = [],
+                    orderedIds
+                } = await moveBackpackObjectToFolder({
                         host: this.props.host,
                         id: item.id,
                         folderId: destinationFolderId,
                         destinationId: dropTarget && dropTarget.destinationId,
                         insertAfter: dropTarget && dropTarget.insertAfter
-                    }).then(({item: updatedItem, deletedFolderId, deletedFolderIds = [], orderedIds}) => this.setState({
+                    });
+                this.setState({
                         loading: false,
                         contents: sortByBackpackOrder(contents
                             .filter(candidate => !deletedFolderIds.some(folderId => idsEqual(candidate.id, folderId)) &&
                                 (!deletedFolderId || !idsEqual(candidate.id, deletedFolderId)))
                             .map(candidate => (idsEqual(candidate.id, item.id) ? updatedItem : candidate)), orderedIds)
-                    }));
-                })
-                .catch(error => {
-                    this.handleError(error);
                 });
+            } catch (error) {
+                this.handleError(error);
+            }
         });
     }
     async handleCreateFolder (itemId) {
