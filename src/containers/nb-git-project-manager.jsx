@@ -7,6 +7,7 @@ import log from '../lib/log';
 import {setProjectUnchanged} from '../reducers/project-changed';
 
 const SYNC_DEBOUNCE_MS = 2000;
+const USER_ACTIVITY_EVENTS = ['pointerdown', 'pointermove', 'keydown', 'wheel', 'input'];
 
 let activeManager = null;
 
@@ -30,7 +31,8 @@ class NBGitProjectManager extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
-            'handleProjectChanged'
+            'handleProjectChanged',
+            'handleUserActivity'
         ]);
         this.timeout = null;
         this.inFlight = null;
@@ -42,6 +44,9 @@ class NBGitProjectManager extends React.Component {
     componentDidMount () {
         activeManager = this;
         this.props.vm.on('PROJECT_CHANGED', this.handleProjectChanged);
+        USER_ACTIVITY_EVENTS.forEach(eventName => {
+            document.addEventListener(eventName, this.handleUserActivity, true);
+        });
     }
 
     componentDidUpdate (prevProps) {
@@ -57,6 +62,9 @@ class NBGitProjectManager extends React.Component {
     componentWillUnmount () {
         if (activeManager === this) activeManager = null;
         this.props.vm.off('PROJECT_CHANGED', this.handleProjectChanged);
+        USER_ACTIVITY_EVENTS.forEach(eventName => {
+            document.removeEventListener(eventName, this.handleUserActivity, true);
+        });
         this.clearTimeout();
     }
 
@@ -70,6 +78,13 @@ class NBGitProjectManager extends React.Component {
     handleProjectChanged () {
         if (!this.props.projectPath || typeof window === 'undefined' || !window.Git) return;
         this.generation++;
+        this.clearTimeout();
+        this.queueSync();
+    }
+
+    handleUserActivity (event) {
+        if (event.type === 'pointermove' && event.buttons === 0) return;
+        if (this.generation <= this.syncedGeneration || this.pauseDepth > 0 || this.timeout === null) return;
         this.clearTimeout();
         this.queueSync();
     }
