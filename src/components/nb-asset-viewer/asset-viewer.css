@@ -30,6 +30,14 @@
     margin: 1rem
 }
 
+.icon {
+    flex: none;
+    width: 8rem;
+    height: 8rem;
+    margin: 1rem;
+    object-fit: contain;
+}
+
 .editor-header-row {
     display: flex;
     align-items: center;
