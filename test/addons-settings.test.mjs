@@ -31,29 +31,17 @@ test('enabled, event', () => {
     const store = new SettingStore();
     const fn = mock.fn();
     store.addEventListener('setting-changed', fn);
-    assert.equal(store.getAddonEnabled('editor-devtools'), true);
-    assert.equal('enabled' in store.store['editor-devtools'], false);
-    store.setAddonEnabled('editor-devtools', false);
-    assert.equal(store.getAddonEnabled('editor-devtools'), false);
-    assert.equal('enabled' in store.store['editor-devtools'], true);
-    store.setAddonEnabled('editor-devtools', true);
     store.setAddonEnabled('cat-blocks', true);
     assert.equal('enabled' in store.store['cat-blocks'], true);
     store.setAddonEnabled('cat-blocks', null);
     assert.equal('enabled' in store.store['cat-blocks'], false);
-    assert.equal(fn.mock.callCount(), 4);
-    assert.equal(fn.mock.calls[0].arguments[0].detail.addonId, 'editor-devtools');
+    assert.equal(fn.mock.callCount(), 2);
+    assert.equal(fn.mock.calls[0].arguments[0].detail.addonId, 'cat-blocks');
     assert.equal(fn.mock.calls[0].arguments[0].detail.settingId, 'enabled');
-    assert.equal(fn.mock.calls[0].arguments[0].detail.value, false);
-    assert.equal(fn.mock.calls[1].arguments[0].detail.addonId, 'editor-devtools');
+    assert.equal(fn.mock.calls[0].arguments[0].detail.value, true);
+    assert.equal(fn.mock.calls[1].arguments[0].detail.addonId, 'cat-blocks');
     assert.equal(fn.mock.calls[1].arguments[0].detail.settingId, 'enabled');
-    assert.equal(fn.mock.calls[1].arguments[0].detail.value, true);
-    assert.equal(fn.mock.calls[2].arguments[0].detail.addonId, 'cat-blocks');
-    assert.equal(fn.mock.calls[2].arguments[0].detail.settingId, 'enabled');
-    assert.equal(fn.mock.calls[2].arguments[0].detail.value, true);
-    assert.equal(fn.mock.calls[3].arguments[0].detail.addonId, 'cat-blocks');
-    assert.equal(fn.mock.calls[3].arguments[0].detail.settingId, 'enabled');
-    assert.equal(fn.mock.calls[3].arguments[0].detail.value, false);
+    assert.equal(fn.mock.calls[1].arguments[0].detail.value, false);
 });
 
 test('settings, event, default values', () => {
@@ -389,18 +377,14 @@ test('local storage is resistent to errors', () => {
 test('setStore diffing', () => {
     const settingsStore = new SettingStore();
     const pageStore = new SettingStore();
-    settingsStore.setAddonEnabled('editor-devtools', false);
-    pageStore.setAddonEnabled('editor-devtools', false);
     const fn = mock.fn();
     pageStore.addEventListener('addon-changed', fn);
     pageStore.setStore(settingsStore.store);
     assert.equal(fn.mock.callCount(), 0);
-    settingsStore.setAddonEnabled('editor-devtools', true);
     settingsStore.setAddonSetting('onion-skinning', 'next', 10);
     pageStore.setStore(settingsStore.store);
-    assert.equal(fn.mock.callCount(), 2);
-    assert.equal(fn.mock.calls[0].arguments[0].detail.addonId, 'editor-devtools');
-    assert.equal(fn.mock.calls[1].arguments[0].detail.addonId, 'onion-skinning');
+    assert.equal(fn.mock.callCount(), 1);
+    assert.equal(fn.mock.calls[0].arguments[0].detail.addonId, 'onion-skinning');
 });
 
 test('setStore dynamic enable/disable', () => {
@@ -424,25 +408,11 @@ test('setStore dynamic enable/disable', () => {
 
 test('setStore weird values', () => {
     const settingsStore = new SettingStore();
-    assert.equal(settingsStore.getAddonEnabled('pause'), true);
-    settingsStore.setAddonEnabled('pause', false);
     settingsStore.setAddonEnabled('clones', true);
     settingsStore.setStore({
         invalid0: {},
-        invalid1: null,
-        pause: null
+        invalid1: null
     });
-    assert.equal(settingsStore.getAddonEnabled('pause'), false);
-});
-
-test('resetting an addon through setStore', () => {
-    const store = new SettingStore();
-    assert.equal(store.getAddonSetting('custom-block-shape', 'paddingSize'), 100);
-    store.setAddonSetting('custom-block-shape', 'paddingSize', 50);
-    assert.equal(store.getAddonSetting('custom-block-shape', 'paddingSize'), 50);
-    const store2 = new SettingStore();
-    store.setStore(store2.store);
-    assert.equal(store.getAddonSetting('custom-block-shape', 'paddingSize'), 100);
 });
 
 test('setStoreWithVersionCheck', () => {
@@ -464,12 +434,10 @@ test('setStoreWithVersionCheck', () => {
 
 test('parseUrlParameter', () => {
     const store = new SettingStore();
-    assert.equal(store.getAddonEnabled('pause'), true);
     assert.equal(store.getAddonEnabled('mute-project'), true);
     assert.equal(store.getAddonEnabled('remove-curved-stage-border'), false);
     assert.equal(store.remote, false);
     store.parseUrlParameter('pause,remove-curved-stage-border,,invalid addon??43t987(*&$');
-    assert.equal(store.getAddonEnabled('pause'), true);
     assert.equal(store.getAddonEnabled('mute-project'), false);
     assert.equal(store.getAddonEnabled('remove-curved-stage-border'), true);
     assert.equal(store.remote, true);
@@ -482,15 +450,11 @@ test('Settings migration 1 -> 2', () => {
     globalThis.localStorage.getItem = () => `{"_":1,"tw-project-info":{"enabled":false},"tw-interface-customization":{"enabled":false,"removeFeedback":true,"removeBackpack":true}}`;
     store.readLocalStorage();
     assert.equal(store.getAddonEnabled('block-count'), false);
-    assert.equal(store.getAddonEnabled('tw-remove-backpack'), false);
-    assert.equal(store.getAddonEnabled('tw-remove-feedback'), false);
 
     // eslint-disable-next-line max-len
     globalThis.localStorage.getItem = () => `{"_":1,"tw-project-info":{"enabled":true},"tw-interface-customization":{"enabled":true,"removeFeedback":true,"removeBackpack":true}}`;
     store.readLocalStorage();
     assert.equal(store.getAddonEnabled('block-count'), true);
-    assert.equal(store.getAddonEnabled('tw-remove-backpack'), true);
-    assert.equal(store.getAddonEnabled('tw-remove-feedback'), true);
 });
 
 test('Settings migration 2 -> 3', () => {
@@ -513,25 +477,19 @@ test('Settings migration 3 -> 4', () => {
         _: 3
     });
     store.readLocalStorage();
-    assert.equal(store.getAddonEnabled('editor-devtools'), true);
     assert.equal(store.getAddonEnabled('find-bar'), true);
     assert.equal(store.getAddonEnabled('middle-click-popup'), true);
 
     globalThis.localStorage.getItem = () => JSON.stringify({
-        '_': 3,
-        'editor-devtools': {
-            enabled: false
-        }
+        '_': 3
     });
     store.readLocalStorage();
-    assert.equal(store.getAddonEnabled('editor-devtools'), false);
-    assert.equal(store.getAddonEnabled('find-bar'), false);
-    assert.equal(store.getAddonEnabled('middle-click-popup'), false);
+    assert.equal(store.getAddonEnabled('find-bar'), true);
+    assert.equal(store.getAddonEnabled('middle-click-popup'), true);
 });
 
 test('if', () => {
     const store = new SettingStore();
-    store.setAddonEnabled('editor-devtools', true);
     store.setAddonEnabled('onion-skinning', false);
     store.setAddonSetting('editor-theme3', 'motion-color', '#000000');
     store.setAddonSetting('editor-theme3', 'looks-color', '#FFFFFF');
@@ -547,15 +505,6 @@ test('if', () => {
     assert.equal(store.evaluateCondition('editor-theme3', {
         addonEnabled: 'onion-skinning'
     }), false);
-    assert.equal(store.evaluateCondition('editor-theme3', {
-        addonEnabled: ['editor-devtools']
-    }), true);
-    assert.equal(store.evaluateCondition('editor-theme3', {
-        addonEnabled: 'editor-devtools'
-    }), true);
-    assert.equal(store.evaluateCondition('editor-theme3', {
-        addonEnabled: ['editor-devtools', 'onion-skinning']
-    }), true);
 
     assert.equal(store.evaluateCondition('editor-theme3', {
         settings: {}
@@ -620,21 +569,9 @@ test('if', () => {
     }), false);
 
     assert.equal(store.evaluateCondition('editor-theme3', {
-        addonEnabled: ['editor-devtools'],
-        settings: {
-            'motion-color': '#000000'
-        }
-    }), true);
-    assert.equal(store.evaluateCondition('editor-theme3', {
         addonEnabled: ['onion-skinning'],
         settings: {
             'motion-color': '#000000'
-        }
-    }), false);
-    assert.equal(store.evaluateCondition('editor-theme3', {
-        addonEnabled: ['editor-devtools'],
-        settings: {
-            'motion-color': '#000001'
         }
     }), false);
     assert.equal(store.evaluateCondition('editor-theme3', {
