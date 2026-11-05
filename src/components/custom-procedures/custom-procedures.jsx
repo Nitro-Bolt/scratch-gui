@@ -52,6 +52,7 @@ const CustomProcedures = props => {
         <Modal
             className={styles.modalContent}
             contentLabel={props.intl.formatMessage(messages.myblockModalTitle)}
+            onOpenAnimationEnd={props.onOpenAnimationEnd}
             onRequestClose={props.onCancel}
             id="customProceduresModal"
         >
@@ -369,6 +370,7 @@ CustomProcedures.propTypes = {
     menuOption: PropTypes.string.isRequired,
     onInputMenuClick: PropTypes.func.isRequired,
     onInputMenuChange: PropTypes.func.isRequired,
+    onOpenAnimationEnd: PropTypes.func.isRequired,
     onOutputMenuChange: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,

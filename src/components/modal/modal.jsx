@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import ReactModal from 'react-modal';
 import {FormattedMessage} from 'react-intl';
-import { GUI_DARK } from '../../lib/themes/index.js';
+import {GUI_DARK} from '../../lib/themes/index.js';
 
 import Box from '../box/box.jsx';
 import Button from '../button/button.jsx';
@@ -14,8 +14,39 @@ import helpIcon from '../../lib/assets/icon--help.svg';
 
 import styles from './modal.css';
 
-const ModalComponent = props => (
-    <ReactModal
+const ModalComponent = props => {
+    const contentElement = useRef(null);
+    const animationEndHandler = useRef(null);
+    const hasFinishedOpening = useRef(false);
+    const finishOpening = () => {
+        if (hasFinishedOpening.current) return;
+        hasFinishedOpening.current = true;
+        if (props.onOpenAnimationEnd) props.onOpenAnimationEnd();
+    };
+    const setContentElement = element => {
+        if (contentElement.current && animationEndHandler.current) {
+            contentElement.current.removeEventListener('animationend', animationEndHandler.current);
+        }
+        contentElement.current = element;
+        if (element && props.preferences['modal-open-animation']) {
+            animationEndHandler.current = event => {
+                if (event.target === element) finishOpening();
+            };
+            element.addEventListener('animationend', animationEndHandler.current);
+        }
+    };
+    useEffect(() => {
+        if (!props.preferences['modal-open-animation']) {
+            finishOpening();
+        }
+        return () => {
+            if (contentElement.current && animationEndHandler.current) {
+                contentElement.current.removeEventListener('animationend', animationEndHandler.current);
+            }
+        };
+    }, []);
+
+    return (<ReactModal
         isOpen
         className={classNames(styles.modalContent, props.className, {
             [styles.fullScreen]: props.fullScreen,
@@ -30,6 +61,9 @@ const ModalComponent = props => (
             }
         }}
         contentLabel={props.contentLabel}
+        // This ref must update the hook-owned content element.
+        // eslint-disable-next-line react/jsx-no-bind
+        contentRef={setContentElement}
         overlayClassName={styles.modalOverlay}
         onRequestClose={props.onRequestClose}
     >
@@ -102,8 +136,8 @@ const ModalComponent = props => (
             </div>
             {props.children}
         </Box>
-    </ReactModal>
-);
+    </ReactModal>);
+};
 
 ModalComponent.propTypes = {
     children: PropTypes.node,
@@ -117,6 +151,7 @@ ModalComponent.propTypes = {
     headerImage: PropTypes.string,
     isRtl: PropTypes.bool,
     onHelp: PropTypes.func,
+    onOpenAnimationEnd: PropTypes.func,
     onRequestClose: PropTypes.func,
     modernClassName: PropTypes.string,
     preferences: PropTypes.object,

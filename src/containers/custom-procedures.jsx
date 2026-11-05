@@ -21,6 +21,7 @@ class CustomProcedures extends React.Component {
             'handleToggleDual',
             'handlePropagation',
             'handleInputMenuChange',
+            'handleOpenAnimationEnd',
             'handleOutputMenuChange',
             'handleCancel',
             'handleOk',
@@ -126,10 +127,9 @@ class CustomProcedures extends React.Component {
             outputMode: this.mutationRoot.getOutputMode(),
             colour: this.mutationRoot.getProcedureColour()
         });
-        // Allow the initial events to run to position this block, then focus.
-        setTimeout(() => {
-            this.mutationRoot.focusLastEditor_();
-        });
+    }
+    handleOpenAnimationEnd () {
+        if (this.mutationRoot) this.mutationRoot.focusLastEditor_();
     }
     handleCancel () {
         this.props.onRequestClose();
@@ -246,6 +246,7 @@ class CustomProcedures extends React.Component {
                 onSetColor={this.handleAddColor}
                 onInputMenuClick={this.handlePropagation}
                 onInputMenuChange={this.handleInputMenuChange}
+                onOpenAnimationEnd={this.handleOpenAnimationEnd}
                 onOutputMenuChange={this.handleOutputMenuChange}
                 menuOption={this.state.menuInput}
                 onCancel={this.handleCancel}
