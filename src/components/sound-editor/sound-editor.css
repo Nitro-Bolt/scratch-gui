@@ -6,6 +6,7 @@
     flex-direction: column;
     flex-grow: 1;
     padding: calc(2 * $space);
+    overflow-x: hidden;
 }
 
 .row {
