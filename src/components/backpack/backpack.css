@@ -42,6 +42,38 @@
     min-height: 5.5rem;
 }
 
+.backpack-list.has-toolbar {
+    min-height: 8.25rem;
+}
+
+.toolbar {
+    position: absolute;
+    top: 0.4rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2rem;
+    z-index: 1;
+}
+
+.search {
+    box-sizing: border-box;
+    width: 12rem;
+    height: 2rem;
+    padding: 0 0.6rem;
+    font-size: 0.8rem;
+}
+
+.type-filter {
+    width: 7.5rem;
+}
+
+.type-filter-select {
+    height: 2.125rem;
+}
+
 .stage-left .backpack-list {
     border-left: 1px solid $ui-black-transparent;
     border-right: none;
@@ -58,6 +90,11 @@
     flex-direction: row;
     align-items: center;
     overflow-x: auto;
+}
+
+.has-toolbar .backpack-list-inner {
+    top: 2.75rem;
+    height: calc(100% - 2.75rem);
 }
 
 .drag-over:after {

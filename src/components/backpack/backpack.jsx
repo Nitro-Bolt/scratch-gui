@@ -7,6 +7,8 @@ import DragConstants from '../../lib/drag-constants';
 import {ComingSoonTooltip} from '../coming-soon/coming-soon.jsx';
 import SpriteSelectorItem from '../../containers/sprite-selector-item.jsx';
 import FolderTile from '../nb-folder-tile/folder-tile.jsx';
+import FancyDropdown from '../nb-fancy-dropdown/dropdown.jsx';
+import FancyTextInput from '../nb-fancy-text-input/text-input.jsx';
 import styles from './backpack.css';
 import {defaultKeybinds, registerKeybind} from '../../lib/nb-keybinds.js';
 
@@ -65,6 +67,51 @@ const labelMap = defineMessages({
     }
 });
 
+const filterMessages = defineMessages({
+    search: {
+        id: 'gui.backpack.search',
+        defaultMessage: 'Search backpack',
+        description: 'Placeholder for the backpack search field'
+    },
+    all: {
+        id: 'gui.backpack.filterAll',
+        defaultMessage: 'All types',
+        description: 'Show every backpack item type'
+    },
+    script: {
+        id: 'gui.backpack.filterScripts',
+        defaultMessage: 'Scripts',
+        description: 'Show only scripts in the backpack'
+    },
+    sprite: {
+        id: 'gui.backpack.filterSprites',
+        defaultMessage: 'Sprites',
+        description: 'Show only sprites in the backpack'
+    },
+    costume: {
+        id: 'gui.backpack.filterCostumes',
+        defaultMessage: 'Costumes',
+        description: 'Show only costumes in the backpack'
+    },
+    sound: {
+        id: 'gui.backpack.filterSounds',
+        defaultMessage: 'Sounds',
+        description: 'Show only sounds in the backpack'
+    },
+    asset: {
+        id: 'gui.backpack.filterAssets',
+        defaultMessage: 'Assets',
+        description: 'Show only assets in the backpack'
+    },
+    noResults: {
+        id: 'gui.backpack.noResults',
+        defaultMessage: 'No matching backpack items',
+        description: 'Message shown when no backpack items match the search and filter'
+    }
+});
+
+const filterTypes = ['all', 'script', 'sprite', 'costume', 'sound', 'asset'];
+
 const Backpack = ({
     blockDragOver,
     containerRef,
@@ -90,12 +137,36 @@ const Backpack = ({
     foldersEnabled,
     preferences
 }) => {
+    const [search, setSearch] = React.useState('');
+    const [typeFilter, setTypeFilter] = React.useState('all');
+    const normalizedSearch = search.trim().toLocaleLowerCase();
+    const filterActive = Boolean(normalizedSearch) || typeFilter !== 'all';
     const closedFolders = contents
         .filter(item => item.type === 'folder' && item.open === false)
         .map(item => item.id);
     const [draggedFolderId, setDraggedFolderId] = React.useState(null);
-    const isFolderClosed = folderId => closedFolders.some(id => idsEqual(id, folderId));
+    const isFolderClosed = folderId => !filterActive && closedFolders.some(id => idsEqual(id, folderId));
     const folders = foldersEnabled ? contents.filter(item => item.type === 'folder') : [];
+    const matchingIds = contents
+        .filter(item => {
+            const typeMatches = typeFilter === 'all' ? true : item.type === typeFilter;
+            const nameMatches = !normalizedSearch ||
+                `${item.name || ''}`.toLocaleLowerCase().includes(normalizedSearch);
+            return typeMatches && nameMatches;
+        })
+        .map(item => `${item.id}`);
+    let foundParent = true;
+    while (foundParent) {
+        foundParent = false;
+        for (const item of contents) {
+            if (matchingIds.includes(`${item.id}`) && item.folderId && !matchingIds.includes(`${item.folderId}`)) {
+                matchingIds.push(`${item.folderId}`);
+                foundParent = true;
+            }
+        }
+    }
+    const filteredContents = filterActive ?
+        contents.filter(item => matchingIds.includes(`${item.id}`)) : contents;
     const getDescendantFolderIds = folderId => {
         const descendantIds = new Set([`${folderId}`]);
         let foundDescendant = true;
@@ -205,7 +276,7 @@ const Backpack = ({
         if (renderedIds.has(item.id)) return null;
         const descendantIds = getDescendantFolderIds(item.id);
         const folderOptions = folders.filter(folder => !descendantIds.has(`${folder.id}`));
-        const children = contents.filter(child => idsEqual(child.folderId, item.id));
+        const children = filteredContents.filter(child => idsEqual(child.folderId, item.id));
         renderedIds.add(item.id);
         return (
             <React.Fragment key={item.id}>
@@ -284,12 +355,41 @@ const Backpack = ({
             {expanded ? (
                 <div
                     className={classNames(styles.backpackList, {
-                        [styles.dragOver]: dragOver || blockDragOver
+                        [styles.dragOver]: dragOver || blockDragOver,
+                        [styles.hasToolbar]: contents.length > 0
                     })}
                     ref={containerRef}
                     onMouseEnter={onMouseEnter}
                     onMouseLeave={onMouseLeave}
                 >
+                    {contents.length > 0 && (
+                        <div className={styles.toolbar}>
+                            <FancyTextInput
+                                aria-label={intl.formatMessage(filterMessages.search)}
+                                className={styles.search}
+                                placeholder={intl.formatMessage(filterMessages.search)}
+                                type="search"
+                                value={search}
+                                onChange={event => setSearch(event.target.value)}
+                            />
+                            <FancyDropdown
+                                aria-label={intl.formatMessage(filterMessages.all)}
+                                className={styles.typeFilter}
+                                selectClassName={styles.typeFilterSelect}
+                                value={typeFilter}
+                                onChange={event => setTypeFilter(event.target.value)}
+                            >
+                                {filterTypes.map(type => (
+                                    <option
+                                        key={type}
+                                        value={type}
+                                    >
+                                        {intl.formatMessage(filterMessages[type])}
+                                    </option>
+                                ))}
+                            </FancyDropdown>
+                        </div>
+                    )}
                     {/* eslint-disable-next-line no-negated-condition */}
                     {error !== false ? (
                         <div className={styles.statusMessage}>
@@ -310,7 +410,7 @@ const Backpack = ({
                                 />
                             </div>
                         ) : (
-                            contents.length > 0 ? (
+                            filteredContents.length > 0 ? (
                                 <div
                                     className={styles.backpackListInner}
                                     onDragOver={foldersEnabled ? handleFolderDragOver : null}
@@ -320,7 +420,7 @@ const Backpack = ({
                                     }}
                                     onDrop={foldersEnabled ? event => handleFolderDrop(null, event) : null}
                                 >
-                                    {contents.map(item => {
+                                    {filteredContents.map(item => {
                                         if (renderedIds.has(item.id) || (item.folderId && folders.some(
                                             folder => idsEqual(folder.id, item.folderId)
                                         ))) return null;
@@ -345,11 +445,15 @@ const Backpack = ({
                                 </div>
                             ) : (
                                 <div className={styles.statusMessage}>
-                                    <FormattedMessage
-                                        defaultMessage="Backpack is empty"
-                                        description="Empty backpack message"
-                                        id="gui.backpack.emptyBackpack"
-                                    />
+                                    {contents.length > 0 ? (
+                                        <FormattedMessage {...filterMessages.noResults} />
+                                    ) : (
+                                        <FormattedMessage
+                                            defaultMessage="Backpack is empty"
+                                            description="Empty backpack message"
+                                            id="gui.backpack.emptyBackpack"
+                                        />
+                                    )}
                                 </div>
                             )
                         )
