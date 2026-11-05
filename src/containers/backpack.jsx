@@ -346,10 +346,10 @@ class Backpack extends React.Component {
         updateBackpackObject({host: this.props.host, id, color})
             .catch(error => this.handleError(error));
     }
-    handleFolderDropTargetChange (folderId, destinationId, insertAfter) {
-        this.folderDropTarget = destinationId === null ? null : {
+    handleFolderDropTargetChange (folderId, destinationId, insertAfter, membershipOnly = false) {
+        this.folderDropTarget = destinationId === null && !membershipOnly ? null : {
             folderId: folderId || null,
-            destinationId,
+            destinationId: membershipOnly ? null : destinationId,
             insertAfter: Boolean(insertAfter)
         };
     }

@@ -9,6 +9,10 @@ import SpriteSelectorItem from '../../containers/sprite-selector-item.jsx';
 import FolderTile from '../nb-folder-tile/folder-tile.jsx';
 import FancyDropdown from '../nb-fancy-dropdown/dropdown.jsx';
 import FancyTextInput from '../nb-fancy-text-input/text-input.jsx';
+import {
+    filterBackpackContents,
+    sortBackpackItems
+} from '../../lib/backpack-view-utils';
 import styles from './backpack.css';
 import {defaultKeybinds, registerKeybind} from '../../lib/nb-keybinds.js';
 
@@ -70,13 +74,18 @@ const labelMap = defineMessages({
 const filterMessages = defineMessages({
     search: {
         id: 'gui.backpack.search',
-        defaultMessage: 'Search backpack',
+        defaultMessage: 'Search backpack...',
         description: 'Placeholder for the backpack search field'
     },
     all: {
         id: 'gui.backpack.filterAll',
         defaultMessage: 'All types',
         description: 'Show every backpack item type'
+    },
+    filterByType: {
+        id: 'gui.backpack.filterByType',
+        defaultMessage: 'Filter backpack by type',
+        description: 'Accessible label for the backpack type filter'
     },
     script: {
         id: 'gui.backpack.filterScripts',
@@ -107,10 +116,56 @@ const filterMessages = defineMessages({
         id: 'gui.backpack.noResults',
         defaultMessage: 'No matching backpack items',
         description: 'Message shown when no backpack items match the search and filter'
+    },
+    sort: {
+        id: 'gui.backpack.sort',
+        defaultMessage: 'Sort backpack',
+        description: 'Accessible label for the backpack sort menu'
+    },
+    recent: {
+        id: 'gui.backpack.sortRecent',
+        defaultMessage: 'Recently added',
+        description: 'Sort backpack items by most recently added'
+    },
+    oldest: {
+        id: 'gui.backpack.sortOldest',
+        defaultMessage: 'Oldest first',
+        description: 'Sort backpack items by oldest first'
+    },
+    nameAscending: {
+        id: 'gui.backpack.sortNameAscending',
+        defaultMessage: 'Name: A to Z',
+        description: 'Sort backpack items by name in ascending order'
+    },
+    nameDescending: {
+        id: 'gui.backpack.sortNameDescending',
+        defaultMessage: 'Name: Z to A',
+        description: 'Sort backpack items by name in descending order'
+    },
+    itemType: {
+        id: 'gui.backpack.sortType',
+        defaultMessage: 'Item type',
+        description: 'Sort backpack items by type'
+    },
+    resultCount: {
+        id: 'gui.backpack.resultCount',
+        defaultMessage: '{visible} of {total}',
+        description: 'Number of backpack items visible after filtering'
+    },
+    clearFilters: {
+        id: 'gui.backpack.clearFilters',
+        defaultMessage: 'Clear filters',
+        description: 'Clear the backpack search and type filter'
+    },
+    newFolder: {
+        id: 'gui.backpack.newFolder',
+        defaultMessage: 'New folder',
+        description: 'Create a folder in the backpack'
     }
 });
 
 const filterTypes = ['all', 'script', 'sprite', 'costume', 'sound', 'asset'];
+const sortTypes = ['recent', 'oldest', 'nameAscending', 'nameDescending', 'itemType'];
 
 const Backpack = ({
     blockDragOver,
@@ -139,34 +194,22 @@ const Backpack = ({
 }) => {
     const [search, setSearch] = React.useState('');
     const [typeFilter, setTypeFilter] = React.useState('all');
-    const normalizedSearch = search.trim().toLocaleLowerCase();
-    const filterActive = Boolean(normalizedSearch) || typeFilter !== 'all';
+    const [sort, setSort] = React.useState('recent');
+    const [dropIndicator, setDropIndicator] = React.useState(null);
+    const filtered = filterBackpackContents(contents, search, typeFilter);
+    const filterActive = filtered.active;
+    const reorderEnabled = !filterActive && sort === 'recent';
     const closedFolders = contents
         .filter(item => item.type === 'folder' && item.open === false)
         .map(item => item.id);
     const [draggedFolderId, setDraggedFolderId] = React.useState(null);
     const isFolderClosed = folderId => !filterActive && closedFolders.some(id => idsEqual(id, folderId));
     const folders = foldersEnabled ? contents.filter(item => item.type === 'folder') : [];
-    const matchingIds = contents
-        .filter(item => {
-            const typeMatches = typeFilter === 'all' ? true : item.type === typeFilter;
-            const nameMatches = !normalizedSearch ||
-                `${item.name || ''}`.toLocaleLowerCase().includes(normalizedSearch);
-            return typeMatches && nameMatches;
-        })
-        .map(item => `${item.id}`);
-    let foundParent = true;
-    while (foundParent) {
-        foundParent = false;
-        for (const item of contents) {
-            if (matchingIds.includes(`${item.id}`) && item.folderId && !matchingIds.includes(`${item.folderId}`)) {
-                matchingIds.push(`${item.folderId}`);
-                foundParent = true;
-            }
-        }
-    }
-    const filteredContents = filterActive ?
-        contents.filter(item => matchingIds.includes(`${item.id}`)) : contents;
+    const filteredContents = sortBackpackItems(filtered.visibleItems, sort);
+    const clearFilters = () => {
+        setSearch('');
+        setTypeFilter('all');
+    };
     const getDescendantFolderIds = folderId => {
         const descendantIds = new Set([`${folderId}`]);
         let foundDescendant = true;
@@ -182,11 +225,23 @@ const Backpack = ({
         }
         return descendantIds;
     };
-    const setFolderDropTarget = (folderId, destinationId = null, insertAfter = false) => {
-        if (onFolderDropTargetChange) onFolderDropTargetChange(folderId, destinationId, insertAfter);
+    const setFolderDropTarget = (folderId, destinationId = null, insertAfter = false, membershipOnly = false) => {
+        const showIndicator = dragOver || blockDragOver || draggedFolderId;
+        setDropIndicator(destinationId === null || !showIndicator ? null : {
+            destinationId,
+            position: folderId && idsEqual(folderId, destinationId) ? 'inside' : (insertAfter ? 'after' : 'before')
+        });
+        if (onFolderDropTargetChange) {
+            onFolderDropTargetChange(folderId, destinationId, insertAfter, membershipOnly);
+        }
     };
     const updateFolderDropTarget = (folderId, destinationId, event, edgeFolderId = folderId) => {
         const {insertAfter, isCenter} = getHorizontalDropPosition(event.currentTarget, event);
+        if (!reorderEnabled) {
+            const droppingIntoFolder = isCenter && folderId && idsEqual(folderId, destinationId);
+            setFolderDropTarget(folderId || edgeFolderId, droppingIntoFolder ? destinationId : null, false, true);
+            return;
+        }
         setFolderDropTarget(isCenter ? folderId : edgeFolderId, destinationId, insertAfter);
     };
     registerKeybind(
@@ -222,15 +277,26 @@ const Backpack = ({
                     setDraggedFolderId(null);
                     return;
                 }
-                onMoveToFolder(sourceId, destinationFolder.id, event, destinationFolder.id);
+                onMoveToFolder(sourceId, destinationFolder.id, event,
+                    reorderEnabled ? destinationFolder.id : null);
                 setDraggedFolderId(null);
                 return;
             }
             const destinationItem = contents.find(item => idsEqual(item.id, destinationId));
-            onMoveToFolder(sourceId, (destinationItem && destinationItem.folderId) || null,
-                event, destinationId, insertAfter);
+            onMoveToFolder(sourceId, (destinationItem && destinationItem.folderId) || null, event,
+                reorderEnabled ? destinationId : null, reorderEnabled && insertAfter);
         }
         setDraggedFolderId(null);
+        setFolderDropTarget(null);
+    };
+    const dropClass = id => {
+        if ((!dragOver && !blockDragOver && !draggedFolderId) ||
+            !dropIndicator || !idsEqual(dropIndicator.destinationId, id)) return null;
+        return {
+            [styles.dropBefore]: dropIndicator.position === 'before',
+            [styles.dropAfter]: dropIndicator.position === 'after',
+            [styles.dropInside]: dropIndicator.position === 'inside'
+        };
     };
     const renderedIds = new Set();
     const renderItem = item => {
@@ -240,16 +306,16 @@ const Backpack = ({
             <SpriteSelectorItem
                 className={classNames(styles.backpackItem, {
                     [styles.folderChild]: Boolean(folder)
-                })}
+                }, dropClass(item.id))}
                 costumeURL={item.thumbnailUrl}
-                details={item.name}
+                details={intl.formatMessage(labelMap[item.type])}
                 dragPayload={item}
                 dragType={dragTypeMap[item.type]}
                 id={item.id}
                 folderId={foldersEnabled && folder ? folder.id : null}
                 folderOptions={folders}
                 key={item.id}
-                name={intl.formatMessage(labelMap[item.type])}
+                name={item.name}
                 selected={false}
                 style={folder ? {
                     'backgroundColor': `${folder.color || '#d8b24a'}40`,
@@ -281,7 +347,7 @@ const Backpack = ({
         return (
             <React.Fragment key={item.id}>
                 <FolderTile
-                    className={styles.backpackItem}
+                    className={classNames(styles.backpackItem, dropClass(item.id))}
                     folder={item}
                     folderOptions={folderOptions}
                     nativeDraggable
@@ -373,7 +439,7 @@ const Backpack = ({
                                 onChange={event => setSearch(event.target.value)}
                             />
                             <FancyDropdown
-                                aria-label={intl.formatMessage(filterMessages.all)}
+                                aria-label={intl.formatMessage(filterMessages.filterByType)}
                                 className={styles.typeFilter}
                                 selectClassName={styles.typeFilterSelect}
                                 value={typeFilter}
@@ -388,6 +454,49 @@ const Backpack = ({
                                     </option>
                                 ))}
                             </FancyDropdown>
+                            <FancyDropdown
+                                aria-label={intl.formatMessage(filterMessages.sort)}
+                                className={styles.sort}
+                                selectClassName={styles.typeFilterSelect}
+                                value={sort}
+                                onChange={event => setSort(event.target.value)}
+                            >
+                                {sortTypes.map(sortType => (
+                                    <option
+                                        key={sortType}
+                                        value={sortType}
+                                    >
+                                        {intl.formatMessage(filterMessages[sortType])}
+                                    </option>
+                                ))}
+                            </FancyDropdown>
+                            <span className={styles.resultCount}>
+                                {intl.formatMessage(filterMessages.resultCount, {
+                                    visible: (filterActive ? filtered.matchingItems : contents)
+                                        .filter(item => item.type !== 'folder').length,
+                                    total: contents.filter(item => item.type !== 'folder').length
+                                })}
+                            </span>
+                            {filterActive && (
+                                <button
+                                    className={styles.toolbarButton}
+                                    title={intl.formatMessage(filterMessages.clearFilters)}
+                                    type="button"
+                                    onClick={clearFilters}
+                                >
+                                    {'×'}
+                                </button>
+                            )}
+                            {foldersEnabled && (
+                                <button
+                                    className={classNames(styles.toolbarButton, styles.newFolderButton)}
+                                    type="button"
+                                    onClick={() => onCreateFolder()}
+                                >
+                                    <span className={styles.buttonIcon}>{'+'}</span>
+                                    <FormattedMessage {...filterMessages.newFolder} />
+                                </button>
+                            )}
                         </div>
                     )}
                     {/* eslint-disable-next-line no-negated-condition */}

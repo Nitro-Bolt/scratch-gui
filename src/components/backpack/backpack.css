@@ -54,24 +54,79 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    height: 2rem;
+    height: 2.125rem;
     z-index: 1;
 }
 
 .search {
     box-sizing: border-box;
     width: 12rem;
+    min-width: 7rem;
     height: 2rem;
     padding: 0 0.6rem;
     font-size: 0.8rem;
+    flex: 1 1 12rem;
 }
 
 .type-filter {
     width: 7.5rem;
+    flex: 0 0 auto;
+}
+
+.sort {
+    width: 9rem;
+    flex: 0 0 auto;
 }
 
 .type-filter-select {
     height: 2.125rem;
+}
+
+.result-count {
+    flex: 0 0 auto;
+    padding: 0 0.25rem;
+    color: $text-primary-transparent;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.toolbar-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    flex: 0 0 auto;
+    height: 2.125rem;
+    padding: 0 0.65rem;
+    border: 1px solid $ui-black-transparent;
+    border-radius: $form-radius;
+    background: $input-background;
+    color: $text-primary;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: bold;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.toolbar-button:hover,
+.toolbar-button:focus-visible {
+    border-color: $looks-secondary;
+}
+
+.toolbar-button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem $looks-transparent;
+}
+
+.new-folder-button {
+    color: $looks-secondary;
+}
+
+.button-icon {
+    font-size: 1.1rem;
+    line-height: 1;
 }
 
 .stage-left .backpack-list {
@@ -122,13 +177,55 @@
 }
 
 .backpack-item {
-    width: 4rem;
-    height: 4.5rem;
+    width: 5rem;
+    height: 4.75rem;
     margin: 0 0.25rem;
     flex-shrink: 0;
 
     /* Need to hide overflow because of background setting below */
     overflow: hidden;
+}
+
+.drop-before:after,
+.drop-after:after,
+.drop-inside:after {
+    content: '';
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.drop-before:after,
+.drop-after:after {
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 4px;
+    background: $looks-secondary;
+}
+
+.drop-before:after {
+    left: 0;
+}
+
+.drop-after:after {
+    right: 0;
+}
+
+.drop-inside:after {
+    inset: 0;
+    border: 3px solid $looks-secondary;
+    border-radius: 0.5rem;
+}
+
+[dir="rtl"] .drop-before:after {
+    right: 0;
+    left: auto;
+}
+
+[dir="rtl"] .drop-after:after {
+    right: auto;
+    left: 0;
 }
 
 .backpack-item > div {
