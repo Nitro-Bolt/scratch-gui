@@ -17,6 +17,7 @@ class CustomProcedures extends React.Component {
             'handleAddColor',
             'handleToggleWarp',
             'handleToggleGlobal',
+            'handleToggleRunInParent',
             'handleToggleDual',
             'handlePropagation',
             'handleInputMenuChange',
@@ -29,6 +30,7 @@ class CustomProcedures extends React.Component {
             rtlOffset: 0,
             warp: false,
             global: false,
+            runInParent: false,
             dual: false,
             colour: '#000000',
             menuInput: 'stringornumber',
@@ -119,6 +121,7 @@ class CustomProcedures extends React.Component {
         this.setState({
             warp: this.mutationRoot.getWarp(),
             global: this.mutationRoot.getGlobal(),
+            runInParent: this.mutationRoot.getRunInParent(),
             dual: this.mutationRoot.getDual(),
             outputMode: this.mutationRoot.getOutputMode(),
             colour: this.mutationRoot.getProcedureColour()
@@ -190,7 +193,17 @@ class CustomProcedures extends React.Component {
         if (this.mutationRoot) {
             const newGlobal = !this.mutationRoot.getGlobal();
             this.mutationRoot.setGlobal(newGlobal);
-            this.setState({global: newGlobal});
+            this.setState({
+                global: newGlobal,
+                runInParent: this.mutationRoot.getRunInParent()
+            });
+        }
+    }
+    handleToggleRunInParent () {
+        if (this.mutationRoot) {
+            const runInParent = !this.mutationRoot.getRunInParent();
+            this.mutationRoot.setRunInParent(runInParent);
+            this.setState({runInParent});
         }
     }
     handleToggleDual () {
@@ -221,6 +234,7 @@ class CustomProcedures extends React.Component {
             <CustomProceduresComponent
                 componentRef={this.setBlocks}
                 global={this.state.global}
+                runInParent={this.state.runInParent}
                 dual={this.state.dual}
                 outputMode={this.state.outputMode}
                 warp={this.state.warp}
@@ -238,6 +252,7 @@ class CustomProcedures extends React.Component {
                 onOk={this.handleOk}
                 onToggleWarp={this.handleToggleWarp}
                 onToggleGlobal={this.handleToggleGlobal}
+                onToggleRunInParent={this.handleToggleRunInParent}
                 onToggleDual={this.handleToggleDual}
             />
         );

@@ -285,6 +285,19 @@ const CustomProcedures = props => {
                             id="gui.customProcedures.forAllSprites"
                         />
                     </label>
+                    {props.global && (
+                        <label>
+                            <FancyCheckbox
+                                checked={props.runInParent}
+                                onChange={props.onToggleRunInParent}
+                            />
+                            <FormattedMessage
+                                defaultMessage="Run in parent"
+                                description="Label for checkbox to run a global custom procedure in its owner sprite"
+                                id="gui.customProcedures.runInParent"
+                            />
+                        </label>
+                    )}
                 </div>
                 <div className={styles.outputRow}>
                     <label>
@@ -363,6 +376,8 @@ CustomProcedures.propTypes = {
     warp: PropTypes.bool.isRequired,
     onToggleGlobal: PropTypes.func.isRequired,
     global: PropTypes.bool.isRequired,
+    onToggleRunInParent: PropTypes.func.isRequired,
+    runInParent: PropTypes.bool.isRequired,
     onToggleDual: PropTypes.func.isRequired,
     onSetColor: PropTypes.func.isRequired,
     dual: PropTypes.bool.isRequired,

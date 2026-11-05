@@ -118,8 +118,11 @@
     margin-left: 0.5rem;
 }
 
-/* "Run without screen refresh" row */
+/* Checkbox rows */
 .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     margin-top: 1rem;
 }
 
