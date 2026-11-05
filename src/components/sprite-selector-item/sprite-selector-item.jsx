@@ -15,6 +15,7 @@ import {
     subMenuProps
 } from '../context-menu/context-menu.jsx';
 import {FormattedMessage} from 'react-intl';
+import { defaultKeybinds, registerKeybind } from '../../lib/nb-keybinds.js';
 
 class FolderMenuItem extends React.PureComponent {
     constructor (props) {
@@ -144,7 +145,9 @@ const SpriteSelectorItem = props => (
         {hasContextMenu(props) ? (
             <ContextMenu id={props.contextMenuId}>
                 {props.onDuplicateButtonClick ? (
-                    <MenuItem onClick={props.onDuplicateButtonClick}>
+                    <MenuItem
+                        onClick={props.onDuplicateButtonClick}
+                    >
                         <FormattedMessage
                             defaultMessage="Duplicate"
                             description="Menu item to duplicate in the right click menu"
@@ -317,6 +320,7 @@ SpriteSelectorItem.propTypes = {
     onExportBitmapButtonClick: PropTypes.func,
     isBitmap: PropTypes.bool,
     iconFilter: PropTypes.string,
+    dragType: PropTypes.oneOf(["SPRITE", "COSTUME", "SOUND", "ASSET", "FOLDER_SPRITE"]),
     onRenameButtonClick: PropTypes.func,
     onMoveToTopButtonClick: PropTypes.func,
     onMoveToBottomButtonClick: PropTypes.func,
@@ -329,6 +333,7 @@ SpriteSelectorItem.propTypes = {
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
     onMouseMove: PropTypes.func,
+    preferences: PropTypes.object,
     preventContextMenu: PropTypes.bool,
     selected: PropTypes.bool.isRequired,
     showSpritePropertiesButton: PropTypes.bool,

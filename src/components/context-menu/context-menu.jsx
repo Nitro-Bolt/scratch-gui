@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import dropdownCaret from '../dropdown-caret.svg';
 import styles from './context-menu.css';
+import { KeybindClass } from '../nb-editor-settings-modal/key-input.jsx';
 
 const StyledContextMenu = props => (
     <ContextMenu
@@ -16,7 +17,12 @@ const StyledMenuItem = props => (
     <MenuItem
         {...props}
         attributes={{className: styles.menuItem}}
-    />
+    >
+        {props.children}
+        {props.keybind && !props.keybind.disabled ?
+            <span className={styles.keybind}>{new KeybindClass(props.keybind).toString()}</span>
+        : null}
+    </MenuItem>
 );
 
 const StyledSubMenu = props => (

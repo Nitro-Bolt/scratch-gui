@@ -1,4 +1,13 @@
 @import "../../css/colors.css";
+@import "../../css/units.css";
+@import "../../css/filters.css";
+
+:has(> .container) {
+    display: flex;
+    gap: $space;
+    justify-content: center;
+    align-items: center;
+}
 
 .container {
     display: block;
@@ -11,6 +20,35 @@
     background: none;
     width: 100%;
 }
+
 .container:focus-within {
     border-color: $looks-secondary;
+}
+
+.not-set {
+    opacity: 0.5;
+}
+
+.action-button {
+    appearance: none;
+    background: none;
+    border: none;
+    border-radius: 100%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.action-button:hover {
+    background-color: $ui-black-transparent;
+}
+
+.action-button img {
+    display: block;
+    width: 75%;
+    height: 75%;
+    filter: $filter-icon-gray;
 }

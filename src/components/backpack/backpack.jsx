@@ -8,7 +8,7 @@ import {ComingSoonTooltip} from '../coming-soon/coming-soon.jsx';
 import SpriteSelectorItem from '../../containers/sprite-selector-item.jsx';
 import FolderTile from '../nb-folder-tile/folder-tile.jsx';
 import styles from './backpack.css';
-import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeybinds, registerKeybind} from '../../lib/nb-keybinds.js';
 
 // TODO make sprite selector item not require onClick
 const noop = () => {};
@@ -118,8 +118,8 @@ const Backpack = ({
         const {insertAfter, isCenter} = getHorizontalDropPosition(event.currentTarget, event);
         setFolderDropTarget(isCenter ? folderId : edgeFolderId, destinationId, insertAfter);
     };
-    registerKeyboardShortcut(
-        preferences['keybind-open-backpack'] ?? defaultKeyboardShortcuts['open-backpack'],
+    registerKeybind(
+        preferences['keybind-open-backpack'] ?? defaultKeybinds['open-backpack'],
         onToggle
     );
     const toggleFolder = folderId => {

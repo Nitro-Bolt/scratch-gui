@@ -34,7 +34,7 @@ class MenuLabel extends React.Component {
         // this is a bit sketchy, but we want to allow clicking on the menu itself and the images
         // and text directly inside it, but not the items inside the menu, which are under the button
         // in the DOM.
-        if (e.target.closest('div') === this.menuEl) {
+        if (e.target.closest('button') === this.menuEl) {
             if (this.props.open) {
                 this.props.onClose();
             } else {
@@ -52,7 +52,7 @@ class MenuLabel extends React.Component {
     }
     render () {
         return (
-            <div
+            <button
                 className={classNames(styles.menuBarItem, styles.hoverable, {
                     [styles.active]: this.props.open
                 })}
@@ -60,7 +60,7 @@ class MenuLabel extends React.Component {
                 ref={this.menuRef}
             >
                 {this.props.children}
-            </div>
+            </button>
         );
     }
 }

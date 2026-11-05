@@ -20,6 +20,7 @@ import settingsIcon from './icon--settings.svg';
 
 import {closeSettingsMenu} from '../../reducers/menus.js';
 import {openEditorSettingsModal} from '../../reducers/modals.js';
+import { defaultKeybinds } from '../../lib/nb-keybinds.js';
 
 const SettingsMenu = ({
     canChangeLanguage,
@@ -29,7 +30,8 @@ const SettingsMenu = ({
     onClickSettings,
     onRequestClose,
     onRequestOpen,
-    settingsMenuOpen
+    settingsMenuOpen,
+    preferences
 }) => (
     <MenuLabel
         open={settingsMenuOpen}
@@ -72,10 +74,12 @@ const SettingsMenu = ({
                 {onClickDesktopSettings && <TWDesktopSettings onClick={onClickDesktopSettings} />}
             </MenuSection>
             <MenuSection>
-                <MenuItem>
+                <MenuItem
+                    keybind={preferences['keybind-open-editor-settings'] ?? defaultKeybinds['open-editor-settings']}
+                    onClick={onClickSettings}
+                >
                     <div
                         className={styles.option}
-                        onClick={onClickSettings}
                     >
                         <img
                             src={settingsIcon}

@@ -38,10 +38,19 @@
     background: $ui-tertiary;
 }
 
-.sub-menu {
+.menu-item, .sub-menu {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.sub-menu {
+    flex-grow: 1;
+}
+
+.keybind {
+    opacity: 0.5;
+    padding-inline-start: 1.5rem;
 }
 
 .sub-menu > img {

@@ -122,6 +122,7 @@ import sharedMessages from '../../lib/shared-messages';
 import SeeInsideButton from './tw-see-inside.jsx';
 import {isScratchDesktop, notScratchDesktop} from '../../lib/isScratchDesktop.js';
 import {APP_NAME} from '../../lib/brand.js';
+import { defaultKeybinds, registerKeybind } from '../../lib/nb-keybinds.js';
 
 const ariaMessages = defineMessages({
     tutorials: {
@@ -223,6 +224,15 @@ MenuItemLink.propTypes = {
     href: PropTypes.string.isRequired
 };
 
+const MenuBarKeybindWrapper = props => {
+    registerKeybind(props.preferences['keybind-new-project'] ?? defaultKeybinds['new-project'], props.onClickNew);
+    registerKeybind(props.preferences['keybind-new-window'] ?? defaultKeybinds['new-window'], props.onClickNewWindow);
+    registerKeybind(props.preferences['keybind-save'] ?? defaultKeybinds['save'], props.onClickSave);
+    registerKeybind(props.preferences['keybind-open-project'] ?? defaultKeybinds['open-project'], props.onStartSelectingFileUpload);
+
+    return props.children;
+}
+
 class MenuBar extends React.Component {
     constructor (props) {
         super(props);
@@ -245,7 +255,6 @@ class MenuBar extends React.Component {
             'handleClickSeeCommunity',
             'handleClickShare',
             'handleSetMode',
-            'handleKeyPress',
             'handleRestoreOption',
             'handleOpenGitMenu',
             'handleOpenGitModal',
@@ -416,8 +425,16 @@ class MenuBar extends React.Component {
         this.props.onRequestCloseFile();
     }
     handleClickNewWindow () {
-        this.props.onClickNewWindow();
-        this.props.onRequestCloseFile();
+        if (this.props.onClickNewWindow) {
+            this.props.onClickNewWindow();
+            this.props.onRequestCloseFile();
+        } else {
+            const a = document.createElement('a');
+            a.href = '.';
+            a.target = "_blank";
+            a.click();
+            a.remove();
+        }
     }
     handleClickRemix () {
         this.props.onClickRemix();
@@ -499,18 +516,6 @@ class MenuBar extends React.Component {
             restoreFun();
             this.props.onRequestCloseEdit();
         };
-    }
-    handleKeyPress (event) {
-        const modifier = bowser.mac ? event.metaKey : event.ctrlKey;
-        if (modifier) {
-            if (event.key.toLowerCase() === 's') {
-                this.props.handleSaveProject();
-                event.preventDefault();
-            } else if (event.key.toLowerCase() === 'o') {
-                event.preventDefault();
-                this.props.onStartSelectingFileUpload();
-            }
-        }
     }
     getSaveToComputerHandler (downloadProjectCallback) {
         return () => {
@@ -627,9 +632,9 @@ class MenuBar extends React.Component {
         );
         const newProjectMessage = (
             <FormattedMessage
-                defaultMessage="New"
+                defaultMessage="New project"
                 description="Menu bar item for creating a new project"
-                id="gui.menuBar.new"
+                id="nb.menuBar.new"
             />
         );
         const remixButton = (
@@ -719,6 +724,7 @@ class MenuBar extends React.Component {
                             onRequestClose={this.props.onRequestCloseSettings}
                             onRequestOpen={this.props.onClickSettings}
                             settingsMenuOpen={this.props.settingsMenuOpen}
+                            preferences={this.props.preferences}
                         />)}
                         {(this.props.canManageFiles) && (
                             <MenuLabel
@@ -753,22 +759,22 @@ class MenuBar extends React.Component {
                                     <MenuItem
                                         isRtl={this.props.isRtl}
                                         onClick={this.handleClickNew}
+                                        keybind={this.props.preferences['keybind-new-project'] ?? defaultKeybinds['new-project']}
                                     >
                                         {newProjectMessage}
                                     </MenuItem>
-                                    {this.props.onClickNewWindow && (
-                                        <MenuItem
-                                            isRtl={this.props.isRtl}
-                                            onClick={this.handleClickNewWindow}
-                                        >
-                                            <FormattedMessage
-                                                defaultMessage="New window"
-                                                // eslint-disable-next-line max-len
-                                                description="Part of desktop app. Menu bar item that creates a new window."
-                                                id="tw.menuBar.newWindow"
-                                            />
-                                        </MenuItem>
-                                    )}
+                                    <MenuItem
+                                        isRtl={this.props.isRtl}
+                                        onClick={this.handleClickNewWindow}
+                                        keybind={this.props.preferences['keybind-new-window'] ?? defaultKeybinds['new-window']}
+                                    >
+                                        <FormattedMessage
+                                            defaultMessage="New window"
+                                            // eslint-disable-next-line max-len
+                                            description="Menu bar item that creates a new window."
+                                            id="nb.menuBar.newWindow"
+                                        />
+                                    </MenuItem>
                                     {(this.props.canSave || this.props.canCreateCopy || this.props.canRemix) && (
                                         <MenuSection>
                                             {this.props.canSave && (
@@ -791,6 +797,7 @@ class MenuBar extends React.Component {
                                     <MenuSection>
                                         <MenuItem
                                             onClick={this.props.onStartSelectingFileUpload}
+                                            keybind={this.props.preferences['keybind-open-project'] ?? defaultKeybinds['open-project']}
                                         >
                                             {this.props.intl.formatMessage(sharedMessages.loadFromComputerTitle)}
                                         </MenuItem>
@@ -815,7 +822,10 @@ class MenuBar extends React.Component {
                                                         <React.Fragment>
                                                             {extended.name !== null && (
                                                                 // eslint-disable-next-line max-len
-                                                                <MenuItem onClick={this.getSaveToComputerHandler(extended.saveToLastFile)}>
+                                                                <MenuItem
+                                                                    onClick={this.getSaveToComputerHandler(extended.saveToLastFile)}
+                                                                    keybind={this.props.preferences['keybind-save'] ?? defaultKeybinds['save']}
+                                                                >
                                                                     <FormattedMessage
                                                                         defaultMessage="Save to {file}"
                                                                         // eslint-disable-next-line max-len
@@ -841,6 +851,7 @@ class MenuBar extends React.Component {
                                                     {notScratchDesktop() && (
                                                         <MenuItem
                                                             onClick={this.getSaveToComputerHandler(downloadProject)}
+                                                            keybind={this.props.preferences['keybind-save'] ?? defaultKeybinds['save']}
                                                         >
                                                             {extended.available ? (
                                                                 <FormattedMessage
@@ -851,9 +862,9 @@ class MenuBar extends React.Component {
                                                                 />
                                                             ) : (
                                                                 <FormattedMessage
-                                                                    defaultMessage="Save to your computer"
+                                                                    defaultMessage="Save project"
                                                                     description="Menu bar item for downloading a project to your computer" // eslint-disable-line max-len
-                                                                    id="gui.menuBar.downloadToComputer"
+                                                                    id="nb.menuBar.downloadToComputer"
                                                                 />
                                                             )}
                                                         </MenuItem>
@@ -866,6 +877,7 @@ class MenuBar extends React.Component {
                                         <MenuSection>
                                             <MenuItem
                                                 onClick={this.handleClickPackager}
+                                                keybind={this.props.preferences['keybind-package-project'] ?? defaultKeybinds['package-project']}
                                             >
                                                 <FormattedMessage
                                                     defaultMessage="Package project"
@@ -1123,14 +1135,20 @@ class MenuBar extends React.Component {
                                     )}</CloudVariablesToggler>
                                 </MenuSection>
                                 <MenuSection>
-                                    <MenuItem onClick={this.props.onClickExtensionManagerModal}>
+                                    <MenuItem
+                                        onClick={this.props.onClickExtensionManagerModal}
+                                        keybind={this.props.preferences['keybind-open-extension-manager'] ?? defaultKeybinds['open-extension-manager']}
+                                    >
                                         <FormattedMessage
                                             defaultMessage="Extension Manager"
                                             description="Menu bar item for the extension manager"
                                             id="tw.menuBar.extensionManager"
                                         />
                                     </MenuItem>
-                                    <MenuItem onClick={this.props.onClickSettingsModal}>
+                                    <MenuItem
+                                        onClick={this.props.onClickSettingsModal}
+                                        keybind={this.props.preferences['keybind-open-project-settings'] ?? defaultKeybinds['open-project-settings']}
+                                    >
                                         <FormattedMessage
                                             defaultMessage="Advanced Settings"
                                             description="Menu bar item for advanced settings"
@@ -1312,7 +1330,7 @@ class MenuBar extends React.Component {
                     </div>}
                 </div>
 
-                <div className={styles.accountInfoGroup, styles.menuBarItem}>
+                <div className={classNames(styles.accountInfoGroup, styles.menuBarItem)}>
                     <TWSaveStatus
                         showSaveFilePicker={this.props.showSaveFilePicker}
                     />
@@ -1323,10 +1341,18 @@ class MenuBar extends React.Component {
         );
 
         return (
-            <React.Fragment>
-                {menuBar}
-                <TWNews />
-            </React.Fragment>
+            <MenuBarKeybindWrapper
+                onClickNew={this.handleClickNew}
+                onClickNewWindow={this.handleClickNewWindow}
+                onClickSave={this.props.handleSaveProject}
+                onStartSelectingFileUpload={this.props.onStartSelectingFileUpload}
+                preferences={this.props.preferences}
+            >
+                <React.Fragment>
+                    {menuBar}
+                    <TWNews />
+                </React.Fragment>
+            </MenuBarKeybindWrapper>
         );
     }
 }
@@ -1442,6 +1468,7 @@ MenuBar.propTypes = {
     showComingSoon: PropTypes.bool,
     username: PropTypes.string,
     userOwnsProject: PropTypes.bool,
+    preferences: PropTypes.object,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 
@@ -1484,7 +1511,8 @@ const mapStateToProps = (state, ownProps) => {
         mode1920: isTimeTravel1920(state),
         mode1990: isTimeTravel1990(state),
         mode2020: isTimeTravel2020(state),
-        modeNow: isTimeTravelNow(state)
+        modeNow: isTimeTravelNow(state),
+        preferences: state.scratchGui.preferences
     };
 };
 

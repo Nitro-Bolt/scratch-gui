@@ -1,8 +1,10 @@
+@import "../../css/colors.css";
 @import "../../css/units.css";
 
 .outlined-button {
     cursor: pointer;
     border-radius: $form-radius;
+    background-color: transparent;
     font-weight: bold;
     display: flex;
     flex-direction: row;
@@ -10,6 +12,11 @@
     padding-left: .75rem;
     padding-right: .75rem;
     user-select: none;
+    border: none;
+}
+
+.outlined-button:focus-visible {
+    outline: 1px solid $looks-secondary;
 }
 
 .icon {

@@ -9,7 +9,7 @@ import SpriteInfo from '../../containers/sprite-info.jsx';
 import SpriteList from './sprite-list.jsx';
 import ActionMenu from '../action-menu/action-menu.jsx';
 import {isRtl} from 'scratch-l10n';
-import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeybinds, registerKeybind} from '../../lib/nb-keybinds.js';
 
 import styles from './sprite-selector.css';
 
@@ -82,13 +82,13 @@ const SpriteSelectorComponent = function (props) {
         selectedSprite = {};
         spriteInfoDisabled = true;
     }
-    registerKeyboardShortcut(
-        preferences['keybind-toggle-sprite-visibility'] ?? defaultKeyboardShortcuts['toggle-sprite-visibility'], () => {
+    registerKeybind(
+        preferences['keybind-toggle-sprite-visibility'] ?? defaultKeybinds['toggle-sprite-visibility'], () => {
             if (!spriteInfoDisabled) onChangeSpriteVisibility(!selectedSprite.visible);
         }
     );
-    registerKeyboardShortcut(
-        preferences['keybind-change-sprite-name'] ?? defaultKeyboardShortcuts['change-sprite-name'],
+    registerKeybind(
+        preferences['keybind-change-sprite-name'] ?? defaultKeybinds['change-sprite-name'],
         () => {
             document.querySelector('[class*="sprite-info_sprite-input_"]').focus();
         }

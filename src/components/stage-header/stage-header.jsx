@@ -24,7 +24,8 @@ import debuggerIcon from './icon--debugger.svg';
 import styles from './stage-header.css';
 
 import FullscreenAPI from '../../lib/tw-fullscreen-api';
-import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeybinds, keybindTooltip, registerKeybind} from '../../lib/nb-keybinds.js';
+import { KeybindClass } from '../nb-editor-settings-modal/key-input.jsx';
 
 const messages = defineMessages({
     largeStageSizeMessage: {
@@ -58,7 +59,7 @@ const messages = defineMessages({
         id: 'gui.stageHeader.stageSizeUnFull'
     },
     fullscreenControl: {
-        defaultMessage: 'Full Screen Control',
+        defaultMessage: 'Toggle full screen',
         description: 'Button to enter/exit full screen mode',
         id: 'gui.stageHeader.fullscreenControl'
     },
@@ -70,7 +71,7 @@ const messages = defineMessages({
     openDebuggerMessage: {
         defaultMessage: 'Open debugger',
         description: 'Button to open the debugger panel',
-        id: 'nb.openDebugger'
+        id: 'gui.stageHeader.openDebugger'
     }
 });
 
@@ -99,8 +100,8 @@ const StageHeaderComponent = function (props) {
 
     const stageDimensions = getStageDimensions(stageSize, customStageSize, isFullScreen || isEmbedded, isPlayerOnly);
 
-    registerKeyboardShortcut(
-        preferences['keybind-project-full-screen'] ?? defaultKeyboardShortcuts['project-full-screen'],
+    registerKeybind(
+        preferences['keybind-project-full-screen'] ?? defaultKeybinds['project-full-screen'],
         () => (isFullScreen ? onSetStageUnFullScreen() : onSetStageFullScreen())
     );
 
@@ -133,7 +134,10 @@ const StageHeaderComponent = function (props) {
                         className={styles.stageButtonIcon}
                         draggable={false}
                         src={unFullScreenIcon}
-                        title={props.intl.formatMessage(messages.fullscreenControl)}
+                        title={keybindTooltip(
+                            props.intl.formatMessage(messages.fullscreenControl),
+                            preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]
+                        )}
                     />
                 </Button>
             </div>
@@ -148,7 +152,10 @@ const StageHeaderComponent = function (props) {
                         className={styles.stageButtonIcon}
                         draggable={false}
                         src={fullScreenIcon}
-                        title={props.intl.formatMessage(messages.fullscreenControl)}
+                        title={keybindTooltip(
+                            props.intl.formatMessage(messages.fullscreenControl),
+                            preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]
+                        )}
                     />
                 </Button>
             </div>
@@ -188,7 +195,10 @@ const StageHeaderComponent = function (props) {
                                 iconClassName: classNames(styles.stageButtonIcon, preferences['stage-left'] ?
                                     styles.stageLeft : null),
                                 isSelected: stageSize === 0,
-                                title: props.intl.formatMessage(messages.hiddenStageSizeMessage)
+                                title: keybindTooltip(
+                                    props.intl.formatMessage(messages.hiddenStageSizeMessage),
+                                    stageSize === 0 ? null : preferences['keybind-hide-stage']
+                                )
                             },
                             {
                                 handleClick: () => setStageSize(270),
@@ -204,7 +214,10 @@ const StageHeaderComponent = function (props) {
                                 iconClassName: classNames(styles.stageButtonIcon, preferences['stage-left'] ?
                                     styles.stageLeft : null),
                                 isSelected: stageSize > 430,
-                                title: props.intl.formatMessage(messages.fullStageSizeMessage)
+                                title: keybindTooltip(
+                                    props.intl.formatMessage(messages.fullStageSizeMessage),
+                                    stageSize === 0 ? preferences['keybind-hide-stage'] : null
+                                )
                             }
                         ]}
                     />
@@ -239,6 +252,10 @@ const StageHeaderComponent = function (props) {
                                 <Button
                                     className={classNames(styles.stageButton, styles.debuggerButton)}
                                     onClick={onOpenDebugger}
+                                    title={keybindTooltip(
+                                        props.intl.formatMessage(messages.openDebuggerMessage),
+                                        preferences["keybind-open-debugger"] ?? defaultKeybinds["open-debugger"]
+                                    )}
                                     tabIndex={0}
                                 >
                                     <img
@@ -264,7 +281,10 @@ const StageHeaderComponent = function (props) {
                                     className={styles.stageButtonIcon}
                                     draggable={false}
                                     src={fullScreenIcon}
-                                    title={props.intl.formatMessage(messages.fullscreenControl)}
+                                    title={keybindTooltip(
+                                        props.intl.formatMessage(messages.fullscreenControl),
+                                        preferences["keybind-project-full-screen"] ?? defaultKeybinds["project-full-screen"]
+                                    )}
                                 />
                             </Button>
                         </div>

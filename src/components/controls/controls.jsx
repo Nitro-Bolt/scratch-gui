@@ -11,7 +11,7 @@ import TurboMode from '../turbo-mode/turbo-mode.jsx';
 import FramerateIndicator from '../tw-framerate-indicator/framerate-indicator.jsx';
 
 import styles from './controls.css';
-import {defaultKeyboardShortcuts, registerKeyboardShortcut} from '../../lib/nb-keyboard-shortcut.js';
+import {defaultKeybinds, keybindTooltip, registerKeybind} from '../../lib/nb-keybinds.js';
 
 const messages = defineMessages({
     goTitle: {
@@ -56,13 +56,23 @@ const Controls = function (props) {
         ...componentProps
     } = props;
 
-    registerKeyboardShortcut(
-        preferences['keybind-start-project'] ?? defaultKeyboardShortcuts['start-project'],
+    registerKeybind(
+        preferences['keybind-start-project'] ?? defaultKeybinds['start-project'],
         onGreenFlagClick
     );
 
-    registerKeyboardShortcut(
-        preferences['keybind-stop-project'] ?? defaultKeyboardShortcuts['stop-project'],
+    registerKeybind(
+        preferences['keybind-pause-project'] ?? defaultKeybinds['pause-project'],
+        onPauseClick
+    );
+
+    registerKeybind(
+        preferences['keybind-step-project'] ?? defaultKeybinds['step-project'],
+        onStepClick
+    );
+
+    registerKeybind(
+        preferences['keybind-stop-project'] ?? defaultKeybinds['stop-project'],
         onStopAllClick
     );
 
@@ -77,19 +87,28 @@ const Controls = function (props) {
             >
                 <GreenFlag
                     active={active}
-                    title={intl.formatMessage(messages.goTitle)}
+                    title={keybindTooltip(
+                        intl.formatMessage(messages.goTitle),
+                        preferences["keybind-start-project"] ?? defaultKeybinds["start-project"]
+                    )}
                     onClick={onGreenFlagClick}
                 />
                 {preferences['hide-pause'] !== true &&
                     <>
                         <Pause
                             paused={paused}
-                            title={intl.formatMessage(messages.pauseTitle)}
+                            title={keybindTooltip(
+                                intl.formatMessage(messages.pauseTitle),
+                                preferences["keybind-pause-project"] ?? defaultKeybinds["pause-project"]
+                            )}
                             onClick={onPauseClick}
                         />
                         {paused && !compilerEnabled &&
                             <Step
-                                title={intl.formatMessage(messages.stepTitle)}
+                                title={keybindTooltip(
+                                    intl.formatMessage(messages.stepTitle),
+                                    preferences["keybind-step-project"] ?? defaultKeybinds["step-project"]
+                                )}
                                 onClick={onStepClick}
                             />
                         }
@@ -97,7 +116,10 @@ const Controls = function (props) {
                 }
                 <StopAll
                     active={active}
-                    title={intl.formatMessage(messages.stopTitle)}
+                    title={keybindTooltip(
+                        intl.formatMessage(messages.stopTitle),
+                        preferences["keybind-stop-project"] ?? defaultKeybinds["stop-project"]
+                    )}
                     onClick={onStopAllClick}
                 />
                 {turbo ? (
