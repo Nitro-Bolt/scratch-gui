@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {FormattedMessage} from 'react-intl';
 import {MenuItem} from '../menu/menu.jsx';
-import icon from './tw-desktop-icon.svg';
+import icon from './tw-advanced.svg';
 import styles from './settings-menu.css';
 
 const TWDesktopSettings = props => (
