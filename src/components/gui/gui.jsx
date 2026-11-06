@@ -442,7 +442,9 @@ const GUIComponent = props => {
                 className={styles.pageWrapper}
                 dir={isRtl ? 'rtl' : 'ltr'}
                 style={{
-                    cursor: resizingStage ? 'e-resize' : null
+                    cursor: resizingStage ? 'e-resize' :
+                        props.isDraggingAsset ? 'grabbing' :
+                        null
                 }}
                 // eslint-disable-next-line react/jsx-no-bind
                 onMouseUp={() => setResizingStage(false)}
@@ -811,6 +813,7 @@ GUIComponent.propTypes = {
     enableCommunity: PropTypes.bool,
     intl: intlShape.isRequired,
     isCreating: PropTypes.bool,
+    isDraggingAsset: PropTypes.bool,
     isEmbedded: PropTypes.bool,
     isFullScreen: PropTypes.bool,
     isPlayerOnly: PropTypes.bool,

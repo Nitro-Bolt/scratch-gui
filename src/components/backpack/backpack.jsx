@@ -428,77 +428,75 @@ const Backpack = ({
                     onMouseEnter={onMouseEnter}
                     onMouseLeave={onMouseLeave}
                 >
-                    {contents.length > 0 && (
-                        <div className={styles.toolbar}>
-                            <FancyTextInput
-                                aria-label={intl.formatMessage(filterMessages.search)}
-                                className={styles.search}
-                                placeholder={intl.formatMessage(filterMessages.search)}
-                                type="search"
-                                value={search}
-                                onChange={event => setSearch(event.target.value)}
-                            />
-                            <FancyDropdown
-                                aria-label={intl.formatMessage(filterMessages.filterByType)}
-                                className={styles.typeFilter}
-                                selectClassName={styles.typeFilterSelect}
-                                value={typeFilter}
-                                onChange={event => setTypeFilter(event.target.value)}
-                            >
-                                {filterTypes.map(type => (
-                                    <option
-                                        key={type}
-                                        value={type}
-                                    >
-                                        {intl.formatMessage(filterMessages[type])}
-                                    </option>
-                                ))}
-                            </FancyDropdown>
-                            <FancyDropdown
-                                aria-label={intl.formatMessage(filterMessages.sort)}
-                                className={styles.sort}
-                                selectClassName={styles.typeFilterSelect}
-                                value={sort}
-                                onChange={event => setSort(event.target.value)}
-                            >
-                                {sortTypes.map(sortType => (
-                                    <option
-                                        key={sortType}
-                                        value={sortType}
-                                    >
-                                        {intl.formatMessage(filterMessages[sortType])}
-                                    </option>
-                                ))}
-                            </FancyDropdown>
-                            <span className={styles.resultCount}>
-                                {intl.formatMessage(filterMessages.resultCount, {
-                                    visible: (filterActive ? filtered.matchingItems : contents)
-                                        .filter(item => item.type !== 'folder').length,
-                                    total: contents.filter(item => item.type !== 'folder').length
-                                })}
-                            </span>
-                            {filterActive && (
-                                <button
-                                    className={styles.toolbarButton}
-                                    title={intl.formatMessage(filterMessages.clearFilters)}
-                                    type="button"
-                                    onClick={clearFilters}
+                    <div className={styles.toolbar}>
+                        <FancyTextInput
+                            aria-label={intl.formatMessage(filterMessages.search)}
+                            className={styles.search}
+                            placeholder={intl.formatMessage(filterMessages.search)}
+                            type="search"
+                            value={search}
+                            onChange={event => setSearch(event.target.value)}
+                        />
+                        <FancyDropdown
+                            aria-label={intl.formatMessage(filterMessages.filterByType)}
+                            className={styles.typeFilter}
+                            selectClassName={styles.typeFilterSelect}
+                            value={typeFilter}
+                            onChange={event => setTypeFilter(event.target.value)}
+                        >
+                            {filterTypes.map(type => (
+                                <option
+                                    key={type}
+                                    value={type}
                                 >
-                                    {'×'}
-                                </button>
-                            )}
-                            {foldersEnabled && (
-                                <button
-                                    className={classNames(styles.toolbarButton, styles.newFolderButton)}
-                                    type="button"
-                                    onClick={() => onCreateFolder()}
+                                    {intl.formatMessage(filterMessages[type])}
+                                </option>
+                            ))}
+                        </FancyDropdown>
+                        <FancyDropdown
+                            aria-label={intl.formatMessage(filterMessages.sort)}
+                            className={styles.sort}
+                            selectClassName={styles.typeFilterSelect}
+                            value={sort}
+                            onChange={event => setSort(event.target.value)}
+                        >
+                            {sortTypes.map(sortType => (
+                                <option
+                                    key={sortType}
+                                    value={sortType}
                                 >
-                                    <span className={styles.buttonIcon}>{'+'}</span>
-                                    <FormattedMessage {...filterMessages.newFolder} />
-                                </button>
-                            )}
-                        </div>
-                    )}
+                                    {intl.formatMessage(filterMessages[sortType])}
+                                </option>
+                            ))}
+                        </FancyDropdown>
+                        <span className={styles.resultCount}>
+                            {intl.formatMessage(filterMessages.resultCount, {
+                                visible: (filterActive ? filtered.matchingItems : contents)
+                                    .filter(item => item.type !== 'folder').length,
+                                total: contents.filter(item => item.type !== 'folder').length
+                            })}
+                        </span>
+                        {filterActive && (
+                            <button
+                                className={styles.toolbarButton}
+                                title={intl.formatMessage(filterMessages.clearFilters)}
+                                type="button"
+                                onClick={clearFilters}
+                            >
+                                {'×'}
+                            </button>
+                        )}
+                        {foldersEnabled && (
+                            <button
+                                className={classNames(styles.toolbarButton, styles.newFolderButton)}
+                                type="button"
+                                onClick={() => onCreateFolder()}
+                            >
+                                <span className={styles.buttonIcon}>{'+'}</span>
+                                <FormattedMessage {...filterMessages.newFolder} />
+                            </button>
+                        )}
+                    </div>
                     {/* eslint-disable-next-line no-negated-condition */}
                     {error !== false ? (
                         <div className={styles.statusMessage}>
