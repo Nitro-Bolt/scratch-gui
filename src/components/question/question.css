@@ -33,6 +33,7 @@
 
     border: none;
     border-radius: 100%;
+    padding: 0;
 
     color: white;
     background: $looks-secondary;
@@ -72,7 +73,4 @@
 .question-submit-button-icon {
     width: calc(2rem - $space);
     height: calc(2rem - $space);
-    position: relative;
-    right: -7px;
-    left: -7px;
 }
