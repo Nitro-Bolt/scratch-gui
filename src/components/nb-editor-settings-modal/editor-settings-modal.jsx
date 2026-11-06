@@ -1737,7 +1737,7 @@ const EditorSettingsModal = props => {
                     />
                     {isScratchDesktop() && <KeybindSetting
                         name={<FormattedMessage
-                            defaultMessage="Open Git project folder"
+                            defaultMessage="Open Git project"
                             id="nb.editorSettings.keymap.openGitProject"
                         />}
                         onSetPreference={props.onSetPreference}

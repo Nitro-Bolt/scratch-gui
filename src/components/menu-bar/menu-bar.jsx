@@ -815,9 +815,9 @@ class MenuBar extends React.Component {
                                                 onClick={this.props.onStartSelectingGitProject}
                                             >
                                                 <FormattedMessage
-                                                    defaultMessage="Load Git project folder"
-                                                    description="Loads a NitroBolt Git project folder"
-                                                    id="nb.git.loadProjectFolder"
+                                                    defaultMessage="Open Git project"
+                                                    description="Opens a NitroBolt Git project"
+                                                    id="nb.git.openProject"
                                                 />
                                             </MenuItem>
                                         )}
