@@ -239,7 +239,7 @@
     flex-direction: row-reverse;
 }
 
-.stage-left :global(:is(.injectionDiv, [class^="asset-panel_wrapper"], [class^="variables-tab_wrapper"])) {
+.stage-left :global(:is(.injectionDiv, .blocklySvg, [class^="asset-panel_wrapper"], [class^="variables-tab_wrapper"])) {
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
     border-bottom-left-radius: 0.5rem;
