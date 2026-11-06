@@ -229,6 +229,12 @@ const MenuBarKeybindWrapper = props => {
     registerKeybind(props.preferences['keybind-new-window'] ?? defaultKeybinds['new-window'], props.onClickNewWindow);
     registerKeybind(props.preferences['keybind-save'] ?? defaultKeybinds['save'], props.onClickSave);
     registerKeybind(props.preferences['keybind-open-project'] ?? defaultKeybinds['open-project'], props.onStartSelectingFileUpload);
+    registerKeybind(
+        props.gitAvailable ?
+            (props.preferences['keybind-open-git-project'] ?? defaultKeybinds['open-git-project']) :
+            {disabled: true},
+        props.onStartSelectingGitProject
+    );
 
     return props.children;
 }
@@ -804,6 +810,8 @@ class MenuBar extends React.Component {
                                         {this.props.onStartSelectingGitProject && (
                                             <MenuItem
                                                 disabled={this.state.gitAvailable !== true}
+                                                keybind={this.props.preferences['keybind-open-git-project'] ??
+                                                    defaultKeybinds['open-git-project']}
                                                 onClick={this.props.onStartSelectingGitProject}
                                             >
                                                 <FormattedMessage
@@ -1345,7 +1353,9 @@ class MenuBar extends React.Component {
                 onClickNew={this.handleClickNew}
                 onClickNewWindow={this.handleClickNewWindow}
                 onClickSave={this.props.handleSaveProject}
+                gitAvailable={this.state.gitAvailable === true}
                 onStartSelectingFileUpload={this.props.onStartSelectingFileUpload}
+                onStartSelectingGitProject={this.props.onStartSelectingGitProject}
                 preferences={this.props.preferences}
             >
                 <React.Fragment>

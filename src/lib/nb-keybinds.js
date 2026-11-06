@@ -27,6 +27,7 @@ export const defaultKeybinds = {
     'open-extension-manager': {ctrl: true, alt: true, key: 'e'},
     'open-extensions': {ctrl: true, shift: true, key: 'e'},
     'open-project': {ctrl: true, key: 'o'},
+    'open-git-project': {ctrl: true, shift: true, key: 'o'},
     'open-project-settings': {disabled: true},
     'open-source-control': {disabled: true},
     'new-project': {ctrl: true, shift: true, key: 'n'},
