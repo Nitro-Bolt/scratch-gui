@@ -57,8 +57,8 @@
     user-select: none;
 }
 
-.scroll-wrapper-dragging {
-    background-color: $drop-highlight;
+.scroll-wrapper-dragging:hover {
+    background-color: $looks-light-transparent;
 }
 
 .items-wrapper {
@@ -97,21 +97,16 @@
 }
 
 .raised {
-    background-color: $drop-highlight;
     transition: all 0.25s ease;
 }
 
 .raised:hover {
-    background-color: $drop-highlight;
     transform: scale(1.05);
-}
-
-.raised:hover {
     animation-name: wiggle;
     animation-duration: 500ms;
     animation-iteration-count: 1;
     animation-timing-function: ease-in-out;
-    background-color: $drop-highlight;
+    background-color: $looks-light-transparent;
 }
 
 @keyframes wiggle {
