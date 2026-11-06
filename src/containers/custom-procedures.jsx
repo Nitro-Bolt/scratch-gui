@@ -159,6 +159,9 @@ class CustomProcedures extends React.Component {
             case 'stringornumber': // To be split into string and number types on a later date
                 this.mutationRoot.addStringNumberExternal();
                 break;
+            case 'multiline':
+                this.mutationRoot.addMultilineExternal();
+                break;
             case 'boolean':
                 this.mutationRoot.addBooleanExternal();
                 break;

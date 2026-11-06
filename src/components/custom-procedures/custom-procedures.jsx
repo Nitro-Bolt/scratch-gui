@@ -31,6 +31,7 @@ const CustomProcedures = props => {
     useEffect(() => {
         switch (props.menuOption) {
         case 'stringornumber': // To be split up as string and number types on a later date
+        case 'multiline':
             setInputIcon(textInputIcon);
             break;
         case 'boolean':
@@ -86,6 +87,7 @@ const CustomProcedures = props => {
                             onChange={props.onInputMenuChange}
                         >
                             <option value="stringornumber">{'number or text'}</option>
+                            <option value="multiline">{'multiline text'}</option>
                             <option value="boolean">{'boolean'}</option>
                             <option value="object">{'object'}</option>
                             <option value="array">{'array'}</option>
