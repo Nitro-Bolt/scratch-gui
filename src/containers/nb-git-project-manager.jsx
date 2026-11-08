@@ -4,6 +4,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import log from '../lib/log';
+import saveProjectFiles from '../lib/nb-save-project-files';
 import {setProjectUnchanged} from '../reducers/project-changed';
 
 const SYNC_DEBOUNCE_MS = 2000;
@@ -136,7 +137,7 @@ class NBGitProjectManager extends React.Component {
     }
 
     async saveProject (projectPath) {
-        const files = this.props.vm.saveProjectSb3DontZip({
+        const files = await saveProjectFiles(this.props.vm, {
             allowOptimization: false,
             preserveTargetIds: true
         });
@@ -196,7 +197,8 @@ NBGitProjectManager.propTypes = {
     vm: PropTypes.shape({
         off: PropTypes.func.isRequired,
         on: PropTypes.func.isRequired,
-        saveProjectSb3DontZip: PropTypes.func.isRequired
+        serializeAssets: PropTypes.func.isRequired,
+        toJSON: PropTypes.func.isRequired
     }).isRequired
 };
 

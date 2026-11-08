@@ -1,5 +1,6 @@
 import JSZip from '@turbowarp/jszip';
 import {base64ToArrayBuffer} from './tw-base64-utils';
+import saveProjectFiles from './nb-save-project-files';
 
 const TYPE_AUTOMATIC = 0;
 const TYPE_MANUAL = 1;
@@ -300,16 +301,17 @@ const createRestorePoint = (
     vm,
     title,
     type
-) => openDB().then(db => new Promise((resolveTransaction, rejectTransaction) => {
+) => openDB().then(async db => {
     /** @type {Record<string, Uint8Array>} */
-    const projectFiles = vm.saveProjectSb3DontZip();
+    const projectFiles = await saveProjectFiles(vm);
     const jsonData = projectFiles['project.json'];
     const projectAssetIDs = Object.keys(projectFiles).filter(i => i !== 'project.json');
     if (projectAssetIDs.length === 0) {
         throw new Error('There are no assets in this project');
     }
 
-    generateThumbnail(vm).then(thumbnailData => {
+    const thumbnailData = await generateThumbnail(vm);
+    return new Promise((resolveTransaction, rejectTransaction) => {
         const transaction = db.transaction(ALL_STORES, 'readwrite');
         transaction.onerror = event => {
             rejectTransaction(new Error(`Creating restore point: ${event.target.error}`));
@@ -347,8 +349,8 @@ const createRestorePoint = (
             const assetStore = transaction.objectStore(ASSET_STORE);
             const keyRequest = assetStore.getAllKeys();
             keyRequest.onsuccess = () => {
-                const savedAssets = keyRequest.result;
-                const missingAssets = projectAssetIDs.filter(assetId => !savedAssets.includes(assetId));
+                const savedAssets = new Set(keyRequest.result);
+                const missingAssets = projectAssetIDs.filter(assetId => !savedAssets.has(assetId));
                 writeMissingAssets(missingAssets);
             };
         };
@@ -390,7 +392,7 @@ const createRestorePoint = (
 
         writeMetadata();
     });
-}));
+});
 
 /**
  * @param {number} id the restore point's ID
