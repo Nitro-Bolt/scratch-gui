@@ -26,6 +26,13 @@ const messages = defineMessages({
     }
 });
 
+const presetColors = [
+    '#FF6680', '#4C97FF', '#9966FF',
+    '#CF63CF', '#FFBF00', '#FFAB19',
+    '#5CB1D6', '#59C059', '#FF8C1A',
+    '#FF661A', '#66BD5C', '#5755D4'
+];
+
 const CustomProcedures = props => {
     const [inputIcon, setInputIcon] = useState(textInputIcon);
     useEffect(() => {
@@ -161,102 +168,17 @@ const CustomProcedures = props => {
                     />
                 </div>
                 <Box className={styles.colorRow}>
-                    <span
-                        style={{backgroundColor: '#FF6680'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#FF6680"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
-                    <span
-                        style={{backgroundColor: '#4C97FF'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#4C97FF"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
-                    <span
-                        style={{backgroundColor: '#9966FF'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#9966FF"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
-                    <span
-                        style={{backgroundColor: '#CF63CF'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#CF63CF"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
-                    <span
-                        style={{backgroundColor: '#FFBF00'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#FFBF00"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
-                    <span
-                        style={{backgroundColor: '#FFAB19'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#FFAB19"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
-                    <span
-                        style={{backgroundColor: '#5CB1D6'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#5CB1D6"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
-                    <span
-                        style={{backgroundColor: '#59C059'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#59C059"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
-                    <span
-                        style={{backgroundColor: '#FF8C1A'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#FF8C1A"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
-                    <span
-                        style={{backgroundColor: '#FF661A'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#FF661A"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
-                    <span
-                        style={{backgroundColor: '#66BD5C'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#66BD5C"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
-                    <span
-                        style={{backgroundColor: '#5755D4'}}
-                        className={styles.colorOption}
-                        role="button"
-                        data-color="#5755D4"
-                        draggable={false}
-                        onClick={props.onSetColor}
-                    />
+                    {presetColors.map(color => (
+                        <span
+                            key={color}
+                            style={{backgroundColor: color}}
+                            className={styles.colorOption}
+                            role="button"
+                            data-color={color}
+                            draggable={false}
+                            onClick={props.onSetColor}
+                        />
+                    ))}
                     <FancyColorPicker
                         value={props.colour}
                         rootClassName={styles.colorPicker}
