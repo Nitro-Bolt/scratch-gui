@@ -146,6 +146,17 @@
     padding-bottom: .25rem;
 }
 
+.extension-url {
+    display: block;
+    font-weight: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.5;
+    color: inherit !important;
+    text-decoration: underline;
+}
+
 .featured-extension-metadata {
     width: 100%;
     padding: 0 1.25rem 1rem 1.25rem;
