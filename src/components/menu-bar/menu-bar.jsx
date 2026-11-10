@@ -287,7 +287,7 @@ class MenuBar extends React.Component {
         document.removeEventListener('keydown', this.handleKeyPress);
     }
     async refreshGitMenu (fetchRemotes = false, clearBranches = false) {
-        if (!isScratchDesktop() || typeof window === 'undefined' || !window.Git) return;
+        if (typeof window === 'undefined' || !window.Git) return;
         const request = ++this.gitRefreshRequest;
         this.setState(clearBranches ? {gitBusy: true, gitBranches: []} : {gitBusy: true});
         try {
