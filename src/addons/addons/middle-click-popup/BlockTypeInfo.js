@@ -297,12 +297,6 @@ export class BlockInstance {
    * @returns {*} A 'workspace form' block.
    */
   createWorkspaceForm() {
-    if (this.typeInfo.id === "control_stop") {
-      this.typeInfo.domForm
-        .querySelector("mutation")
-        .setAttribute("hasnext", "" + (this.inputs[0].value === "other scripts in sprite"));
-    }
-
     const block = this.typeInfo.Blockly.Xml.domToBlock(this.typeInfo.domForm, this.typeInfo.workspace);
     for (let i = 0; i < this.typeInfo.inputs.length; i++) {
       const inputValue = this.inputs[i];
