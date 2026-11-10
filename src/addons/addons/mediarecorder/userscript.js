@@ -2,6 +2,7 @@ import downloadBlob from "../../libraries/common/cs/download-blob.js";
 
 export default async ({ addon, console, msg }) => {
   let recordElem;
+  let recordTextElem;
   let isRecording = false;
   let isWaitingForFlag = false;
   let waitingForFlagFunc = null;
@@ -203,7 +204,7 @@ export default async ({ addon, console, msg }) => {
     };
     const disposeRecorder = () => {
       isRecording = false;
-      recordElem.textContent = msg("record");
+      recordTextElem.textContent = msg("record");
       recordElem.title = "";
       recorder = null;
       recordBuffer = [];
@@ -256,10 +257,8 @@ export default async ({ addon, console, msg }) => {
       }
       if (opts.waitUntilFlag) {
         isWaitingForFlag = true;
-        Object.assign(recordElem, {
-          textContent: msg("click-flag"),
-          title: msg("click-flag-description"),
-        });
+        recordTextElem.textContent = msg("click-flag");
+        recordElem.title = msg("click-flag-description");
         abortController = new AbortController();
         try {
           await Promise.race([
@@ -315,12 +314,12 @@ export default async ({ addon, console, msg }) => {
       const delay = opts.delay || 0;
       const roundedDelay = Math.floor(delay);
       for (let index = 0; index < roundedDelay; index++) {
-        recordElem.textContent = msg("starting-in", { secs: roundedDelay - index });
+        recordTextElem.textContent = msg("starting-in", { secs: roundedDelay - index });
         await new Promise((resolve) => setTimeout(resolve, 975));
       }
       setTimeout(
         () => {
-          recordElem.textContent = msg("stop");
+          recordTextElem.textContent = msg("stop");
 
           recorder.start(1000);
         },
@@ -328,10 +327,26 @@ export default async ({ addon, console, msg }) => {
       );
     };
     if (!recordElem) {
-      recordElem = Object.assign(document.createElement("div"), {
-        className: "sa-record " + elem.className,
+      const icon = document.createElement("img");
+      icon.draggable = false;
+      icon.width = 20;
+      icon.height = 20;
+      icon.src = addon.self.getResource("/camera.svg");
+      icon.style.userSelect = "none";
+
+      recordTextElem = Object.assign(document.createElement("span"), {
         textContent: msg("record"),
+        className: addon.tab.scratchClass("menu-bar_collapsible-label"),
       });
+
+      const menuElem = Object.assign(document.createElement("div"), {
+        className: addon.tab.scratchClass("menu-bar_menu-bar-menu"),
+      });
+      
+      recordElem = Object.assign(document.createElement("button"), {
+        className: "sa-record " + elem.className,
+      });
+      recordElem.append(icon, recordTextElem, menuElem);
       recordElem.addEventListener("click", async () => {
         if (isRecording) {
           stopRecording();
