@@ -645,13 +645,13 @@ const GitModal = props => {
                         onClick={() => mutate('reset', [])}
                     >−</button>}
                     {group.id === 'Changes' && <button
-                        title={format(messages.stageAll)}
-                        onClick={() => mutate('add', [])}
-                    >+</button>}
-                    {group.id === 'Changes' && <button
                         title={format(discardAllPending ? messages.confirmDiscardAll : messages.discardAll)}
                         onClick={discardAllChanges}
                     >{discardAllPending ? '!' : '↶'}</button>}
+                    {group.id === 'Changes' && <button
+                        title={format(messages.stageAll)}
+                        onClick={() => mutate('add', [])}
+                    >+</button>}
                 </span></div>
             {files.map(item => (<div
                 className={`${styles.fileItem} ${selected === `${item.staged ? 's' : 'w'}:${item.path}` ?
