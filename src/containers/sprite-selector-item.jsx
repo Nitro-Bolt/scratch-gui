@@ -23,6 +23,7 @@ class SpriteSelectorItem extends React.PureComponent {
             'handleDelete',
             'handleDeleteContents',
             'handleDuplicate',
+            'handleReplace',
             'handleExport',
             'handleExportBitmap',
             'handleToggleSpriteProperties',
@@ -117,6 +118,10 @@ class SpriteSelectorItem extends React.PureComponent {
     handleDuplicate (e) {
         e.stopPropagation(); // To prevent from bubbling back to handleClick
         this.props.onDuplicateButtonClick(this.props.id);
+    }
+    handleReplace (e) {
+        e.stopPropagation();
+        this.props.onReplaceButtonClick(this.props.id);
     }
     handleExport (e) {
         e.stopPropagation();
@@ -246,6 +251,7 @@ class SpriteSelectorItem extends React.PureComponent {
             onDeleteButtonClick,
             onDeleteContentsButtonClick,
             onDuplicateButtonClick,
+            onReplaceButtonClick,
             onExportButtonClick,
             onExportBitmapButtonClick,
             onFolderChangeComplete,
@@ -275,6 +281,7 @@ class SpriteSelectorItem extends React.PureComponent {
                 onDeleteButtonClick={onDeleteButtonClick ? this.handleDelete : null}
                 onDeleteContentsButtonClick={onDeleteContentsButtonClick ? this.handleDeleteContents : null}
                 onDuplicateButtonClick={onDuplicateButtonClick ? this.handleDuplicate : null}
+                onReplaceButtonClick={onReplaceButtonClick ? this.handleReplace : null}
                 onExportButtonClick={onExportButtonClick ? this.handleExport : null}
                 onExportBitmapButtonClick={onExportBitmapButtonClick ? this.handleExportBitmap : null}
                 isBitmap={isBitmap}
@@ -331,6 +338,7 @@ SpriteSelectorItem.propTypes = {
     onRenameButtonClick: PropTypes.func,
     onDrag: PropTypes.func.isRequired,
     onDuplicateButtonClick: PropTypes.func,
+    onReplaceButtonClick: PropTypes.func,
     onExportButtonClick: PropTypes.func,
     onExportBitmapButtonClick: PropTypes.func,
     onFolderChangeComplete: PropTypes.func,

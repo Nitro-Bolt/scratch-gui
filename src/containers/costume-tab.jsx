@@ -82,6 +82,8 @@ class CostumeTab extends React.Component {
             'handleSelectCostume',
             'handleDeleteCostume',
             'handleDuplicateCostume',
+            'handleReplaceCostume',
+            'handleReplacementCostumeUpload',
             'handleExportCostume',
             'handleExportBitmapCostume',
             'handleMoveToTop',
@@ -95,7 +97,8 @@ class CostumeTab extends React.Component {
             'handleFolderReorder',
             'handleItemFolderChangeComplete',
             'handleDrop',
-            'setFileInput'
+            'setFileInput',
+            'setReplacementFileInput'
         ]);
         const {
             editingTarget,
@@ -150,6 +153,10 @@ class CostumeTab extends React.Component {
     }
     handleDuplicateCostume (costumeIndex) {
         this.props.vm.duplicateCostume(costumeIndex);
+    }
+    handleReplaceCostume (costumeIndex) {
+        this.replacementCostumeIndex = costumeIndex;
+        this.replacementFileInput.click();
     }
     handleExportCostume (costumeIndex) {
         const item = this.props.vm.editingTarget.sprite.costumes[costumeIndex];
@@ -237,15 +244,38 @@ class CostumeTab extends React.Component {
         this.handleNewCostume(vmCostume);
     }
     handleCostumeUpload (e) {
+        this.uploadCostumeFiles(e, null);
+    }
+    handleReplacementCostumeUpload (e) {
+        const replacementCostumeIndex = this.replacementCostumeIndex;
+        this.replacementCostumeIndex = null;
+        this.uploadCostumeFiles(e, replacementCostumeIndex);
+    }
+    uploadCostumeFiles (e, replacementCostumeIndex) {
         const vm = this.props.vm;
         const targetId = this.props.vm.editingTarget.id;
         this.props.onShowImporting();
         handleFileUpload(e.target, (buffer, fileType, fileName, fileIndex, fileCount) => {
+            if (typeof replacementCostumeIndex === 'number' && fileIndex > 0) {
+                if (fileIndex === fileCount - 1) this.props.onCloseImporting();
+                return;
+            }
             costumeUpload(buffer, fileType, vm, vmCostumes => {
                 vmCostumes.forEach((costume, i) => {
                     costume.name = `${fileName}${i ? i + 1 : ''}`;
                 });
-                this.handleNewCostume(vmCostumes, false, targetId).then(() => {
+                let uploadPromise;
+                if (typeof replacementCostumeIndex === 'number') {
+                    uploadPromise = vm.replaceCostume(
+                        vmCostumes[0].md5,
+                        vmCostumes[0],
+                        replacementCostumeIndex,
+                        targetId
+                    );
+                } else {
+                    uploadPromise = this.handleNewCostume(vmCostumes, false, targetId);
+                }
+                uploadPromise.then(() => {
                     if (fileIndex === fileCount - 1) {
                         this.props.onCloseImporting();
                     }
@@ -348,6 +378,9 @@ class CostumeTab extends React.Component {
     setFileInput (input) {
         this.fileInput = input;
     }
+    setReplacementFileInput (input) {
+        this.replacementFileInput = input;
+    }
     formatCostumeDetails (size, optResolution) {
         // If no resolution is given, assume that the costume is an SVG
         const resolution = optResolution ? optResolution : 1;
@@ -436,12 +469,20 @@ class CostumeTab extends React.Component {
                     this.handleDeleteCostume : null}
                 onDrop={this.handleDrop}
                 onDuplicateClick={this.handleDuplicateCostume}
+                onReplaceClick={isStage ? null : this.handleReplaceCostume}
                 onExportClick={this.handleExportCostume}
                 onExportBitmapClick={this.handleExportBitmapCostume}
                 onItemClick={this.handleSelectCostume}
                 onMoveToTopClick={this.handleMoveToTop}
                 onMoveToBottomClick={this.handleMoveToBottom}
             >
+                <input
+                    hidden
+                    accept=".svg, .png, .bmp, .jpg, .jpeg, .jfif, .webp, .gif"
+                    ref={this.setReplacementFileInput}
+                    type="file"
+                    onChange={this.handleReplacementCostumeUpload}
+                />
                 {target.costumes ?
                     <PaintEditorWrapper
                         selectedCostumeIndex={this.state.selectedCostumeIndex}

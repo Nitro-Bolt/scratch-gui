@@ -74,7 +74,7 @@ const hasContextMenu = props => Boolean(props.onDuplicateButtonClick || props.on
     props.onDeleteContentsButtonClick ||
     props.onExportButtonClick || props.onExportBitmapButtonClick || props.onMoveToTopButtonClick ||
     props.onMoveToBottomButtonClick || props.onCreateFolder || props.onColorButtonClick ||
-    props.onRenameButtonClick || props.onFolderChange);
+    props.onRenameButtonClick || props.onReplaceButtonClick || props.onFolderChange);
 
 const SpriteSelectorItem = props => (
     <ContextMenuTrigger
@@ -152,6 +152,15 @@ const SpriteSelectorItem = props => (
                             defaultMessage="Duplicate"
                             description="Menu item to duplicate in the right click menu"
                             id="nb.spriteSelectorItem.contextMenuDuplicate"
+                        />
+                    </MenuItem>
+                ) : null}
+                {props.onReplaceButtonClick ? (
+                    <MenuItem onClick={props.onReplaceButtonClick}>
+                        <FormattedMessage
+                            defaultMessage="Replace with..."
+                            description="Menu item to replace a costume with an uploaded file"
+                            id="nb.spriteSelectorItem.contextMenuReplaceCostume"
                         />
                     </MenuItem>
                 ) : null}
@@ -316,6 +325,7 @@ SpriteSelectorItem.propTypes = {
     onDeleteButtonClick: PropTypes.func,
     onDeleteContentsButtonClick: PropTypes.func,
     onDuplicateButtonClick: PropTypes.func,
+    onReplaceButtonClick: PropTypes.func,
     onExportButtonClick: PropTypes.func,
     onExportBitmapButtonClick: PropTypes.func,
     isBitmap: PropTypes.bool,

@@ -31,6 +31,7 @@ const Selector = props => {
         onRemoveSortable,
         onDeleteClick,
         onDuplicateClick,
+        onReplaceClick,
         onExportClick,
         onExportBitmapClick,
         onItemClick,
@@ -161,6 +162,7 @@ const Selector = props => {
                                 onClick={onItemClick}
                                 onDeleteButtonClick={onDeleteClick}
                                 onDuplicateButtonClick={onDuplicateClick}
+                                onReplaceButtonClick={onReplaceClick}
                                 onExportButtonClick={onExportClick}
                                 onExportBitmapButtonClick={onExportBitmapClick}
                                 onFolderChangeComplete={onItemFolderChangeComplete && selectedItem ?
@@ -207,6 +209,7 @@ Selector.propTypes = {
     onAddSortable: PropTypes.func,
     onDeleteClick: PropTypes.func,
     onDuplicateClick: PropTypes.func,
+    onReplaceClick: PropTypes.func,
     onExportClick: PropTypes.func,
     onExportBitmapClick: PropTypes.func,
     onItemClick: PropTypes.func.isRequired,
