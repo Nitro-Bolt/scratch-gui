@@ -3,20 +3,44 @@
 .diff {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    overflow: visible;
+    overflow: hidden;
     border: 1px solid $ui-black-transparent;
-    border-radius: 0.25rem;
-    background: $ui-white;
+    border-radius: .4rem;
+    background: $ui-modal-background;
 }
 
 .heading {
-    padding: 0.5rem 0.65rem;
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .55rem .7rem;
     border-bottom: 1px solid $ui-black-transparent;
     background: $ui-modal-background;
-    color: $text-primary-transparent;
-    font-size: 0.7rem;
+    color: $text-primary;
+    font-size: .72rem;
     font-weight: bold;
-    text-transform: uppercase;
+}
+
+.heading::before {
+    display: inline-grid;
+    width: 1.15rem;
+    height: 1.15rem;
+    place-items: center;
+    border-radius: .2rem;
+    font-size: .8rem;
+    line-height: 1;
+}
+
+.heading:first-child::before {
+    background: $error-transparent;
+    color: $error-primary;
+    content: "−";
+}
+
+.heading:nth-child(2)::before {
+    background: $pen-transparent;
+    color: $pen-primary;
+    content: "+";
 }
 
 .heading:nth-child(2),
@@ -28,16 +52,17 @@
     min-height: 2.5rem;
     min-width: 0;
     overflow: hidden;
-    padding: 0.55rem;
+    padding: .65rem;
     border-bottom: 1px solid $ui-black-transparent;
+    background: $ui-white;
 }
 
 .removed {
-    background: var(--git-diff-removed-background, #fff0f0);
+    box-shadow: inset 3px 0 $error-primary;
 }
 
 .added {
-    background: var(--git-diff-added-background, #e8f7ee);
+    box-shadow: inset 3px 0 $pen-primary;
 }
 
 .script {
@@ -47,22 +72,31 @@
 
 .script-header {
     display: flex;
+    min-height: 1.6rem;
+    align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.45rem;
+    gap: .75rem;
+    margin-bottom: .5rem;
     color: $text-primary-transparent;
     font-family: monospace;
-    font-size: 0.65rem;
+    font-size: .65rem;
 }
 
 .script-header button {
     border: 1px solid $ui-black-transparent;
-    border-radius: 0.25rem;
-    padding: 0.2rem 0.4rem;
-    background: $ui-white;
+    border-radius: .3rem;
+    padding: .3rem .5rem;
+    background: $ui-modal-background;
     color: $text-primary;
     font: inherit;
+    font-family: inherit;
+    font-weight: bold;
     cursor: pointer;
+}
+
+.script-header button:hover,
+.script-header button:focus-visible {
+    background: $ui-black-transparent;
 }
 
 .blocks {
@@ -74,10 +108,13 @@
     min-height: 8rem;
     height: 14rem;
     overflow: hidden;
+    border: 1px solid $ui-black-transparent;
+    border-radius: .3rem;
+    background: $ui-modal-background;
     resize: vertical;
     color: $text-primary-transparent;
     font-family: monospace;
-    font-size: 0.7rem;
+    font-size: .7rem;
 }
 
 .blocks > :global(.injectionDiv),
@@ -95,29 +132,32 @@
 
 .blocks .block-removed > :global(.blocklyBlockBackground),
 .blocks .block-added > :global(.blocklyBlockBackground) {
-    stroke-width: 3px !important;
+    stroke-width: 4px !important;
 }
 
 .blocks .block-removed > :global(.blocklyBlockBackground) {
-    filter: drop-shadow(0 0 2px #ef4444);
-    stroke: #ef4444 !important;
+    stroke: $error-primary !important;
 }
 
 .blocks .block-added > :global(.blocklyBlockBackground) {
-    filter: drop-shadow(0 0 2px #22c55e);
-    stroke: #22c55e !important;
+    stroke: $pen-primary !important;
 }
 
 .missing {
-    min-height: 2rem;
+    display: grid;
+    min-height: 14rem;
+    place-items: center;
+    border: 1px dashed $ui-black-transparent;
+    border-radius: .3rem;
+    background: $ui-modal-background;
     color: $text-primary-transparent;
-    font-size: 0.72rem;
+    font-size: .72rem;
     font-style: italic;
 }
 
 .empty {
     grid-column: 1 / -1;
-    padding: 1rem;
+    padding: 1.25rem;
     color: $text-primary-transparent;
     text-align: center;
 }
