@@ -195,6 +195,7 @@ const GitModal = props => {
     const refreshRequest = React.useRef(0);
     const commitMenu = React.useRef(null);
     const commitMenuButton = React.useRef(null);
+    const lastSyncRevision = React.useRef(props.syncRevision);
     const repositoryRevision = status && status.isRepository ? `${repoPath}:${status.commit || 'unborn'}` : null;
     const safeStatus = status || {branch: '', commit: null, staged: []};
 
@@ -291,6 +292,11 @@ const GitModal = props => {
     useEffect(() => {
         refresh(repoPath, true);
     }, [repoPath]);
+    useEffect(() => {
+        if (props.syncRevision === lastSyncRevision.current) return;
+        lastSyncRevision.current = props.syncRevision;
+        refresh(repoPath);
+    }, [props.syncRevision, repoPath]);
     useEffect(() => {
         let cancelled = false;
         if (view === 'readme' && repositoryRevision && readmeRevision !== repositoryRevision) {
@@ -992,6 +998,7 @@ GitModal.propTypes = {dark: PropTypes.bool,
     onSetProjectPath: PropTypes.func.isRequired,
     projectPath: PropTypes.string,
     preferences: PropTypes.object.isRequired,
+    syncRevision: PropTypes.number.isRequired,
     vm: PropTypes.shape({loadProject: PropTypes.func.isRequired,
         quit: PropTypes.func.isRequired,
         runtime: PropTypes.shape({
@@ -1000,7 +1007,8 @@ GitModal.propTypes = {dark: PropTypes.bool,
         setEditingTarget: PropTypes.func.isRequired,
         renderer: PropTypes.shape({draw: PropTypes.func.isRequired})}).isRequired};
 const mapStateToProps = state => ({
-    preferences: state.scratchGui.preferences
+    preferences: state.scratchGui.preferences,
+    syncRevision: state.scratchGui.tw.gitProjectSyncRevision
 });
 
 export default connect(mapStateToProps)(injectIntl(GitModal));

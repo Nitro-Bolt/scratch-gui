@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import log from '../lib/log';
 import saveProjectFiles from '../lib/nb-save-project-files';
 import {setProjectUnchanged} from '../reducers/project-changed';
+import {notifyGitProjectSynced} from '../reducers/tw';
 
 const SYNC_DEBOUNCE_MS = 2000;
 const USER_ACTIVITY_EVENTS = ['pointerdown', 'pointermove', 'keydown', 'wheel', 'input'];
@@ -143,6 +144,7 @@ class NBGitProjectManager extends React.Component {
         });
         const result = await window.Git.syncProject(projectPath, files);
         if (!result.success) throw new Error(result.error || 'Could not save the Git project');
+        this.props.onProjectSynced();
     }
 
     async pauseAndFlush () {
@@ -193,6 +195,7 @@ class NBGitProjectManager extends React.Component {
 
 NBGitProjectManager.propTypes = {
     onProjectUnchanged: PropTypes.func.isRequired,
+    onProjectSynced: PropTypes.func.isRequired,
     projectPath: PropTypes.string,
     vm: PropTypes.shape({
         off: PropTypes.func.isRequired,
@@ -208,7 +211,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onProjectUnchanged: () => dispatch(setProjectUnchanged())
+    onProjectUnchanged: () => dispatch(setProjectUnchanged()),
+    onProjectSynced: () => dispatch(notifyGitProjectSynced())
 });
 
 export {

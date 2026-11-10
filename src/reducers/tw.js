@@ -18,6 +18,7 @@ const SET_CLOUD_HOST = 'tw/SET_CLOUD_HOST';
 const SET_PLATFORM_MISMATCH_DETAILS = 'tw/SET_PLATFORM_MISMATCH_DETAILS';
 const SET_PROJECT_ERROR = 'tw/SET_PROJECT_ERROR';
 const SET_GIT_PROJECT_PATH = 'tw/SET_GIT_PROJECT_PATH';
+const NOTIFY_GIT_PROJECT_SYNCED = 'tw/NOTIFY_GIT_PROJECT_SYNCED';
 
 export const initialState = {
     framerate: 30,
@@ -55,7 +56,8 @@ export const initialState = {
         callback: null
     },
     projectError: null,
-    gitProjectPath: null
+    gitProjectPath: null,
+    gitProjectSyncRevision: 0
 };
 
 const reducer = function (state, action) {
@@ -148,6 +150,10 @@ const reducer = function (state, action) {
         return Object.assign({}, state, {
             fileHandle: action.gitProjectPath ? null : state.fileHandle,
             gitProjectPath: action.gitProjectPath
+        });
+    case NOTIFY_GIT_PROJECT_SYNCED:
+        return Object.assign({}, state, {
+            gitProjectSyncRevision: state.gitProjectSyncRevision + 1
         });
     default:
         return state;
@@ -294,6 +300,12 @@ const setGitProjectPath = function (gitProjectPath) {
     };
 };
 
+const notifyGitProjectSynced = function () {
+    return {
+        type: NOTIFY_GIT_PROJECT_SYNCED
+    };
+};
+
 export {
     reducer as default,
     initialState as twInitialState,
@@ -316,5 +328,6 @@ export {
     setCloudHost,
     setPlatformMismatchDetails,
     setProjectError,
-    setGitProjectPath
+    setGitProjectPath,
+    notifyGitProjectSynced
 };
