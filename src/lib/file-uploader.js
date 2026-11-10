@@ -312,7 +312,7 @@ const spriteUpload = function (fileData, fileType, spriteName, vm, handleSprite,
         costumeUpload(fileData, fileType, vm, vmCostumes => {
             vmCostumes.forEach((costume, i) => {
                 costume.name = `${spriteName}${i ? i + 1 : ''}`;
-            }, pixelUploadSize);
+            });
             const newSprite = {
                 name: spriteName,
                 isStage: false,
