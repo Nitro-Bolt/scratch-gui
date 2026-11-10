@@ -53,6 +53,8 @@ class AssetTab extends React.Component {
             'handleSelectAsset',
             'handleDeleteAsset',
             'handleDuplicateAsset',
+            'handleReplaceAsset',
+            'handleReplacementAssetUpload',
             'handleExportAsset',
             'handleMoveToTop',
             'handleMoveToBottom',
@@ -63,7 +65,8 @@ class AssetTab extends React.Component {
             'handleFolderReorder',
             'handleItemFolderChangeComplete',
             'handleDrop',
-            'setFileInput'
+            'setFileInput',
+            'setReplacementFileInput'
         ]);
         this.state = {selectedAssetIndex: 0};
     }
@@ -153,16 +156,33 @@ class AssetTab extends React.Component {
     }
 
     handleAssetUpload (e) {
+        this.uploadAssetFiles(e, null);
+    }
+
+    handleReplacementAssetUpload (e) {
+        const replacementAssetIndex = this.replacementAssetIndex;
+        this.replacementAssetIndex = null;
+        this.uploadAssetFiles(e, replacementAssetIndex);
+    }
+
+    uploadAssetFiles (e, replacementAssetIndex) {
         const storage = this.props.vm.runtime.storage;
         const targetId = this.props.vm.editingTarget.id;
         this.props.onShowImporting();
         handleFileUpload(e.target, (buffer, fileType, fileName, fileIndex, fileCount, fileExtension, lastModified) => {
+            if (typeof replacementAssetIndex === 'number' && fileIndex > 0) {
+                if (fileIndex === fileCount - 1) this.props.onCloseImporting();
+                return;
+            }
             assetUpload(buffer, fileType, fileExtension || 'file', storage, newAsset => {
                 newAsset.name = fileName;
                 newAsset.contentType = newAsset.asset.assetType.contentType;
                 newAsset.lastModified = lastModified;
-                this.props.vm.addAsset(newAsset, targetId).then(() => {
-                    this.handleNewAsset();
+                const uploadPromise = typeof replacementAssetIndex === 'number' ?
+                    this.props.vm.replaceAsset(newAsset, replacementAssetIndex, targetId) :
+                    this.props.vm.addAsset(newAsset, targetId);
+                uploadPromise.then(() => {
+                    if (typeof replacementAssetIndex !== 'number') this.handleNewAsset();
                     if (fileIndex === fileCount - 1) {
                         this.props.onCloseImporting();
                     }
@@ -258,6 +278,11 @@ class AssetTab extends React.Component {
         });
     }
 
+    handleReplaceAsset (assetIndex) {
+        this.replacementAssetIndex = assetIndex;
+        this.replacementFileInput.click();
+    }
+
     handleMoveToTop (assetIndex) {
         this.props.vm.reorderAsset(this.props.vm.editingTarget.id, assetIndex, 0);
         this.setState({selectedAssetIndex: 0});
@@ -277,6 +302,10 @@ class AssetTab extends React.Component {
 
     setFileInput (input) {
         this.fileInput = input;
+    }
+
+    setReplacementFileInput (input) {
+        this.replacementFileInput = input;
     }
 
     handleFileUploadClick () {
@@ -330,6 +359,7 @@ class AssetTab extends React.Component {
                 onDeleteClick={this.handleDeleteAsset}
                 onDrop={this.handleDrop}
                 onDuplicateClick={this.handleDuplicateAsset}
+                onReplaceClick={this.handleReplaceAsset}
                 onExportClick={this.handleExportAsset}
                 onItemClick={this.handleSelectAsset}
                 onMoveToTopClick={this.handleMoveToTop}
@@ -341,6 +371,12 @@ class AssetTab extends React.Component {
                     style={{display: 'none'}}
                     type="file"
                     onChange={this.handleAssetUpload}
+                />
+                <input
+                    hidden
+                    ref={this.setReplacementFileInput}
+                    type="file"
+                    onChange={this.handleReplacementAssetUpload}
                 />
                 {sprite.assets && selectedAsset &&
                     <AssetViewer

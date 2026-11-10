@@ -52,6 +52,8 @@ class SoundTab extends React.Component {
             'handleSelectSound',
             'handleDeleteSound',
             'handleDuplicateSound',
+            'handleReplaceSound',
+            'handleReplacementSoundUpload',
             'handleExportSound',
             'handleMoveToTop',
             'handleMoveToBottom',
@@ -62,7 +64,8 @@ class SoundTab extends React.Component {
             'handleFolderReorder',
             'handleItemFolderChangeComplete',
             'handleDrop',
-            'setFileInput'
+            'setFileInput',
+            'setReplacementFileInput'
         ]);
         this.state = {selectedSoundIndex: 0};
     }
@@ -111,6 +114,11 @@ class SoundTab extends React.Component {
         });
     }
 
+    handleReplaceSound (soundIndex) {
+        this.replacementSoundIndex = soundIndex;
+        this.replacementFileInput.click();
+    }
+
     handleMoveToTop (soundIndex) {
         this.props.vm.editingTarget.reorderSound(soundIndex, 0);
         this.setState({selectedSoundIndex: 0});
@@ -151,14 +159,31 @@ class SoundTab extends React.Component {
     }
 
     handleSoundUpload (e) {
+        this.uploadSoundFiles(e, null);
+    }
+
+    handleReplacementSoundUpload (e) {
+        const replacementSoundIndex = this.replacementSoundIndex;
+        this.replacementSoundIndex = null;
+        this.uploadSoundFiles(e, replacementSoundIndex);
+    }
+
+    uploadSoundFiles (e, replacementSoundIndex) {
         const storage = this.props.vm.runtime.storage;
         const targetId = this.props.vm.editingTarget.id;
         this.props.onShowImporting();
         handleFileUpload(e.target, (buffer, fileType, fileName, fileIndex, fileCount) => {
+            if (typeof replacementSoundIndex === 'number' && fileIndex > 0) {
+                if (fileIndex === fileCount - 1) this.props.onCloseImporting();
+                return;
+            }
             soundUpload(buffer, fileType, storage, newSound => {
                 newSound.name = fileName;
-                this.props.vm.addSound(newSound, targetId).then(() => {
-                    this.handleNewSound();
+                const uploadPromise = typeof replacementSoundIndex === 'number' ?
+                    this.props.vm.replaceSound(newSound, replacementSoundIndex, targetId) :
+                    this.props.vm.addSound(newSound, targetId);
+                uploadPromise.then(() => {
+                    if (typeof replacementSoundIndex !== 'number') this.handleNewSound();
                     if (fileIndex === fileCount - 1) {
                         this.props.onCloseImporting();
                     }
@@ -262,6 +287,10 @@ class SoundTab extends React.Component {
         this.fileInput = input;
     }
 
+    setReplacementFileInput (input) {
+        this.replacementFileInput = input;
+    }
+
     render () {
         const {
             dispatchUpdateRestore, // eslint-disable-line no-unused-vars
@@ -350,11 +379,19 @@ class SoundTab extends React.Component {
                 onDeleteClick={this.handleDeleteSound}
                 onDrop={this.handleDrop}
                 onDuplicateClick={this.handleDuplicateSound}
+                onReplaceClick={this.handleReplaceSound}
                 onExportClick={this.handleExportSound}
                 onItemClick={this.handleSelectSound}
                 onMoveToTopClick={this.handleMoveToTop}
                 onMoveToBottomClick={this.handleMoveToBottom}
             >
+                <input
+                    hidden
+                    accept=".wav, .mp3, .ogg, .flac, .aac, .m4a"
+                    ref={this.setReplacementFileInput}
+                    type="file"
+                    onChange={this.handleReplacementSoundUpload}
+                />
                 {sprite.sounds && sprite.sounds[this.state.selectedSoundIndex] ? (
                     isSupported ? (
                         <SoundEditor
