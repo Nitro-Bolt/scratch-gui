@@ -46,6 +46,8 @@ const ModalComponent = props => {
         };
     }, []);
 
+    const blur = Number(props.preferences['modal-overlay-blur'] ?? 0);
+
     return (<ReactModal
         isOpen
         className={classNames(styles.modalContent, props.className, {
@@ -56,9 +58,9 @@ const ModalComponent = props => {
             [styles.dark]: props.theme.gui === GUI_DARK
         })}
         style={{
-            overlay: {
-                backdropFilter: `blur(${Number(props.preferences['modal-overlay-blur'] ?? 0)}px)`
-            }
+            overlay: blur > 0 ? {
+                backdropFilter: `blur(${blur})}px)`
+            } : {}
         }}
         contentLabel={props.contentLabel}
         // This ref must update the hook-owned content element.
