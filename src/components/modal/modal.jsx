@@ -59,7 +59,7 @@ const ModalComponent = props => {
         })}
         style={{
             overlay: blur > 0 ? {
-                backdropFilter: `blur(${blur})}px)`
+                backdropFilter: `blur(${blur}px)`
             } : {}
         }}
         contentLabel={props.contentLabel}
