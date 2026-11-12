@@ -115,7 +115,7 @@ const ReadmeEditor = ({dark, onChange, value}) => {
     onChangeRef.current = onChange;
     useEffect(() => {
         if (!element.current) return () => null;
-        model.current = monaco.editor.createModel(value, 'plaintext');
+        model.current = monaco.editor.createModel(value, 'markdown');
         editor.current = monaco.editor.create(element.current, {
             automaticLayout: true,
             contextmenu: true,
@@ -162,6 +162,19 @@ const canDiscardIndividually = change => {
         (change.originalPath && managedProjectFile(change.originalPath));
     return !managed || (change.status !== 'U' && !change.originalPath);
 };
+const hasWorkingChanges = status => status.unstaged.length > 0 || status.untracked.length > 0 ||
+    status.conflicted.length > 0;
+const statusHasSelection = (status, selection) => {
+    if (!selection) return true;
+    const staged = selection.startsWith('s:');
+    const path = selection.substring(2);
+    const changes = staged ? status.staged : [
+        ...(status.conflicted || []),
+        ...(status.untracked || []),
+        ...(status.unstaged || [])
+    ];
+    return changes.some(change => change.path === path);
+};
 
 const GitModal = props => {
     const repoPath = props.projectPath;
@@ -197,7 +210,15 @@ const GitModal = props => {
     const commitMenuButton = React.useRef(null);
     const lastSyncRevision = React.useRef(props.syncRevision);
     const repositoryRevision = status && status.isRepository ? `${repoPath}:${status.commit || 'unborn'}` : null;
-    const safeStatus = status || {branch: '', commit: null, staged: []};
+    const safeStatus = status || {
+        branch: '',
+        commit: null,
+        conflicted: [],
+        staged: [],
+        unstaged: [],
+        untracked: []
+    };
+    const hasCommittableChanges = safeStatus.staged.length > 0 || hasWorkingChanges(safeStatus);
 
     const format = (descriptor, values) => props.intl.formatMessage(descriptor, values);
     const errorMessage = result => gitErrorMessage(result) || format(messages.gitOperationFailed);
@@ -292,6 +313,9 @@ const GitModal = props => {
     useEffect(() => {
         refresh(repoPath, true);
     }, [repoPath]);
+    useEffect(() => {
+        if (status && !statusHasSelection(status, selected)) clearDiff();
+    }, [status, selected]);
     useEffect(() => {
         if (props.syncRevision === lastSyncRevision.current) return;
         lastSyncRevision.current = props.syncRevision;
@@ -456,12 +480,21 @@ const GitModal = props => {
         const restoreMenuFocus = commitMenuOpen;
         setCommitMenuOpen(false);
         if (restoreMenuFocus) setTimeout(() => commitMenuButton.current && commitMenuButton.current.focus(), 0);
+        await requestGitProjectSync(repoPath);
+        const statusResult = await window.Git.status(repoPath);
+        if (failed(statusResult)) return;
+        const currentStatus = statusResult.data;
+        if (!currentStatus.staged.length && hasWorkingChanges(currentStatus)) {
+            const stageResult = await window.Git.add(repoPath, []);
+            if (failed(stageResult)) return;
+        }
         const result = await window.Git.commit(repoPath, message.trim(), action === 'amend');
         if (failed(result)) return;
         setMessage('');
+        clearDiff();
         try {
             if (action === 'push') {
-                const pushResult = await window.Git.push(repoPath, remote, safeStatus.branch);
+                const pushResult = await window.Git.push(repoPath, remote, currentStatus.branch);
                 if (failed(pushResult)) return;
             } else if (action === 'sync') {
                 let paused = false;
@@ -470,10 +503,10 @@ const GitModal = props => {
                     paused = true;
                     const fetchResult = await window.Git.fetch(repoPath, remote);
                     if (failed(fetchResult)) return;
-                    const pullResult = await window.Git.pull(repoPath, remote, safeStatus.branch);
+                    const pullResult = await window.Git.pull(repoPath, remote, currentStatus.branch);
                     if (failed(pullResult)) return;
                     await reloadProject();
-                    const pushResult = await window.Git.push(repoPath, remote, safeStatus.branch);
+                    const pushResult = await window.Git.push(repoPath, remote, currentStatus.branch);
                     if (failed(pushResult)) return;
                 } finally {
                     if (paused) resumeGitProjectSync();
@@ -705,7 +738,7 @@ const GitModal = props => {
                 >
                     <button
                         className={styles.commitMainButton}
-                        disabled={busy || !safeStatus.staged.length || !message.trim()}
+                        disabled={busy || !hasCommittableChanges || !message.trim()}
                         onClick={() => commit()}
                     >{format(messages.commit)}</button>
                     <button
@@ -729,7 +762,7 @@ const GitModal = props => {
                         role="menu"
                     >
                         <button
-                            disabled={!safeStatus.staged.length || !message.trim()}
+                            disabled={!hasCommittableChanges || !message.trim()}
                             onClick={() => commit('commit')}
                             role="menuitem"
                         >{format(messages.commit)}</button>
@@ -740,12 +773,12 @@ const GitModal = props => {
                         >{format(messages.commitAmend)}</button>
                         <button
                             className={styles.commitRemoteAction}
-                            disabled={!safeStatus.staged.length || !message.trim() || !selectedRemoteExists}
+                            disabled={!hasCommittableChanges || !message.trim() || !selectedRemoteExists}
                             onClick={() => commit('push')}
                             role="menuitem"
                         >{format(messages.commitPush)}</button>
                         <button
-                            disabled={!safeStatus.staged.length || !message.trim() || !selectedRemoteExists}
+                            disabled={!hasCommittableChanges || !message.trim() || !selectedRemoteExists}
                             onClick={() => commit('sync')}
                             role="menuitem"
                         >{format(messages.commitSync)}</button>
