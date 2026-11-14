@@ -129,7 +129,7 @@ const RenderedScript = ({highlightedBlockIds, highlightType, messages: labels, o
                 ref={element}
             />
         </div>
-    ) : <div className={styles.missing}>{labels.noScript}</div>;
+    ) : <div className={styles.missing}><span>{labels.noScript}</span></div>;
 };
 
 RenderedScript.propTypes = {

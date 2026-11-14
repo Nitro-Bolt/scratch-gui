@@ -1,6 +1,9 @@
 @import "../../css/colors.css";
 
 .diff {
+    --git-diff-removed: #f14c4c;
+    --git-diff-removed-transparent: rgba(241, 76, 76, .16);
+
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     overflow: hidden;
@@ -32,8 +35,8 @@
 }
 
 .heading:first-child::before {
-    background: $error-transparent;
-    color: $error-primary;
+    background: var(--git-diff-removed-transparent);
+    color: var(--git-diff-removed);
     content: "−";
 }
 
@@ -58,7 +61,7 @@
 }
 
 .removed {
-    box-shadow: inset 3px 0 $error-primary;
+    box-shadow: inset 3px 0 var(--git-diff-removed);
 }
 
 .added {
@@ -136,7 +139,7 @@
 }
 
 .blocks .block-removed > :global(.blocklyBlockBackground) {
-    stroke: $error-primary !important;
+    stroke: var(--git-diff-removed) !important;
 }
 
 .blocks .block-added > :global(.blocklyBlockBackground) {
@@ -144,15 +147,22 @@
 }
 
 .missing {
-    display: grid;
+    display: flex;
     min-height: 14rem;
-    place-items: center;
-    border: 1px dashed $ui-black-transparent;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $ui-black-transparent;
     border-radius: .3rem;
     background: $ui-modal-background;
+}
+
+.missing span {
+    border-radius: 1rem;
+    padding: .35rem .65rem;
+    background: $ui-black-transparent;
     color: $text-primary-transparent;
     font-size: .72rem;
-    font-style: italic;
+    font-weight: bold;
 }
 
 .empty {
