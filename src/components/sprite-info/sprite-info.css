@@ -120,6 +120,11 @@ label:has(.sprite-input) {
     width: 0;
 }
 
+.column-input {
+    flex-grow: 0;
+    width: 8rem;
+}
+
 .camera-info {
     padding-top: 0.75rem;
 }
