@@ -8,7 +8,7 @@ import saveProjectFiles from '../lib/nb-save-project-files';
 import {setProjectUnchanged} from '../reducers/project-changed';
 import {notifyGitProjectSynced} from '../reducers/tw';
 
-const SYNC_DEBOUNCE_MS = 2000;
+const SYNC_DEBOUNCE_MS = 750;
 const USER_ACTIVITY_EVENTS = ['pointerdown', 'pointermove', 'keydown', 'wheel', 'input'];
 
 let activeManager = null;
