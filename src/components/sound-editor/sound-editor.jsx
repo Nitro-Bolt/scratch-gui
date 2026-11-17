@@ -608,6 +608,7 @@ const SoundEditor = props => {
                                 id="tw.mono"
                             />
                         )}
+                        {props.dataFormat && ` ${props.dataFormat.toUpperCase()}`}
                         {` (${formatSoundSize(props.size)})`}
                     </span>
                 </div>
@@ -618,6 +619,7 @@ const SoundEditor = props => {
 
 SoundEditor.propTypes = {
     isStereo: PropTypes.bool.isRequired,
+    dataFormat: PropTypes.string,
     duration: PropTypes.number.isRequired,
     size: PropTypes.number.isRequired,
     sampleRate: PropTypes.number.isRequired,
