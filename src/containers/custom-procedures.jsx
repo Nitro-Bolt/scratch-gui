@@ -2,14 +2,16 @@ import bindAll from 'lodash.bindall';
 import defaultsDeep from 'lodash.defaultsdeep';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ScratchBlocks from 'scratch-blocks';
 import CustomProceduresComponent from '../components/custom-procedures/custom-procedures.jsx';
-import LazyScratchBlocks from '../lib/tw-lazy-scratch-blocks';
 import {connect} from 'react-redux';
 
 class CustomProcedures extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
+            'handleSelectedFieldChange',
+            'handleExtendableOptionsChange',
             'handleAddLabel',
             'handleAddDropdown',
             'handleAddBranch',
@@ -35,10 +37,15 @@ class CustomProcedures extends React.Component {
             dual: false,
             colour: '#000000',
             menuInput: 'stringornumber',
-            outputMode: 'auto'
+            outputMode: 'auto',
+            extendableEditor: null
         };
     }
     componentWillUnmount () {
+        this.clearExtendableEditor();
+        if (this.mutationRoot) {
+            this.mutationRoot.onSelectedFieldChange = null;
+        }
         if (this.workspace) {
             this.workspace.dispose();
         }
@@ -52,7 +59,6 @@ class CustomProcedures extends React.Component {
             {rtl: this.props.isRtl}
         );
 
-        const ScratchBlocks = LazyScratchBlocks.get();
         // @todo This is a hack to make there be no toolbox.
         const oldDefaultToolbox = ScratchBlocks.Blocks.defaultToolbox;
         ScratchBlocks.Blocks.defaultToolbox = null;
@@ -61,6 +67,7 @@ class CustomProcedures extends React.Component {
 
         // Create the procedure declaration block for editing the mutation.
         this.mutationRoot = this.workspace.newBlock('procedures_declaration');
+        this.mutationRoot.onSelectedFieldChange = this.handleSelectedFieldChange;
         // Make the declaration immovable, undeletable and have no context menu
         this.mutationRoot.setMovable(false);
         this.mutationRoot.setDeletable(false);
@@ -128,6 +135,36 @@ class CustomProcedures extends React.Component {
             colour: this.mutationRoot.getProcedureColour()
         });
     }
+    clearExtendableEditor () {
+        if (this.extendableOptionsRoot) {
+            this.extendableOptionsRoot.remove();
+            this.extendableOptionsRoot = null;
+        }
+    }
+    handleSelectedFieldChange (field) {
+        this.clearExtendableEditor();
+        if (!field || field.sourceBlock_.type !== 'argument_editor_extendable') {
+            this.setState({extendableEditor: null});
+            return;
+        }
+        const input = this.mutationRoot.inputList.find(item =>
+            item.connection && item.connection.targetBlock() === field.sourceBlock_
+        );
+        this.extendableArgumentId = input.name;
+        this.extendableNameField = field;
+        this.extendableNameInput = ScratchBlocks.FieldTextInput.htmlInput_;
+        this.extendableOptionsRoot = document.createElement('div');
+        ScratchBlocks.WidgetDiv.DIV.appendChild(this.extendableOptionsRoot);
+        this.setState({
+            extendableEditor: {
+                root: this.extendableOptionsRoot,
+                options: this.mutationRoot.getExtendableOptions(input.name)
+            }
+        });
+    }
+    handleExtendableOptionsChange (options) {
+        this.mutationRoot.setExtendableOptions(this.extendableArgumentId, options);
+    }
     handleOpenAnimationEnd () {
         if (this.mutationRoot) this.mutationRoot.focusLastEditor_();
     }
@@ -167,6 +204,9 @@ class CustomProcedures extends React.Component {
                 break;
             case 'object':
                 this.mutationRoot.addObjectExternal();
+                break;
+            case 'extendable':
+                this.mutationRoot.addExtendableExternal();
                 break;
             case 'array':
                 this.mutationRoot.addArrayExternal();
@@ -236,6 +276,8 @@ class CustomProcedures extends React.Component {
         return (
             <CustomProceduresComponent
                 componentRef={this.setBlocks}
+                extendableEditor={this.state.extendableEditor}
+                onExtendableOptionsChange={this.handleExtendableOptionsChange}
                 global={this.state.global}
                 runInParent={this.state.runInParent}
                 dual={this.state.dual}

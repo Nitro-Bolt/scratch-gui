@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
+import {createPortal} from 'react-dom';
+import ExtendableOptions from './extendable-options.jsx';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
 import FancyCheckbox from '../tw-fancy-checkbox/checkbox.jsx';
@@ -47,6 +49,7 @@ const CustomProcedures = props => {
         case 'object':
             setInputIcon(objectInputIcon);
             break;
+        case 'extendable':
         case 'array':
             setInputIcon(arrayInputIcon);
             break;
@@ -68,6 +71,14 @@ const CustomProcedures = props => {
                 className={styles.workspace}
                 componentRef={props.componentRef}
             />
+            {props.extendableEditor && createPortal(
+                <ExtendableOptions
+                    intl={props.intl}
+                    options={props.extendableEditor.options}
+                    onChange={props.onExtendableOptionsChange}
+                />,
+                props.extendableEditor.root
+            )}
             <Box className={styles.body}>
                 <div className={styles.optionsRow}>
                     <div
@@ -90,6 +101,11 @@ const CustomProcedures = props => {
                         </div>
                         <select
                             className={styles.optionMenu}
+                            aria-label={props.intl.formatMessage({
+                                defaultMessage: 'Input type',
+                                id: 'gui.customProcedures.inputType'
+                            })}
+                            value={props.menuOption}
                             onClick={props.onInputMenuClick}
                             onChange={props.onInputMenuChange}
                         >
@@ -98,6 +114,7 @@ const CustomProcedures = props => {
                             <option value="boolean">{'boolean'}</option>
                             <option value="object">{'object'}</option>
                             <option value="array">{'array'}</option>
+                            <option value="extendable">{'extendable'}</option>
                             <option value="color">{'color'}</option>
                         </select>
                     </div>
@@ -285,6 +302,11 @@ const CustomProcedures = props => {
 
 CustomProcedures.propTypes = {
     componentRef: PropTypes.func.isRequired,
+    extendableEditor: PropTypes.shape({
+        root: PropTypes.instanceOf(Element).isRequired,
+        options: PropTypes.object.isRequired
+    }),
+    onExtendableOptionsChange: PropTypes.func.isRequired,
     colour: PropTypes.string.isRequired,
     intl: intlShape,
     onAddInput: PropTypes.func.isRequired,

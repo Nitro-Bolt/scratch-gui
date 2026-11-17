@@ -188,3 +188,61 @@
 [dir="rtl"] .button-row button + button {
     margin-right: 0.5rem;
 }
+
+.extendable-options {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    box-sizing: border-box;
+    width: 12rem;
+    max-width: calc(100vw - 24px);
+    padding: calc($space * 2);
+    border: 1px solid $ui-black-transparent;
+    border-radius: $space;
+    background: $ui-modal-background;
+    color: $text-primary;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    text-align: start;
+}
+
+.extendable-options::after {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    transform: translateX(-50%) rotate(45deg);
+    border-top: 1px solid $ui-black-transparent;
+    border-left: 1px solid $ui-black-transparent;
+    background: $ui-modal-background;
+    pointer-events: none;
+}
+
+.extendable-options label {
+    display: flex;
+    flex-direction: column;
+    gap: calc($space / 2);
+    font-weight: bold;
+}
+
+.extendable-controls,
+.extendable-limits {
+    display: flex;
+    flex-direction: column;
+    gap: $space;
+}
+
+.extendable-controls {
+    margin-top: $space;
+}
+
+.extendable-input {
+    box-sizing: border-box;
+    width: 100%;
+    border-radius: $form-radius;
+    font-size: 0.75rem;
+}
