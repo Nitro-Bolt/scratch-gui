@@ -15,6 +15,10 @@ const soundPayload = sound => {
     };
 
     switch (assetDataFormat) {
+    case 'ogg':
+        payload.mime = 'audio/ogg';
+        payload.body = assetDataUrl.replace(`data:${assetContentType};base64,`, '');
+        break;
     case 'wav':
         payload.mime = 'audio/x-wav';
         payload.body = assetDataUrl.replace(`data:${assetContentType};base64,`, '');

@@ -230,8 +230,19 @@ const costumeUpload = function (fileData, fileType, vm, handleCostume, handleErr
  * @param {Function} handleError The function to execute if there is an error parsing the sound
  */
 const soundUpload = function (fileData, fileType, storage, handleSound, handleError) {
+    // Some browsers do not supply a MIME type for ogg files.
+    const header = new Uint8Array(fileData, 0, Math.min(fileData.byteLength, 4));
+    if (header[0] === 0x4f && header[1] === 0x67 && header[2] === 0x67 && header[3] === 0x53) {
+        fileType = 'audio/ogg';
+    }
     let soundFormat;
     switch (fileType) {
+    case 'audio/ogg':
+    case 'application/ogg':
+    case 'audio/x-ogg': {
+        soundFormat = storage.DataFormat.OGG;
+        break;
+    }
     case 'audio/mp3':
     case 'audio/mpeg': {
         soundFormat = storage.DataFormat.MP3;

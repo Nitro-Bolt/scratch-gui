@@ -12,8 +12,8 @@ importers:
         specifier: 0.2.2
         version: 0.2.2(tslib@2.8.1)
       '@nitro-bolt/scratch-storage':
-        specifier: 1.0.1
-        version: 1.0.1(webpack@4.47.0)
+        specifier: 1.0.4
+        version: 1.0.4(webpack@4.47.0)
       '@turbowarp/jszip':
         specifier: ^3.11.1
         version: 3.12.0
@@ -942,8 +942,8 @@ packages:
     resolution: {integrity: sha512-Pm8ttiMOYzHow6Z70XntdbSBJcH1SR7EmhjyZUMsq0WU1egK8ygHXZD9tcfYlloeaoc13VDQARPNwtUjWbziDg==}
     engines: {node: '>=20.0.0'}
 
-  '@nitro-bolt/scratch-storage@1.0.1':
-    resolution: {integrity: sha512-18MYgB7WeejRJlE3abSEE7w/x8VwTMsBXsXudmZ4TzLfjkV6l2EcKGqqXVTp7qZfZODvzGSHLk3CrcmDdmB5Mw==}
+  '@nitro-bolt/scratch-storage@1.0.4':
+    resolution: {integrity: sha512-EIFQxdbevvEdkcnAKbgFzdoBGilK0Mx1mCI5aRP3Q2v6qGjX6aw3Lld8arUf35rF8TX9/f+oyE8aLUmx42Yk4g==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -6165,7 +6165,7 @@ snapshots:
 
   '@nitro-bolt/paper@0.13.2': {}
 
-  '@nitro-bolt/scratch-storage@1.0.1(webpack@4.47.0)':
+  '@nitro-bolt/scratch-storage@1.0.4(webpack@4.47.0)':
     dependencies:
       '@babel/runtime': 7.21.0
       '@turbowarp/nanolog': 0.2.0
