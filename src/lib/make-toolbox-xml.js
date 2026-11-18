@@ -967,8 +967,8 @@ const extraNitroBoltBlocks = `
 </block>
 <block type="argument_reporter_boolean">
   <field name="VALUE">is NitroBolt?</field>
-  <mutation ${nbBlocksColours}></mutation
-block>
+  <mutation ${nbBlocksColours}></mutation>
+</block>
 `;
 /* eslint-enable no-unused-vars */
 
