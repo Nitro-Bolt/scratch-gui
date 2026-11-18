@@ -773,7 +773,8 @@ class Blocks extends React.Component {
         this.blocks = blocks;
     }
     handlePromptStart (message, defaultValue, callback, optTitle, optVarType, optVariable) {
-        const showVariableOptions = optVarType !== this.ScratchBlocks.BROADCAST_MESSAGE_VARIABLE_TYPE;
+        const showVariableOptions = typeof optVarType === 'string' &&
+            optVarType !== this.ScratchBlocks.BROADCAST_MESSAGE_VARIABLE_TYPE;
         const p = {prompt: {
             callback,
             message,
