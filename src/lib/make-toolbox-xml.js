@@ -5,13 +5,13 @@ const categorySeparator = '<sep gap="36"/>';
 
 const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
 
-const numberShadow = (value) => {
+const numberShadow = value => {
     value = value ?? '';
     return `<shadow type="math_number"><field name="NUM">${value}</field></shadow>`;
 };
-const textShadow = (value) => {
+const textShadow = (value, multiline = false) => {
     value = value ?? '';
-    return `<shadow type="text"><field name="TEXT">${value}</field></shadow>`;
+    return `<shadow type="${multiline ? 'text_multiline' : 'text'}"><field name="TEXT">${value}</field></shadow>`;
 };
 
 const translate = (id, english) => {
@@ -168,9 +168,7 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
         ${isStage ? '' : `
         <block type="looks_sayforsecs">
             <value name="MESSAGE">
-                <shadow type="text">
-                    <field name="TEXT">${hello}</field>
-                </shadow>
+                ${textShadow(hello, nbBlocks)}
             </value>
             <value name="SECS">
                 ${numberShadow(2)}
@@ -178,16 +176,12 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
         </block>
         <block type="looks_say">
             <value name="MESSAGE">
-                <shadow type="text">
-                    <field name="TEXT">${hello}</field>
-                </shadow>
+                ${textShadow(hello, nbBlocks)}
             </value>
         </block>
         <block type="looks_thinkforsecs">
             <value name="MESSAGE">
-                <shadow type="text">
-                    <field name="TEXT">${hmm}</field>
-                </shadow>
+                ${textShadow(hmm, nbBlocks)}
             </value>
             <value name="SECS">
                 ${numberShadow(2)}
@@ -195,9 +189,7 @@ const looks = function (isInitialSetup, isStage, targetId, costumeName, backdrop
         </block>
         <block type="looks_think">
             <value name="MESSAGE">
-                <shadow type="text">
-                    <field name="TEXT">${hmm}</field>
-                </shadow>
+                ${textShadow(hmm, nbBlocks)}
             </value>
         </block>
         ${blockSeparator}
@@ -364,17 +356,13 @@ const assets = function (isInitialSetup, isStage, targetId, assetName, colors, n
                 </shadow>
             </value>
             <value name="VALUE">
-                <shadow type="text">
-                    <field name="TEXT">Hello</field>
-                </shadow>
+                ${textShadow('Hello', nbBlocks)}
             </value>
         </block>
         ${blockSeparator}
         <block id="${targetId}_assets_write" type="assets_write">
             <value name="VALUE">
-                <shadow type="text">
-                    <field name="TEXT">Hello</field>
-                </shadow>
+                ${textShadow('Hello', nbBlocks)}
             </value>
             <value name="ASSET_MENU">
                 <shadow type="assets_menu">
@@ -466,14 +454,10 @@ const control = function (isInitialSetup, isStage, targetId, colors, nbBlocks = 
         <block type="control_switch"/>
         <block type="control_inline_if_else">
           <value name="THEN">
-            <shadow type="text">
-              <field name="TEXT">apple</field>
-            </shadow>
+            ${textShadow('apple', nbBlocks)}
           </value>
           <value name="ELSE">
-            <shadow type="text">
-              <field name="TEXT">banana</field>
-            </shadow>
+            ${textShadow('banana', nbBlocks)}
           </value>
         </block>
         ` : `
@@ -545,9 +529,7 @@ const sensing = function (isInitialSetup, isStage, targetId, colors, nbBlocks = 
         ${isInitialSetup ? '' : `
             <block id="askandwait" type="sensing_askandwait">
                 <value name="QUESTION">
-                    <shadow type="text">
-                        <field name="TEXT">${name}</field>
-                    </shadow>
+                    ${textShadow(name, nbBlocks)}
                 </value>
             </block>
         `}
@@ -691,23 +673,19 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
             <block type="operator_join_extendable">
                 <field name="STRINGS">2</field>
                 <value name="STRINGS_0_STRING">
-                    ${textShadow(apple + " ")}
+                    ${textShadow(`${apple} `, nbBlocks)}
                 </value>
                 <value name="STRINGS_1_STRING">
-                    ${textShadow(banana)}
+                    ${textShadow(banana, nbBlocks)}
                 </value>
             </block>
             ` : `
             <block type="operator_join">
                 <value name="STRING1">
-                    <shadow type="text">
-                        <field name="TEXT">${apple} </field>
-                    </shadow>
+                    ${textShadow(`${apple} `, nbBlocks)}
                 </value>
                 <value name="STRING2">
-                    <shadow type="text">
-                        <field name="TEXT">${banana}</field>
-                    </shadow>
+                    ${textShadow(banana, nbBlocks)}
                 </value>
             </block>
             `}
@@ -718,9 +696,7 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
                     </shadow>
                 </value>
                 <value name="STRING">
-                    <shadow type="text">
-                        <field name="TEXT">${apple}</field>
-                    </shadow>
+                    ${textShadow(apple, nbBlocks)}
                 </value>
             </block>
             ${nbBlocks ? `<block type="operator_letters_in">
@@ -735,30 +711,23 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
                     </shadow>
                 </value>
                 <value name="STRING">
-                    <shadow type="text">
-                        <field name="TEXT">${apple}</field>
-                    </shadow>
+                    ${textShadow(apple, nbBlocks)}
                 </value>
-            </block>` : ""}
+            </block>` : ''}
             <block type="operator_length">
                 <value name="STRING">
-                    <shadow type="text">
-                        <field name="TEXT">${apple}</field>
-                    </shadow>
+                    ${textShadow(apple, nbBlocks)}
                 </value>
             </block>
             <block type="operator_contains" id="operator_contains">
               <value name="STRING1">
-                <shadow type="text">
-                  <field name="TEXT">${apple}</field>
-                </shadow>
+                ${textShadow(apple, nbBlocks)}
               </value>
               <value name="STRING2">
-                <shadow type="text">
-                  <field name="TEXT">${letter}</field>
-                </shadow>
+                ${textShadow(letter, nbBlocks)}
               </value>
             </block>
+            ${nbBlocks ? `<block type="operator_constant_text"/>` : ''}
         `}
         ${blockSeparator}
         <block type="operator_mod">
@@ -784,16 +753,12 @@ const operators = function (isInitialSetup, isStage, targetId, colors, nbBlocks 
         ${blockSeparator}
         <block type="operator_cast">
             <value name="VALUE">
-                <shadow type="text">
-                    <field name="TEXT"/>
-                </shadow>
+                ${textShadow('', nbBlocks)}
             </value>
         </block>
         <block type="operator_typeof">
             <value name="VALUE">
-                <shadow type="text">
-                    <field name="TEXT">${apple}</field>
-                </shadow>
+                ${textShadow(apple, nbBlocks)}
             </value>
         </block>
         ` : ''}
@@ -833,37 +798,27 @@ const json = function (colors, nbBlocks = true) {
         </block>
         <block type="json_value_of_key">
             <value name="KEY">
-                <shadow type="text">
-                    <field name="TEXT">${key}</field>
-                </shadow>
+                ${textShadow(key, nbBlocks)}
             </value>
         </block>
         <block type="json_set_key">
             <value name="KEY">
-                <shadow type="text">
-                    <field name="TEXT">${key}</field>
-                </shadow>
+                ${textShadow(key, nbBlocks)}
             </value>
             <value name="VALUE">
-                <shadow type="text">
-                    <field name="TEXT">${bar}</field>
-                </shadow>
+                ${textShadow(bar, nbBlocks)}
             </value>
         </block>
         <block type="json_delete_key">
             <value name="KEY">
-                <shadow type="text">
-                    <field name="TEXT">${key}</field>
-                </shadow>
+                ${textShadow(key, nbBlocks)}
             </value>
         </block>
         <block type="json_merge_object">
         </block>
         <block type="json_has_key">
             <value name="KEY">
-                <shadow type="text">
-                    <field name="TEXT">${key}</field>
-                </shadow>
+                ${textShadow(key, nbBlocks)}
             </value>
         </block>
         ${blockSeparator}
@@ -878,9 +833,7 @@ const json = function (colors, nbBlocks = true) {
         </block>
         <block type="json_index_of_value">
             <value name="VALUE">
-                <shadow type="text">
-                    <field name="TEXT">${bar}</field>
-                </shadow>
+                ${textShadow(bar, nbBlocks)}
             </value>
         </block>
         <block type="json_array_length" id="json_array_length">
@@ -893,9 +846,7 @@ const json = function (colors, nbBlocks = true) {
                 </shadow>
             </value>
             <value name="ITEM">
-                <shadow type="text">
-                    <field name="TEXT">${baz}</field>
-                </shadow>
+                ${textShadow(baz, nbBlocks)}
             </value>
         </block>
         <block type="json_delete_index">
@@ -907,9 +858,7 @@ const json = function (colors, nbBlocks = true) {
         </block>
         <block type="json_delete_all_occurrences">
             <value name="ITEM">
-                <shadow type="text">
-                    <field name="TEXT">${bar}</field>
-                </shadow>
+                ${textShadow(bar, nbBlocks)}
             </value>
         </block>
         <block type="json_slice_array" id="json_slice_array">
@@ -926,9 +875,7 @@ const json = function (colors, nbBlocks = true) {
         </block>
         <block type="json_has_item">
             <value name="ITEM">
-                <shadow type="text">
-                    <field name="TEXT">${bar}</field>
-                </shadow>
+                ${textShadow(bar, nbBlocks)}
             </value>
         </block>
         ${blockSeparator}
@@ -938,14 +885,10 @@ const json = function (colors, nbBlocks = true) {
         </block>
         <block type="json_split">
             <value name="INPUT">
-                <shadow type="text">
-                    <field name="TEXT">a,b,c</field>
-                </shadow>
+                ${textShadow('a,b,c', nbBlocks)}
             </value>
             <value name="DELIMITER">
-                <shadow type="text">
-                    <field name="TEXT">,</field>
-                </shadow>
+                ${textShadow(',', nbBlocks)}
             </value>
         </block>
         <block type="json_map">
@@ -1018,8 +961,14 @@ const myBlocks = function (isInitialSetup, isStage, targetId, colors) {
 const nbBlocksColours = `colourmutprimary="#ff5726" colourmutsecondary="#f34b1a" colourmuttertiary="#e63e0d" colourmutquaternary="#e63e0d"`;
 // eslint-disable-next-line max-len
 const extraNitroBoltBlocks = `
-<block type="argument_reporter_boolean"><field name="VALUE">is compiled?</field><mutation ${nbBlocksColours}></mutation></block>
-<block type="argument_reporter_boolean"><field name="VALUE">is NitroBolt?</field><mutation ${nbBlocksColours}></mutation></block>
+<block type="argument_reporter_boolean">
+  <field name="VALUE">is compiled?</field>
+  <mutation ${nbBlocksColours}></mutation>
+</block>
+<block type="argument_reporter_boolean">
+  <field name="VALUE">is NitroBolt?</field>
+  <mutation ${nbBlocksColours}></mutation
+block>
 `;
 /* eslint-enable no-unused-vars */
 
@@ -1070,15 +1019,19 @@ const makeToolboxXML = function (vm, isInitialSetup, isStage = true, targetId, c
     const motionXML = moveCategory('motion') || motion(isInitialSetup, isStage, targetId, colors.motion, nbBlocks);
     const looksXML = moveCategory('looks') ||
         looks(isInitialSetup, isStage, targetId, costumeName, backdropName, colors.looks, nbBlocks);
-    const soundXML = moveCategory('sound') || sound(isInitialSetup, isStage, targetId, soundName, colors.sounds, nbBlocks);
-    const assetsXML = moveCategory('assets') || assets(isInitialSetup, isStage, targetId, assetName, colors.assets, nbBlocks);
+    const soundXML = moveCategory('sound') ||
+        sound(isInitialSetup, isStage, targetId, soundName, colors.sounds, nbBlocks);
+    const assetsXML = moveCategory('assets') ||
+        assets(isInitialSetup, isStage, targetId, assetName, colors.assets, nbBlocks);
     const eventsXML = moveCategory('event') || events(isInitialSetup, isStage, targetId, colors.event, nbBlocks);
     const controlXML = moveCategory('control') || control(isInitialSetup, isStage, targetId, colors.control, nbBlocks);
     const sensingXML = moveCategory('sensing') || sensing(isInitialSetup, isStage, targetId, colors.sensing, nbBlocks);
-    const operatorsXML = moveCategory('operators') || operators(isInitialSetup, isStage, targetId, colors.operators, nbBlocks);
+    const operatorsXML = moveCategory('operators') ||
+        operators(isInitialSetup, isStage, targetId, colors.operators, nbBlocks);
     const variablesXML = moveCategory('data') || variables(isInitialSetup, isStage, targetId, colors.data, nbBlocks);
     const jsonXML = moveCategory('json') || json(colors.json, nbBlocks);
-    const myBlocksXML = moveCategory('procedures') || myBlocks(isInitialSetup, isStage, targetId, colors.more, nbBlocks);
+    const myBlocksXML = moveCategory('procedures') ||
+        myBlocks(isInitialSetup, isStage, targetId, colors.more, nbBlocks);
 
     let nitroboltXML = moveCategory('tw'); // legacy id
     if (nitroboltXML && !nitroboltXML.includes(extraNitroBoltBlocks)) {
