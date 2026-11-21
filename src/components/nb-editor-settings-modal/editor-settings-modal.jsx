@@ -1458,7 +1458,7 @@ const EditorSettingsModal = props => {
                                 // eslint-disable-next-line react/jsx-no-bind
                                 onSubmit={value => {
                                     const num = Number(value);
-                                    if (Number.isFinite(num) && num > 0 && num <= 10) {
+                                    if (Number.isFinite(num) && num >= 1 && num <= 10) {
                                         props.onSetPreference('paint-canvas-size-multiplier', num);
                                     }
                                 }}
