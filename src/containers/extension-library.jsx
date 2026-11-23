@@ -448,7 +448,8 @@ class ExtensionLibrary extends React.PureComponent {
                     'DTcameracontrols',
                     'SPcamera',
                     'penP',
-                    'xeltallivclipblend'
+                    'xeltallivclipblend',
+                    'cst1229extendable'
                 ] : [];
 
                 if (sourceGallery && sourceGallery.status === 'success') {
