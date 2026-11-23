@@ -12,11 +12,11 @@ importers:
         specifier: 0.2.2
         version: 0.2.2(tslib@2.8.1)
       '@nitro-bolt/scratch-storage':
-        specifier: 1.0.4
-        version: 1.0.4(webpack@4.47.0)
+        specifier: 1.0.5
+        version: 1.0.5(webpack@4.47.0)
       '@turbowarp/jszip':
-        specifier: ^3.11.1
-        version: 3.12.0
+        specifier: ^4.0.0
+        version: 4.0.0
       '@turbowarp/nanolog':
         specifier: ^1.0.1
         version: 1.0.1
@@ -942,8 +942,8 @@ packages:
     resolution: {integrity: sha512-Pm8ttiMOYzHow6Z70XntdbSBJcH1SR7EmhjyZUMsq0WU1egK8ygHXZD9tcfYlloeaoc13VDQARPNwtUjWbziDg==}
     engines: {node: '>=20.0.0'}
 
-  '@nitro-bolt/scratch-storage@1.0.4':
-    resolution: {integrity: sha512-EIFQxdbevvEdkcnAKbgFzdoBGilK0Mx1mCI5aRP3Q2v6qGjX6aw3Lld8arUf35rF8TX9/f+oyE8aLUmx42Yk4g==}
+  '@nitro-bolt/scratch-storage@1.0.5':
+    resolution: {integrity: sha512-/gCFXm/sf+ya6y86dfiu830ydtZNgRBtgUcSM7d6pn6ldFnrBFUGaUt+0Tc1pbK4PFfxLotIjAlEEwShLmNJIA==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -981,6 +981,9 @@ packages:
 
   '@turbowarp/jszip@3.12.0':
     resolution: {integrity: sha512-nTKFFc1rUToxTdxUKPIou3YKUsSelgEoyx4TAPzK/0BkGPntkenp9zoJOSnxnGWNchVXYVZv01+3aZwlS1K8hw==}
+
+  '@turbowarp/jszip@4.0.0':
+    resolution: {integrity: sha512-knSLLrIaINtM0o+mKIz8juXDVRdyuXXoWKg8ZlIvhPRmoV61/v97bJr2LswzyFVIQl+Q4ZaHlCZcueJjDAx1RA==}
 
   '@turbowarp/nanolog@0.2.0':
     resolution: {integrity: sha512-texcM9oxfEsADVlVDR5UhLkYclPKsV9mytJh+9pHHonNcUrxRVGF6FkJTzWO/Hl5NafU1crSdw737nqKE3atSA==}
@@ -6165,14 +6168,13 @@ snapshots:
 
   '@nitro-bolt/paper@0.13.2': {}
 
-  '@nitro-bolt/scratch-storage@1.0.4(webpack@4.47.0)':
+  '@nitro-bolt/scratch-storage@1.0.5(webpack@4.47.0)':
     dependencies:
       '@babel/runtime': 7.21.0
       '@turbowarp/nanolog': 0.2.0
       arraybuffer-loader: 1.0.8
       base64-js: 1.3.0
       cross-fetch: 3.1.5
-      js-md5: 0.7.3
       worker-loader: 2.0.0(webpack@4.47.0)
     transitivePeerDependencies:
       - encoding
@@ -6216,6 +6218,12 @@ snapshots:
       pako: 1.0.11
       readable-stream: 2.3.8
       setimmediate: 1.0.5
+
+  '@turbowarp/jszip@4.0.0':
+    dependencies:
+      lie: 3.3.0
+      pako: 1.0.11
+      readable-stream: 2.3.8
 
   '@turbowarp/nanolog@0.2.0': {}
 

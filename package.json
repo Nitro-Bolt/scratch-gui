@@ -32,8 +32,8 @@
   },
   "dependencies": {
     "@microbit/microbit-universal-hex": "0.2.2",
-    "@nitro-bolt/scratch-storage": "1.0.4",
-    "@turbowarp/jszip": "^3.11.1",
+    "@nitro-bolt/scratch-storage": "1.0.5",
+    "@turbowarp/jszip": "^4.0.0",
     "@turbowarp/nanolog": "^1.0.1",
     "@turbowarp/scratch-svg-renderer": "^1.1.0",
     "@turbowarp/startaudiocontext": "^1.0.0",
