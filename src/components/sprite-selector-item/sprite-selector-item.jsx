@@ -15,7 +15,7 @@ import {
     subMenuProps
 } from '../context-menu/context-menu.jsx';
 import {FormattedMessage} from 'react-intl';
-import { defaultKeybinds, registerKeybind } from '../../lib/nb-keybinds.js';
+import DragConstants from '../../lib/drag-constants';
 
 class FolderMenuItem extends React.PureComponent {
     constructor (props) {
@@ -123,7 +123,7 @@ const SpriteSelectorItem = props => (
                 <div className={styles.spriteDetails}>{props.details}</div>
             ) : null}
         </div>
-        {(props.selected && props.onDeleteButtonClick) ? (
+        {((typeof props.active === 'boolean' ? props.active : props.selected) && props.onDeleteButtonClick) ? (
             <DeleteButton
                 className={styles.deleteButton}
                 onClick={props.onDeleteButtonClick}
@@ -305,6 +305,7 @@ const SpriteSelectorItem = props => (
 );
 
 SpriteSelectorItem.propTypes = {
+    active: PropTypes.bool,
     canRemoveFromFolder: PropTypes.bool,
     className: PropTypes.string,
     componentRef: PropTypes.func,
@@ -330,7 +331,7 @@ SpriteSelectorItem.propTypes = {
     onExportBitmapButtonClick: PropTypes.func,
     isBitmap: PropTypes.bool,
     iconFilter: PropTypes.string,
-    dragType: PropTypes.oneOf(["SPRITE", "COSTUME", "SOUND", "ASSET", "FOLDER_SPRITE"]),
+    dragType: PropTypes.oneOf(Object.keys(DragConstants)),
     onRenameButtonClick: PropTypes.func,
     onMoveToTopButtonClick: PropTypes.func,
     onMoveToBottomButtonClick: PropTypes.func,

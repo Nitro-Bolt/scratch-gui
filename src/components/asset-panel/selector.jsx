@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 /* eslint-disable react/jsx-no-bind */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import classNames from 'classnames';
 import SpriteSelectorItem from '../../containers/sprite-selector-item.jsx';
 import Box from '../box/box.jsx';
@@ -13,6 +13,18 @@ import FolderTile from '../nb-folder-tile/folder-tile.jsx';
 import VM from 'scratch-vm';
 
 import styles from './selector.css';
+
+const kindByDragType = {
+    [DragConstants.COSTUME]: 'costume',
+    [DragConstants.SOUND]: 'sound',
+    [DragConstants.ASSET]: 'asset'
+};
+
+const getTargetCollection = (target, kind) => ({
+    costume: target.getCostumes(),
+    sound: target.getSounds(),
+    asset: target.getAssets()
+})[kind];
 
 const Selector = props => {
     const {
@@ -41,6 +53,75 @@ const Selector = props => {
         onMoveToBottomClick
     } = props;
 
+    const [selectedItems, setSelectedItems] = useState([
+        items[selectedItemIndex] && items[selectedItemIndex].dragPayload
+    ].filter(Boolean));
+    const [selectionAnchor, setSelectionAnchor] = useState(
+        items[selectedItemIndex] && items[selectedItemIndex].dragPayload
+    );
+    const selectedIndices = selectedItems.map(item =>
+        items.findIndex(candidate => candidate.dragPayload === item)
+    ).filter(index => index >= 0);
+    useEffect(() => {
+        const activeItem = items[selectedItemIndex] && items[selectedItemIndex].dragPayload;
+        const availableSelectedItems = selectedItems.filter(item =>
+            items.some(candidate => candidate.dragPayload === item)
+        );
+        if (activeItem && !availableSelectedItems.includes(activeItem)) {
+            setSelectedItems([activeItem]);
+        } else if (availableSelectedItems.length !== selectedItems.length) {
+            setSelectedItems(availableSelectedItems);
+        }
+    }, [selectedItemIndex, items, selectedItems]);
+
+    const handleItemClick = (index, shouldGoToFront, modifiers = {}) => {
+        let nextSelection;
+        if (modifiers.range) {
+            const anchorIndex = items.findIndex(item => item.dragPayload === selectionAnchor);
+            const start = Math.min(anchorIndex < 0 ? index : anchorIndex, index);
+            const end = Math.max(anchorIndex < 0 ? index : anchorIndex, index);
+            nextSelection = items.slice(start, end + 1).map(item => item.dragPayload);
+        } else if (modifiers.additive) {
+            const item = items[index].dragPayload;
+            nextSelection = selectedItems.includes(item) ?
+                selectedItems.filter(candidate => candidate !== item) : selectedItems.concat(item);
+            if (nextSelection.length === 0) nextSelection = [item];
+            setSelectionAnchor(item);
+        } else {
+            nextSelection = [items[index].dragPayload];
+            setSelectionAnchor(items[index].dragPayload);
+        }
+        setSelectedItems(nextSelection);
+        onItemClick(index, shouldGoToFront);
+    };
+
+    const getSelectedIndices = index => (
+        selectedIndices.includes(index) ? selectedIndices : [index]
+    );
+    const handleBatchRename = async index => {
+        const indices = getSelectedIndices(index).slice()
+            .sort((a, b) => a - b);
+        if (indices.length < 2) return;
+        const selectedItemsInOrder = indices.map(candidateIndex =>
+            items[candidateIndex] && items[candidateIndex].dragPayload
+        ).filter(Boolean);
+        // prompt() is Promise-based in the desktop application.
+        // eslint-disable-next-line no-alert
+        const requestedName = await prompt('Name for selected items:');
+        const baseName = requestedName && requestedName.trim();
+        const target = props.vm.editingTarget;
+        const kind = kindByDragType[dragType];
+        if (!baseName || !target || !kind) return;
+        const collection = getTargetCollection(target, kind);
+        selectedItemsInOrder.forEach((item, numberIndex) => {
+            const currentIndex = collection.indexOf(item);
+            if (currentIndex < 0) return;
+            const name = `${baseName} ${numberIndex + 1}`;
+            if (dragType === DragConstants.COSTUME) props.vm.renameCostume(currentIndex, name);
+            else if (dragType === DragConstants.SOUND) props.vm.renameSound(currentIndex, name);
+            else if (dragType === DragConstants.ASSET) props.vm.renameAsset(currentIndex, name, item.dataFormat);
+        });
+    };
     const closedFolders = props.vm.runtime.projectFolders
         .filter(folder => folder._isOpen === false)
         .map(folder => folder.id);
@@ -72,8 +153,6 @@ const Selector = props => {
         return displayOrdering.indexOf(baseOrder);
     };
 
-    const selectedItem = items[selectedItemIndex];
-
     let newButtonSection = null;
 
     if (buttons.length > 0) {
@@ -95,9 +174,11 @@ const Selector = props => {
     return (
         <Box
             className={styles.wrapper}
-            componentRef={containerRef}
         >
-            <Box className={styles.listArea}>
+            <Box
+                className={styles.listArea}
+                componentRef={containerRef}
+            >
                 {entries.map(entry => {
                     if (entry.type === 'folder') {
                         return (
@@ -158,15 +239,20 @@ const Selector = props => {
                                 totalItems={items.length}
                                 name={candidate.name}
                                 number={candidateIndex + 1 /* 1-indexed */}
-                                selected={candidateIndex === selectedItemIndex}
-                                onClick={onItemClick}
+                                active={candidateIndex === selectedItemIndex}
+                                selected={selectedIndices.includes(candidateIndex)}
+                                selectedIndices={getSelectedIndices(candidateIndex)}
+                                onClick={handleItemClick}
                                 onDeleteButtonClick={onDeleteClick}
                                 onDuplicateButtonClick={onDuplicateClick}
                                 onReplaceButtonClick={onReplaceClick}
                                 onExportButtonClick={onExportClick}
                                 onExportBitmapButtonClick={onExportBitmapClick}
-                                onFolderChangeComplete={onItemFolderChangeComplete && selectedItem ?
-                                    targetId => onItemFolderChangeComplete(selectedItem.dragPayload, targetId) : null}
+                                onFolderChangeComplete={onItemFolderChangeComplete && candidate ?
+                                    targetId => onItemFolderChangeComplete(candidate.dragPayload, targetId) : null}
+                                onRenameButtonClick={selectedIndices.length > 1 &&
+                                    selectedIndices.includes(candidateIndex) ?
+                                    handleBatchRename : null}
                                 onMoveToTopButtonClick={onMoveToTopClick}
                                 onMoveToBottomButtonClick={onMoveToBottomClick}
                             />

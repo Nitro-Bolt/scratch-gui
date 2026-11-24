@@ -336,9 +336,15 @@ class CostumeTab extends React.Component {
             const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
             const destinationFolder = hoveredFolder || (destination && destination.folderId &&
                 this.props.vm.runtime.projectFolders.find(folder => folder.id === destination.folderId));
-            this.props.vm.setItemFolder('costume', this.props.vm.editingTarget.id,
-                dropInfo.index, !dropInfo.rootDrop && destinationFolder && destinationFolder._isOpen !== false ?
-                    destinationFolder.id : null, newIndex);
+            const destinationFolderId = !dropInfo.rootDrop && destinationFolder &&
+                destinationFolder._isOpen !== false ? destinationFolder.id : null;
+            if (dropInfo.selectedIndices && dropInfo.selectedIndices.length > 1) {
+                this.props.vm.setItemsFolder('costume', this.props.vm.editingTarget.id,
+                    dropInfo.selectedIndices, destinationFolderId, newIndex);
+            } else {
+                this.props.vm.setItemFolder('costume', this.props.vm.editingTarget.id,
+                    dropInfo.index, destinationFolderId, newIndex);
+            }
             this.setState({selectedCostumeIndex: sprite.costumes.indexOf(activeCostume)});
         } else if (dropInfo.dragType === DragConstants.BACKPACK_COSTUME) {
             this.props.vm.addCostume(dropInfo.payload.body, {

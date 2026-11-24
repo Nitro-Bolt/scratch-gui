@@ -81,6 +81,7 @@ class SpriteSelectorItem extends React.PureComponent {
             dropIndexMap: this.props.dropIndexMap,
             folderAtDisplayIndex: this.props.folderAtDisplayIndex,
             index: this.props.index,
+            selectedIndices: this.props.selectedIndices,
             payload: this.props.dragPayload
         });
         this.noClick = true;
@@ -100,7 +101,10 @@ class SpriteSelectorItem extends React.PureComponent {
         e.preventDefault();
         const shouldGoToFront = e.shiftKey;
         if (!this.noClick) {
-            this.props.onClick(this.props.id, shouldGoToFront);
+            this.props.onClick(this.props.id, shouldGoToFront, {
+                additive: e.ctrlKey || e.metaKey,
+                range: e.shiftKey
+            });
         }
     }
     handleColor (e) {
@@ -189,6 +193,8 @@ class SpriteSelectorItem extends React.PureComponent {
             collections[kind][this.getFolderItemIndex()];
         const onFolderChangeComplete = this.props.onFolderChangeComplete;
         if (!kind || !item) return;
+        const selectedItems = kind !== 'sprite' && this.props.selectedIndices ?
+            this.props.selectedIndices.map(index => collections[kind][index]).filter(Boolean) : [];
         // prompt() is Promise-based in the desktop application.
         // eslint-disable-next-line no-alert
         const name = await prompt('Folder name:');
@@ -207,24 +213,25 @@ class SpriteSelectorItem extends React.PureComponent {
             scopeId,
             this.props.folderId
         );
-        this.props.vm.setItemFolder(
-            kind,
-            targetId,
-            currentIndex,
-            folder.id
-        );
+        if (selectedItems.length > 1) {
+            const currentIndices = selectedItems.map(selectedItem => currentItems.indexOf(selectedItem))
+                .filter(index => index >= 0);
+            this.props.vm.setItemsFolder(kind, targetId, currentIndices, folder.id);
+        } else {
+            this.props.vm.setItemFolder(kind, targetId, currentIndex, folder.id);
+        }
         if (onFolderChangeComplete) onFolderChangeComplete(targetId);
     }
     handleFolderChange (folderId, e) {
         if (e) e.stopPropagation();
         const targetId = this.getFolderTargetId();
         const onFolderChangeComplete = this.props.onFolderChangeComplete;
-        this.props.vm.setItemFolder(
-            this.getFolderKind(),
-            targetId,
-            this.getFolderItemIndex(),
-            folderId
-        );
+        const kind = this.getFolderKind();
+        if (kind !== 'sprite' && this.props.selectedIndices && this.props.selectedIndices.length > 1) {
+            this.props.vm.setItemsFolder(kind, targetId, this.props.selectedIndices, folderId);
+        } else {
+            this.props.vm.setItemFolder(kind, targetId, this.getFolderItemIndex(), folderId);
+        }
         if (onFolderChangeComplete) onFolderChangeComplete(targetId);
     }
     handleMouseLeave () {
@@ -350,6 +357,7 @@ SpriteSelectorItem.propTypes = {
     onNativeDrop: PropTypes.func,
     onMouseMove: PropTypes.func,
     receivedBlocks: PropTypes.bool.isRequired,
+    selectedIndices: PropTypes.arrayOf(PropTypes.number),
     selected: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired
 };

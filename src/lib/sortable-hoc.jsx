@@ -18,6 +18,8 @@ const SortableHOC = function (WrappedComponent) {
             this.boxes = null;
             this.ref = null;
             this.containerBox = null;
+            this.scrollTop = 0;
+            this.scrollLeft = 0;
         }
 
         componentWillReceiveProps (newProps) {
@@ -32,6 +34,8 @@ const SortableHOC = function (WrappedComponent) {
                     throw new Error('The containerRef must be assigned to the sortable area');
                 }
                 this.containerBox = this.ref.getBoundingClientRect();
+                this.scrollTop = this.ref.scrollTop;
+                this.scrollLeft = this.ref.scrollLeft;
             } else if (!newProps.dragInfo.dragging && this.props.dragInfo.dragging) {
                 const newIndex = this.getMouseOverIndex();
                 if (newIndex !== null) {
@@ -86,7 +90,7 @@ const SortableHOC = function (WrappedComponent) {
                         mouseOverIndex = 0;
                     } else {
                         mouseOverIndex = indexForPositionOnList(
-                            this.props.dragInfo.currentOffset, this.boxes, this.props.isRtl);
+                            this.props.dragInfo.currentOffset, this.getAdjustedBoxes(), this.props.isRtl);
                     }
                 }
             }
@@ -95,14 +99,24 @@ const SortableHOC = function (WrappedComponent) {
         getHoveredIndex () {
             if (!this.props.dragInfo.currentOffset || !this.boxes) return null;
             const {x, y} = this.props.dragInfo.currentOffset;
-            const index = this.boxes.findIndex(box => box &&
+            const index = this.getAdjustedBoxes().findIndex(box => box &&
                 x >= box.left && x <= box.right && y >= box.top && y <= box.bottom);
             return index < 0 ? null : index;
+        }
+        getAdjustedBoxes () {
+            const scrollTopDelta = this.ref.scrollTop - this.scrollTop;
+            const scrollLeftDelta = this.ref.scrollLeft - this.scrollLeft;
+            return this.boxes.map(box => box && ({
+                top: box.top - scrollTopDelta,
+                bottom: box.bottom - scrollTopDelta,
+                left: box.left - scrollLeftDelta,
+                right: box.right - scrollLeftDelta
+            }));
         }
         isRootDrop () {
             if (!this.props.dragInfo.currentOffset || !this.boxes || this.boxes.length === 0) return false;
             const {x, y} = this.props.dragInfo.currentOffset;
-            const boxes = this.boxes.filter(Boolean);
+            const boxes = this.getAdjustedBoxes().filter(Boolean);
             if (boxes.length === 0) return false;
             return x < Math.min(...boxes.map(box => box.left)) ||
                 x > Math.max(...boxes.map(box => box.right)) ||
@@ -144,7 +158,8 @@ const SortableHOC = function (WrappedComponent) {
             payload: PropTypes.oneOfType([
                 PropTypes.object,
                 PropTypes.string
-            ])
+            ]),
+            selectedIndices: PropTypes.arrayOf(PropTypes.number)
         }),
         items: PropTypes.arrayOf(PropTypes.shape({
             url: PropTypes.string,

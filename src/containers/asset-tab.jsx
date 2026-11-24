@@ -239,9 +239,15 @@ class AssetTab extends React.Component {
             const hoveredFolder = this.props.vm.runtime.projectFolders.find(folder => folder.id === hoveredFolderId);
             const destinationFolder = hoveredFolder || (destination && destination.folderId &&
                 this.props.vm.runtime.projectFolders.find(folder => folder.id === destination.folderId));
-            this.props.vm.setItemFolder('asset', this.props.vm.editingTarget.id,
-                dropInfo.index, !dropInfo.rootDrop && destinationFolder && destinationFolder._isOpen !== false ?
-                    destinationFolder.id : null, newIndex);
+            const destinationFolderId = !dropInfo.rootDrop && destinationFolder &&
+                destinationFolder._isOpen !== false ? destinationFolder.id : null;
+            if (dropInfo.selectedIndices && dropInfo.selectedIndices.length > 1) {
+                this.props.vm.setItemsFolder('asset', this.props.vm.editingTarget.id,
+                    dropInfo.selectedIndices, destinationFolderId, newIndex);
+            } else {
+                this.props.vm.setItemFolder('asset', this.props.vm.editingTarget.id,
+                    dropInfo.index, destinationFolderId, newIndex);
+            }
             this.setState({
                 selectedAssetIndex: this.props.vm.editingTarget.sprite.assets.indexOf(activeAsset)
             });
